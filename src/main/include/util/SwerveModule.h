@@ -12,11 +12,15 @@
 #include <frc/kinematics/SwerveModuleState.h>
 #include <math.h>
 #include <iostream>
+#include <vector>
 
 class SwerveModule {
  public:
-  SwerveModule(int speedMotorID, int angleMotorID, bool speedMotorInverted, bool angleMotorInverted,
-               int absoluteEncoderID, double absoluteEncoderOffset, bool absoluteEncoderInverted);
+  SwerveModule(int driveMotorID, int angleMotorID,
+               int absoluteEncoderID, double absoluteEncoderOffset);
+  void ConfigDriveMotor();
+  void ConfigAngleMotor(int absoluteEncoderID);
+  void ConfigEncoder();
   void Stop();
   void SetDesiredState(const frc::SwerveModuleState &state);
   frc::SwerveModuleState GetState();
@@ -25,18 +29,19 @@ class SwerveModule {
   double GetAbsoluteAngle();
   double GetRelativeAngle();
   double GetVelocity();
-  void ResetSpeedEncoder();
+  void ResetDriveEncoder();
   void ResetAngleToAbsolute();
 
  private:
-  ctre::phoenix6::hardware::TalonFX m_speedMotor;
+  ctre::phoenix6::hardware::TalonFX m_driveMotor;
   ctre::phoenix6::hardware::TalonFX m_angleMotor;
   ctre::phoenix6::hardware::CANcoder m_absoluteEncoder;
 
+  ctre::phoenix6::StatusSignal<double> m_drivePosition;
+  ctre::phoenix6::StatusSignal<double> m_angleVelocity;
+  ctre::phoenix6::StatusSignal<double> m_drivePosition;
+  ctre::phoenix6::StatusSignal<double> m_angleVelocity;
+  std::vector<ctre::phoenix6::StatusSignal<double>> signals;
+
   double m_absoluteEncoderOffset;
-  double m_lastAbsoluteEncoderAngle;
-  ctre::phoenix6::StatusSignal<double> m_speedPosition;
-  ctre::phoenix6::StatusSignal<double> m_angleVelocity;
-  ctre::phoenix6::StatusSignal<double> m_speedPosition;
-  ctre::phoenix6::StatusSignal<double> m_angleVelocity;
 };
