@@ -10,38 +10,40 @@
 #include <ctre/phoenix6/CANcoder.hpp>
 #include <ctre/phoenix6/core/CoreTalonFX.hpp>
 #include <frc/kinematics/SwerveModuleState.h>
+#include <frc/kinematics/SwerveModulePosition.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <math.h>
 #include <iostream>
 #include <vector>
 
 class SwerveModule {
  public:
-  SwerveModule(int driveMotorID, int angleMotorID,
+  SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
                int absoluteEncoderID, double absoluteEncoderOffset);
   void ConfigDriveMotor();
   void ConfigAngleMotor(int absoluteEncoderID);
   void ConfigEncoder();
   void Stop();
   void SetDesiredState(const frc::SwerveModuleState &state);
-  frc::SwerveModuleState GetState();
-  frc::SwerveModuleState OptimizeAngle(frc::SwerveModuleState desiredState, frc::Rotation2d currentAngle);
-  double NormalizeTo0To360(double currentAngle, double targetAngle);
-  double GetAbsoluteAngle();
-  double GetRelativeAngle();
-  double GetVelocity();
-  void ResetDriveEncoder();
-  void ResetAngleToAbsolute();
+  void UpdatePosition();
+  std::vector<ctre::phoenix6::BaseStatusSignal> GetSignals();
 
  private:
   ctre::phoenix6::hardware::TalonFX m_driveMotor;
   ctre::phoenix6::hardware::TalonFX m_angleMotor;
   ctre::phoenix6::hardware::CANcoder m_absoluteEncoder;
 
-  ctre::phoenix6::StatusSignal<double> m_drivePosition;
-  ctre::phoenix6::StatusSignal<double> m_angleVelocity;
-  ctre::phoenix6::StatusSignal<double> m_drivePosition;
-  ctre::phoenix6::StatusSignal<double> m_angleVelocity;
-  std::vector<ctre::phoenix6::StatusSignal<double>> signals;
+  std::vector<ctre::phoenix6::BaseStatusSignal> m_signals;
 
+  ctre::phoenix6::StatusSignal<units::angle::turn_t> m_drivePosition = m_driveMotor.GetPosition();
+  ctre::phoenix6::StatusSignal<units::angle::turn_t> m_anglePosition = m_angleMotor.GetPosition();
+  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_driveVelocity = m_driveMotor.GetVelocity();
+  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_angleVelocity = m_angleMotor.GetVelocity();
+
+  int m_moduleNumber;
   double m_absoluteEncoderOffset;
+  frc::SwerveModulePosition m_internalState{0_m, frc::Rotation2d{}};
+
+  ctre::phoenix6::controls::VelocityVoltage m_driveSetter{0.0_rad / 1.0_s};
+  ctre::phoenix6::controls::PositionVoltage m_angleSetter{0.0_rad};
 };

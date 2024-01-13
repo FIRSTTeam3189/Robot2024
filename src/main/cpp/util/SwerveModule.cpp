@@ -5,15 +5,22 @@
 #include "Constants.h"
 #include "util/SwerveModule.h"
 
-SwerveModule::SwerveModule(int driveMotorID, int angleMotorID,
+SwerveModule::SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
                            int absoluteEncoderID, double absoluteEncoderOffset):
 m_driveMotor(driveMotorID, "Swerve"),
 m_angleMotor(angleMotorID, "Swerve"),
 m_absoluteEncoder(absoluteEncoderID, "Swerve"),
-m_absoluteEncoderOffset(absoluteEncoderOffset) {
+m_moduleNumber(moduleNumber),
+m_absoluteEncoderOffset(absoluteEncoderOffset)
+ {
     ConfigDriveMotor();
     ConfigAngleMotor(absoluteEncoderID);
     ConfigEncoder();
+
+    m_signals.push_back(m_drivePosition);
+    m_signals.push_back(m_driveVelocity);
+    m_signals.push_back(m_anglePosition);
+    m_signals.push_back(m_angleVelocity);
 }
 
 void SwerveModule::ConfigDriveMotor() {
@@ -55,11 +62,11 @@ void SwerveModule::ConfigAngleMotor(int absoluteEncoderID) {
 
     angleConfigs.ClosedLoopGeneral.ContinuousWrap = true;
 
-    // angleConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kAngleGearRatio;
+    angleConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kAngleGearRatio;
     // TODO: Not sure if this number is correct/if it actually works this way on our modules
-    angleConfigs.Feedback.RotorToSensorRatio = SwerveModuleConstants::kAngleGearRatio;
-    angleConfigs.Feedback.FeedbackRemoteSensorID = absoluteEncoderID;
-    angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
+    // angleConfigs.Feedback.RotorToSensorRatio = SwerveModuleConstants::kAngleGearRatio;
+    // angleConfigs.Feedback.FeedbackRemoteSensorID = absoluteEncoderID;
+    // angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
 
     angleConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kAngleContinuousCurrentLimit;
     angleConfigs.CurrentLimits.SupplyCurrentThreshold = SwerveModuleConstants::kAnglePeakCurrentLimit;
@@ -85,11 +92,33 @@ void SwerveModule::ConfigEncoder() {
     m_absoluteEncoder.GetConfigurator().Apply(encoderConfigs);
 }
 
+void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
+    const auto state = frc::SwerveModuleState::Optimize(state, m_internalState.angle);
+}
+
+std::vector<ctre::phoenix6::BaseStatusSignal> SwerveModule::GetSignals() {
+    return m_signals;
+}
+
 void SwerveModule::Stop() {
     m_driveMotor.StopMotor();
     m_angleMotor.StopMotor();
 }
 
-void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
-    const auto state = frc::SwerveModuleState::Optimize(state, frc::Rotation2d{units::degree_t{m_absoluteEncoder.GetPosition()}});
+void SwerveModule::UpdatePosition() {
+    m_drivePosition.Refresh();
+    m_driveVelocity.Refresh();
+    m_anglePosition.Refresh();
+    m_angleVelocity.Refresh();
+
+    auto driveRotations = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(m_drivePosition, m_driveVelocity);
+    auto angleRotations = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(m_anglePosition, m_angleVelocity);
+
+    auto distance = driveRotations / SwerveModuleConstants::kRotationsPerMeter;
+    m_internalState.distance = distance;
+    frc::Rotation2d angle{units::degree_t{angleRotations}};
+    m_internalState.angle = angle;
+
+    frc::SmartDashboard::PutNumber("Module " + std::string("" + m_moduleNumber) + " distance", distance.value());
+    frc::SmartDashboard::PutNumber("Module " + std::string("" + m_moduleNumber) + " angle", angle.Degrees());
 }
