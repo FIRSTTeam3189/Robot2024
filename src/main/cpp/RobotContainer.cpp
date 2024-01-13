@@ -8,13 +8,14 @@
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
-
+  m_shooter->SetDefaultCommand(frc2::RunCommand([this]{ 
+    m_shooter->SetPower(m_ted.GetRawAxis(OperatorConstants::kAxisLStickY)); 
+  },{m_shooter}).ToPtr());
   // Configure the button bindings
   ConfigureBindings();
 }
 
 void RobotContainer::ConfigureBindings() {
-  // Configure your trigger bindings here
 
 }
 

@@ -159,3 +159,38 @@ namespace SwerveModuleConstants {
     constexpr int kFalconEncoderTicksPerRevolution {2048};
     constexpr int kCancoderTicksPerRevolution {4096};
 }
+ //Shooter Constants
+namespace ShooterConstants {
+    constexpr int kMotorID {0};
+}
+
+
+namespace OperatorConstants{
+    constexpr int kCoDriverControllerPort {1};
+
+    constexpr int kAxisLStickY {1};
+    // #define PS5_BILL_CONTROLLER_PORT 0
+    // #define PS5_TED_CONTROLLER_PORT 1
+    // #define PS5_TEST_CONTROLLER_PORT 2
+    // #define PS5_BUTTON_SQR 1
+    // #define PS5_BUTTON_X 2
+    // #define PS5_BUTTON_O 3
+    // #define PS5_BUTTON_TRI 4
+    // #define PS5_BUTTON_LBUMPER 5
+    // #define PS5_BUTTON_RBUMPER 6
+    // #define PS5_BUTTON_LTRIGGER 7
+    // #define PS5_BUTTON_RTRIGGER 8
+    // #define PS5_BUTTON_CREATE 9
+    // #define PS5_BUTTON_MENU 10
+    // #define PS5_BUTTON_LSTICK 11
+    // #define PS5_BUTTON_RSTICK 12
+    // #define PS5_BUTTON_PS 13
+    // #define PS5_BUTTON_TOUCHPAD 14
+    // #define PS5_BUTTON_MIC 15
+    // #define PS5_AXIS_LSTICK_X 0 // left is -1, right is 1
+    // #define PS5_AXIS_LSTICK_Y 1 // up is -1, down is 1
+    // #define PS5_AXIS_RSTICK_X 2 // left is -1, right is 1
+    // #define PS5_AXIS_LTRIGGER 3 // -1 is untouched, fully pressed is 1
+    // #define PS5_AXIS_RTRIGGER 4 // -1 is untouched, fully pressed is 1
+    // #define PS5_AXIS_RSTICK_Y 5 // up is -1 , down is 1
+}
