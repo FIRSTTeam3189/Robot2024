@@ -15,34 +15,46 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
+#include "Constants.h"
+
+struct Signals {
+  ctre::phoenix6::StatusSignal<units::angle::turn_t> drivePosition;
+  ctre::phoenix6::StatusSignal<units::angle::turn_t> anglePosition;
+  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> driveVelocity;
+  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> angleVelocity;
+};
 
 class SwerveModule {
  public:
   SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
-               int absoluteEncoderID, double absoluteEncoderOffset);
+               int CANcoderID, double CANcoderOffset);
   void ConfigDriveMotor();
-  void ConfigAngleMotor(int absoluteEncoderID);
-  void ConfigEncoder();
+  void ConfigAngleMotor(int CANcoderID);
+  void ConfigCANcoder();
   void Stop();
   void SetDesiredState(const frc::SwerveModuleState &state);
   void UpdatePosition();
-  std::vector<ctre::phoenix6::BaseStatusSignal> GetSignals();
+  frc::SwerveModulePosition GetPosition(bool refresh);
+  frc::SwerveModuleState GetState(bool refresh);
+  units::degree_t GetMotorAngle();
+  units::degree_t GetEncoderAngle();
+  units::meters_per_second_t GetDriveSpeed();
+  Signals GetSignals();
 
  private:
   ctre::phoenix6::hardware::TalonFX m_driveMotor;
   ctre::phoenix6::hardware::TalonFX m_angleMotor;
-  ctre::phoenix6::hardware::CANcoder m_absoluteEncoder;
-
-  std::vector<ctre::phoenix6::BaseStatusSignal> m_signals;
+  ctre::phoenix6::hardware::CANcoder m_CANcoder;
 
   ctre::phoenix6::StatusSignal<units::angle::turn_t> m_drivePosition = m_driveMotor.GetPosition();
   ctre::phoenix6::StatusSignal<units::angle::turn_t> m_anglePosition = m_angleMotor.GetPosition();
   ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_driveVelocity = m_driveMotor.GetVelocity();
   ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_angleVelocity = m_angleMotor.GetVelocity();
+  Signals m_signals;
 
   int m_moduleNumber;
-  double m_absoluteEncoderOffset;
-  frc::SwerveModulePosition m_internalState{0_m, frc::Rotation2d{}};
+  double m_CANcoderOffset;
+  frc::SwerveModulePosition m_position{0_m, frc::Rotation2d{}};
 
   ctre::phoenix6::controls::VelocityVoltage m_driveSetter{0.0_rad / 1.0_s};
   ctre::phoenix6::controls::PositionVoltage m_angleSetter{0.0_rad};

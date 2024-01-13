@@ -5,7 +5,7 @@
 #include "subsystems/Shooter.h"
 #include "units/current.h"
 Shooter::Shooter() : 
-m_shooterMotor(ShooterConstants::kMotorID, rev::CANSparkFlex::MotorType::kBrushless){
+m_shooterMotor(ShooterConstants::kMotorID, rev::CANSparkMax::MotorType::kBrushless) {
 
 }
 

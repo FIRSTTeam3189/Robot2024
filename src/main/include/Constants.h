@@ -99,10 +99,10 @@ namespace SwerveModuleConstants {
     // Motor + sensor inversions
     constexpr bool kDriveMotorInverted = false;
     constexpr bool kAngleMotorInverted = false;
-    constexpr bool kAbsoluteEncoderInverted = false;
+    constexpr bool kCANcoderInverted = false;
 
     // Encoder sensor range
-    constexpr auto kAbsoluteEncoderSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf;
+    constexpr auto kCANcoderSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf;
 
     // Motor neutral modes -- what they do when no power is applied
     constexpr auto kDriveNeutralMode = ctre::phoenix6::signals::NeutralModeValue::Coast;
@@ -157,7 +157,7 @@ namespace SwerveModuleConstants {
     constexpr double kAngleGearRatio {15.43};
     constexpr double kRotationsPerMeter {kDriveGearRatio / kWheelCircumferenceMeters};
     constexpr int kFalconEncoderTicksPerRevolution {2048};
-    constexpr int kCancoderTicksPerRevolution {4096};
+    constexpr int kCANcoderTicksPerRevolution {4096};
 }
  //Shooter Constants
 namespace ShooterConstants {

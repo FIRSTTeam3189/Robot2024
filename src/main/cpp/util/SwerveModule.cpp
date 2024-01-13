@@ -2,25 +2,20 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "Constants.h"
 #include "util/SwerveModule.h"
 
 SwerveModule::SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
-                           int absoluteEncoderID, double absoluteEncoderOffset):
+                           int CANcoderID, double CANcoderOffset):
 m_driveMotor(driveMotorID, "Swerve"),
 m_angleMotor(angleMotorID, "Swerve"),
-m_absoluteEncoder(absoluteEncoderID, "Swerve"),
+m_CANcoder(CANcoderID, "Swerve"),
 m_moduleNumber(moduleNumber),
-m_absoluteEncoderOffset(absoluteEncoderOffset)
+m_CANcoderOffset(CANcoderOffset),
+m_signals{m_drivePosition, m_anglePosition, m_driveVelocity, m_angleVelocity}
  {
     ConfigDriveMotor();
-    ConfigAngleMotor(absoluteEncoderID);
-    ConfigEncoder();
-
-    m_signals.push_back(m_drivePosition);
-    m_signals.push_back(m_driveVelocity);
-    m_signals.push_back(m_anglePosition);
-    m_signals.push_back(m_angleVelocity);
+    ConfigAngleMotor(CANcoderID);
+    ConfigCANcoder();
 }
 
 void SwerveModule::ConfigDriveMotor() {
@@ -49,7 +44,7 @@ void SwerveModule::ConfigDriveMotor() {
     m_driveMotor.SetPosition(0.0_rad);
 }
 
-void SwerveModule::ConfigAngleMotor(int absoluteEncoderID) {
+void SwerveModule::ConfigAngleMotor(int CANcoderID) {
     // Set to factory default
     m_angleMotor.GetConfigurator().Apply(ctre::phoenix6::configs::TalonFXConfiguration({}));
     ctre::phoenix6::configs::TalonFXConfiguration angleConfigs{};
@@ -65,7 +60,7 @@ void SwerveModule::ConfigAngleMotor(int absoluteEncoderID) {
     angleConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kAngleGearRatio;
     // TODO: Not sure if this number is correct/if it actually works this way on our modules
     // angleConfigs.Feedback.RotorToSensorRatio = SwerveModuleConstants::kAngleGearRatio;
-    // angleConfigs.Feedback.FeedbackRemoteSensorID = absoluteEncoderID;
+    // angleConfigs.Feedback.FeedbackRemoteSensorID = CANcoderID;
     // angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
 
     angleConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kAngleContinuousCurrentLimit;
@@ -79,24 +74,32 @@ void SwerveModule::ConfigAngleMotor(int absoluteEncoderID) {
     m_angleMotor.GetConfigurator().Apply(angleConfigs);
 }
 
-void SwerveModule::ConfigEncoder() {
+void SwerveModule::ConfigCANcoder() {
     // Set to factory default
-    m_absoluteEncoder.GetConfigurator().Apply(ctre::phoenix6::configs::CANcoderConfiguration{});
+    m_CANcoder.GetConfigurator().Apply(ctre::phoenix6::configs::CANcoderConfiguration{});
     ctre::phoenix6::configs::CANcoderConfiguration encoderConfigs{};
 
     // Set the magnet offset in configs
-    encoderConfigs.MagnetSensor.MagnetOffset = m_absoluteEncoderOffset;
-    encoderConfigs.MagnetSensor.SensorDirection = SwerveModuleConstants::;
-    encoderConfigs.MagnetSensor.AbsoluteSensorRange = SwerveModuleConstants::kAbsoluteEncoderSensorRange;
+    encoderConfigs.MagnetSensor.MagnetOffset = m_CANcoderOffset;
+    encoderConfigs.MagnetSensor.SensorDirection = SwerveModuleConstants::kCANcoderInverted;
+    encoderConfigs.MagnetSensor.AbsoluteSensorRange = SwerveModuleConstants::kCANcoderSensorRange;
 
-    m_absoluteEncoder.GetConfigurator().Apply(encoderConfigs);
+    m_CANcoder.GetConfigurator().Apply(encoderConfigs);
 }
 
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
-    const auto state = frc::SwerveModuleState::Optimize(state, m_internalState.angle);
+    const auto optimizedState = frc::SwerveModuleState::Optimize(state, m_position.angle);
+    double targetSpeed = optimizedState.speed.value();
+    auto targetAngle = optimizedState.angle.Degrees();
+
+    frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " target speed", targetSpeed);
+    frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " target angle", targetAngle.value());
+
+    m_driveMotor.SetControl(m_driveSetter.WithVelocity(units::turns_per_second_t{targetSpeed}));
+    m_angleMotor.SetControl(m_angleSetter.WithPosition(targetAngle));
 }
 
-std::vector<ctre::phoenix6::BaseStatusSignal> SwerveModule::GetSignals() {
+Signals SwerveModule::GetSignals() {
     return m_signals;
 }
 
@@ -114,11 +117,41 @@ void SwerveModule::UpdatePosition() {
     auto driveRotations = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(m_drivePosition, m_driveVelocity);
     auto angleRotations = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(m_anglePosition, m_angleVelocity);
 
-    auto distance = driveRotations / SwerveModuleConstants::kRotationsPerMeter;
-    m_internalState.distance = distance;
+    // Have to convert rotations to double then to meters with our own rotation coefficient
+    double distance = driveRotations.value() / SwerveModuleConstants::kRotationsPerMeter;
+    m_position.distance = units::meter_t{distance};
     frc::Rotation2d angle{units::degree_t{angleRotations}};
-    m_internalState.angle = angle;
+    m_position.angle = angle;
 
-    frc::SmartDashboard::PutNumber("Module " + std::string("" + m_moduleNumber) + " distance", distance.value());
-    frc::SmartDashboard::PutNumber("Module " + std::string("" + m_moduleNumber) + " angle", angle.Degrees());
+    frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " distance", distance);
+    frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " angle", angle.Degrees().value());
+}
+
+frc::SwerveModulePosition SwerveModule::GetPosition(bool refresh) {
+    if (refresh)
+        UpdatePosition();
+
+    return m_position;
+}
+
+frc::SwerveModuleState SwerveModule::GetState(bool refresh) {
+    if (refresh)
+        UpdatePosition();
+
+    // Uses initializer list syntax and lets compiler make swerve module state since we can't construct directly
+    // Note the 360 converting rotations to degrees, and the turns per second to meters per second
+    return {units::meters_per_second_t{m_driveVelocity.GetValue().value() / SwerveModuleConstants::kRotationsPerMeter}, 
+            frc::Rotation2d(units::degree_t{360 * m_anglePosition.GetValue().value()})};
+}
+
+units::degree_t SwerveModule::GetMotorAngle() {
+    return units::degree_t{m_angleMotor.GetPosition().Refresh().GetValue()};
+}
+
+units::degree_t SwerveModule::GetEncoderAngle() {
+    return units::degree_t{m_CANcoder.GetAbsolutePosition().Refresh().GetValue()};
+}
+
+units::meters_per_second_t SwerveModule::GetDriveSpeed() {
+    return units::meters_per_second_t{m_driveMotor.GetVelocity().Refresh().GetValue().value() / SwerveModuleConstants::kRotationsPerMeter};
 }
