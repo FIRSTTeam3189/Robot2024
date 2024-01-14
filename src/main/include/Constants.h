@@ -27,7 +27,7 @@
 #define PI 3.141592653
 
 namespace SwerveDriveConstants {
-    constexpr int kGyroID {13};
+constexpr int kGyroID {13};
     constexpr double kRadiansToDegreesMultiplier {180.0 / PI};
 
     // Coordinate plane distance in meters to each swerve drive
@@ -60,6 +60,7 @@ namespace SwerveDriveConstants {
 
 namespace SwerveModuleConstants {
     // Sensor IDs for motors + encoders - labeled on robot
+    constexpr int kGyroID {1};
     constexpr int kFrontRightAngleID {1};
     constexpr int kFrontRightDriveID {2};
     constexpr int kBackRightAngleID {3};
@@ -100,6 +101,13 @@ namespace SwerveModuleConstants {
     constexpr int kFusedCANcoder{5};
     constexpr int kSyncCANcoder{6};
 
+    // Robot maxes - approximated and varies by robot
+    // Original max speed: 3.0
+    constexpr auto kMaxDrive {3.0_mps};
+    constexpr auto kMaxAcceleration {2.0_mps_sq};
+    constexpr units::radians_per_second_t kMaxAngularVelocity {PI};
+    constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {PI / 2};
+
     constexpr double kPDrive {1.0};
     constexpr double kIDrive {0.0};
     constexpr double kDDrive {0.0};
@@ -138,12 +146,12 @@ namespace SwerveModuleConstants {
  //Shooter Constants
 namespace ShooterConstants {
     constexpr int kFrontMotorID {0};
-    constexpr int kBackMotorID {1};
+constexpr int kBackMotorID {1};
 }
 
 
 namespace OperatorConstants{
-    constexpr int kDriverControllerPort {0};
+constexpr int kDriverControllerPort {0};
     constexpr int kCoDriverControllerPort {1};
     constexpr int kTestControllerPort {2};
     constexpr int kButtonIDSquare {1};
@@ -168,4 +176,8 @@ namespace OperatorConstants{
     constexpr int kAxisLeftTrigger {3};
     constexpr int kAxisRightTrigger {4};
     constexpr int kAxisRightStickY {5};
+}
+
+namespace LedConstants{
+    constexpr int kCandleID {1};
 }
