@@ -9,8 +9,10 @@
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   m_shooter->SetDefaultCommand(frc2::RunCommand([this]{ 
-    m_shooter->SetPower(m_ted.GetRawAxis(OperatorConstants::kAxisLStickY)); 
+    m_shooter->SetPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY)); 
   },{m_shooter}).ToPtr());
+
+  m_swerveDrive->SetDefaultCommand(JoystickDrive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
   // Configure the button bindings
   ConfigureBindings();
 }

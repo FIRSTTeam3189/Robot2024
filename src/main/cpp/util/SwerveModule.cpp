@@ -9,6 +9,8 @@ SwerveModule::SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
 m_driveMotor(driveMotorID, "Swerve"),
 m_angleMotor(angleMotorID, "Swerve"),
 m_CANcoder(CANcoderID, "Swerve"),
+m_PIDValues{SwerveModuleConstants::kPDrive, SwerveModuleConstants::kIDrive, SwerveModuleConstants::kDDrive,
+            SwerveModuleConstants::kPAngle, SwerveModuleConstants::kIAngle, SwerveModuleConstants::kDAngle},
 m_moduleNumber(moduleNumber),
 m_CANcoderOffset(CANcoderOffset),
 m_signals{m_drivePosition, m_anglePosition, m_driveVelocity, m_angleVelocity}
@@ -16,30 +18,45 @@ m_signals{m_drivePosition, m_anglePosition, m_driveVelocity, m_angleVelocity}
     ConfigDriveMotor();
     ConfigAngleMotor(CANcoderID);
     ConfigCANcoder();
+    
+    // Setup preferences class, which allows editing values while robot is enabled
+    // Very useful for PID tuning
+    m_drivePKey = "DriveP" + m_moduleNumber;
+    m_driveIKey = "DriveI" + m_moduleNumber;
+    m_driveDKey = "DriveD" + m_moduleNumber;
+    m_anglePKey = "AngleP" + m_moduleNumber;
+    m_angleIKey = "AngleI" + m_moduleNumber;
+    m_angleDKey = "AngleD" + m_moduleNumber;
+
+    frc::Preferences::InitDouble(m_drivePKey, m_driveConfigs.Slot0.kP);
+    frc::Preferences::InitDouble(m_driveIKey, m_driveConfigs.Slot0.kI);
+    frc::Preferences::InitDouble(m_driveDKey, m_driveConfigs.Slot0.kD);
+    frc::Preferences::InitDouble(m_anglePKey, m_driveConfigs.Slot0.kP);
+    frc::Preferences::InitDouble(m_angleIKey, m_driveConfigs.Slot0.kI);
+    frc::Preferences::InitDouble(m_angleDKey, m_driveConfigs.Slot0.kD);
 }
 
 void SwerveModule::ConfigDriveMotor() {
     // Set to factory default
     m_driveMotor.GetConfigurator().Apply(ctre::phoenix6::configs::TalonFXConfiguration{});
-    ctre::phoenix6::configs::TalonFXConfiguration driveConfigs{};
 
-    driveConfigs.Slot0.kP = SwerveModuleConstants::kPDrive;
-    driveConfigs.Slot0.kI = SwerveModuleConstants::kIDrive;
-    driveConfigs.Slot0.kD = SwerveModuleConstants::kDDrive;
-    driveConfigs.Slot0.kV = SwerveModuleConstants::kVDrive;
-    driveConfigs.Slot0.kS = SwerveModuleConstants::kSDrive;
+    m_driveConfigs.Slot0.kP = m_PIDValues.driveP;
+    m_driveConfigs.Slot0.kI = m_PIDValues.driveI;
+    m_driveConfigs.Slot0.kD = m_PIDValues.driveD;
+    m_driveConfigs.Slot0.kV = SwerveModuleConstants::kVDrive;
+    m_driveConfigs.Slot0.kS = SwerveModuleConstants::kSDrive;
 
-    driveConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kDriveContinuousCurrentLimit;
-    driveConfigs.CurrentLimits.SupplyCurrentThreshold = SwerveModuleConstants::kDrivePeakCurrentLimit;
-    driveConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kDrivePeakCurrentDuration;
-    driveConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kDriveEnableCurrentLimit;
+    m_driveConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kDriveContinuousCurrentLimit;
+    m_driveConfigs.CurrentLimits.SupplyCurrentThreshold = SwerveModuleConstants::kDrivePeakCurrentLimit;
+    m_driveConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kDrivePeakCurrentDuration;
+    m_driveConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kDriveEnableCurrentLimit;
 
-    driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
-    driveConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kDriveNeutralMode;
+    m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
+    m_driveConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kDriveNeutralMode;
     
-    driveConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kDriveGearRatio;
+    m_driveConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kDriveGearRatio;
 
-    m_driveMotor.GetConfigurator().Apply(driveConfigs);
+    m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
 
     m_driveMotor.SetPosition(0.0_rad);
 }
@@ -47,44 +64,42 @@ void SwerveModule::ConfigDriveMotor() {
 void SwerveModule::ConfigAngleMotor(int CANcoderID) {
     // Set to factory default
     m_angleMotor.GetConfigurator().Apply(ctre::phoenix6::configs::TalonFXConfiguration({}));
-    ctre::phoenix6::configs::TalonFXConfiguration angleConfigs{};
 
-    angleConfigs.Slot0.kP = SwerveModuleConstants::kPAngle;
-    angleConfigs.Slot0.kI = SwerveModuleConstants::kIAngle;
-    angleConfigs.Slot0.kD = SwerveModuleConstants::kDAngle;
-    angleConfigs.Slot0.kV = SwerveModuleConstants::kVAngle;
-    angleConfigs.Slot0.kS = SwerveModuleConstants::kSAngle;
+    m_angleConfigs.Slot0.kP = m_PIDValues.angleP;
+    m_angleConfigs.Slot0.kI = m_PIDValues.angleI;
+    m_angleConfigs.Slot0.kD = m_PIDValues.angleD;
+    m_angleConfigs.Slot0.kV = SwerveModuleConstants::kVAngle;
+    m_angleConfigs.Slot0.kS = SwerveModuleConstants::kSAngle;
 
-    angleConfigs.ClosedLoopGeneral.ContinuousWrap = true;
+    m_angleConfigs.ClosedLoopGeneral.ContinuousWrap = true;
 
-    angleConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kAngleGearRatio;
+    m_angleConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kAngleGearRatio;
     // TODO: Not sure if this number is correct/if it actually works this way on our modules
-    // angleConfigs.Feedback.RotorToSensorRatio = SwerveModuleConstants::kAngleGearRatio;
-    // angleConfigs.Feedback.FeedbackRemoteSensorID = CANcoderID;
-    // angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
+    // m_angleConfigs.Feedback.RotorToSensorRatio = SwerveModuleConstants::kAngleGearRatio;
+    // m_angleConfigs.Feedback.FeedbackRemoteSensorID = CANcoderID;
+    // m_angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
 
-    angleConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kAngleContinuousCurrentLimit;
-    angleConfigs.CurrentLimits.SupplyCurrentThreshold = SwerveModuleConstants::kAnglePeakCurrentLimit;
-    angleConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kAnglePeakCurrentDuration;
-    angleConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kAngleEnableCurrentLimit;
+    m_angleConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kAngleContinuousCurrentLimit;
+    m_angleConfigs.CurrentLimits.SupplyCurrentThreshold = SwerveModuleConstants::kAnglePeakCurrentLimit;
+    m_angleConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kAnglePeakCurrentDuration;
+    m_angleConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kAngleEnableCurrentLimit;
     
     m_angleMotor.SetInverted(SwerveModuleConstants::kAngleMotorInverted);
     m_angleMotor.SetNeutralMode(SwerveModuleConstants::kAngleNeutralMode);
 
-    m_angleMotor.GetConfigurator().Apply(angleConfigs);
+    m_angleMotor.GetConfigurator().Apply(m_angleConfigs);
 }
 
 void SwerveModule::ConfigCANcoder() {
     // Set to factory default
     m_CANcoder.GetConfigurator().Apply(ctre::phoenix6::configs::CANcoderConfiguration{});
-    ctre::phoenix6::configs::CANcoderConfiguration encoderConfigs{};
 
     // Set the magnet offset in configs
-    encoderConfigs.MagnetSensor.MagnetOffset = m_CANcoderOffset;
-    encoderConfigs.MagnetSensor.SensorDirection = SwerveModuleConstants::kCANcoderInverted;
-    encoderConfigs.MagnetSensor.AbsoluteSensorRange = SwerveModuleConstants::kCANcoderSensorRange;
+    m_encoderConfigs.MagnetSensor.MagnetOffset = m_CANcoderOffset;
+    m_encoderConfigs.MagnetSensor.SensorDirection = SwerveModuleConstants::kCANcoderInverted;
+    m_encoderConfigs.MagnetSensor.AbsoluteSensorRange = SwerveModuleConstants::kCANcoderSensorRange;
 
-    m_CANcoder.GetConfigurator().Apply(encoderConfigs);
+    m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
 }
 
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
@@ -154,4 +169,17 @@ units::degree_t SwerveModule::GetEncoderAngle() {
 
 units::meters_per_second_t SwerveModule::GetDriveSpeed() {
     return units::meters_per_second_t{m_driveMotor.GetVelocity().Refresh().GetValue().value() / SwerveModuleConstants::kRotationsPerMeter};
+}
+
+void SwerveModule::UpdatePreferences() {
+    m_driveConfigs.Slot0.kP = frc::Preferences::GetDouble(m_drivePKey, SwerveModuleConstants::kPDrive);
+    m_driveConfigs.Slot0.kI = frc::Preferences::GetDouble(m_driveIKey, SwerveModuleConstants::kIDrive);
+    m_driveConfigs.Slot0.kD = frc::Preferences::GetDouble(m_driveDKey, SwerveModuleConstants::kDDrive);
+    m_angleConfigs.Slot0.kP = frc::Preferences::GetDouble(m_anglePKey, SwerveModuleConstants::kPAngle);
+    m_angleConfigs.Slot0.kI = frc::Preferences::GetDouble(m_angleIKey, SwerveModuleConstants::kIAngle);
+    m_angleConfigs.Slot0.kD = frc::Preferences::GetDouble(m_angleDKey, SwerveModuleConstants::kDAngle);
+
+    m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
+    m_angleMotor.GetConfigurator().Apply(m_angleConfigs);
+    // m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
 }

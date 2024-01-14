@@ -15,53 +15,37 @@
  */
 
 #include <ctre/phoenix6/signals/SpnEnums.hpp>
-#include <units/acceleration.h>
-#include <units/angle.h>
-#include <units/angular_acceleration.h>
 #include <units/angular_velocity.h>
-#include <units/area.h>
-#include <units/capacitance.h>
-#include <units/charge.h>
-#include <units/concentration.h>
-#include <units/conductance.h>
-#include <units/current.h>
-#include <units/curvature.h>
-#include <units/data.h>
-#include <units/data_transfer_rate.h>
-#include <units/density.h>
-#include <units/dimensionless.h>
-#include <units/energy.h>
-#include <units/force.h>
-#include <units/frequency.h>
-#include <units/illuminance.h>
-#include <units/impedance.h>
-#include <units/inductance.h>
-#include <units/length.h>
-#include <units/luminous_flux.h>
-#include <units/luminous_intensity.h>
-#include <units/magnetic_field_strength.h>
-#include <units/magnetic_flux.h>
-#include <units/mass.h>
-#include <units/moment_of_inertia.h>
-#include <units/power.h>
-#include <units/pressure.h>
-#include <units/radiation.h>
-#include <units/solid_angle.h>
-#include <units/substance.h>
-#include <units/temperature.h>
 #include <units/time.h>
-#include <units/torque.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
-#include <units/volume.h>
+#include <units/acceleration.h>
+#include <units/angular_acceleration.h>
+#include <frc/kinematics/SwerveDriveKinematics.h>
+#include <frc/geometry/Translation2d.h>
 
 #define PI 3.141592653
 
 namespace SwerveDriveConstants {
+    constexpr int kGyroID {13};
+    constexpr double kRadiansToDegreesMultiplier {180.0 / PI};
+
     // Coordinate plane distance in meters to each swerve drive
     // This has x-positive as forward, y-positive as left
     constexpr auto kXDistanceFromCenter {0.282575_m};
     constexpr auto kYDistanceFromCenter {0.282575_m};
+
+    const frc::SwerveDriveKinematics<4> kKinematics {
+        frc::Translation2d{+SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
+        frc::Translation2d{+SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter},
+        frc::Translation2d{-SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
+        frc::Translation2d{-SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter}
+    };
+
+    constexpr auto kMaxSpeed {10.0_mps};
+    constexpr auto kMaxAcceleration {6.0_mps_sq};
+    constexpr units::radians_per_second_t kMaxAngularVelocity {2.0 * PI};
+    constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {PI};
 
     // SysID robot characterization values -- **varies by robot**
     constexpr auto ks {0.408_V};
@@ -76,7 +60,6 @@ namespace SwerveDriveConstants {
 
 namespace SwerveModuleConstants {
     // Sensor IDs for motors + encoders - labeled on robot
-    constexpr int kGyroID {1};
     constexpr int kFrontRightAngleID {1};
     constexpr int kFrontRightDriveID {2};
     constexpr int kBackRightAngleID {3};
@@ -85,10 +68,10 @@ namespace SwerveModuleConstants {
     constexpr int kFrontLeftDriveID {6};
     constexpr int kBackLeftDriveID {7};
     constexpr int kBackLeftAngleID {8};
-    constexpr int kFrontLeftCancoderID {9};
-    constexpr int kRightFrontCancoderID {10};
-    constexpr int kBackLeftCancoderID {11};
-    constexpr int kBackRightCancoderID {12};
+    constexpr int kFrontLeftCANcoderID {9};
+    constexpr int kFrontRightCANcoderID {10};
+    constexpr int kBackLeftCANcoderID {11};
+    constexpr int kBackRightCANcoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
     constexpr double kFrontLeftOffset {235.5};
@@ -116,13 +99,6 @@ namespace SwerveModuleConstants {
     constexpr int kRemotePigeon2_Roll{4};
     constexpr int kFusedCANcoder{5};
     constexpr int kSyncCANcoder{6};
-
-    // Robot maxes - approximated and varies by robot
-    // Original max speed: 3.0
-    constexpr auto kMaxDrive {3.0_mps};
-    constexpr auto kMaxAcceleration {2.0_mps_sq};
-    constexpr units::radians_per_second_t kMaxAngularVelocity {PI};
-    constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {PI / 2};
 
     constexpr double kPDrive {1.0};
     constexpr double kIDrive {0.0};
@@ -161,36 +137,35 @@ namespace SwerveModuleConstants {
 }
  //Shooter Constants
 namespace ShooterConstants {
-    constexpr int kMotorID {0};
+    constexpr int kFrontMotorID {0};
+    constexpr int kBackMotorID {1};
 }
 
 
 namespace OperatorConstants{
+    constexpr int kDriverControllerPort {0};
     constexpr int kCoDriverControllerPort {1};
+    constexpr int kTestControllerPort {2};
+    constexpr int kButtonIDSquare {1};
+    constexpr int kButtonIDX {2};
+    constexpr int kButtonIDCircle {3};
+    constexpr int kButtonIDTriangle {4};
+    constexpr int kButtonIDLeftBumper {5};
+    constexpr int kButtonIDRightBumper {6};
+    constexpr int kButtonIDLeftTrigger {7};
+    constexpr int kButtonIDRightTrigger {8};
+    constexpr int kButtonIDCreate {9};
+    constexpr int kButtonIDMenu {10};
+    constexpr int kButtonIDLeftStick {11};
+    constexpr int kButtonIDRightStick {12};
+    constexpr int kButtonIDPlaystation {13};
+    constexpr int kButtonIDTouchpad {14};
+    constexpr int kButtonIDMicrophone {15};
 
-    constexpr int kAxisLStickY {1};
-    // #define PS5_BILL_CONTROLLER_PORT 0
-    // #define PS5_TED_CONTROLLER_PORT 1
-    // #define PS5_TEST_CONTROLLER_PORT 2
-    // #define PS5_BUTTON_SQR 1
-    // #define PS5_BUTTON_X 2
-    // #define PS5_BUTTON_O 3
-    // #define PS5_BUTTON_TRI 4
-    // #define PS5_BUTTON_LBUMPER 5
-    // #define PS5_BUTTON_RBUMPER 6
-    // #define PS5_BUTTON_LTRIGGER 7
-    // #define PS5_BUTTON_RTRIGGER 8
-    // #define PS5_BUTTON_CREATE 9
-    // #define PS5_BUTTON_MENU 10
-    // #define PS5_BUTTON_LSTICK 11
-    // #define PS5_BUTTON_RSTICK 12
-    // #define PS5_BUTTON_PS 13
-    // #define PS5_BUTTON_TOUCHPAD 14
-    // #define PS5_BUTTON_MIC 15
-    // #define PS5_AXIS_LSTICK_X 0 // left is -1, right is 1
-    // #define PS5_AXIS_LSTICK_Y 1 // up is -1, down is 1
-    // #define PS5_AXIS_RSTICK_X 2 // left is -1, right is 1
-    // #define PS5_AXIS_LTRIGGER 3 // -1 is untouched, fully pressed is 1
-    // #define PS5_AXIS_RTRIGGER 4 // -1 is untouched, fully pressed is 1
-    // #define PS5_AXIS_RSTICK_Y 5 // up is -1 , down is 1
+    constexpr int kAxisLeftStickX {0};
+    constexpr int kAxisLeftStickY {1};
+    constexpr int kAxisRightStickX {2};
+    constexpr int kAxisLeftTrigger {3};
+    constexpr int kAxisRightTrigger {4};
+    constexpr int kAxisRightStickY {5};
 }

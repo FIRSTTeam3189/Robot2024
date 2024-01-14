@@ -5,7 +5,8 @@
 #include "subsystems/Shooter.h"
 #include "units/current.h"
 Shooter::Shooter() : 
-m_shooterMotor(ShooterConstants::kMotorID, rev::CANSparkMax::MotorType::kBrushless) {
+m_frontMotor(ShooterConstants::kFrontMotorID, rev::CANSparkFlex::MotorType::kBrushless),
+m_backMotor(ShooterConstants::kBackMotorID, rev::CANSparkFlex::MotorType::kBrushless) {
 
 }
 
@@ -14,6 +15,7 @@ void Shooter::Periodic() {
 
 }
 
-void Shooter::SetPower(double shooterPower){
-    m_shooterMotor.Set(shooterPower);
+void Shooter::SetPower(double power){
+    m_frontMotor.Set(power);
+    m_backMotor.Set(-power);
 }
