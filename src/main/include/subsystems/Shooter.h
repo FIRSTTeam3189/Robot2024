@@ -13,7 +13,7 @@ class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
   void SetPower(double power);
-
+   
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
