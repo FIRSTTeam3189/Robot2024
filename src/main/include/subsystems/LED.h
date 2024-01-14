@@ -16,11 +16,19 @@
 #include <ctre/phoenix/led/TwinkleAnimation.h>
 #include <ctre/phoenix/led/TwinkleOffAnimation.h>
 
-using namespace ctre::phoenix::led;
+#include "Constants.h"
 
+enum class LEDAnimationType { Clear, ColorFlow, Fire, Larson, Rainbow, RGBFade, SingleFade, Strobe, Twinkle, TwinkleOff }; 
+enum class LEDSection { All, Candle};
 class LED : public frc2::SubsystemBase {
  public:
   LED();
+    
+  void SetColor(int r, int g, int b, LEDSection section = LEDSection::All);
+  void ClearColor(LEDSection section = LEDSection::All);
+  void SetAnimation(LEDAnimationType animation, LEDSection section = LEDSection::All, int r = 0, int g = 0, int b = 0, double speed = 0.7, bool reverse = false, int animSlot = 0);
+  void StartingAnimation();
+  void ClearAll(LEDSection section);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -30,4 +38,11 @@ class LED : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
+ctre::phoenix::led::CANdle m_candleControl;
+ctre::phoenix::led::Animation *m_animation;
+CANdleConfiguration m_candleConfig;
+std::map<LEDSection, std::pair<uint8_t, uint8_t>> m_ledSections;
+frc::Timer m_Timer{};
+bool m_startupRunning;
+bool m_shouldStartup;
 };
