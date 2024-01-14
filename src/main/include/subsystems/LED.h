@@ -39,10 +39,10 @@ class LED : public frc2::SubsystemBase {
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 ctre::phoenix::led::CANdle m_candleControl;
-ctre::phoenix::led::Animation *m_animation;
-CANdleConfiguration m_candleConfig;
 std::map<LEDSection, std::pair<uint8_t, uint8_t>> m_ledSections;
-frc::Timer m_Timer{};
-bool m_startupRunning;
+ctre::phoenix::led::Animation *m_animation;
 bool m_shouldStartup;
+bool m_startupRunning;
+CANdleConfiguration m_candleConfig;
+frc::Timer m_Timer{};
 };
