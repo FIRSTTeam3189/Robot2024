@@ -13,8 +13,11 @@
 
 #include "Constants.h"
 #include "commands/JoystickDrive.h"
+#include "commands/RunIntake.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/SwerveDrive.h"
+#include <frc2/command/button/Trigger.h>
+#include <frc2/command/InstantCommand.h>
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -37,6 +40,7 @@ class RobotContainer {
   // The robot's subsystems are defined here...
   Shooter *m_shooter = new Shooter();
   SwerveDrive *m_swerveDrive = new SwerveDrive();
+  Intake *m_intake = new Intake();
 
   bool m_isSpecialHeadingMode = true;
   bool m_isFieldRelative = true;

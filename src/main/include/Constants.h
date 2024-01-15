@@ -137,8 +137,8 @@ namespace SwerveModuleConstants {
 }
  //Shooter Constants
 namespace ShooterConstants {
-    constexpr int kFrontMotorID {0};
-    constexpr int kBackMotorID {1};
+    constexpr int kFrontMotorID {1};
+    constexpr int kBackMotorID {2};
 }
 
 
@@ -168,4 +168,9 @@ namespace OperatorConstants{
     constexpr int kAxisLeftTrigger {3};
     constexpr int kAxisRightTrigger {4};
     constexpr int kAxisRightStickY {5};
+}
+
+namespace IntakeConstants{
+    constexpr int kExtensionMotorID {3};
+    constexpr int kRollerMotorID {4};
 }

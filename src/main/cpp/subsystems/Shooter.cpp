@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/Shooter.h"
-#include "units/current.h"
+
 Shooter::Shooter() : 
 m_frontMotor(ShooterConstants::kFrontMotorID, rev::CANSparkFlex::MotorType::kBrushless),
 m_backMotor(ShooterConstants::kBackMotorID, rev::CANSparkFlex::MotorType::kBrushless) {
