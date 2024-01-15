@@ -23,19 +23,21 @@
 #include <units/angular_acceleration.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/geometry/Translation2d.h>
+#include <pathplanner/lib/util/PIDConstants.h>
+#include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 
-#define PI 3.141592653
+#define Pi 3.14159265358979323846
 
 namespace SwerveDriveConstants {
 constexpr int kGyroID {13};
-    constexpr double kRadiansToDegreesMultiplier {180.0 / PI};
+    constexpr double kRadiansToDegreesMultiplier {180.0 / Pi};
 
     // Coordinate plane distance in meters to each swerve drive
     // This has x-positive as forward, y-positive as left
     constexpr auto kXDistanceFromCenter {0.282575_m};
     constexpr auto kYDistanceFromCenter {0.282575_m};
 
-    const frc::SwerveDriveKinematics<4> kKinematics {
+    static frc::SwerveDriveKinematics<4> kKinematics {
         frc::Translation2d{+SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
         frc::Translation2d{+SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter},
         frc::Translation2d{-SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
@@ -44,8 +46,8 @@ constexpr int kGyroID {13};
 
     constexpr auto kMaxSpeed {10.0_mps};
     constexpr auto kMaxAcceleration {6.0_mps_sq};
-    constexpr units::radians_per_second_t kMaxAngularVelocity {2.0 * PI};
-    constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {PI};
+    constexpr units::radians_per_second_t kMaxAngularVelocity {2.0 * Pi};
+    constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {Pi};
 
     // SysID robot characterization values -- **varies by robot**
     constexpr auto ks {0.408_V};
@@ -105,8 +107,8 @@ namespace SwerveModuleConstants {
     // Original max speed: 3.0
     constexpr auto kMaxDrive {3.0_mps};
     constexpr auto kMaxAcceleration {2.0_mps_sq};
-    constexpr units::radians_per_second_t kMaxAngularVelocity {PI};
-    constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {PI / 2};
+    constexpr units::radians_per_second_t kMaxAngularVelocity {Pi};
+    constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {Pi / 2};
 
     constexpr double kPDrive {1.0};
     constexpr double kIDrive {0.0};
@@ -136,19 +138,42 @@ namespace SwerveModuleConstants {
     constexpr double kDEGToRAD {57.2957795131};
     constexpr double kWheelRadiusInches {2.0};
     constexpr double kWheelRadiusMeters {0.0508};
-    constexpr double kWheelCircumferenceMeters {2.0 * PI * kWheelRadiusMeters};
+    constexpr double kWheelCircumferenceMeters {2.0 * Pi * kWheelRadiusMeters};
     constexpr double kDriveGearRatio {8.1};
     constexpr double kAngleGearRatio {15.43};
     constexpr double kRotationsPerMeter {kDriveGearRatio / kWheelCircumferenceMeters};
     constexpr int kFalconEncoderTicksPerRevolution {2048};
     constexpr int kCANcoderTicksPerRevolution {4096};
 }
+
+namespace AutoConstants {
+    constexpr double kPTranslationAuto {5.0};
+    constexpr double kITranslationAuto {0.0};
+    constexpr double kDTranslationAuto {0.0};
+    constexpr double kPRotationAuto {5.0};
+    constexpr double kIRotationAuto {0.0};
+    constexpr double kDRotationAuto {0.0};
+    constexpr auto kMaxAutoSpeed {4.5_mps};
+    constexpr auto kDriveBaseRadius {0.3048_m};
+    const pathplanner::HolonomicPathFollowerConfig autoConfig {
+        pathplanner::PIDConstants(kPTranslationAuto, kITranslationAuto, kDTranslationAuto), // Translation PID constants
+        pathplanner::PIDConstants(kPRotationAuto, kIRotationAuto, kDRotationAuto), // Rotation PID constants
+        kMaxAutoSpeed, // Max module speed, in m/s
+        kDriveBaseRadius, // Drive base radius in meters. Distance from robot center to furthest module.
+        pathplanner::ReplanningConfig() // Defaults to replanning if robot is not at starting point, doesn't replan if robot strays too far
+    };
+}
+
+namespace VisionConstants {
+    const wpi::array<double, 3> kEncoderTrustCoefficients {0.1, 0.1, 0.1};
+    const wpi::array<double, 3> kVisionTrustCoefficients {0.5, 0.5, 0.0};
+}
+
  //Shooter Constants
 namespace ShooterConstants {
     constexpr int kFrontMotorID {0};
-constexpr int kBackMotorID {1};
+    constexpr int kBackMotorID {1};
 }
-
 
 namespace OperatorConstants{
 constexpr int kDriverControllerPort {0};

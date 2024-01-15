@@ -6,8 +6,13 @@
 
 #include <frc2/command/SubsystemBase.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/kinematics/ChassisSpeeds.h>
+#include <frc/geometry/Pose2d.h>
 #include <ctre/phoenix6/Pigeon2.hpp>
+#include <pathplanner/lib/auto/AutoBuilder.h>
 #include "util/SwerveModule.h"
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
+#include <frc/DriverStation.h>
 
 struct SwerveModules {
   frc::Translation2d m_frontLeftLocation;
@@ -33,6 +38,13 @@ class SwerveDrive : public frc2::SubsystemBase {
   void Lock();
   void Stop();
   double GetNormalizedYaw();
+  frc::ChassisSpeeds GetRobotRelativeSpeeds();
+  void DriveRobotRelative(frc::ChassisSpeeds speeds);
+  frc::Pose2d GetEstimatedPose();
+  void SetPose(frc::Pose2d pose);
+  void ResetDriveEncoders();
+  void UpdateEstimator();
+  void LogModuleStates(wpi::array<frc::SwerveModulePosition, 4> modulePositions);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -43,7 +55,9 @@ class SwerveDrive : public frc2::SubsystemBase {
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
   SwerveModules m_modules;
+  wpi::array<frc::SwerveModulePosition, 4> m_modulePositions;
   ctre::phoenix6::hardware::Pigeon2 m_pigeon;
+  frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 
   // Tuning mode preference -- when true, will constantly update module preferences
   std::string_view m_tuningModeKey = "Tuning Mode?";

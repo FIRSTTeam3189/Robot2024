@@ -171,6 +171,10 @@ units::meters_per_second_t SwerveModule::GetDriveSpeed() {
     return units::meters_per_second_t{m_driveMotor.GetVelocity().Refresh().GetValue().value() / SwerveModuleConstants::kRotationsPerMeter};
 }
 
+void SwerveModule::ResetDriveEncoder() {
+    m_driveMotor.SetPosition(units::turn_t{0.0});
+}
+
 void SwerveModule::UpdatePreferences() {
     m_driveConfigs.Slot0.kP = frc::Preferences::GetDouble(m_drivePKey, SwerveModuleConstants::kPDrive);
     m_driveConfigs.Slot0.kI = frc::Preferences::GetDouble(m_driveIKey, SwerveModuleConstants::kIDrive);

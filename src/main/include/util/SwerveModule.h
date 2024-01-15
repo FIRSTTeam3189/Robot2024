@@ -50,6 +50,7 @@ class SwerveModule {
   units::degree_t GetEncoderAngle();
   units::meters_per_second_t GetDriveSpeed();
   Signals GetSignals();
+  void ResetDriveEncoder();
 
   void UpdatePreferences();
 

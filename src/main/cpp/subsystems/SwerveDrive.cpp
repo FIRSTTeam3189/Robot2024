@@ -19,9 +19,36 @@ m_modules{
   {3, SwerveModuleConstants::kBackRightDriveID, SwerveModuleConstants::kBackRightAngleID,
    SwerveModuleConstants::kBackRightCANcoderID, SwerveModuleConstants::kBackRightOffset}
 },
-m_pigeon(SwerveDriveConstants::kGyroID, "Swerve")
+m_modulePositions(
+    m_modules.m_frontLeft.GetPosition(true),
+    m_modules.m_frontRight.GetPosition(true),
+    m_modules.m_backLeft.GetPosition(true),
+    m_modules.m_backRight.GetPosition(true)
+),
+m_pigeon(SwerveDriveConstants::kGyroID, "Swerve"),
+m_poseEstimator(SwerveDriveConstants::kKinematics, m_pigeon.GetRotation2d(), 
+                m_modulePositions, frc::Pose2d{}, VisionConstants::kEncoderTrustCoefficients, VisionConstants::kVisionTrustCoefficients)
 {
+    // Setup autobuilder for pathplannerlib
+    pathplanner::AutoBuilder::configureHolonomic(
+        [this](){ return GetEstimatedPose(); }, // Robot pose supplier
+        [this](frc::Pose2d pose){ SetPose(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
+        [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        [this](frc::ChassisSpeeds speeds){ DriveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        AutoConstants::autoConfig,
+        []() {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
+            auto alliance = frc::DriverStation::GetAlliance();
+            if (alliance) {
+                return alliance.value() == frc::DriverStation::Alliance::kRed;
+            }
+            return false;
+        },
+        this // Reference to this subsystem to set requirements
+    );
 }
 
 // This method will be called once per scheduler run
@@ -32,6 +59,7 @@ void SwerveDrive::Periodic() {
         m_modules.m_backLeft.UpdatePreferences();
         m_modules.m_backRight.UpdatePreferences();
     }
+    UpdateEstimator();
 }
 
 void SwerveDrive::Drive(units::meters_per_second_t xSpeed, 
@@ -45,8 +73,27 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
                                     : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
                   centerOfRotation);
 
+    auto [fl, fr, bl, br] = states;
+
+    double AdvantageScopeDesiredStates[] = 
+    {(double)fl.angle.Degrees(), (double)fl.speed,
+     (double)fr.angle.Degrees(), (double)fr.speed,
+     (double)bl.angle.Degrees(), (double)bl.speed,
+     (double)br.angle.Degrees(), (double)br.speed};
+
+    frc::SmartDashboard::PutNumberArray("AdvantageScope Desired States", AdvantageScopeDesiredStates);
+
     SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
     SetModuleStates(states);
+}
+
+void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
+    auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(speeds);
+    SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
+    m_modules.m_frontLeft.SetDesiredState(states[0]);
+    m_modules.m_frontRight.SetDesiredState(states[1]);
+    m_modules.m_backLeft.SetDesiredState(states[2]);
+    m_modules.m_backRight.SetDesiredState(states[3]);
 }
 
 void SwerveDrive::SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates) {
@@ -69,6 +116,55 @@ double SwerveDrive::GetNormalizedYaw() {
 
     frc::SmartDashboard::PutNumber("Normalized Yaw", normalizedYaw);
     return normalizedYaw;
+}
+
+frc::ChassisSpeeds SwerveDrive::GetRobotRelativeSpeeds() {
+    frc::SwerveModuleState frontLeftModuleState = m_modules.m_frontLeft.GetState(true);
+    frc::SwerveModuleState frontRightModuleState = m_modules.m_frontRight.GetState(true);
+    frc::SwerveModuleState backLeftModuleState = m_modules.m_backLeft.GetState(true);
+    frc::SwerveModuleState backRightModuleState = m_modules.m_backRight.GetState(true);
+
+    return SwerveDriveConstants::kKinematics.ToChassisSpeeds(
+        frontLeftModuleState, frontRightModuleState, backLeftModuleState, backRightModuleState);
+}
+
+frc::Pose2d SwerveDrive::GetEstimatedPose() {
+    UpdateEstimator();
+    return m_poseEstimator.GetEstimatedPosition();
+}
+
+void SwerveDrive::LogModuleStates(wpi::array<frc::SwerveModulePosition, 4> modulePositions) {
+    double AdvantageScopeMeasuredStates[] = 
+    {modulePositions[0].angle.Degrees().value(), modulePositions[0].distance.value(),
+     modulePositions[1].angle.Degrees().value(), modulePositions[1].distance.value(),
+     modulePositions[2].angle.Degrees().value(), modulePositions[2].distance.value(),
+     modulePositions[3].angle.Degrees().value(), modulePositions[3].distance.value()};
+  frc::SmartDashboard::PutNumberArray("AdvantageScope Measured States", AdvantageScopeMeasuredStates);
+}
+
+void SwerveDrive::UpdateEstimator() {
+    // Get current positions and update
+    m_modulePositions[0] = m_modules.m_frontLeft.GetPosition(true);
+    m_modulePositions[1] = m_modules.m_frontRight.GetPosition(true);
+    m_modulePositions[2] = m_modules.m_backLeft.GetPosition(true);
+    m_modulePositions[3] = m_modules.m_backRight.GetPosition(true);
+
+    LogModuleStates(m_modulePositions);
+    m_poseEstimator.Update(m_pigeon.GetRotation2d(), m_modulePositions);
+}
+
+void SwerveDrive::ResetDriveEncoders() {
+    m_modules.m_frontLeft.ResetDriveEncoder();
+    m_modules.m_frontRight.ResetDriveEncoder();
+    m_modules.m_backLeft.ResetDriveEncoder();
+    m_modules.m_backRight.ResetDriveEncoder();
+}
+
+void SwerveDrive::SetPose(frc::Pose2d pose) {
+    UpdateEstimator();
+    // TODO: not sure if the encoders should be reset here
+    ResetDriveEncoders();
+    m_poseEstimator.ResetPosition(m_pigeon.GetRotation2d(), m_modulePositions, pose);
 }
 
 void SwerveDrive::Lock() {
