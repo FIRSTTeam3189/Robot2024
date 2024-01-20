@@ -173,6 +173,16 @@ namespace VisionConstants {
 namespace ShooterConstants {
     constexpr int kFrontMotorID {1};
     constexpr int kBackMotorID {2};
+    constexpr int kExtensionMotorID {5};
+    constexpr double kPExtension {1.0};
+    constexpr double kIExtension {0};
+    constexpr double kDExtension {0};
+    
+    constexpr int kEncoderCountsPerRev {8192};
+
+    constexpr double kClosePosition {0};
+    constexpr double kMidPosition {1000};
+    constexpr double kFarPosition {2000};
 }
 
 namespace OperatorConstants{

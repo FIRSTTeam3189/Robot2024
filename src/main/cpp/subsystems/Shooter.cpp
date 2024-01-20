@@ -5,9 +5,14 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() : 
-m_frontMotor(ShooterConstants::kFrontMotorID, rev::CANSparkFlex::MotorType::kBrushless),
-m_backMotor(ShooterConstants::kBackMotorID, rev::CANSparkFlex::MotorType::kBrushless) {
-
+m_frontMotor(ShooterConstants::kFrontMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_backMotor(ShooterConstants::kBackMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_extensionMotor(ShooterConstants::kExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_extensionPIDController(m_extensionMotor.GetPIDController()),
+m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::AlternateEncoderType::kQuadrature, ShooterConstants::kEncoderCountsPerRev)) {
+    m_extensionPIDController.SetP(ShooterConstants::kPExtension); 
+    m_extensionPIDController.SetI(ShooterConstants::kIExtension); 
+    m_extensionPIDController.SetD(ShooterConstants::kDExtension); 
 }
 
 // This method will be called once per scheduler run
@@ -15,7 +20,15 @@ void Shooter::Periodic() {
 
 }
 
-void Shooter::SetPower(double power){
+void Shooter::SetExtension(double position){
+    m_extensionPIDController.SetReference(position, rev::ControlType::kPosition);
+}
+
+void Shooter::SetShootPower(double power){
     m_frontMotor.Set(power);
     m_backMotor.Set(-power);
+}
+
+void Shooter::SetAnglePower(double power){
+    m_extensionMotor.Set(power);
 }

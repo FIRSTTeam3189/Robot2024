@@ -16,7 +16,7 @@ class Intake : public frc2::SubsystemBase {
  public:
   Intake();
   void SetPower(double rollerPower, double extensionPower);
-  void Extend(double position);
+  void SetExtension(double position);
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -26,7 +26,7 @@ class Intake : public frc2::SubsystemBase {
  rev::CANSparkMax m_extensionMotor;
  rev::CANSparkMax m_rollerMotor;
  rev::SparkMaxPIDController m_extensionPIDController;
- rev::RelativeEncoder m_extensionEncoder;
+ rev::SparkMaxAlternateEncoder m_extensionEncoder;
  
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

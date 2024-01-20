@@ -9,7 +9,7 @@ Intake::Intake() :
  m_extensionMotor(IntakeConstants::kExtensionMotorID, rev::CANSparkFlex::MotorType::kBrushless),
  m_rollerMotor(IntakeConstants::kRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
  m_extensionPIDController(m_extensionMotor.GetPIDController()),
- m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(IntakeConstants::kEncoderCountsPerRev))
+ m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::AlternateEncoderType::kQuadrature, IntakeConstants::kEncoderCountsPerRev))
 {
     m_extensionPIDController.SetP(IntakeConstants::kPExtension);
     m_extensionPIDController.SetI(IntakeConstants::kIExtension);
@@ -20,7 +20,7 @@ Intake::Intake() :
 // This method will be called once per scheduler run
 void Intake::Periodic() {}
 
-void Intake::Extend(double position) {
+void Intake::SetExtension(double position) {
     m_extensionPIDController.SetReference(position, rev::ControlType::kPosition);
 }
 

@@ -7,12 +7,16 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 #include "Constants.h"
-#include <rev/CANSparkFlex.h>
+#include <rev/CANSparkMax.h>
 
 class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
-  void SetPower(double power);
+  void SetShootPower(double power);
+
+  void SetAnglePower(double power);
+
+  void SetExtension(double position);
    
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -22,6 +26,10 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-   rev::CANSparkFlex m_frontMotor;
-   rev::CANSparkFlex m_backMotor;
+   rev::CANSparkMax m_frontMotor;
+   rev::CANSparkMax m_backMotor;
+   rev::CANSparkMax m_extensionMotor;
+   rev::SparkMaxPIDController m_extensionPIDController;
+   rev::SparkMaxAlternateEncoder m_extensionEncoder;
+   
 };

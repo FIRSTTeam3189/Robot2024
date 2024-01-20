@@ -10,16 +10,18 @@
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc2/command/button/CommandJoystick.h>
+#include <frc2/command/button/Trigger.h>
+#include <frc2/command/InstantCommand.h>
 
 #include "Constants.h"
 #include "commands/JoystickDrive.h"
-#include <commands/RunShooter.h>
-#include <commands/SetIntakeExtension.h>
+#include "commands/RunShooter.h"
+#include "commands/SetIntakeExtension.h"
+#include "commands/SetShooterExtension.h"
 #include "commands/RunIntake.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/SwerveDrive.h"
-#include <frc2/command/button/Trigger.h>
-#include <frc2/command/InstantCommand.h>
+
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
