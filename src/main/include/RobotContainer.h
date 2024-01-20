@@ -13,6 +13,8 @@
 
 #include "Constants.h"
 #include "commands/JoystickDrive.h"
+#include <commands/RunShooter.h>
+#include <commands/SetIntakeExtension.h>
 #include "commands/RunIntake.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/SwerveDrive.h"

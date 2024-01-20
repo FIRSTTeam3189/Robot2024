@@ -210,4 +210,14 @@ namespace LedConstants{
 namespace IntakeConstants{
     constexpr int kExtensionMotorID {3};
     constexpr int kRollerMotorID {4};
+    
+    constexpr double kPExtension {1.0};
+    constexpr double kIExtension {0};
+    constexpr double kDExtension {0};
+    
+    constexpr int kEncoderCountsPerRev {8192};
+
+    constexpr double kRetractPosition {0};
+    constexpr double kAmpPosition {1000};
+    constexpr double kExtendPosition {2000};
 }
