@@ -171,9 +171,9 @@ namespace VisionConstants {
 
  //Shooter Constants
 namespace ShooterConstants {
-    constexpr int kFrontMotorID {1};
-    constexpr int kBackMotorID {2};
+    constexpr int kSpinMotorID {1};
     constexpr int kExtensionMotorID {5};
+    
     constexpr double kPExtension {1.0};
     constexpr double kIExtension {0};
     constexpr double kDExtension {0};
