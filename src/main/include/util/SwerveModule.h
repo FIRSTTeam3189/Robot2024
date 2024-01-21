@@ -51,6 +51,8 @@ class SwerveModule {
   units::meters_per_second_t GetDriveSpeed();
   Signals GetSignals();
   void ResetDriveEncoder();
+  frc::SwerveModuleState OptimizeAngle(frc::SwerveModuleState desiredState, frc::Rotation2d currentAngle);
+  double NormalizeTo0To360(double currentAngle, double targetAngle);
 
   void UpdatePreferences();
 
@@ -63,6 +65,7 @@ class SwerveModule {
 
   int m_moduleNumber;
   double m_CANcoderOffset;
+  double m_lastAngle;
   frc::SwerveModulePosition m_position{0_m, frc::Rotation2d{}};
 
   ctre::phoenix6::configs::TalonFXConfiguration m_driveConfigs{};

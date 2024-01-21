@@ -6,9 +6,9 @@
 
 SwerveModule::SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
                            int CANcoderID, double CANcoderOffset):
-m_driveMotor(driveMotorID, "Swerve"),
-m_angleMotor(angleMotorID, "Swerve"),
-m_CANcoder(CANcoderID, "Swerve"),
+m_driveMotor(driveMotorID, "rio"),
+m_angleMotor(angleMotorID, "rio"),
+m_CANcoder(CANcoderID, "rio"),
 m_PIDValues{SwerveModuleConstants::kPDrive, SwerveModuleConstants::kIDrive, SwerveModuleConstants::kDDrive,
             SwerveModuleConstants::kPAngle, SwerveModuleConstants::kIAngle, SwerveModuleConstants::kDAngle},
 m_moduleNumber(moduleNumber),
@@ -76,8 +76,9 @@ void SwerveModule::ConfigAngleMotor(int CANcoderID) {
     m_angleConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kAngleGearRatio;
     // TODO: Not sure if this number is correct/if it actually works this way on our modules
     // m_angleConfigs.Feedback.RotorToSensorRatio = SwerveModuleConstants::kAngleGearRatio;
-    // m_angleConfigs.Feedback.FeedbackRemoteSensorID = CANcoderID;
+    m_angleConfigs.Feedback.FeedbackRemoteSensorID = CANcoderID;
     // m_angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
+    m_angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::RemoteCANcoder;
 
     m_angleConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kAngleContinuousCurrentLimit;
     m_angleConfigs.CurrentLimits.SupplyCurrentThreshold = SwerveModuleConstants::kAnglePeakCurrentLimit;
@@ -103,15 +104,84 @@ void SwerveModule::ConfigCANcoder() {
 }
 
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
-    const auto optimizedState = frc::SwerveModuleState::Optimize(state, m_position.angle);
-    double targetSpeed = optimizedState.speed.value();
-    auto targetAngle = optimizedState.angle.Degrees();
+    // const auto optimizedState = frc::SwerveModuleState::Optimize(state, m_position.angle);
+    // double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;
+    // auto targetAngle = optimizedState.angle.Degrees() / 360.0;
+    auto optimizedState = OptimizeAngle(state, m_position.angle);
+    double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;
+    auto targetAngle = -optimizedState.angle.Degrees() * 360;
 
     frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " target speed", targetSpeed);
     frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " target angle", targetAngle.value());
 
     m_driveMotor.SetControl(m_driveSetter.WithVelocity(units::turns_per_second_t{targetSpeed}));
-    m_angleMotor.SetControl(m_angleSetter.WithPosition(targetAngle));
+    if (fabs(targetSpeed) < .05 && fabs(m_lastAngle - targetAngle.value()) < 5.0) {
+        Stop();
+        targetAngle = units::degree_t{m_lastAngle};
+    } else {
+        m_angleMotor.SetControl(m_angleSetter.WithPosition(targetAngle));
+    }
+    
+    m_lastAngle = targetAngle.value();
+}
+
+frc::SwerveModuleState SwerveModule::OptimizeAngle(frc::SwerveModuleState desiredState, frc::Rotation2d currentAngle) {
+    // Optimizes the module to take shortest turning path so it never rotates more than 180 degrees
+    double targetAngle = NormalizeTo0To360(
+                        currentAngle.Degrees().value(), 
+                        desiredState.angle.Degrees().value());
+
+    auto targetSpeed = desiredState.speed;
+    double delta = targetAngle - currentAngle.Degrees().value();
+    frc::SmartDashboard::PutNumber("Delta", delta);
+    // If degrees to target is > 90, reverse the speed motor direction
+    if (std::abs(delta) > 90) {
+        targetSpeed = -targetSpeed;
+        // If difference is positive, subtract 180 deg and reverse; if negative, vice versa
+        if (delta > 90) {
+            targetAngle -= 180;
+        } else {
+            targetAngle += 180;
+        }
+        // targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
+    }
+    auto targetAngleRad = units::radian_t{targetAngle / SwerveModuleConstants::kDEGToRAD};
+    return frc::SwerveModuleState{targetSpeed, targetAngleRad};
+}
+
+double SwerveModule::NormalizeTo0To360(double currentAngle, double targetAngle) {
+    // 0 to 360 range we want to be in
+    double lowerBound;
+    double upperBound;
+    // Offset from current angle to lower bound
+    int lowerOffset = (int)currentAngle % 360;
+    // frc::SmartDashboard::PutNumber("Normalize Lower Offset", lowerOffset);
+    /* If angle is positive, angle will be set from 0 to 360, else -360 to 0
+    * These degree numbers are relative to input angle
+    * This is because WPILib optimize expects a continuous input from a PIDController
+    * But Falcon500s use internal PIDControllers without continuous input
+    */ 
+    if (lowerOffset >= 0) {
+          lowerBound = currentAngle - lowerOffset;
+          upperBound = currentAngle + (360 - lowerOffset);
+      } else {
+          upperBound = currentAngle - lowerOffset;
+          lowerBound = currentAngle - (360 + lowerOffset);
+      }
+    frc::SmartDashboard::PutNumber("Normalize Lower Bound", lowerBound);
+    frc::SmartDashboard::PutNumber("Normalize Upper Bound", upperBound);
+      // Target angle is now normalized between either 0 to 360 or -360 to 0
+      while (targetAngle < lowerBound) {
+          targetAngle += 360;      }
+      while (targetAngle > upperBound) {
+          targetAngle -= 360;
+      }
+      if (targetAngle - currentAngle > 180) {
+          targetAngle -= 360;
+      } else if (targetAngle - currentAngle < -180) {
+          targetAngle += 360;
+      }
+      return targetAngle;
 }
 
 Signals SwerveModule::GetSignals() {
@@ -135,6 +205,7 @@ void SwerveModule::UpdatePosition() {
     // Have to convert rotations to double then to meters with our own rotation coefficient
     double distance = driveRotations.value() / SwerveModuleConstants::kRotationsPerMeter;
     m_position.distance = units::meter_t{distance};
+    
     frc::Rotation2d angle{units::degree_t{angleRotations}};
     m_position.angle = angle;
 

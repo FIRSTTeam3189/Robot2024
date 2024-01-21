@@ -25,7 +25,7 @@ m_modulePositions(
     m_modules.m_backLeft.GetPosition(true),
     m_modules.m_backRight.GetPosition(true)
 ),
-m_pigeon(SwerveDriveConstants::kGyroID, "Swerve"),
+m_pigeon(SwerveDriveConstants::kGyroID, "rio"),
 m_poseEstimator(SwerveDriveConstants::kKinematics, m_pigeon.GetRotation2d(), 
                 m_modulePositions, frc::Pose2d{}, VisionConstants::kEncoderTrustCoefficients, VisionConstants::kVisionTrustCoefficients)
 {
@@ -66,6 +66,9 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
                         units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
                         bool fieldRelative,
                         frc::Translation2d centerOfRotation) {
+
+    frc::SmartDashboard::PutNumber("X speed 2", xSpeed.value());
+    frc::SmartDashboard::PutNumber("Y speed 2", ySpeed.value());
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(

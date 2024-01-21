@@ -59,8 +59,20 @@ void JoystickDrive::Execute() {
   double joystickX = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickY);
   double joystickY = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickX);
 
-  units::meters_per_second_t xSpeed = (fabs(joystickX) < .02) ? 0.0_mps : (m_xSpeedLimiter.Calculate(joystickX) * SwerveDriveConstants::kMaxSpeed);
-  units::meters_per_second_t ySpeed = (fabs(joystickY) < .02) ? 0.0_mps : (m_ySpeedLimiter.Calculate(joystickY) * SwerveDriveConstants::kMaxSpeed);
+  units::meters_per_second_t xSpeed, ySpeed;
+
+  xSpeed = (m_xSpeedLimiter.Calculate(joystickX) * SwerveDriveConstants::kMaxSpeed);
+  ySpeed = (m_ySpeedLimiter.Calculate(joystickY) * SwerveDriveConstants::kMaxSpeed);
+
+  if (fabs(joystickX) < .05)
+    xSpeed = 0_mps;
+  if (fabs(joystickY) < .05)
+    ySpeed = 0_mps;
+
+  frc::SmartDashboard::PutNumber("X speed", xSpeed.value());
+  frc::SmartDashboard::PutNumber("Y speed", ySpeed.value());
+  // units::meters_per_second_t xSpeed = (fabs(joystickX) < .05) ? 0.0_mps : (m_xSpeedLimiter.Calculate(joystickX) * SwerveDriveConstants::kMaxSpeed);
+  // units::meters_per_second_t ySpeed = (fabs(joystickY) < .05) ? 0.0_mps : (m_ySpeedLimiter.Calculate(joystickY) * SwerveDriveConstants::kMaxSpeed);
   units::radians_per_second_t rot;
 
   // If using atan2 control, where right joystick angle == robot heading angle
@@ -69,7 +81,7 @@ void JoystickDrive::Execute() {
     m_swerveDrive->Drive(xSpeed, ySpeed, rot, m_isFieldRelative, frc::Translation2d{});
   } else {
     double joystickRotX = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
-    rot = (fabs(joystickRotX) < .02) ? 0.0_rad / 1.0_s : (m_xSpeedLimiter.Calculate(joystickRotX) * 
+    rot = (fabs(joystickRotX) < .05) ? 0.0_rad / 1.0_s : (m_xSpeedLimiter.Calculate(joystickRotX) * 
                                                           SwerveDriveConstants::kMaxAngularVelocity);
     m_swerveDrive->Drive(xSpeed, ySpeed, rot, m_isFieldRelative, frc::Translation2d{});
   }
