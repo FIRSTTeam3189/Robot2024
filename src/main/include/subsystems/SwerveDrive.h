@@ -29,6 +29,7 @@ struct SwerveModules {
 class SwerveDrive : public frc2::SubsystemBase {
  public:
   SwerveDrive();
+  void ConfigGyro();
   void SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates);
   void Drive(units::meters_per_second_t xSpeed,
              units::meters_per_second_t ySpeed,
@@ -42,9 +43,11 @@ class SwerveDrive : public frc2::SubsystemBase {
   void DriveRobotRelative(frc::ChassisSpeeds speeds);
   frc::Pose2d GetEstimatedPose();
   void SetPose(frc::Pose2d pose);
+  void ResetGyroscope();
   void ResetDriveEncoders();
   void UpdateEstimator();
   void LogModuleStates(wpi::array<frc::SwerveModulePosition, 4> modulePositions);
+  std::array<*ctre::phoenix6::hardware::TalonFX, 8> GetMotorsForMusic();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -58,6 +61,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   wpi::array<frc::SwerveModulePosition, 4> m_modulePositions;
   ctre::phoenix6::hardware::Pigeon2 m_pigeon;
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
+  ctre::phoenix6::configs::Pigeon2Configuration m_pigeonConfigs{};
 
   // Tuning mode preference -- when true, will constantly update module preferences
   std::string_view m_tuningModeKey = "Tuning Mode?";

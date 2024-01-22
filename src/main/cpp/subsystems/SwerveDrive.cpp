@@ -49,6 +49,8 @@ m_poseEstimator(SwerveDriveConstants::kKinematics, m_pigeon.GetRotation2d(),
         },
         this // Reference to this subsystem to set requirements
     );
+
+    ConfigGyro();
 }
 
 // This method will be called once per scheduler run
@@ -62,6 +64,14 @@ void SwerveDrive::Periodic() {
     UpdateEstimator();
 }
 
+void SwerveDrive::ConfigGyro() {
+    m_pigeon.GetConfigurator().Apply(ctre::phoenix6::configs::Pigeon2Configuration{});
+
+    m_pigeonConfigs.MountPose.MountPoseYaw = SwerveDriveConstants::kGyroMountPoseYaw;
+
+    m_pigeon.GetConfigurator().Apply(m_pigeonConfigs);
+}
+
 void SwerveDrive::Drive(units::meters_per_second_t xSpeed, 
                         units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
                         bool fieldRelative,
@@ -69,6 +79,7 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 
     frc::SmartDashboard::PutNumber("X speed 2", xSpeed.value());
     frc::SmartDashboard::PutNumber("Y speed 2", ySpeed.value());
+    frc::SmartDashboard::PutNumber("Rot 2", rot.value());
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
@@ -170,6 +181,10 @@ void SwerveDrive::SetPose(frc::Pose2d pose) {
     m_poseEstimator.ResetPosition(m_pigeon.GetRotation2d(), m_modulePositions, pose);
 }
 
+void SwerveDrive::ResetGyroscope() {
+    m_pigeon.SetYaw(0.0_deg);
+}
+
 void SwerveDrive::Lock() {
     m_modules.m_frontLeft.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::degree_t{45.0}});
     m_modules.m_frontRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::degree_t{-45.0}});
@@ -182,4 +197,18 @@ void SwerveDrive::Stop() {
     m_modules.m_frontRight.Stop();
     m_modules.m_backLeft.Stop();
     m_modules.m_backRight.Stop();
+}
+
+std::array<*ctre::phoenix6::hardware::TalonFX, 8> SwerveDrive::GetMotorsForMusic() {
+    auto frontLeftMotors = m_modules.m_frontLeft.GetMotorsForMusic();
+    auto frontRightMotors = m_modules.m_frontLeft.GetMotorsForMusic();
+    auto backLeftMotors = m_modules.m_frontLeft.GetMotorsForMusic();
+    auto backRightMotors = m_modules.m_frontLeft.GetMotorsForMusic();
+
+    return std::array{
+        frontLeftMotors.first, frontLeftMotors.second,
+        frontRightMotors.first, frontRightMotors.second,
+        backLeftMotors.first, backLeftMotors.second,
+        backRightMotors.first, backRightMotors.second
+    };
 }

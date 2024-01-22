@@ -18,7 +18,7 @@
 class RunShooter
     : public frc2::CommandHelper<frc2::Command, RunShooter> {
  public:
-  RunShooter(Shooter *m_shooter, double power);
+  RunShooter(Shooter *m_shooter, double topPower, double bottomPower);
 
   void Initialize() override;
 
@@ -30,5 +30,6 @@ class RunShooter
 
  private:
   Shooter *m_shooter;
-  double m_power;
+  double m_topPower;
+  double m_bottomPower;
 };

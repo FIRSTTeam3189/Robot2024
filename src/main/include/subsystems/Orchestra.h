@@ -5,18 +5,15 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
-#include <rev/CANSparkMax.h>
-#include "Constants.h"
-#include <rev/CANSparkMax.h>
+#include <ctre/phoenix6/TalonFX.hpp>
+#include <ctre/phoenix6/Orchestra.hpp>
+#include <frc/Filesystem.h>
 
-class Shooter : public frc2::SubsystemBase {
+class Orchestra : public frc2::SubsystemBase {
  public:
-  Shooter();
-  void SetTopPower(double power);
-  void SetBottomPower(double power);
-  void SetAnglePower(double power);
-  void SetExtension(double position);
-   
+  Orchestra();
+  void GiveMotorsForMusic(std::array<*ctre::phoenix6::hardware::TalonFX, 8> motors);
+
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -25,9 +22,6 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-   rev::CANSparkMax m_topMotor;
-   rev::CANSparkMax m_bottomMotor;
-   rev::CANSparkMax m_extensionMotor;
-   rev::SparkMaxPIDController m_extensionPIDController;
-   rev::SparkMaxAlternateEncoder m_extensionEncoder;
+  std::array<*ctre::phoenix6::hardware::TalonFX, 8> m_motors;
+  ctre::phoenix6::Orchestra m_orchestra;
 };

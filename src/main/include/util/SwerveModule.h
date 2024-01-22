@@ -16,6 +16,7 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
+#include <string>
 #include "Constants.h"
 
 struct Signals {
@@ -53,7 +54,7 @@ class SwerveModule {
   void ResetDriveEncoder();
   frc::SwerveModuleState OptimizeAngle(frc::SwerveModuleState desiredState, frc::Rotation2d currentAngle);
   double NormalizeTo0To360(double currentAngle, double targetAngle);
-
+  std::pair<*ctre::phoenix6::hardware::TalonFX, *ctre::phoenix6::hardware::TalonFX> GetMotorsForMusic();
   void UpdatePreferences();
 
  private:

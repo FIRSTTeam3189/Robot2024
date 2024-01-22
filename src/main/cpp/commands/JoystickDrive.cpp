@@ -14,7 +14,7 @@ m_isFieldRelative(isFieldRelative) {
   AddRequirements(swerveDrive);
   // 1 degree position tolerance
   m_rotationPIDController.SetTolerance(1.0);
-  m_rotationPIDController.EnableContinuousInput(-180, 180);
+  m_rotationPIDController.EnableContinuousInput(0, 360);
 }
 
 units::angular_velocity::radians_per_second_t JoystickDrive::GetDesiredRotationalVelocity() {
@@ -26,7 +26,7 @@ units::angular_velocity::radians_per_second_t JoystickDrive::GetDesiredRotationa
 
   // Manual deadband to inputs greater than 2% only
   // TODO: Figure out if there's a better way to deadband
-  if ((fabs(joystickX) < .02) && (fabs(joystickY) < .02)) 
+  if ((fabs(joystickX) < .05) && (fabs(joystickY) < .05)) 
     return units::angular_velocity::radians_per_second_t{0.0};
 
   // Convert joystick positions to goal angle in degrees
@@ -42,6 +42,8 @@ units::angular_velocity::radians_per_second_t JoystickDrive::GetDesiredRotationa
               units::angular_velocity::radians_per_second_t{
               m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw(), goalAngle))
               * SwerveDriveConstants::kMaxAngularVelocity};
+
+  frc::SmartDashboard::PutNumber("Rotation PID Output", rot.value());
     
   // TODO: Check if necessary, should be redundant if SetTolerance works correctly
   // if (abs(m_swerveDrive->GetNormalizedYaw() - goalAngle) < 2.5) {

@@ -37,6 +37,8 @@ namespace SwerveDriveConstants {
     constexpr auto kXDistanceFromCenter {0.282575_m};
     constexpr auto kYDistanceFromCenter {0.282575_m};
 
+    constexpr double kGyroMountPoseYaw {0.0};
+
     static frc::SwerveDriveKinematics<4> kKinematics {
         frc::Translation2d{+SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
         frc::Translation2d{+SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter},
@@ -44,9 +46,9 @@ namespace SwerveDriveConstants {
         frc::Translation2d{-SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter}
     };
 
-    constexpr auto kMaxSpeed {0.1_mps};
-    constexpr auto kMaxAcceleration {0.1_mps_sq};
-    constexpr units::radians_per_second_t kMaxAngularVelocity {2.0 * Pi};
+    constexpr auto kMaxSpeed {1.0_mps};
+    constexpr auto kMaxAcceleration {1.0_mps_sq};
+    constexpr units::radians_per_second_t kMaxAngularVelocity {0.5 * Pi};
     constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {Pi};
 
     // SysID robot characterization values -- **varies by robot**
@@ -55,9 +57,9 @@ namespace SwerveDriveConstants {
     constexpr auto ka {3.409 * 1_V * 1_s * 1_s / 1_m};
 
     // These are for robot rotation, not wheel rotation
-    constexpr double kPRot {0.05};
+    constexpr double kPRot {0.005};
     constexpr double kIRot {0.0};
-    constexpr double kDRot {0.005};
+    constexpr double kDRot {0.0005};
 }
 
 namespace SwerveModuleConstants {
@@ -115,7 +117,7 @@ namespace SwerveModuleConstants {
     constexpr double kVDrive {0.0};
     constexpr double kSDrive {0.0};
 
-    constexpr double kPAngle {1.0};
+    constexpr double kPAngle {5.0};
     constexpr double kIAngle {0.0};
     constexpr double kDAngle {0.0};
     constexpr double kVAngle {0.0};
@@ -168,10 +170,11 @@ namespace VisionConstants {
     const wpi::array<double, 3> kVisionTrustCoefficients {0.5, 0.5, 0.0};
 }
 
- //Shooter Constants
+// Shooter Constants
 namespace ShooterConstants {
-    constexpr int kSpinMotorID {13}
-    constexpr int kExtensionMotorID {14};
+    constexpr int kTopMotorID {13};
+    constexpr int kBottomMotorID {14};
+    constexpr int kExtensionMotorID {15};
     constexpr double kPExtension {1.0};
     constexpr double kIExtension {0};
     constexpr double kDExtension {0};

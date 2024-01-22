@@ -5,7 +5,8 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() : 
-m_spinMotor(ShooterConstants::kSpinMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_topMotor(ShooterConstants::kTopMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_bottomMotor(ShooterConstants::kBottomMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_extensionMotor(ShooterConstants::kExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_extensionPIDController(m_extensionMotor.GetPIDController()),
 m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::AlternateEncoderType::kQuadrature, ShooterConstants::kEncoderCountsPerRev)) {
@@ -23,8 +24,12 @@ void Shooter::SetExtension(double position){
     m_extensionPIDController.SetReference(position, rev::ControlType::kPosition);
 }
 
-void Shooter::SetShootPower(double power){
-    m_spinMotor.Set(power);
+void Shooter::SetTopPower(double power){
+    m_topMotor.Set(power);
+}
+
+void Shooter::SetBottomPower(double power){
+    m_bottomMotor.Set(power);
 }
 
 void Shooter::SetAnglePower(double power){

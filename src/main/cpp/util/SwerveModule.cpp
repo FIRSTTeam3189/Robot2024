@@ -21,12 +21,12 @@ m_signals{m_drivePosition, m_anglePosition, m_driveVelocity, m_angleVelocity}
     
     // Setup preferences class, which allows editing values while robot is enabled
     // Very useful for PID tuning
-    m_drivePKey = "DriveP" + m_moduleNumber;
-    m_driveIKey = "DriveI" + m_moduleNumber;
-    m_driveDKey = "DriveD" + m_moduleNumber;
-    m_anglePKey = "AngleP" + m_moduleNumber;
-    m_angleIKey = "AngleI" + m_moduleNumber;
-    m_angleDKey = "AngleD" + m_moduleNumber;
+    m_drivePKey = "DriveP" + std::to_string(m_moduleNumber);
+    m_driveIKey = "DriveI" + std::to_string(m_moduleNumber);
+    m_driveDKey = "DriveD" + std::to_string(m_moduleNumber);
+    m_anglePKey = "AngleP" + std::to_string(m_moduleNumber);
+    m_angleIKey = "AngleI" + std::to_string(m_moduleNumber);
+    m_angleDKey = "AngleD" + std::to_string(m_moduleNumber);
 
     frc::Preferences::InitDouble(m_drivePKey, m_driveConfigs.Slot0.kP);
     frc::Preferences::InitDouble(m_driveIKey, m_driveConfigs.Slot0.kI);
@@ -51,7 +51,12 @@ void SwerveModule::ConfigDriveMotor() {
     m_driveConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kDrivePeakCurrentDuration;
     m_driveConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kDriveEnableCurrentLimit;
 
-    m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
+    // Front left drive motor is opposite invert
+    if (m_moduleNumber == 0)
+        m_driveConfigs.MotorOutput.Inverted = !SwerveModuleConstants::kDriveMotorInverted;
+    else
+        m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
+
     m_driveConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kDriveNeutralMode;
     
     m_driveConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kDriveGearRatio;
@@ -73,7 +78,7 @@ void SwerveModule::ConfigAngleMotor(int CANcoderID) {
 
     m_angleConfigs.ClosedLoopGeneral.ContinuousWrap = true;
 
-    m_angleConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kAngleGearRatio;
+    // m_angleConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kAngleGearRatio;
     // TODO: Not sure if this number is correct/if it actually works this way on our modules
     // m_angleConfigs.Feedback.RotorToSensorRatio = SwerveModuleConstants::kAngleGearRatio;
     m_angleConfigs.Feedback.FeedbackRemoteSensorID = CANcoderID;
@@ -84,9 +89,9 @@ void SwerveModule::ConfigAngleMotor(int CANcoderID) {
     m_angleConfigs.CurrentLimits.SupplyCurrentThreshold = SwerveModuleConstants::kAnglePeakCurrentLimit;
     m_angleConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kAnglePeakCurrentDuration;
     m_angleConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kAngleEnableCurrentLimit;
-    
-    m_angleMotor.SetInverted(SwerveModuleConstants::kAngleMotorInverted);
-    m_angleMotor.SetNeutralMode(SwerveModuleConstants::kAngleNeutralMode);
+
+    m_angleConfigs.MotorOutput.Inverted = SwerveModuleConstants::kAngleMotorInverted;
+    m_angleConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kAngleNeutralMode;
 
     m_angleMotor.GetConfigurator().Apply(m_angleConfigs);
 }
@@ -104,19 +109,22 @@ void SwerveModule::ConfigCANcoder() {
 }
 
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
-    // const auto optimizedState = frc::SwerveModuleState::Optimize(state, m_position.angle);
+    const auto optimizedState = frc::SwerveModuleState::Optimize(state, m_position.angle);
     // double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;
     // auto targetAngle = optimizedState.angle.Degrees() / 360.0;
-    auto optimizedState = OptimizeAngle(state, m_position.angle);
+    // auto optimizedState = OptimizeAngle(state, m_position.angle);
     double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;
-    auto targetAngle = -optimizedState.angle.Degrees() * 360;
+    auto targetAngle = optimizedState.angle.Degrees();
 
-    frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " target speed", targetSpeed);
-    frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " target angle", targetAngle.value());
+    std::string speedKey = std::to_string(m_moduleNumber) + " target speed";
+    std::string angleKey = std::to_string(m_moduleNumber) + " target angle";
+    frc::SmartDashboard::PutNumber(speedKey, targetSpeed);
+    frc::SmartDashboard::PutNumber(angleKey, targetAngle.value());
 
     m_driveMotor.SetControl(m_driveSetter.WithVelocity(units::turns_per_second_t{targetSpeed}));
     if (fabs(targetSpeed) < .05 && fabs(m_lastAngle - targetAngle.value()) < 5.0) {
-        Stop();
+        // Stop();
+        m_driveMotor.SetControl(m_driveSetter.WithVelocity(units::turns_per_second_t{0.0}));
         targetAngle = units::degree_t{m_lastAngle};
     } else {
         m_angleMotor.SetControl(m_angleSetter.WithPosition(targetAngle));
@@ -189,7 +197,7 @@ Signals SwerveModule::GetSignals() {
 }
 
 void SwerveModule::Stop() {
-    m_driveMotor.StopMotor();
+    m_driveMotor.SetControl(m_driveSetter.WithVelocity(units::turns_per_second_t{0.0}));
     m_angleMotor.StopMotor();
 }
 
@@ -257,4 +265,8 @@ void SwerveModule::UpdatePreferences() {
     m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
     m_angleMotor.GetConfigurator().Apply(m_angleConfigs);
     // m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
+}
+
+std::pair<*ctre::phoenix6::hardware::TalonFX, *ctre::phoenix6::hardware::TalonFX> SwerveModule::GetMotorsForMusic() {
+    return std::pair{&m_driveMotor, &m_angleMotor};
 }
