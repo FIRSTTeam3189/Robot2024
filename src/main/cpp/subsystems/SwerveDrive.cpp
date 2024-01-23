@@ -5,7 +5,7 @@
 #include "subsystems/SwerveDrive.h"
 
 SwerveDrive::SwerveDrive() :
-m_modules{
+m_modules {
   {+SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
   {+SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter},
   {-SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
@@ -79,7 +79,7 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 
     frc::SmartDashboard::PutNumber("X speed 2", xSpeed.value());
     frc::SmartDashboard::PutNumber("Y speed 2", ySpeed.value());
-    frc::SmartDashboard::PutNumber("Rot 2", rot.value());
+frc::SmartDashboard::PutNumber("Rot 2", rot.value());
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
@@ -197,6 +197,10 @@ void SwerveDrive::Stop() {
     m_modules.m_frontRight.Stop();
     m_modules.m_backLeft.Stop();
     m_modules.m_backRight.Stop();
+}
+
+void SwerveDrive::UpdateVisionData(){
+    
 }
 
 std::array<*ctre::phoenix6::hardware::TalonFX, 8> SwerveDrive::GetMotorsForMusic() {
