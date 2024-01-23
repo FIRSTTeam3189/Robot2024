@@ -58,12 +58,6 @@ model {
                 targetPlatform wpi.platforms.desktop
             }
 
-            sources {
-                cpp {
-                    preCompiledHeader "util/pch.h"
-                }
-            }
-
             sources.cpp {
                 source {
                     srcDir 'src/main/cpp'

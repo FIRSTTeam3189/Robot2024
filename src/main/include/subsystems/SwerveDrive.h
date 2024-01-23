@@ -4,8 +4,15 @@
 
 #pragma once
 
+#include <frc2/command/SubsystemBase.h>
+#include <frc/geometry/Translation2d.h>
+#include <frc/kinematics/ChassisSpeeds.h>
+#include <frc/geometry/Pose2d.h>
 #include <ctre/phoenix6/Pigeon2.hpp>
 #include <pathplanner/lib/auto/AutoBuilder.h>
+#include "util/SwerveModule.h"
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
+#include <frc/DriverStation.h>
 
 struct SwerveModules {
   frc::Translation2d m_frontLeftLocation;

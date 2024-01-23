@@ -5,7 +5,11 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/geometry/Transform3d.h>
+
 #include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
 #include <networktables/FloatArrayTopic.h>
 #include <networktables/BooleanTopic.h>
 #include <networktables/IntegerTopic.h>
@@ -16,24 +20,29 @@
 #include <span>
 
 struct VisionData {
-  vector<float> translationMatrix{0.0f, 0.0f, 0.0f};
-
+  bool isDetected;
+  int ID;
+  std::vector<float> translationMatrix{0.0f, 0.0f, 0.0f};
+  std::vector<float> rotationMatrix{0.0f, 0.0f, 0.0f};
 };
+
 class Vision : public frc2::SubsystemBase {
  public:
   Vision(); 
-  
+  VisionData GetVisionData();
+  frc::Pose3d TagToCamera();
+  frc::Pose3d CameraToRobot(frc::Pose3d cameraPose);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
-  VisionData GetVisionData();
+  
  private:
   nt::IntegerTopic m_tagIDTopic;
-  nt::IntegerTopic m_isDetectedTopic;
+  nt::BooleanTopic m_isDetectedTopic;
   nt::FloatArrayTopic m_translationMatrixTopic;
+  nt::FloatArrayTopic m_rotationMatrixTopic;
   VisionData m_data;
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
+  frc::Transform3d m_cameraToRobotTransform;
 };

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <frc2/command/SubsystemBase.h>
+#include <ctre/Phoenix.h>
 #include <ctre/phoenix/led/ColorFlowAnimation.h>
 #include <ctre/phoenix/led/FireAnimation.h>
 #include <ctre/phoenix/led/LarsonAnimation.h>
@@ -13,7 +15,6 @@
 #include <ctre/phoenix/led/StrobeAnimation.h>
 #include <ctre/phoenix/led/TwinkleAnimation.h>
 #include <ctre/phoenix/led/TwinkleOffAnimation.h>
-
 #include "Constants.h"
 
 enum class LEDAnimationType { Clear, ColorFlow, Fire, Larson, Rainbow, RGBFade, SingleFade, Strobe, Twinkle, TwinkleOff }; 

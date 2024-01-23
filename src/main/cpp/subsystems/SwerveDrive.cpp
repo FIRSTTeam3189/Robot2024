@@ -2,8 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "util/pch.h"
-#include "subsystems/SwerveDrive.h
+#include "subsystems/SwerveDrive.h"
 
 SwerveDrive::SwerveDrive() :
 m_modules {
@@ -80,7 +79,7 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 
     frc::SmartDashboard::PutNumber("X speed 2", xSpeed.value());
     frc::SmartDashboard::PutNumber("Y speed 2", ySpeed.value());
-frc::SmartDashboard::PutNumber("Rot 2", rot.value());
+    frc::SmartDashboard::PutNumber("Rot 2", rot.value());
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
@@ -204,7 +203,7 @@ void SwerveDrive::UpdateVisionData(){
     
 }
 
-std::array<*ctre::phoenix6::hardware::TalonFX, 8> SwerveDrive::GetMotorsForMusic() {
+std::array<ctre::phoenix6::hardware::TalonFX*, 8> SwerveDrive::GetMotorsForMusic() {
     auto frontLeftMotors = m_modules.m_frontLeft.GetMotorsForMusic();
     auto frontRightMotors = m_modules.m_frontLeft.GetMotorsForMusic();
     auto backLeftMotors = m_modules.m_frontLeft.GetMotorsForMusic();

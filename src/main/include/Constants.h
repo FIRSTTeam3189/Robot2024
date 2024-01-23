@@ -23,8 +23,11 @@
 #include <units/angular_acceleration.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/geometry/Pose3d.h>
+#include <frc/geometry/Rotation3d.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
+#include <vector>
 
 #define Pi 3.14159265358979323846
 
@@ -36,6 +39,8 @@ constexpr int kGyroID {13};
     // This has x-positive as forward, y-positive as left
     constexpr auto kXDistanceFromCenter {0.282575_m};
     constexpr auto kYDistanceFromCenter {0.282575_m};
+
+    constexpr double kGyroMountPoseYaw {0.0};
 
     static frc::SwerveDriveKinematics<4> kKinematics {
         frc::Translation2d{+SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
@@ -163,15 +168,6 @@ namespace AutoConstants {
         pathplanner::ReplanningConfig() // Defaults to replanning if robot is not at starting point, doesn't replan if robot strays too far
     };
 }
-
-namespace VisionConstants {
-    const wpi::array<double, 3> kEncoderTrustCoefficients {0.1, 0.1, 0.1};
-    const wpi::array<double, 3> kVisionTrustCoefficients {0.5, 0.5, 0.0};
-    constexpr double cameraXOffset{};
-    constexpr double cameraYOffset{};
-    constexpr bool shouldUseVision {false};
-}
-
  // Shooter Constants
 namespace ShooterConstants {
     constexpr int kTopMotorID {13};
@@ -234,4 +230,18 @@ constexpr int kDriverControllerPort {0};
     constexpr int kAxisLeftTrigger {3};
     constexpr int kAxisRightTrigger {4};
     constexpr int kAxisRightStickY {5};
+}
+
+namespace VisionConstants {
+    constexpr wpi::array<double, 3> kEncoderTrustCoefficients {0.1, 0.1, 0.1};
+    constexpr wpi::array<double, 3> kVisionTrustCoefficients {0.5, 0.5, 0.5};
+    constexpr units::meter_t kCameraXOffset {0.0_m};
+    constexpr units::meter_t kCameraYOffset {0.0_m};
+    constexpr units::meter_t kCameraZOffset {0.0_m};
+    constexpr units::radian_t kCameraYawOffset {0.0_rad};
+    constexpr bool kShouldUseVision {false};
+
+    const std::vector<frc::Pose3d> kTagPoses {
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_rad, 0.0_rad, 0.0_rad}}
+    };
 }
