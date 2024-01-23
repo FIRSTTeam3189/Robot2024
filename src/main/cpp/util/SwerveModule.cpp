@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+#include "util/pch.h"
+
 #include "util/SwerveModule.h"
 
 SwerveModule::SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
@@ -267,6 +269,6 @@ void SwerveModule::UpdatePreferences() {
     // m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
 }
 
-std::pair<*ctre::phoenix6::hardware::TalonFX, *ctre::phoenix6::hardware::TalonFX> SwerveModule::GetMotorsForMusic() {
+std::pair<ctre::phoenix6::hardware::TalonFX*, ctre::phoenix6::hardware::TalonFX*> SwerveModule::GetMotorsForMusic() {
     return std::pair{&m_driveMotor, &m_angleMotor};
 }

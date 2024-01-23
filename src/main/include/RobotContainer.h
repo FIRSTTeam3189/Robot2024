@@ -4,24 +4,14 @@
 
 #pragma once
 
-#include <frc2/command/CommandPtr.h>
-#include <frc2/command/Command.h>
-#include <frc2/command/WaitCommand.h>
-#include <frc2/command/RunCommand.h>
-#include <frc2/command/button/CommandXboxController.h>
-#include <frc2/command/button/CommandJoystick.h>
-#include <frc2/command/button/Trigger.h>
-#include <frc2/command/InstantCommand.h>
-
 #include "Constants.h"
 #include "commands/JoystickDrive.h"
+#include "commands/RunIntake.h"
 #include "commands/RunShooter.h"
 #include "commands/SetIntakeExtension.h"
 #include "commands/SetShooterExtension.h"
-#include "commands/RunIntake.h"
-#include "subsystems/Shooter.h"
-#include "subsystems/SwerveDrive.h"
-
+#include "subsystems/LED.h"
+#include "subsystems/Orchestra.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -45,6 +35,7 @@ class RobotContainer {
   Shooter *m_shooter = new Shooter();
   SwerveDrive *m_swerveDrive = new SwerveDrive();
   Intake *m_intake = new Intake();
+  Orchestra *m_orchestra = new Orchestra(m_swerveDrive->GetMotorsForMusic());
 
   bool m_isSpecialHeadingMode = true;
   bool m_isFieldRelative = true;

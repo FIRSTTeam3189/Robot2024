@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
-#include <ctre/Phoenix.h>
 #include <ctre/phoenix/led/ColorFlowAnimation.h>
 #include <ctre/phoenix/led/FireAnimation.h>
 #include <ctre/phoenix/led/LarsonAnimation.h>

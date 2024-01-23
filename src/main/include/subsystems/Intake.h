@@ -4,11 +4,7 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
-#include <rev/CANSparkFlex.h>
-#include <rev/CANSparkMax.h>
 #include "Constants.h"
-#include <frc/controller/PIDController.h>
 #include <rev/SparkMaxPIDController.h>
 #include <rev/RelativeEncoder.h>
 

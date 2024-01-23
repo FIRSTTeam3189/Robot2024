@@ -4,15 +4,12 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
-#include <ctre/phoenix6/TalonFX.hpp>
 #include <ctre/phoenix6/Orchestra.hpp>
 #include <frc/Filesystem.h>
 
 class Orchestra : public frc2::SubsystemBase {
  public:
-  Orchestra();
-  void GiveMotorsForMusic(std::array<*ctre::phoenix6::hardware::TalonFX, 8> motors);
+  Orchestra(std::array<ctre::phoenix6::hardware::TalonFX*, 8> motors);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -22,6 +19,5 @@ class Orchestra : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  std::array<*ctre::phoenix6::hardware::TalonFX, 8> m_motors;
   ctre::phoenix6::Orchestra m_orchestra;
 };

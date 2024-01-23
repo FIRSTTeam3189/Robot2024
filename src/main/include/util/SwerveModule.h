@@ -4,19 +4,6 @@
 
 #pragma once
 
-#include <ctre/phoenix6/TalonFX.hpp>
-#include <ctre/phoenix6/signals/SpnEnums.hpp>
-#include <ctre/phoenix6/StatusSignal.hpp>
-#include <ctre/phoenix6/CANcoder.hpp>
-#include <ctre/phoenix6/core/CoreTalonFX.hpp>
-#include <frc/kinematics/SwerveModuleState.h>
-#include <frc/kinematics/SwerveModulePosition.h>
-#include <frc/Preferences.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <math.h>
-#include <iostream>
-#include <vector>
-#include <string>
 #include "Constants.h"
 
 struct Signals {
@@ -54,7 +41,7 @@ class SwerveModule {
   void ResetDriveEncoder();
   frc::SwerveModuleState OptimizeAngle(frc::SwerveModuleState desiredState, frc::Rotation2d currentAngle);
   double NormalizeTo0To360(double currentAngle, double targetAngle);
-  std::pair<*ctre::phoenix6::hardware::TalonFX, *ctre::phoenix6::hardware::TalonFX> GetMotorsForMusic();
+  std::pair<ctre::phoenix6::hardware::TalonFX*, ctre::phoenix6::hardware::TalonFX*> GetMotorsForMusic();
   void UpdatePreferences();
 
  private:

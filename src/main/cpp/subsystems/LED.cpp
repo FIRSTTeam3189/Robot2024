@@ -2,8 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+#include "util/pch.h"
 #include "subsystems/LED.h"
-#include "Constants.h"
 
 LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animation(NULL), m_shouldStartup(true), m_startupRunning(false){
      m_candleControl.ConfigAllSettings(m_candleConfig);
