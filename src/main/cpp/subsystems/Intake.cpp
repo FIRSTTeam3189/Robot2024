@@ -5,26 +5,32 @@
 #include "subsystems/Intake.h"
 
 Intake::Intake() : 
- m_extensionMotor(IntakeConstants::kExtensionMotorID, rev::CANSparkFlex::MotorType::kBrushless),
+ m_rotationMotor(IntakeConstants::kRotationMotorID, rev::CANSparkFlex::MotorType::kBrushless),
  m_rollerMotor(IntakeConstants::kRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
- m_extensionPIDController(m_extensionMotor.GetPIDController()),
- m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::AlternateEncoderType::kQuadrature, IntakeConstants::kEncoderCountsPerRev))
+ m_rotationPIDController(m_rotationMotor.GetPIDController()),
+ m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle))
 {
-    m_extensionPIDController.SetP(IntakeConstants::kPExtension);
-    m_extensionPIDController.SetI(IntakeConstants::kIExtension);
-    m_extensionPIDController.SetD(IntakeConstants::kDExtension);
-    m_extensionPIDController.SetFeedbackDevice(m_extensionEncoder);
+    m_rotationMotor.RestoreFactoryDefaults();
+    m_rollerMotor.RestoreFactoryDefaults();
+    m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
+    m_rotationPIDController.SetP(IntakeConstants::kPRotation);
+    m_rotationPIDController.SetI(IntakeConstants::kIRotation);
+    m_rotationPIDController.SetD(IntakeConstants::kDRotation);
+    m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
+    m_rotationEncoder.SetInverted(IntakeConstants::kRotationInverted);
+    m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
+    m_rotationEncoder.SetZeroOffset(IntakeConstants::kRotationOffset);
 }
 
 // This method will be called once per scheduler run
 void Intake::Periodic() {}
 
-void Intake::SetExtension(double position) {
-    m_extensionPIDController.SetReference(position, rev::ControlType::kPosition);
+void Intake::SetRotation(double position) {
+    m_rotationPIDController.SetReference(position, rev::ControlType::kPosition);
 }
 
 
-void Intake::SetPower(double rollerPower, double extensionPower) {
+void Intake::SetPower(double rollerPower, double rotationPower) {
     m_rollerMotor.Set(rollerPower);
-    m_extensionMotor.Set(extensionPower);
+    m_rotationMotor.Set(rotationPower);
 }

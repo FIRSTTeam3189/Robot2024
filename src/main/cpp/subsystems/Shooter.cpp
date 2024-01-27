@@ -5,14 +5,19 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() : 
-m_topMotor(ShooterConstants::kTopMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_bottomMotor(ShooterConstants::kBottomMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_extensionMotor(ShooterConstants::kExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_extensionPIDController(m_extensionMotor.GetPIDController()),
-m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::AlternateEncoderType::kQuadrature, ShooterConstants::kEncoderCountsPerRev)) {
-    m_extensionPIDController.SetP(ShooterConstants::kPExtension); 
-    m_extensionPIDController.SetI(ShooterConstants::kIExtension); 
-    m_extensionPIDController.SetD(ShooterConstants::kDExtension); 
+m_rollerMotor(ShooterConstants::kRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_leftExtensionMotor(ShooterConstants::kLeftExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_rightExtensionMotor(ShooterConstants::kRightExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_rotationPIDController(m_rotationMotor.GetPIDController()),
+m_leftExtensionPIDController(m_leftExtensionMotor.GetPIDController()),
+m_rightExtensionPIDController(m_rightExtensionMotor.GetPIDController()),
+m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
+m_leftExtensionEncoder(m_leftExtensionMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
+m_rightExtensionEncoder(m_rightExtensionMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)) {
+    ConfigRollerMotor();
+    ConfigExtensionMotors();
+    ConfigRotationMotor();
 }
 
 // This method will be called once per scheduler run
@@ -20,18 +25,44 @@ void Shooter::Periodic() {
 
 }
 
-void Shooter::SetExtension(double position){
-    m_extensionPIDController.SetReference(position, rev::ControlType::kPosition);
+void Shooter::SetRotation(double position){
+    m_rotationPIDController.SetReference(position, rev::ControlType::kPosition);
 }
 
-void Shooter::SetTopPower(double power){
-    m_topMotor.Set(power);
-}
-
-void Shooter::SetBottomPower(double power){
-    m_bottomMotor.Set(power);
+void Shooter::SetRollerPower(double power) {
+    m_rollerMotor.Set(power);
 }
 
 void Shooter::SetAnglePower(double power){
-    m_extensionMotor.Set(power);
+    m_rotationMotor.Set(power);
+}
+
+void Shooter::ConfigRollerMotor() {
+    m_rollerMotor.RestoreFactoryDefaults();
+}
+
+void Shooter::ConfigExtensionMotors() {
+    m_leftExtensionMotor.RestoreFactoryDefaults();
+    m_rightExtensionMotor.RestoreFactoryDefaults();
+    m_leftExtensionPIDController.SetFeedbackDevice(m_leftExtensionEncoder);
+    m_rightExtensionPIDController.SetFeedbackDevice(m_rightExtensionEncoder);
+    m_leftExtensionPIDController.SetP(ShooterConstants::kPExtension);
+    m_leftExtensionPIDController.SetI(ShooterConstants::kIExtension);
+    m_leftExtensionPIDController.SetI(ShooterConstants::kDExtension);
+    m_rightExtensionPIDController.SetP(ShooterConstants::kPExtension);
+    m_rightExtensionPIDController.SetI(ShooterConstants::kIExtension);
+    m_rightExtensionPIDController.SetD(ShooterConstants::kDExtension);
+}
+
+void Shooter::ConfigRotationMotor() {
+    m_rotationMotor.RestoreFactoryDefaults();
+    m_rotationPIDController.SetFeedbackDevice(m_leftExtensionEncoder);
+    m_rotationPIDController.SetFeedbackDevice(m_rightExtensionEncoder);
+    m_rotationMotor.SetSmartCurrentLimit(ShooterConstants::kRotationCurrentLimit);
+    m_rotationPIDController.SetP(ShooterConstants::kPRotation); 
+    m_rotationPIDController.SetI(ShooterConstants::kIRotation); 
+    m_rotationPIDController.SetD(ShooterConstants::kDRotation); 
+    m_rotationEncoder.SetInverted(ShooterConstants::kRotationInverted);
+    m_rotationEncoder.SetPositionConversionFactor(ShooterConstants::kRotationConversion);
+    m_rotationEncoder.SetZeroOffset(ShooterConstants::kRotationOffset);
 }

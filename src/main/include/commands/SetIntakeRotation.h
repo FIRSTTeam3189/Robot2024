@@ -6,7 +6,7 @@
 
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
-#include "subsystems/Shooter.h"
+#include "subsystems/Intake.h"
 
 /**
  * An example command.
@@ -15,11 +15,11 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class SetShooterExtension
-    : public frc2::CommandHelper<frc2::Command, SetShooterExtension> {
+class SetIntakeRotation
+    : public frc2::CommandHelper<frc2::Command, SetIntakeRotation> {
  public:
-  SetShooterExtension(Shooter *shooter, double position);
-
+  SetIntakeRotation(Intake *intake, double position);
+    
   void Initialize() override;
 
   void Execute() override;
@@ -29,6 +29,6 @@ class SetShooterExtension
   bool IsFinished() override;
 
  private:
-  Shooter *m_shooter;
+  Intake *m_intake;
   double m_position;
 };

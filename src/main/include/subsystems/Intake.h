@@ -7,26 +7,26 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkFlex.h>
 #include <rev/CANSparkMax.h>
-#include "Constants.h"
 #include <frc/controller/PIDController.h>
 #include <rev/SparkMaxPIDController.h>
-#include <rev/RelativeEncoder.h>
+#include <rev/SparkAbsoluteEncoder.h> 
+#include "Constants.h"
 
 class Intake : public frc2::SubsystemBase {
  public:
   Intake();
-  void SetPower(double rollerPower, double extensionPower);
-  void SetExtension(double position);
+  void SetPower(double rollerPower, double rotationPower);
+  void SetRotation(double position);
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
  
  private:
- rev::CANSparkMax m_extensionMotor;
+ rev::CANSparkMax m_rotationMotor;
  rev::CANSparkMax m_rollerMotor;
- rev::SparkMaxPIDController m_extensionPIDController;
- rev::SparkMaxAlternateEncoder m_extensionEncoder;
+ rev::SparkMaxPIDController m_rotationPIDController;
+ rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
  
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

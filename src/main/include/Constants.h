@@ -170,18 +170,24 @@ namespace AutoConstants {
 }
  // Shooter Constants
 namespace ShooterConstants {
-    constexpr int kTopMotorID {13};
-    constexpr int kBottomMotorID {14};
-    constexpr int kExtensionMotorID {15};
+    constexpr int kRollerMotorID {13};
+    constexpr int kLeftExtensionMotorID {14};
+    constexpr int kRightExtensionMotorID {15};
+    constexpr int kRotationMotorID {16};
+    constexpr double kPRotation {1.0};
+    constexpr double kIRotation {0.0};
+    constexpr double kDRotation {0.0};
     constexpr double kPExtension {1.0};
-    constexpr double kIExtension {0};
-    constexpr double kDExtension {0};
-    
-    constexpr int kEncoderCountsPerRev {8192};
+    constexpr double kIExtension {0.0};
+    constexpr double kDExtension {0.0};
 
     constexpr double kClosePosition {0};
     constexpr double kMidPosition {1000};
     constexpr double kFarPosition {2000};
+    constexpr double kRotationOffset {0};
+    constexpr double kRotationConversion {1.0};
+    constexpr bool kRotationInverted {false};
+    constexpr uint kRotationCurrentLimit {30};
 }
 
 
@@ -190,18 +196,20 @@ namespace LedConstants{
 }
 
 namespace IntakeConstants{
-    constexpr int kExtensionMotorID {16};
+    constexpr int kRotationMotorID {16};
     constexpr int kRollerMotorID {17};
     
-    constexpr double kPExtension {1.0};
-    constexpr double kIExtension {0};
-    constexpr double kDExtension {0};
-    
-    constexpr int kEncoderCountsPerRev {8192};
+    constexpr double kPRotation {1.0};
+    constexpr double kIRotation {0};
+    constexpr double kDRotation {0};
 
     constexpr double kRetractPosition {0};
     constexpr double kAmpPosition {1000};
     constexpr double kExtendPosition {2000};
+    constexpr double kRotationOffset {0};
+    constexpr double kRotationConversion {1.0};
+    constexpr bool kRotationInverted {false};
+    constexpr uint kRotationCurrentLimit {30};
 }
 
 namespace OperatorConstants{

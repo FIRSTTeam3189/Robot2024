@@ -6,16 +6,19 @@
 
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
+#include <rev/SparkAbsoluteEncoder.h> 
 #include "Constants.h"
-#include <rev/CANSparkMax.h>
 
 class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
-  void SetTopPower(double power);
-  void SetBottomPower(double power);
+  void SetRollerPower(double power);
   void SetAnglePower(double power);
+  void SetRotation(double position);
   void SetExtension(double position);
+  void ConfigRollerMotor();
+  void ConfigExtensionMotors();
+  void ConfigRotationMotor();
    
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -25,9 +28,14 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-   rev::CANSparkMax m_topMotor;
-   rev::CANSparkMax m_bottomMotor;
-   rev::CANSparkMax m_extensionMotor;
-   rev::SparkMaxPIDController m_extensionPIDController;
-   rev::SparkMaxAlternateEncoder m_extensionEncoder;
+   rev::CANSparkMax m_rollerMotor;
+   rev::CANSparkMax m_leftExtensionMotor;
+   rev::CANSparkMax m_rightExtensionMotor;
+   rev::CANSparkMax m_rotationMotor;
+   rev::SparkMaxPIDController m_rotationPIDController;
+   rev::SparkMaxPIDController m_leftExtensionPIDController;
+   rev::SparkMaxPIDController m_rightExtensionPIDController;
+   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
+   rev::SparkMaxAbsoluteEncoder m_leftExtensionEncoder;
+   rev::SparkMaxAbsoluteEncoder m_rightExtensionEncoder;
 };
