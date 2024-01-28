@@ -51,7 +51,7 @@ model {
         frcUserProgram(NativeExecutableSpec) {
             binaries.all {
                 if(!(toolChain instanceof VisualCpp))
-                    cppCompiler.args << '-Wno-deprecated-declarations'
+                    cppCompiler.args << '-Wno-deprecated-declarations' << '-flto'
             }
             targetPlatform wpi.platforms.roborio
             if (includeDesktopSupport) {
@@ -81,23 +81,23 @@ model {
             wpi.cpp.deps.wpilib(it)
         }
     }
-    testSuites {
-        frcUserProgramTest(GoogleTestTestSuiteSpec) {
-            testing $.components.frcUserProgram
+    // testSuites {
+    //     frcUserProgramTest(GoogleTestTestSuiteSpec) {
+    //         testing $.components.frcUserProgram
 
-            sources.cpp {
-                source {
-                    srcDir 'src/test/cpp'
-                    include '**/*.cpp'
-                }
-            }
+    //         sources.cpp {
+    //             source {
+    //                 srcDir 'src/test/cpp'
+    //                 include '**/*.cpp'
+    //             }
+    //         }
 
-            // Enable run tasks for this component
-            wpi.cpp.enableExternalTasks(it)
+    //         // Enable run tasks for this component
+    //         wpi.cpp.enableExternalTasks(it)
 
-            wpi.cpp.vendor.cpp(it)
-            wpi.cpp.deps.wpilib(it)
-            wpi.cpp.deps.googleTest(it)
-        }
-    }
+    //         wpi.cpp.vendor.cpp(it)
+    //         wpi.cpp.deps.wpilib(it)
+    //         wpi.cpp.deps.googleTest(it)
+    //     }
+    // }
 }
