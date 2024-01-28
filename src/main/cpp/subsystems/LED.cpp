@@ -219,7 +219,25 @@ std::map<std::string, std::vector<std:vector<int>> LEDDictionary = {
     {"6", {{2, 3, 4, 5}, {1, 6}, {1}, {1}, {1, 2, 3, 4, 5}, {1, 6}, {1, 6}, {2, 3, 4, 5}}},
     {"7", {{1, 2, 3, 4, 5, 6}, {6}, {6}, {6}, {6}, {6}, {6}, {6}}},
     {"8", {{2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 6}, {2, 3, 4, 5}, {1, 6}, {1, 6}, {2, 3, 4, 5}}},
-    {"9", {{1, 2, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}, {6}, {6}, {6}, {6}}},
+    {"9", {{1, 2, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}, {6}, {6}, {6}, {6}}}
+
+
+
+void DisplayString(std::string &str, int length){
+    toupper(str);
+    for (int i = 0; i < length; i++){
+        std::string letter = str.substr(i, i+1);
+        for (int j = 0; j < LEDDictionary[letter].size(); i++) {
+            for (int x = 0; x < LEDDictionary[letter][j].size) {
+                uint8_t pixel = LEDDictionary[letter][j][x];
+                SetRowColor(0, 0, 255, {pixel-1, pixel});
+            }
+        }
+        
+
+        //i[0] is first letter , i[1] is second letter....
+    } 
+}
 
 
 

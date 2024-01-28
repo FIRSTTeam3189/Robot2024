@@ -33,6 +33,7 @@ class LED : public frc2::SubsystemBase {
   void StartingAnimation();
   void CBAnimation();
   void ClearAll(LEDSection section);
+  void DisplayString(std::string &str, int length, int pos)
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
