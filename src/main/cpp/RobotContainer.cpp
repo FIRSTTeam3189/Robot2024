@@ -6,6 +6,9 @@
 
 #include <frc2/command/button/Trigger.h>
 
+#include "frc/DataLogManager.h"
+
+
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   // Runs shooter and shooter angle motor continuously
@@ -13,6 +16,7 @@ RobotContainer::RobotContainer() {
     m_shooter->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY)); 
     m_shooter->SetAnglePower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
   },{m_shooter}).ToPtr());
+
 
   m_swerveDrive->SetDefaultCommand(JoystickDrive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
   // Configure the button bindings
@@ -64,3 +68,4 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   return frc2::WaitCommand(1.0_s).ToPtr(); 
 }
+

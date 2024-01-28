@@ -7,7 +7,7 @@
 Vision::Vision() : 
 m_data(), 
 m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCameraYOffset, VisionConstants::kCameraZOffset,
-                           frc::Rotation3d{0.0_rad, 0.0_rad, VisionConstants::kCameraYawOffset}) { 
+  frc::Rotation3d{0.0_rad, 0.0_rad, VisionConstants::kCameraYawOffset}) { 
   nt::NetworkTableInstance networkTableInstance = nt::NetworkTableInstance::GetDefault();
   m_isDetectedTopic = networkTableInstance.GetBooleanTopic("Vision/Detection");
   m_tagIDTopic = networkTableInstance.GetIntegerTopic("Vision/AprilTag/ID");
