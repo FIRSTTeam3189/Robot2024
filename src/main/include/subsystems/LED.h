@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <map>
+#include <vector>
 #include <frc2/command/SubsystemBase.h>
 #include <ctre/Phoenix.h>
 #include <ctre/phoenix/led/ColorFlowAnimation.h>
@@ -38,6 +40,7 @@ class LED : public frc2::SubsystemBase {
   void Periodic() override;
 
  private:
+ static std::map<std::string, std::vector<std:vector<int>> LEDDictionary;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 ctre::phoenix::led::CANdle m_candleControl;

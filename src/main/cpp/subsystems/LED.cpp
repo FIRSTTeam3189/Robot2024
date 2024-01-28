@@ -4,6 +4,8 @@
 
 #include "subsystems/LED.h"
 
+
+
 LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animation(NULL), m_shouldStartup(true), m_startupRunning(false){
      m_candleControl.ConfigAllSettings(m_candleConfig);
 
@@ -30,7 +32,11 @@ LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animati
     m_ledSections[LEDSection::Row13] = {424, 456};
     m_ledSections[LEDSection::Row14] = {456, 488};
     m_ledSections[LEDSection::Row15] = {488, 520};
+
+
 }   
+
+
 
 // This method will be called once per scheduler run
 void LED::Periodic() {
@@ -53,7 +59,7 @@ void LED::Periodic() {
     }    
 }
 
-void LED::SetColor(int r, int g, int b,LEDSection section){
+void LED::SetSectionColor(int r, int g, int b,LEDSection section){
     m_candleControl.SetLEDs(r, g , b, 0, m_ledSections[section].first, m_ledSections[section].second - m_ledSections[section].first);
 }
 
@@ -177,4 +183,21 @@ if (!m_startupRunning) {
         SetAnimation(LEDAnimationType::Clear);
         m_Timer.Stop();
     }
+}
+
+std::map<std::string, std::vector<std:vector<int>> LEDDictionary = {
+    {"A", {{2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 6}}},
+    {"B", {{1, 2, 3, 4, 5} {1, 6}, {1, 6}, {1, 2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}}},
+    {"C", {{1, 2, 3, 4, 5, 6}, {1}, {1}, {1}, {1}, {1}, {1}, {1, 2, 3, 4, 5, 6}}},
+    {"D", {{1, 2, 3, 4}, {1, 4}, {1, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 5}, {1, 2, 3, 4}}},
+    {"E", {{1, 2, 3, 4, 5, 6}, {1}, {1}, {1}, {1, 2, 3, 4, 5}, {1}, {1}, {1, 2, 3, 4, 5, 6}}},
+    {"F", {{1, 2, 3, 4, 5, 6}, {1}, {1}, {1}, {1, 2, 3, 4, 5}, {1}, {1}, {1}}},
+    {"G", {{1, 2, 3, 4, 5, 6}, {1}, {1}, {1}, {1, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}}},
+    {"H", {{1, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 6}}},
+    {"I", {{1, 2, 3, 4, 5, 6}, {3, 4}, {3, 4}, {3, 4}, {3, 4}, {3, 4}, {3, 4}, {1, 2, 3, 4, 5, 6}}},
+    {"J", {{6}, {6}, {6}, {6}, {6}, {6}, {1, 6}, {2, 3, 4, 5}}},
+    {"K", {{1, 6}, {1, 5}, {1, 4}, {1, 2, 3}, {1, 3, 4}, {1, 5}, {1, 6}, {1, 6}}},
+    {"L", {{1}, {1}, {1}, {1}, {1}, {1}, {1}, {1, 2, 3, 4, 5, 6}}},
+    
+
 }
