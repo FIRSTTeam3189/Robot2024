@@ -18,15 +18,18 @@
 #include "Constants.h"
 
 enum class LEDAnimationType { Clear, ColorFlow, Fire, Larson, Rainbow, RGBFade, SingleFade, Strobe, Twinkle, TwinkleOff }; 
-enum class LEDSection { All, Candle};
+enum class LEDSection { All, Candle, LEDMatrix, Row0, Row1, Row2, Row3, Row4, Row5, Row6, Row7, Row8, Row9, Row10, Row11, Row11, Row12, Row13, Row14, Row15};
 class LED : public frc2::SubsystemBase {
  public:
   LED();
     
-  void SetColor(int r, int g, int b, LEDSection section = LEDSection::All);
+  void SetSectionColor(int r, int g, int b, LEDSection section = LEDSection::All);
+  void SetRowColor(int r, int g, int b, std::pair<uint8_t, uint8_t> section = {0, 520});
+  void SetColumnColor(int r, int g, int b, uint_8 col, int start, int end)
   void ClearColor(LEDSection section = LEDSection::All);
   void SetAnimation(LEDAnimationType animation, LEDSection section = LEDSection::All, int r = 0, int g = 0, int b = 0, double speed = 0.7, bool reverse = false, int animSlot = 0);
   void StartingAnimation();
+  void CBAnimation();
   void ClearAll(LEDSection section);
 
   /**
