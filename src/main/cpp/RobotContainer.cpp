@@ -9,12 +9,16 @@
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   // Runs shooter and shooter angle motor continuously
-  m_shooter->SetDefaultCommand(frc2::RunCommand([this]{ 
+  m_shooter->SetDefaultCommand(frc2::RunCommand([this] { 
     m_shooter->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY)); 
     m_shooter->SetAnglePower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
   },{m_shooter}).ToPtr());
 
   m_swerveDrive->SetDefaultCommand(JoystickDrive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
+  
+  m_intake->SetDefaultCommand(frc2::RunCommand([this] {
+    m_intake->SetRotation(m_bill.GetRawAxis(OperatorConstants::kAxisRightStickY * 0.5));
+  },{m_intake}).ToPtr());
   // Configure the button bindings
   ConfigureBindings();
 }
@@ -22,7 +26,7 @@ RobotContainer::RobotContainer() {
 void RobotContainer::ConfigureBindings() {
    // Bill controls
   frc2::Trigger intakeButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
-  intakeButton.OnTrue(RunIntake(m_intake, 1.0, 0.0).ToPtr());
+  intakeButton.OnTrue(RunIntake(m_intake, 0.5, 0.0).ToPtr());
   intakeButton.OnFalse(frc2::InstantCommand([this]{
     m_intake->SetPower(0.0, 0.0);
   },{m_intake}).ToPtr());
@@ -30,10 +34,10 @@ void RobotContainer::ConfigureBindings() {
   frc2::Trigger retractIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
   retractIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kRetractPosition).ToPtr());
 
-  frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
+  frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDCircle)};
   ampScoreIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kAmpPosition).ToPtr());
 
-  frc2::Trigger extendIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
+  frc2::Trigger extendIntakeButton{m_bill.Button(OperatorConstants::kButtonIDTriangle)};
   extendIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kExtendPosition).ToPtr());
 
   frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};

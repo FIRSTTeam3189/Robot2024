@@ -6,9 +6,9 @@
 
 SwerveModule::SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
                            int CANcoderID, double CANcoderOffset):
-m_driveMotor(driveMotorID, "rio"),
-m_angleMotor(angleMotorID, "rio"),
-m_CANcoder(CANcoderID, "rio"),
+m_driveMotor(driveMotorID, "Swerve"),
+m_angleMotor(angleMotorID, "Swerve"),
+m_CANcoder(CANcoderID, "Swerve"),
 m_PIDValues{SwerveModuleConstants::kPDrive, SwerveModuleConstants::kIDrive, SwerveModuleConstants::kDDrive,
             SwerveModuleConstants::kPAngle, SwerveModuleConstants::kIAngle, SwerveModuleConstants::kDAngle},
 m_moduleNumber(moduleNumber),

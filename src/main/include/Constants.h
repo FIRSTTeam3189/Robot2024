@@ -32,7 +32,7 @@
 #define Pi 3.14159265358979323846
 
 namespace SwerveDriveConstants {
-constexpr int kGyroID {13};
+    constexpr int kGyroID {13};
     constexpr double kRadiansToDegreesMultiplier {180.0 / Pi};
 
     // Coordinate plane distance in meters to each swerve drive
@@ -187,7 +187,7 @@ namespace ShooterConstants {
     constexpr double kRotationOffset {0};
     constexpr double kRotationConversion {1.0};
     constexpr bool kRotationInverted {false};
-    constexpr uint kRotationCurrentLimit {30};
+    constexpr unsigned int kRotationCurrentLimit {30};
 }
 
 
@@ -196,10 +196,10 @@ namespace LedConstants{
 }
 
 namespace IntakeConstants{
-    constexpr int kRotationMotorID {16};
-    constexpr int kRollerMotorID {17};
+    constexpr int kRotationMotorID {17};
+    constexpr int kRollerMotorID {18};
     
-    constexpr double kPRotation {1.0};
+    constexpr double kPRotation {0.5};
     constexpr double kIRotation {0};
     constexpr double kDRotation {0};
 
@@ -209,7 +209,7 @@ namespace IntakeConstants{
     constexpr double kRotationOffset {0};
     constexpr double kRotationConversion {1.0};
     constexpr bool kRotationInverted {false};
-    constexpr uint kRotationCurrentLimit {30};
+    constexpr unsigned int kRotationCurrentLimit {30};
 }
 
 namespace OperatorConstants{
