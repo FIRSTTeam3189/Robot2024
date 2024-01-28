@@ -13,7 +13,7 @@
 #include "util/SwerveModule.h"
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/DriverStation.h>
-
+#include "subsystems/Odometry.h"
 struct SwerveModules {
   frc::Translation2d m_frontLeftLocation;
   frc::Translation2d m_frontRightLocation;
@@ -29,8 +29,7 @@ struct SwerveModules {
 class SwerveDrive : public frc2::SubsystemBase {
  public:
 
-  SwerveDrive();
-  void ConfigGyro();
+  SwerveDrive(Odometry *odometry);
   void SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates);
   void Drive(units::meters_per_second_t xSpeed,
              units::meters_per_second_t ySpeed,
@@ -49,7 +48,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   void UpdateEstimator();
   void LogModuleStates(wpi::array<frc::SwerveModulePosition, 4> modulePositions);
   std::array<ctre::phoenix6::hardware::TalonFX*, 8> GetMotorsForMusic();
-  void UpdateVisionData();
+
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -61,11 +60,9 @@ class SwerveDrive : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
   SwerveModules m_modules;
   wpi::array<frc::SwerveModulePosition, 4> m_modulePositions;
-  ctre::phoenix6::hardware::Pigeon2 m_pigeon;
-  frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
-  ctre::phoenix6::configs::Pigeon2Configuration m_pigeonConfigs{};
+
 
   // Tuning mode preference -- when true, will constantly update module preferences
   std::string_view m_tuningModeKey = "Tuning Mode?";
-
+  Odometry *m_odometry;
 };
