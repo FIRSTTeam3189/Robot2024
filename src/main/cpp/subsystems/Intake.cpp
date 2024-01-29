@@ -10,7 +10,7 @@ Intake::Intake() :
  m_rotationPIDController(m_rotationMotor.GetPIDController()),
  m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle))
 {
-    m_rotationMotor.RestoreFactoryDefaults();
+    // m_rotationMotor.RestoreFactoryDefaults();
     m_rollerMotor.RestoreFactoryDefaults();
     m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
     m_rotationPIDController.SetP(IntakeConstants::kPRotation);
@@ -23,14 +23,20 @@ Intake::Intake() :
 }
 
 // This method will be called once per scheduler run
-void Intake::Periodic() {}
+void Intake::Periodic() {
+    frc::SmartDashboard::PutNumber("Intake PID target", m_position);
+    frc::SmartDashboard::PutNumber("Intake position", m_rotationEncoder.GetPosition());
+}
 
 void Intake::SetRotation(double position) {
+    m_position = position;
     m_rotationPIDController.SetReference(position, rev::ControlType::kPosition);
 }
 
+void Intake::SetRollerPower(double power) {
+    m_rollerMotor.Set(power);
+}
 
-void Intake::SetPower(double rollerPower, double rotationPower) {
-    m_rollerMotor.Set(rollerPower);
-    m_rotationMotor.Set(rotationPower);
+void Intake::SetRotationPower(double power) {
+    m_rotationMotor.Set(power);
 }

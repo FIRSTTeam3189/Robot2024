@@ -6,10 +6,10 @@
 
 MusicSystem::MusicSystem(std::array<ctre::phoenix6::hardware::TalonFX*, 8> motors) :
 m_musicSystem(std::string{frc::filesystem::GetDeployDirectory() + "/music/funkytown.chrp"}.c_str()) {
-    for (auto instrument: motors) {
-        m_musicSystem.AddInstrument(*instrument);
-    }
-    m_musicSystem.Play();
+    // for (auto instrument: motors) {
+        // m_musicSystem.AddInstrument(*instrument);
+    // }
+    // m_musicSystem.Play();
 }
 
 // This method will be called once per scheduler run

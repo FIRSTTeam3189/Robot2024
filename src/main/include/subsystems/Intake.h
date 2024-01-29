@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/CANSparkFlex.h>
 #include <rev/CANSparkMax.h>
 #include <frc/controller/PIDController.h>
@@ -15,7 +16,8 @@
 class Intake : public frc2::SubsystemBase {
  public:
   Intake();
-  void SetPower(double rollerPower, double rotationPower);
+  void SetRollerPower(double power);
+  void SetRotationPower(double power);
   void SetRotation(double position);
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -23,10 +25,11 @@ class Intake : public frc2::SubsystemBase {
   void Periodic() override;
  
  private:
- rev::CANSparkMax m_rotationMotor;
- rev::CANSparkMax m_rollerMotor;
- rev::SparkMaxPIDController m_rotationPIDController;
- rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
+  rev::CANSparkMax m_rotationMotor;
+  rev::CANSparkMax m_rollerMotor;
+  rev::SparkMaxPIDController m_rotationPIDController;
+  rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
+  double m_position;
  
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

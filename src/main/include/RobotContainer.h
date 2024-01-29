@@ -21,9 +21,8 @@
 #include "commands/RunIntake.h"
 #include "subsystems/LED.h"
 #include "subsystems/MusicSystem.h"
-#include "subsystems/Odometry.h"
-
 #include "subsystems/Vision.h"
+#include "subsystems/PoseEstimatorHelper.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -44,14 +43,12 @@ class RobotContainer {
   frc2::CommandJoystick m_ted{OperatorConstants::kCoDriverControllerPort};
 
   // The robot's subsystems are defined here...
-  Vision *m_vision = new Vision();
+  PoseEstimatorHelper *m_helper = new PoseEstimatorHelper();
+  Vision *m_vision = new Vision(m_helper);
   Shooter *m_shooter = new Shooter();
-  Odometry *m_odometry = new Odometry(m_vision);
-  SwerveDrive *m_swerveDrive = new SwerveDrive(m_odometry);
+  SwerveDrive *m_swerveDrive = new SwerveDrive(m_helper);
   Intake *m_intake = new Intake();
   MusicSystem *m_musicSystem = new MusicSystem(m_swerveDrive->GetMotorsForMusic());
-  
-
 
   bool m_isSpecialHeadingMode = true;
   bool m_isFieldRelative = true;

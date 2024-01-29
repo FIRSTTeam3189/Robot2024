@@ -40,7 +40,7 @@ namespace SwerveDriveConstants {
     constexpr auto kXDistanceFromCenter {0.282575_m};
     constexpr auto kYDistanceFromCenter {0.282575_m};
 
-    constexpr double kGyroMountPoseYaw {0.0};
+    constexpr double kGyroMountPoseYaw {25.1};
 
     static frc::SwerveDriveKinematics<4> kKinematics {
         frc::Translation2d{+SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
@@ -49,8 +49,8 @@ namespace SwerveDriveConstants {
         frc::Translation2d{-SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter}
     };
 
-    constexpr auto kMaxSpeed {10.0_mps};
-    constexpr auto kMaxAcceleration {6.0_mps_sq};
+    constexpr auto kMaxSpeed {1.0_mps};
+    constexpr auto kMaxAcceleration {1.0_mps_sq};
     constexpr units::radians_per_second_t kMaxAngularVelocity {2.0 * Pi};
     constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {Pi};
 
@@ -60,14 +60,13 @@ namespace SwerveDriveConstants {
     constexpr auto ka {3.409 * 1_V * 1_s * 1_s / 1_m};
 
     // These are for robot rotation, not wheel rotation
-    constexpr double kPRot {0.05};
+    constexpr double kPRot {0.005};
     constexpr double kIRot {0.0};
-    constexpr double kDRot {0.005};
+    constexpr double kDRot {0.0};
 }
 
 namespace SwerveModuleConstants {
     // Sensor IDs for motors + encoders - labeled on robot
-    constexpr int kGyroID {1};
     constexpr int kFrontRightAngleID {1};
     constexpr int kFrontRightDriveID {2};
     constexpr int kBackRightAngleID {3};
@@ -82,14 +81,14 @@ namespace SwerveModuleConstants {
     constexpr int kBackRightCANcoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
-    constexpr double kFrontLeftOffset {235.5};
-    constexpr double kFrontRightOffset {334.5};
-    constexpr double kBackLeftOffset {9.8};
-    constexpr double kBackRightOffset {83.5};
+    constexpr double kFrontLeftOffset {-0.171143};
+    constexpr double kFrontRightOffset {-0.390137};
+    constexpr double kBackLeftOffset {0.154785};
+    constexpr double kBackRightOffset {0.425781};
 
     // Motor + sensor inversions
-    constexpr bool kDriveMotorInverted = false;
-    constexpr bool kAngleMotorInverted = false;
+    constexpr bool kDriveMotorInverted = true;
+    constexpr bool kAngleMotorInverted = true;
     constexpr bool kCANcoderInverted = false;
 
     // Encoder sensor range
@@ -121,7 +120,7 @@ namespace SwerveModuleConstants {
     constexpr double kVDrive {0.0};
     constexpr double kSDrive {0.0};
 
-    constexpr double kPAngle {2.0};
+    constexpr double kPAngle {5.0};
     constexpr double kIAngle {0.0};
     constexpr double kDAngle {0.0};
     constexpr double kVAngle {0.0};
@@ -190,7 +189,6 @@ namespace ShooterConstants {
     constexpr unsigned int kRotationCurrentLimit {30};
 }
 
-
 namespace LedConstants{
     constexpr int kCandleID {1};
 }
@@ -243,6 +241,7 @@ constexpr int kDriverControllerPort {0};
 namespace VisionConstants {
     constexpr wpi::array<double, 3> kEncoderTrustCoefficients {0.1, 0.1, 0.1};
     constexpr wpi::array<double, 3> kVisionTrustCoefficients {0.5, 0.5, 0.5};
+    constexpr double kVisionStdDevPerMeter {0.1};
     constexpr units::meter_t kCameraXOffset {0.0_m};
     constexpr units::meter_t kCameraYOffset {0.0_m};
     constexpr units::meter_t kCameraZOffset {0.0_m};

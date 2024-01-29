@@ -12,16 +12,16 @@
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   // Runs shooter and shooter angle motor continuously
-  m_shooter->SetDefaultCommand(frc2::RunCommand([this] { 
-    m_shooter->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY)); 
-    m_shooter->SetAnglePower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
-  },{m_shooter}).ToPtr());
-
+  // m_shooter->SetDefaultCommand(frc2::RunCommand([this] { 
+  //   m_shooter->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY)); 
+  //   m_shooter->SetAnglePower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
+  // },{m_shooter}).ToPtr());
 
   m_swerveDrive->SetDefaultCommand(JoystickDrive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
   
   m_intake->SetDefaultCommand(frc2::RunCommand([this] {
-    m_intake->SetRotation(m_bill.GetRawAxis(OperatorConstants::kAxisRightStickY * 0.5));
+    m_intake->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY));
+    m_intake->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
   },{m_intake}).ToPtr());
   // Configure the button bindings
   ConfigureBindings();
@@ -32,7 +32,8 @@ void RobotContainer::ConfigureBindings() {
   frc2::Trigger intakeButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
   intakeButton.OnTrue(RunIntake(m_intake, 0.5, 0.0).ToPtr());
   intakeButton.OnFalse(frc2::InstantCommand([this]{
-    m_intake->SetPower(0.0, 0.0);
+    m_intake->SetRollerPower(0.0);
+    m_intake->SetRotationPower(0.0);
   },{m_intake}).ToPtr());
 
   frc2::Trigger retractIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
@@ -46,7 +47,7 @@ void RobotContainer::ConfigureBindings() {
 
   frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
-    m_swerveDrive->ResetGyroscope();
+    // m_swerveDrive->ResetGyroscope();
     m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}});
   },{m_swerveDrive}).ToPtr());
 

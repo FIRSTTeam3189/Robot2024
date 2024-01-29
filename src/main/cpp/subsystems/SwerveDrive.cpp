@@ -4,8 +4,8 @@
 
 #include "subsystems/SwerveDrive.h"
 
-SwerveDrive::SwerveDrive(Odometry *odometry) :
-m_modules {
+SwerveDrive::SwerveDrive(PoseEstimatorHelper *helper) :
+m_modules{
   {+SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
   {+SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter},
   {-SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
@@ -18,20 +18,21 @@ m_modules {
    SwerveModuleConstants::kBackLeftCANcoderID, SwerveModuleConstants::kBackLeftOffset},
   {3, SwerveModuleConstants::kBackRightDriveID, SwerveModuleConstants::kBackRightAngleID,
    SwerveModuleConstants::kBackRightCANcoderID, SwerveModuleConstants::kBackRightOffset}
-}, m_odometry(odometry),
-
+}, 
+m_pigeon(SwerveDriveConstants::kGyroID, "Swerve"),
+m_poseHelper(helper),
 m_modulePositions(
     m_modules.m_frontLeft.GetPosition(true),
     m_modules.m_frontRight.GetPosition(true),
     m_modules.m_backLeft.GetPosition(true),
     m_modules.m_backRight.GetPosition(true)
 )
-
-
 {   
-
-  auto poseEstimator = new frc::SwerveDrivePoseEstimator<4> (SwerveDriveConstants::kKinematics, m_odometry->GetPigeon()->GetRotation2d(), 
+    ConfigGyro();
+    auto poseEstimator = new frc::SwerveDrivePoseEstimator<4> (SwerveDriveConstants::kKinematics, m_pigeon.GetRotation2d(), 
     m_modulePositions, frc::Pose2d{}, VisionConstants::kEncoderTrustCoefficients, VisionConstants::kVisionTrustCoefficients);
+    m_poseHelper->SetPoseEstimator(poseEstimator);
+
     // / Setup autobuilder for pathplannerlib
     pathplanner::AutoBuilder::configureHolonomic(
         [this](){ return GetEstimatedPose(); }, // Robot pose supplier
@@ -52,7 +53,6 @@ m_modulePositions(
         },
         this // Reference to this subsystem to set requirements
     );
-    m_odometry->SetPoseEstimator(poseEstimator);
 }
 
 // This method will be called once per scheduler run
@@ -64,7 +64,12 @@ void SwerveDrive::Periodic() {
         m_modules.m_backRight.UpdatePreferences();
     }
     UpdateEstimator();
-    
+}
+
+void SwerveDrive::ConfigGyro() {
+    m_pigeon.GetConfigurator().Apply(ctre::phoenix6::configs::Pigeon2Configuration{});
+    m_pigeonConfigs.MountPose.MountPoseYaw = SwerveDriveConstants::kGyroMountPoseYaw;
+    m_pigeon.GetConfigurator().Apply(m_pigeonConfigs);
 }
 
 void SwerveDrive::Drive(units::meters_per_second_t xSpeed, 
@@ -78,7 +83,7 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                                    xSpeed, ySpeed, rot,  m_odometry->GetPigeon()->GetRotation2d())
+                                    xSpeed, ySpeed, rot,  m_pigeon.GetRotation2d())
                                     : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
                   centerOfRotation);
 
@@ -114,7 +119,7 @@ void SwerveDrive::SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredS
 
 double SwerveDrive::GetNormalizedYaw() {
     // Normalizes yaw to (-180, 180)
-    int yaw =  m_odometry->GetPigeon()->GetYaw().GetValue().value(); 
+    int yaw =  m_pigeon.GetYaw().GetValue().value(); 
     // (-360, 360)
     int normalizedYaw = (yaw % 360);
     // (-180, 180)
@@ -139,7 +144,7 @@ frc::ChassisSpeeds SwerveDrive::GetRobotRelativeSpeeds() {
 
 frc::Pose2d SwerveDrive::GetEstimatedPose() {
     UpdateEstimator();
-    return m_odometry->GetPoseEstimator()->GetEstimatedPosition();
+    return m_poseHelper->GetEstimatedPose();
 }
 
 void SwerveDrive::LogModuleStates(wpi::array<frc::SwerveModulePosition, 4> modulePositions) {
@@ -159,7 +164,7 @@ void SwerveDrive::UpdateEstimator() {
     m_modulePositions[3] = m_modules.m_backRight.GetPosition(true);
 
     LogModuleStates(m_modulePositions);
-    m_odometry->UpdateOdometry(m_modulePositions);
+    m_poseHelper->UpdatePoseEstimator(m_modulePositions, m_pigeon.GetRotation2d());
 }
 
 void SwerveDrive::ResetDriveEncoders() {
@@ -173,11 +178,11 @@ void SwerveDrive::SetPose(frc::Pose2d pose) {
     UpdateEstimator();
     // TODO: not sure if the encoders should be reset here
     ResetDriveEncoders();
-    m_odometry->GetPoseEstimator()->ResetPosition( m_odometry->GetPigeon()->GetRotation2d(), m_modulePositions, pose);
+    m_poseHelper->ResetPose(m_pigeon.GetRotation2d(), m_modulePositions, pose);
 }
 
 void SwerveDrive::ResetGyroscope() {
-     m_odometry->GetPigeon()->SetYaw(0.0_deg);
+    m_pigeon.SetYaw(0.0_deg);
 }
 
 void SwerveDrive::Lock() {
