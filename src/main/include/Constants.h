@@ -253,3 +253,16 @@ namespace VisionConstants {
         frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_rad, 0.0_rad, 0.0_rad}}
     };
 }
+
+namespace ClimberConstants{
+    //FIND IDS - krishna 
+    constexpr int kleftServoID {0}; 
+    constexpr int krightServoID {0}; 
+    constexpr int krightMotorID {0};
+    constexpr int klefttMotorID {0};
+    constexpr int kInvertMotor {false};
+    constexpr double kExtendMotorSpeed {0.5};
+    constexpr double kExtendServoAngle {0.0};
+    constexpr double kRetractMotorSpeed {-0.5};
+    constexpr double kRetractServoAngle {0.0};
+}

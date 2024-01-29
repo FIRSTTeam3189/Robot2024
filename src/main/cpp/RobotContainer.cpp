@@ -6,8 +6,6 @@
 
 #include <frc2/command/button/Trigger.h>
 
-#include "frc/DataLogManager.h"
-
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
@@ -49,6 +47,24 @@ void RobotContainer::ConfigureBindings() {
     m_swerveDrive->ResetGyroscope();
     m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}});
   },{m_swerveDrive}).ToPtr());
+
+  frc2::Trigger extendClimbButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  extendClimbButton.OnTrue(frc2::InstantCommand([this]{ 
+    m_climber->SetPower(ClimberConstants::kExtendMotorSpeed);
+    m_climber->SetServoRotation(ClimberConstants::kExtendServoAngle);
+  },{m_climber}).ToPtr());
+  extendClimbButton.OnFalse(frc2::InstantCommand([this]{
+    m_climber->SetPower(0.0);
+    m_climber->SetServoRotation(ClimberConstants::kRetractServoAngle);
+  }, {m_climber}).ToPtr());
+
+  frc2::Trigger retractClimbButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
+  retractClimbButton.OnTrue(frc2::InstantCommand([this]{
+    m_climber->SetPower(ClimberConstants::kRetractMotorSpeed);
+  },{m_climber}).ToPtr());
+  retractClimbButton.OnFalse(frc2::InstantCommand([this]{
+    m_climber->SetPower(0.0);
+  }, {m_climber}).ToPtr());
 
   // Ted controls
   frc2::Trigger shootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};

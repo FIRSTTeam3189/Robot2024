@@ -22,6 +22,7 @@
 #include "subsystems/LED.h"
 #include "subsystems/MusicSystem.h"
 #include "subsystems/Odometry.h"
+#include "subsystems/Climber.h"
 
 #include "subsystems/Vision.h"
 
@@ -44,6 +45,7 @@ class RobotContainer {
   frc2::CommandJoystick m_ted{OperatorConstants::kCoDriverControllerPort};
 
   // The robot's subsystems are defined here...
+  Climber *m_climber = new Climber();
   Vision *m_vision = new Vision();
   Shooter *m_shooter = new Shooter();
   Odometry *m_odometry = new Odometry(m_vision);
