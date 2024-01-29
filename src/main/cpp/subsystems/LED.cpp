@@ -6,16 +6,19 @@
 
 
 
-LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animation(NULL), m_shouldStartup(true), m_startupRunning(false){
+LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animation(NULL), m_shouldStartup(true), m_startupRunning(false), m_runString(false), m_shouldRunString(false), m_lastEnableState(false){
      m_candleControl.ConfigAllSettings(m_candleConfig);
 
     m_ledSections[LEDSection::All] = {0, 520};
 
     // Candle length 8
     m_ledSections[LEDSection::Candle] = {0, 8};
+    m_ledSections[LEDSection::AllLEDMatrix] = {8, 520};
+    m_ledSections[LEDSection::LEDMatrix1] = {8, 264};
+    m_ledSections[LEDSection::LEDMatrix2] = {264, 520};
 
     // Rows length 32 each
-    m_ledSections[LEDSection::LEDMatrix] = {8, 520};
+    
     m_ledSections[LEDSection::Row0] = {8, 40};
     m_ledSections[LEDSection::Row1] = {40, 72};
     m_ledSections[LEDSection::Row2] = {72, 104};
@@ -54,7 +57,17 @@ void LED::Periodic() {
             SetAnimation(LEDAnimationType::Clear);
             m_lastEnableState = true;
         }
-        
+        if (m_runString) {
+            ClearColor(LEDSection::All);
+            DisplayString();
+            m_curStrIndex -= 1;
+            if (m_curStrIndex == -1) {
+                m_curStrIndex = 0;
+                if (m_arr.size() == 0) {
+                    m_runString = false;
+                }
+            } 
+        }
 
     }    
 }
@@ -68,7 +81,7 @@ void LED::SetRowColor(int r, int g, int b, std::pair<uint8_t, uint8_t> section){
 }
 
 // Columns and row counts start with 1 not 0
-void LED::SetColumnColor(int r, int g, int b, uint_8 col, int start, int end){
+void LED::SetColumnColor(int r, int g, int b, int col, int start, int end){
     uint8_t count = 0;
     for (int i = start - 1; i <= end - 1; i++){
         count = (32*i) + 7 + col;
@@ -185,7 +198,61 @@ if (!m_startupRunning) {
     }
 }
 
-std::map<std::string, std::vector<std:vector<int>> LEDDictionary = {
+/*void LED::Search(std::string &str, int length){
+    toupper(str);
+    std::vector<int> col = {};
+    std::vector<int> row = {};
+    for (int i = 0; i < length; i++){
+        std::string letter = str.substr(i, i+1);
+        for (int j = 0; j < LEDDictionary[letter].size; i++) {
+            for (int x = 0; x < LEDDictionary[letter][j].size) {
+                uint8_t pixel = LEDDictionary[letter][j][x];
+                nums.push_back(&pixel);
+            }
+            row.push_back(&col);
+        }
+        m_arr.push_back(&row);
+        row = {};
+        col = {};
+        //i[0] is first letter , i[1] is second letter....
+    }
+    m_runString = true;
+    m_shouldRunString = true;
+    m_curStrIndex = 31;
+}*/
+
+/*void LED::DisplayString() {
+    if (m_shouldRunString) {
+        m_Timer.Start();
+        m_shouldRunString = false;
+    } else if (m_Timer.Get() > 0.5s) {
+        for (int i = 0; i < m_arr.size; i++) {
+            for (int j = 0; j < m_arr[i].size; j++) {
+                for (int x = 0; x < m_arr[i][j].size; x++) {
+                    int index = (m_curStrIndex + m_arr[i][j][x] - 1);
+                    if (index > 31) {
+                        index = 0;
+                    } else if (index < 0) {
+                        m_arr[i][j].erase(x);
+                    } else {
+                        index = index + (32*j) + 8;
+                        SetRowColor(0, 0, 255, {index, index + 1})
+                    }
+                }
+                if (m_arr[i][j].size == 0) {
+                    m_arr[i].erase(j);
+                }
+            }
+            if (m_arr[i].size == 0) {
+                m_arr.erase(i);
+            }
+        }
+        m_Timer.Stop();
+        m_shouldRunString = true;
+    }
+}*/
+
+/*std::map<std::string, std::vector<std:vector<int>>> LEDDictionary = {
     {"A", {{2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 6}}},
     {"B", {{1, 2, 3, 4, 5} {1, 6}, {1, 6}, {1, 2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}}},
     {"C", {{1, 2, 3, 4, 5, 6}, {1}, {1}, {1}, {1}, {1}, {1}, {1, 2, 3, 4, 5, 6}}},
@@ -220,33 +287,4 @@ std::map<std::string, std::vector<std:vector<int>> LEDDictionary = {
     {"7", {{1, 2, 3, 4, 5, 6}, {6}, {6}, {6}, {6}, {6}, {6}, {6}}},
     {"8", {{2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 6}, {2, 3, 4, 5}, {1, 6}, {1, 6}, {2, 3, 4, 5}}},
     {"9", {{1, 2, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}, {6}, {6}, {6}, {6}}}
-
-
-
-void DisplayString(std::string &str, int length){
-    toupper(str);
-    for (int i = 0; i < length; i++){
-        std::string letter = str.substr(i, i+1);
-        for (int j = 0; j < LEDDictionary[letter].size(); i++) {
-            for (int x = 0; x < LEDDictionary[letter][j].size) {
-                uint8_t pixel = LEDDictionary[letter][j][x];
-                SetRowColor(0, 0, 255, {pixel-1, pixel});
-            }
-        }
-        
-
-        //i[0] is first letter , i[1] is second letter....
-    } 
-}
-
-
-
-
-
-
-
-
-
-
-
-}
+}*/

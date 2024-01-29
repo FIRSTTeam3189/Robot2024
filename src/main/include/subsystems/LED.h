@@ -7,6 +7,7 @@
 #include <map>
 #include <vector>
 #include <frc2/command/SubsystemBase.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <ctre/Phoenix.h>
 #include <ctre/phoenix/led/ColorFlowAnimation.h>
 #include <ctre/phoenix/led/FireAnimation.h>
@@ -20,20 +21,21 @@
 #include "Constants.h"
 
 enum class LEDAnimationType { Clear, ColorFlow, Fire, Larson, Rainbow, RGBFade, SingleFade, Strobe, Twinkle, TwinkleOff }; 
-enum class LEDSection { All, Candle, LEDMatrix, Row0, Row1, Row2, Row3, Row4, Row5, Row6, Row7, Row8, Row9, Row10, Row11, Row11, Row12, Row13, Row14, Row15};
+enum class LEDSection { All, Candle, AllLEDMatrix, LEDMatrix1, LEDMatrix2, Row0, Row1, Row2, Row3, Row4, Row5, Row6, Row7, Row8, Row9, Row10, Row11, Row12, Row13, Row14, Row15};
 class LED : public frc2::SubsystemBase {
  public:
   LED();
     
   void SetSectionColor(int r, int g, int b, LEDSection section = LEDSection::All);
   void SetRowColor(int r, int g, int b, std::pair<uint8_t, uint8_t> section = {0, 520});
-  void SetColumnColor(int r, int g, int b, uint_8 col, int start, int end)
+  void SetColumnColor(int r, int g, int b, int col, int start, int end);
   void ClearColor(LEDSection section = LEDSection::All);
   void SetAnimation(LEDAnimationType animation, LEDSection section = LEDSection::All, int r = 0, int g = 0, int b = 0, double speed = 0.7, bool reverse = false, int animSlot = 0);
   void StartingAnimation();
   void CBAnimation();
   void ClearAll(LEDSection section);
-  void DisplayString(std::string &str, int length, int pos)
+  void Search(std::string &str, int length);
+  void DisplayString();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -41,7 +43,7 @@ class LED : public frc2::SubsystemBase {
   void Periodic() override;
 
  private:
- static std::map<std::string, std::vector<std:vector<int>> LEDDictionary;
+ /*static std::map<std::string, std::vector<std:vector<int>>> LEDDictionary;*/
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 ctre::phoenix::led::CANdle m_candleControl;
@@ -49,6 +51,11 @@ std::map<LEDSection, std::pair<uint8_t, uint8_t>> m_ledSections;
 ctre::phoenix::led::Animation *m_animation;
 bool m_shouldStartup;
 bool m_startupRunning;
+bool m_runString;
+bool m_shouldRunString;
+bool m_lastEnableState;
+int m_curStrIndex = 0;
 CANdleConfiguration m_candleConfig;
 frc::Timer m_Timer{};
+std::vector<std::vector<std::vector<int>>> m_arr {};
 };
