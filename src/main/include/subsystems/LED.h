@@ -43,7 +43,7 @@ class LED : public frc2::SubsystemBase {
   void Periodic() override;
 
  private:
- /*static std::map<std::string, std::vector<std:vector<int>>> LEDDictionary;*/
+ 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 ctre::phoenix::led::CANdle m_candleControl;
@@ -57,5 +57,6 @@ bool m_lastEnableState;
 int m_curStrIndex = 0;
 CANdleConfiguration m_candleConfig;
 frc::Timer m_Timer{};
+static std::map<std::string, std::vector<std::vector<int>>> s_LEDDictionary;
 std::vector<std::vector<std::vector<int>>> m_arr {};
 };
