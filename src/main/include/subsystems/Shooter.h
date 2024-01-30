@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <frc/AnalogPotentiometer.h>
 #include <rev/CANSparkMax.h>
 #include <rev/SparkAbsoluteEncoder.h> 
 #include "Constants.h"
@@ -19,6 +20,7 @@ class Shooter : public frc2::SubsystemBase {
   void ConfigRollerMotor();
   void ConfigExtensionMotors();
   void ConfigRotationMotor();
+  void SetLoaderPower(double power);
    
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -28,7 +30,9 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-   rev::CANSparkMax m_rollerMotor;
+   rev::CANSparkMax m_topMotor;
+   rev::CANSparkMax m_bottomMotor;
+   rev::CANSparkMax m_loaderMotor;
    rev::CANSparkMax m_leftExtensionMotor;
    rev::CANSparkMax m_rightExtensionMotor;
    rev::CANSparkMax m_rotationMotor;
@@ -38,4 +42,5 @@ class Shooter : public frc2::SubsystemBase {
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
    rev::SparkMaxAbsoluteEncoder m_leftExtensionEncoder;
    rev::SparkMaxAbsoluteEncoder m_rightExtensionEncoder;
+   frc::AnalogPotentiometer m_ultrasonicSensor;
 };

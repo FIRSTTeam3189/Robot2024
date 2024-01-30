@@ -6,6 +6,7 @@
 
 #include <frc2/command/SubsystemBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/AnalogPotentiometer.h>
 #include <rev/CANSparkFlex.h>
 #include <rev/CANSparkMax.h>
 #include <frc/controller/PIDController.h>
@@ -30,6 +31,7 @@ class Intake : public frc2::SubsystemBase {
   rev::SparkMaxPIDController m_rotationPIDController;
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
   double m_position;
+  frc::AnalogPotentiometer m_ultrasonicSensor;
  
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

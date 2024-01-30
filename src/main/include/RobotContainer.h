@@ -21,9 +21,7 @@
 #include "commands/RunIntake.h"
 #include "subsystems/LED.h"
 #include "subsystems/MusicSystem.h"
-#include "subsystems/Odometry.h"
 #include "subsystems/Climber.h"
-
 #include "subsystems/Vision.h"
 #include "subsystems/PoseEstimatorHelper.h"
 
@@ -48,7 +46,7 @@ class RobotContainer {
   // The robot's subsystems are defined here...
   Climber *m_climber = new Climber();
   PoseEstimatorHelper *m_helper = new PoseEstimatorHelper();
-  Vision *m_vision = new Vision();
+  Vision *m_vision = new Vision(m_helper);
   Shooter *m_shooter = new Shooter();
   SwerveDrive *m_swerveDrive = new SwerveDrive(m_helper);
   Intake *m_intake = new Intake();
