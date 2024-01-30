@@ -126,6 +126,7 @@ namespace SwerveModuleConstants {
     constexpr double kVAngle {0.0};
     constexpr double kSAngle {0.0};
 
+    constexpr double kMaxVoltage {10.0};
     // Current limits -- allows continuous operation at certain amps, or a peak of greater amps for <threshold time
     constexpr int kAngleContinuousCurrentLimit = 25;
     constexpr int kAnglePeakCurrentLimit = 40;

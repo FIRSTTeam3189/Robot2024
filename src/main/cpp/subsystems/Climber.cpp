@@ -25,5 +25,5 @@ void Climber::SetPower(double power){
 
 void Climber::SetServoRotation(double angle){
     m_leftServo.SetAngle(angle);
-    m_rightervo.SetAngle(angle);
+    m_rightServo.SetAngle(angle);
 }

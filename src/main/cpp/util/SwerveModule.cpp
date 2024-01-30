@@ -76,15 +76,18 @@ void SwerveModule::ConfigAngleMotor(int CANcoderID) {
 
     // m_angleConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kAngleGearRatio;
     // TODO: Not sure if this number is correct/if it actually works this way on our modules
-    // m_angleConfigs.Feedback.RotorToSensorRatio = SwerveModuleConstants::kAngleGearRatio;
+    m_angleConfigs.Feedback.RotorToSensorRatio = SwerveModuleConstants::kAngleGearRatio;
     m_angleConfigs.Feedback.FeedbackRemoteSensorID = CANcoderID;
-    // m_angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
-    m_angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::RemoteCANcoder;
+    m_angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
+    // m_angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::RemoteCANcoder;
 
     m_angleConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kAngleContinuousCurrentLimit;
     m_angleConfigs.CurrentLimits.SupplyCurrentThreshold = SwerveModuleConstants::kAnglePeakCurrentLimit;
     m_angleConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kAnglePeakCurrentDuration;
     m_angleConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kAngleEnableCurrentLimit;
+
+    m_angleConfigs.Voltage.PeakForwardVoltage = SwerveModuleConstants::kMaxVoltage;
+    m_angleConfigs.Voltage.PeakReverseVoltage = -SwerveModuleConstants::kMaxVoltage;
 
     m_angleConfigs.MotorOutput.Inverted = SwerveModuleConstants::kAngleMotorInverted;
     m_angleConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kAngleNeutralMode;
@@ -117,13 +120,15 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
     frc::SmartDashboard::PutNumber(speedKey, targetSpeed);
     frc::SmartDashboard::PutNumber(angleKey, targetAngle.value());
 
-    m_driveMotor.SetControl(m_driveSetter.WithVelocity(units::turns_per_second_t{targetSpeed}));
+    // m_driveMotor.SetControl(m_driveSetter.WithVelocity(units::turns_per_second_t{targetSpeed}));
+    // FOC Pro feature
+    m_driveMotor.SetControl(m_driveSetter.WithEnableFOC(true).WithVelocity(units::turns_per_second_t{targetSpeed}));
     if (fabs(targetSpeed) < .05 && fabs(m_lastAngle - targetAngle.value()) < 5.0) {
         // Stop();
-        m_driveMotor.SetControl(m_driveSetter.WithVelocity(units::turns_per_second_t{0.0}));
+        m_driveMotor.SetControl(m_driveSetter.WithEnableFOC(true).WithVelocity(units::turns_per_second_t{0.0}));
         targetAngle = units::degree_t{m_lastAngle};
     } else {
-        m_angleMotor.SetControl(m_angleSetter.WithPosition(targetAngle));
+        m_angleMotor.SetControl(m_angleSetter.WithEnableFOC(true).WithPosition(targetAngle));
     }
     
     m_lastAngle = targetAngle.value();
