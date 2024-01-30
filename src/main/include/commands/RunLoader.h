@@ -6,7 +6,7 @@
 
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
-#include "subsystems/Shooter.h"
+#include <subsystems/Shooter.h>
 
 /**
  * An example command.
@@ -15,10 +15,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class RunShooter
-    : public frc2::CommandHelper<frc2::Command, RunShooter> {
+class RunLoader
+    : public frc2::CommandHelper<frc2::Command, RunLoader> {
  public:
-  RunShooter(Shooter *shooter, double power);
+  RunLoader(Shooter *shooter, double power);
 
   void Initialize() override;
 
@@ -28,7 +28,9 @@ class RunShooter
 
   bool IsFinished() override;
 
- private:
-  Shooter *m_shooter;
-  double m_power;
+  private:
+   Shooter *m_loader;
+   double m_loaderPower;
+
+
 };

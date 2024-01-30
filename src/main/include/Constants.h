@@ -170,10 +170,12 @@ namespace AutoConstants {
 }
  // Shooter Constants
 namespace ShooterConstants {
-    constexpr int kRollerMotorID {13};
-    constexpr int kLeftExtensionMotorID {14};
-    constexpr int kRightExtensionMotorID {15};
-    constexpr int kRotationMotorID {16};
+    constexpr int kTopMotorID {13};
+    constexpr int kBottomMotorID {14};
+    constexpr int kLoaderMotorID {15};
+    constexpr int kLeftExtensionMotorID {16};
+    constexpr int kRightExtensionMotorID {17};
+    constexpr int kRotationMotorID {18};
     constexpr double kPRotation {1.0};
     constexpr double kIRotation {0.0};
     constexpr double kDRotation {0.0};
@@ -188,6 +190,7 @@ namespace ShooterConstants {
     constexpr double kRotationConversion {1.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
+    constexpr int kUltrasonicPort {0};
 }
 
 namespace LedConstants{
@@ -209,6 +212,7 @@ namespace IntakeConstants{
     constexpr double kRotationConversion {1.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
+    constexpr int kUltrasonicPort {0};
 }
 
 namespace OperatorConstants{
