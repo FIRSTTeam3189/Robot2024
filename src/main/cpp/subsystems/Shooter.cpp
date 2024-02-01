@@ -17,7 +17,8 @@ m_rightExtensionPIDController(m_rightExtensionMotor.GetPIDController()),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
 m_leftExtensionEncoder(m_leftExtensionMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
 m_rightExtensionEncoder(m_rightExtensionMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
-m_ultrasonicSensor(ShooterConstants::kUltrasonicPort) {
+m_ultrasonicSensor(ShooterConstants::kUltrasonicPort, ShooterConstants::kUltrasonicValueRange),
+m_noteDetected(false) {
     ConfigRollerMotor();
     ConfigExtensionMotors();
     ConfigRotationMotor();
@@ -74,4 +75,17 @@ void Shooter::ConfigRotationMotor() {
     m_rotationEncoder.SetInverted(ShooterConstants::kRotationInverted);
     m_rotationEncoder.SetPositionConversionFactor(ShooterConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(ShooterConstants::kRotationOffset);
+}
+
+void Shooter::UpdateUltrasonic() {
+    if (m_ultrasonicSensor.Get() < 12.0)
+        m_noteDetected = true;
+    else
+        m_noteDetected = false;
+
+    frc::SmartDashboard::PutNumber("Shooter ultrasonic", m_ultrasonicSensor.Get());
+}
+
+bool Shooter::NoteDetected() {
+    return m_noteDetected;
 }

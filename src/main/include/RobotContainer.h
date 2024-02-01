@@ -55,5 +55,6 @@ class RobotContainer {
   bool m_isSpecialHeadingMode = true;
   bool m_isFieldRelative = true;
 
-  void ConfigureBindings();
+  void ConfigureDriverBindings();
+  void ConfigureCoDriverBindings();
 };

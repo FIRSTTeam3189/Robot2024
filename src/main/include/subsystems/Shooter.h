@@ -6,6 +6,7 @@
 
 #include <frc2/command/SubsystemBase.h>
 #include <frc/AnalogPotentiometer.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/CANSparkMax.h>
 #include <rev/SparkAbsoluteEncoder.h> 
 #include "Constants.h"
@@ -21,7 +22,8 @@ class Shooter : public frc2::SubsystemBase {
   void ConfigExtensionMotors();
   void ConfigRotationMotor();
   void SetLoaderPower(double power);
-   
+  bool NoteDetected();
+  void UpdateUltrasonic();
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -43,4 +45,5 @@ class Shooter : public frc2::SubsystemBase {
    rev::SparkMaxAbsoluteEncoder m_leftExtensionEncoder;
    rev::SparkMaxAbsoluteEncoder m_rightExtensionEncoder;
    frc::AnalogPotentiometer m_ultrasonicSensor;
+   bool m_noteDetected;
 };

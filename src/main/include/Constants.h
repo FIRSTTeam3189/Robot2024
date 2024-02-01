@@ -191,6 +191,7 @@ namespace ShooterConstants {
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
     constexpr int kUltrasonicPort {0};
+    constexpr double kUltrasonicValueRange {196.8504}; // 5 meters in inches -- max range of sensor; used so sensor reports in inches
 }
 
 namespace LedConstants{
@@ -213,6 +214,8 @@ namespace IntakeConstants{
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
     constexpr int kUltrasonicPort {0};
+    // 5 meters in inches -- max range of sensor; used so sensor reports in inches
+    constexpr double kUltrasonicValueRange {196.8504};
 }
 
 namespace OperatorConstants{

@@ -22,10 +22,11 @@ RobotContainer::RobotContainer() {
     m_intake->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
   },{m_intake}).ToPtr());
   // Configure the button bindings
-  ConfigureBindings();
+  ConfigureDriverBindings();
+  ConfigureCoDriverBindings();
 }
 
-void RobotContainer::ConfigureBindings() {
+void RobotContainer::ConfigureDriverBindings() {
    // Bill controls
   frc2::Trigger intakeButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
   intakeButton.OnTrue(RunIntake(m_intake, 0.5, 0.0).ToPtr());
@@ -45,7 +46,7 @@ void RobotContainer::ConfigureBindings() {
 
   frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
-    // m_swerveDrive->ResetGyroscope();
+    m_swerveDrive->ResetGyroscope();
     m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}});
   },{m_swerveDrive}).ToPtr());
 
@@ -57,7 +58,7 @@ void RobotContainer::ConfigureBindings() {
   extendClimbButton.OnFalse(frc2::InstantCommand([this]{
     m_climber->SetPower(0.0);
     m_climber->SetServoRotation(ClimberConstants::kRetractServoAngle);
-  }, {m_climber}).ToPtr());
+  },{m_climber}).ToPtr());
 
   frc2::Trigger retractClimbButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
   retractClimbButton.OnTrue(frc2::InstantCommand([this]{
@@ -65,8 +66,10 @@ void RobotContainer::ConfigureBindings() {
   },{m_climber}).ToPtr());
   retractClimbButton.OnFalse(frc2::InstantCommand([this]{
     m_climber->SetPower(0.0);
-  }, {m_climber}).ToPtr());
+  },{m_climber}).ToPtr());
+}
 
+void RobotContainer::ConfigureCoDriverBindings() {
   // Ted controls
   frc2::Trigger shootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
   shootButton.OnTrue(RunShooter(m_shooter, 1.0).ToPtr());
@@ -83,7 +86,6 @@ void RobotContainer::ConfigureBindings() {
   frc2::Trigger shooterFarRangeButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
   shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterConstants::kFarPosition).ToPtr());
 }
-
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous

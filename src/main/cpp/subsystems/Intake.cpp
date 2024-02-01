@@ -9,7 +9,8 @@ Intake::Intake() :
  m_rollerMotor(IntakeConstants::kRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
  m_rotationPIDController(m_rotationMotor.GetPIDController()),
  m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
- m_ultrasonicSensor(IntakeConstants::kUltrasonicPort)
+ m_ultrasonicSensor(IntakeConstants::kUltrasonicPort, IntakeConstants::kUltrasonicValueRange),
+ m_noteDetected(false)
 {
     // m_rotationMotor.RestoreFactoryDefaults();
     m_rollerMotor.RestoreFactoryDefaults();
@@ -40,4 +41,17 @@ void Intake::SetRollerPower(double power) {
 
 void Intake::SetRotationPower(double power) {
     m_rotationMotor.Set(power);
+}
+
+void Intake::UpdateUltrasonic() {
+    if (m_ultrasonicSensor.Get() < 12.0)
+        m_noteDetected = true;
+    else
+        m_noteDetected = false;
+
+    frc::SmartDashboard::PutNumber("Intake ultrasonic", m_ultrasonicSensor.Get());
+}
+
+bool Intake::NoteDetected() {
+    return m_noteDetected;
 }

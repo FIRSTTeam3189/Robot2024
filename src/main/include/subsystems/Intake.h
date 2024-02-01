@@ -20,6 +20,8 @@ class Intake : public frc2::SubsystemBase {
   void SetRollerPower(double power);
   void SetRotationPower(double power);
   void SetRotation(double position);
+  bool NoteDetected();
+  void UpdateUltrasonic();
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -32,6 +34,7 @@ class Intake : public frc2::SubsystemBase {
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
   double m_position;
   frc::AnalogPotentiometer m_ultrasonicSensor;
+  bool m_noteDetected;
  
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
