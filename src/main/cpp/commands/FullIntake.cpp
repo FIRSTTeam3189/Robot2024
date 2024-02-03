@@ -25,7 +25,7 @@ void FullIntake::Execute() {
 
 // Called once the command ends or is interrupted.
 void FullIntake::End(bool interrupted) {
-  m_intake->SetRotation(IntakeConstants::kRetractTarget)
+  m_intake->SetRotation(IntakeConstants::kRetractTarget);
   m_intake->SetRollerPower(0.0);
 }
 
