@@ -12,6 +12,7 @@
 #include <frc2/command/button/CommandJoystick.h>
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelCommandGroup.h>
 
@@ -29,6 +30,8 @@
 #include "subsystems/Climber.h"
 #include "subsystems/Vision.h"
 #include "subsystems/PoseEstimatorHelper.h"
+#include "Autos/TestAuto.h"
+
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -42,6 +45,7 @@ class RobotContainer {
   RobotContainer();
 
   frc2::CommandPtr GetAutonomousCommand();
+
 
  private:
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -57,9 +61,12 @@ class RobotContainer {
   Intake *m_intake = new Intake();
   MusicSystem *m_musicSystem = new MusicSystem(m_swerveDrive->GetMotorsForMusic());
 
+  frc::SendableChooser<frc2::Command*> m_chooser;
+
   bool m_isSpecialHeadingMode = true;
   bool m_isFieldRelative = true;
 
   void ConfigureDriverBindings();
   void ConfigureCoDriverBindings();
+  void CreateAutoPaths();
 };

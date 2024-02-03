@@ -16,7 +16,7 @@ RobotContainer::RobotContainer() {
   // },{m_shooter}).ToPtr());
 
   m_swerveDrive->SetDefaultCommand(JoystickDrive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
-  
+    frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   m_intake->SetDefaultCommand(frc2::RunCommand([this] {
     m_intake->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY));
     m_intake->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
@@ -90,9 +90,12 @@ void RobotContainer::ConfigureCoDriverBindings() {
   frc2::Trigger shooterFarRangeButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
   shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterConstants::kFarTarget).ToPtr());
 }
+void RobotContainer::CreateAutoPaths() {
+  m_chooser.AddOption("Test Auto", new TestAuto("Test Auto", m_swerveDrive));
+}
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
-  return frc2::WaitCommand(1.0_s).ToPtr(); 
+  return m_chooser.GetSelected();
 }
 
