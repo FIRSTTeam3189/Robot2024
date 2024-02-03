@@ -173,9 +173,8 @@ namespace ShooterConstants {
     constexpr int kTopMotorID {13};
     constexpr int kBottomMotorID {14};
     constexpr int kLoaderMotorID {15};
-    constexpr int kLeftExtensionMotorID {16};
-    constexpr int kRightExtensionMotorID {17};
-    constexpr int kRotationMotorID {18};
+    constexpr int kExtensionMotorID {16};
+    constexpr int kRotationMotorID {17};
     constexpr double kPRotation {1.0};
     constexpr double kIRotation {0.0};
     constexpr double kDRotation {0.0};
@@ -183,13 +182,20 @@ namespace ShooterConstants {
     constexpr double kIExtension {0.0};
     constexpr double kDExtension {0.0};
 
-    constexpr double kClosePosition {0};
-    constexpr double kMidPosition {1000};
-    constexpr double kFarPosition {2000};
-    constexpr double kRotationOffset {0};
+    constexpr double kCloseTarget {0};
+    constexpr double kMidTarget {1000};
+    constexpr double kFarTarget {2000};
+    constexpr double kRotationOffset {0.0};
     constexpr double kRotationConversion {1.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
+    constexpr double kRotationStopDistance {100.0};
+
+    constexpr double kExtensionOffset {0.0};
+    constexpr double kExtensionConversion {1.0};
+    constexpr bool kExtensionInverted {false};
+    constexpr double kExtensionStopDistance {100.0};
+
     constexpr int kUltrasonicPort {0};
     constexpr double kUltrasonicValueRange {196.8504}; // 5 meters in inches -- max range of sensor; used so sensor reports in inches
 }
@@ -202,17 +208,20 @@ namespace IntakeConstants{
     constexpr int kRotationMotorID {17};
     constexpr int kRollerMotorID {18};
     
+    constexpr double kIntakePower {1.0};
+    
     constexpr double kPRotation {0.5};
     constexpr double kIRotation {0};
     constexpr double kDRotation {0};
 
-    constexpr double kRetractPosition {0};
-    constexpr double kAmpPosition {1000};
-    constexpr double kExtendPosition {2000};
+    constexpr double kRetractTarget {0};
+    constexpr double kAmpTarget {1000};
+    constexpr double kExtendTarget {2000};
     constexpr double kRotationOffset {0};
     constexpr double kRotationConversion {1.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
+    constexpr double kRotationStopDistance {100.0};
     constexpr int kUltrasonicPort {0};
     // 5 meters in inches -- max range of sensor; used so sensor reports in inches
     constexpr double kUltrasonicValueRange {196.8504};

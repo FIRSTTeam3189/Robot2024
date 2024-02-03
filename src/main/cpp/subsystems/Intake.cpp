@@ -26,13 +26,14 @@ Intake::Intake() :
 
 // This method will be called once per scheduler run
 void Intake::Periodic() {
-    frc::SmartDashboard::PutNumber("Intake PID target", m_position);
+    frc::SmartDashboard::PutNumber("Intake PID target", m_target);
     frc::SmartDashboard::PutNumber("Intake position", m_rotationEncoder.GetPosition());
+    UpdateUltrasonic();
 }
 
-void Intake::SetRotation(double position) {
-    m_position = position;
-    m_rotationPIDController.SetReference(position, rev::ControlType::kPosition);
+void Intake::SetRotation(double target) {
+    m_target = target;
+    m_rotationPIDController.SetReference(target, rev::ControlType::kPosition);
 }
 
 void Intake::SetRollerPower(double power) {
@@ -41,6 +42,10 @@ void Intake::SetRollerPower(double power) {
 
 void Intake::SetRotationPower(double power) {
     m_rotationMotor.Set(power);
+}
+
+double Intake::GetRotation() {
+    return m_rotationEncoder.GetPosition();
 }
 
 void Intake::UpdateUltrasonic() {

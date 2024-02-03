@@ -15,13 +15,16 @@ class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
   void SetRollerPower(double power);
-  void SetAnglePower(double power);
-  void SetRotation(double position);
-  void SetExtension(double position);
-  void ConfigRollerMotor();
-  void ConfigExtensionMotors();
-  void ConfigRotationMotor();
+  void SetRotationPower(double power);
+  void SetExtensionPower(double power);
   void SetLoaderPower(double power);
+  void SetRotation(double target);
+  void SetExtension(double target);
+  double GetRotation();
+  double GetExtension();
+  void ConfigRollerMotor();
+  void ConfigExtensionMotor();
+  void ConfigRotationMotor();
   bool NoteDetected();
   void UpdateUltrasonic();
   /**
@@ -35,15 +38,12 @@ class Shooter : public frc2::SubsystemBase {
    rev::CANSparkMax m_topMotor;
    rev::CANSparkMax m_bottomMotor;
    rev::CANSparkMax m_loaderMotor;
-   rev::CANSparkMax m_leftExtensionMotor;
-   rev::CANSparkMax m_rightExtensionMotor;
+   rev::CANSparkMax m_extensionMotor;
    rev::CANSparkMax m_rotationMotor;
    rev::SparkMaxPIDController m_rotationPIDController;
-   rev::SparkMaxPIDController m_leftExtensionPIDController;
-   rev::SparkMaxPIDController m_rightExtensionPIDController;
+   rev::SparkMaxPIDController m_extensionPIDController;
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
-   rev::SparkMaxAbsoluteEncoder m_leftExtensionEncoder;
-   rev::SparkMaxAbsoluteEncoder m_rightExtensionEncoder;
+   rev::SparkMaxAbsoluteEncoder m_extensionEncoder;
    frc::AnalogPotentiometer m_ultrasonicSensor;
    bool m_noteDetected;
 };

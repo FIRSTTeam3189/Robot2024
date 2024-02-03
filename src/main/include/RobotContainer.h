@@ -12,13 +12,18 @@
 #include <frc2/command/button/CommandJoystick.h>
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/ParallelCommandGroup.h>
 
 #include "Constants.h"
+#include "commands/FullIntake.h"
 #include "commands/JoystickDrive.h"
+#include "commands/RunIntake.h"
+#include "commands/RunLoader.h"
 #include "commands/RunShooter.h"
 #include "commands/SetIntakeRotation.h"
+#include "commands/SetShooterExtension.h"
 #include "commands/SetShooterRotation.h"
-#include "commands/RunIntake.h"
 #include "subsystems/LED.h"
 #include "subsystems/MusicSystem.h"
 #include "subsystems/Climber.h"

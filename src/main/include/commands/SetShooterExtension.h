@@ -15,10 +15,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class SetShooterRotation
-    : public frc2::CommandHelper<frc2::Command, SetShooterRotation> {
+class SetShooterExtension
+    : public frc2::CommandHelper<frc2::Command, SetShooterExtension> {
  public:
-  SetShooterRotation(Shooter *shooter, double target);
+  SetShooterExtension(Shooter *shooter, double target);
 
   void Initialize() override;
 

@@ -8,42 +8,54 @@ Shooter::Shooter() :
 m_topMotor(ShooterConstants::kTopMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_bottomMotor(ShooterConstants::kBottomMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_leftExtensionMotor(ShooterConstants::kLeftExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_rightExtensionMotor(ShooterConstants::kRightExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_extensionMotor(ShooterConstants::kExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationPIDController(m_rotationMotor.GetPIDController()),
-m_leftExtensionPIDController(m_leftExtensionMotor.GetPIDController()),
-m_rightExtensionPIDController(m_rightExtensionMotor.GetPIDController()),
+m_extensionPIDController(m_extensionMotor.GetPIDController()),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
-m_leftExtensionEncoder(m_leftExtensionMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
-m_rightExtensionEncoder(m_rightExtensionMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
+m_extensionEncoder(m_extensionMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
 m_ultrasonicSensor(ShooterConstants::kUltrasonicPort, ShooterConstants::kUltrasonicValueRange),
 m_noteDetected(false) {
     ConfigRollerMotor();
-    ConfigExtensionMotors();
+    ConfigExtensionMotor();
     ConfigRotationMotor();
-   
 }
 
 // This method will be called once per scheduler run
 void Shooter::Periodic() {
-
+    UpdateUltrasonic();
 }
 
-void Shooter::SetRotation(double position){
-    m_rotationPIDController.SetReference(position, rev::ControlType::kPosition);
+void Shooter::SetRotation(double target) {
+    m_rotationPIDController.SetReference(target, rev::ControlType::kPosition);
+}
+
+void Shooter::SetExtension(double target) {
+    m_extensionPIDController.SetReference(target, rev::ControlType::kPosition);
 }
 
 void Shooter::SetRollerPower(double power) {
     m_topMotor.Set(power);
 }
 
-void Shooter::SetAnglePower(double power){
+void Shooter::SetRotationPower(double power) {
     m_rotationMotor.Set(power);
+}
+
+void Shooter::SetExtensionPower(double power) {
+    m_extensionMotor.Set(power);
 }
 
 void Shooter::SetLoaderPower(double power) {
     m_loaderMotor.Set(power);
+}
+
+double Shooter::GetRotation() {
+    return m_rotationEncoder.GetPosition();
+}
+
+double Shooter::GetExtension() {
+    return m_extensionEncoder.GetPosition();
 }
 
 void Shooter::ConfigRollerMotor() {
@@ -51,23 +63,20 @@ void Shooter::ConfigRollerMotor() {
     m_topMotor.Follow(m_bottomMotor);
 }
 
-void Shooter::ConfigExtensionMotors() {
-    m_leftExtensionMotor.RestoreFactoryDefaults();
-    m_rightExtensionMotor.RestoreFactoryDefaults();
-    m_leftExtensionPIDController.SetFeedbackDevice(m_leftExtensionEncoder);
-    m_rightExtensionPIDController.SetFeedbackDevice(m_rightExtensionEncoder);
-    m_leftExtensionPIDController.SetP(ShooterConstants::kPExtension);
-    m_leftExtensionPIDController.SetI(ShooterConstants::kIExtension);
-    m_leftExtensionPIDController.SetI(ShooterConstants::kDExtension);
-    m_rightExtensionPIDController.SetP(ShooterConstants::kPExtension);
-    m_rightExtensionPIDController.SetI(ShooterConstants::kIExtension);
-    m_rightExtensionPIDController.SetD(ShooterConstants::kDExtension);
+void Shooter::ConfigExtensionMotor() {
+    m_extensionMotor.RestoreFactoryDefaults();
+    m_extensionPIDController.SetFeedbackDevice(m_extensionEncoder);
+    m_extensionPIDController.SetP(ShooterConstants::kPExtension);
+    m_extensionPIDController.SetI(ShooterConstants::kIExtension);
+    m_extensionPIDController.SetD(ShooterConstants::kDExtension);
+    m_extensionEncoder.SetInverted(ShooterConstants::kExtensionInverted);
+    m_extensionEncoder.SetPositionConversionFactor(ShooterConstants::kExtensionConversion);
+    m_extensionEncoder.SetZeroOffset(ShooterConstants::kExtensionOffset);
 }
 
 void Shooter::ConfigRotationMotor() {
     m_rotationMotor.RestoreFactoryDefaults();
-    m_rotationPIDController.SetFeedbackDevice(m_leftExtensionEncoder);
-    m_rotationPIDController.SetFeedbackDevice(m_rightExtensionEncoder);
+    m_rotationPIDController.SetFeedbackDevice(m_extensionEncoder);
     m_rotationMotor.SetSmartCurrentLimit(ShooterConstants::kRotationCurrentLimit);
     m_rotationPIDController.SetP(ShooterConstants::kPRotation); 
     m_rotationPIDController.SetI(ShooterConstants::kIRotation); 

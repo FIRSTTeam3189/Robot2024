@@ -12,7 +12,7 @@ RobotContainer::RobotContainer() {
   // Runs shooter and shooter angle motor continuously
   // m_shooter->SetDefaultCommand(frc2::RunCommand([this] { 
   //   m_shooter->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY)); 
-  //   m_shooter->SetAnglePower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
+  //   m_shooter->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
   // },{m_shooter}).ToPtr());
 
   m_swerveDrive->SetDefaultCommand(JoystickDrive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
@@ -35,14 +35,18 @@ void RobotContainer::ConfigureDriverBindings() {
     m_intake->SetRotationPower(0.0);
   },{m_intake}).ToPtr());
 
+  intakeButton.OnTrue(frc2::ParallelCommandGroup(
+    FullIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget)
+  ).ToPtr());
+
   frc2::Trigger retractIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
-  retractIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kRetractPosition).ToPtr());
+  retractIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget).ToPtr());
 
   frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDCircle)};
-  ampScoreIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kAmpPosition).ToPtr());
+  ampScoreIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget).ToPtr());
 
   frc2::Trigger extendIntakeButton{m_bill.Button(OperatorConstants::kButtonIDTriangle)};
-  extendIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kExtendPosition).ToPtr());
+  extendIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget).ToPtr());
 
   frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
@@ -78,13 +82,13 @@ void RobotContainer::ConfigureCoDriverBindings() {
   },{m_shooter}).ToPtr());
 
   frc2::Trigger shooterCloseRangeButton{m_ted.Button(OperatorConstants::kButtonIDX)};
-  shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterConstants::kClosePosition).ToPtr());
+  shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterConstants::kCloseTarget).ToPtr());
 
   frc2::Trigger shooterMidRangeButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
-  shooterMidRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterConstants::kMidPosition).ToPtr());
+  shooterMidRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterConstants::kMidTarget).ToPtr());
 
   frc2::Trigger shooterFarRangeButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
-  shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterConstants::kFarPosition).ToPtr());
+  shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterConstants::kFarTarget).ToPtr());
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {

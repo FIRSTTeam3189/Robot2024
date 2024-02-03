@@ -19,7 +19,8 @@ class Intake : public frc2::SubsystemBase {
   Intake();
   void SetRollerPower(double power);
   void SetRotationPower(double power);
-  void SetRotation(double position);
+  void SetRotation(double target);
+  double GetRotation();
   bool NoteDetected();
   void UpdateUltrasonic();
   /**
@@ -32,7 +33,7 @@ class Intake : public frc2::SubsystemBase {
   rev::CANSparkMax m_rollerMotor;
   rev::SparkMaxPIDController m_rotationPIDController;
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
-  double m_position;
+  double m_target;
   frc::AnalogPotentiometer m_ultrasonicSensor;
   bool m_noteDetected;
  
