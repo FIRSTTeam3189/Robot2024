@@ -132,6 +132,10 @@ double SwerveDrive::GetNormalizedYaw() {
     return normalizedYaw;
 }
 
+void SwerveDrive::SetRobotYaw(double yaw){
+    m_pigeon.SetYaw(units::degree_t{yaw});
+}
+
 frc::ChassisSpeeds SwerveDrive::GetRobotRelativeSpeeds() {
     frc::SwerveModuleState frontLeftModuleState = m_modules.m_frontLeft.GetState(true);
     frc::SwerveModuleState frontRightModuleState = m_modules.m_frontRight.GetState(true);
