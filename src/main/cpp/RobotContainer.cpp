@@ -35,9 +35,11 @@ void RobotContainer::ConfigureDriverBindings() {
     m_intake->SetRotationPower(0.0);
   },{m_intake}).ToPtr());
 
-  intakeButton.OnTrue(frc2::ParallelCommandGroup(
-    FullIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget)
-  ).ToPtr());
+  // intakeButton.OnTrue(FullIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget).ToPtr());
+  // intakeButton.OnFalse(frc2::InstantCommand([this]{
+  //   m_intake->SetRotation(IntakeConstants::kRetractTarget);
+  //   m_intake->SetRollerPower(0.0);
+  // },{m_intake}).ToPtr());
 
   frc2::Trigger retractIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
   retractIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget).ToPtr());
@@ -94,7 +96,7 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Test Auto", new TestAuto("Test Auto", m_swerveDrive));
 }
 
-frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
+frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   return m_chooser.GetSelected();
 }

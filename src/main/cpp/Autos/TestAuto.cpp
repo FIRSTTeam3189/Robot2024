@@ -11,13 +11,13 @@
 
 TestAuto::TestAuto(std::string filePath, SwerveDrive *swerve ) : m_swerve(swerve) {
 
-  // std::vector<std::unique_ptr<frc2::Command>> commands;
-  // commands.emplace_back(builder->fullAuto(twoScoreGroup).Unwrap());
-  // auto group = SequentialCommandGroup(std::move(commands));
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.emplace_back(pathplanner::AutoBuilder::buildAuto(filePath).Unwrap());
+  auto group = SequentialCommandGroup(std::move(commands));
+  
   AddCommands(
     frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
-    pathplanner::AutoBuilder::buildAuto(filePath).Unwrap()
+    std::move(group)
   );
 
-  AddCommands()
 }

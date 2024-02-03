@@ -18,14 +18,15 @@ void FullIntake::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void FullIntake::Execute() {
-  if (m_intake->NoteDetected()) {
+  if (m_intake->NoteDetected()) 
     m_shouldFinish = true;
-  }
+  else
+    m_shouldFinish = false;
 }
 
 // Called once the command ends or is interrupted.
 void FullIntake::End(bool interrupted) {
-  m_intake->SetRotation(IntakeConstants::kRetractTarget)
+  m_intake->SetRotation(IntakeConstants::kRetractTarget);
   m_intake->SetRollerPower(0.0);
 }
 
