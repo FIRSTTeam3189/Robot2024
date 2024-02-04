@@ -168,7 +168,8 @@ namespace AutoConstants {
         pathplanner::ReplanningConfig() // Defaults to replanning if robot is not at starting point, doesn't replan if robot strays too far
     };
 }
- // Shooter Constants
+
+// Shooter Constants
 namespace ShooterConstants {
     constexpr int kTopMotorID {13};
     constexpr int kBottomMotorID {14};
@@ -181,6 +182,8 @@ namespace ShooterConstants {
     constexpr double kPExtension {1.0};
     constexpr double kIExtension {0.0};
     constexpr double kDExtension {0.0};
+
+    constexpr double kShootPower {1.0};
 
     constexpr auto kSpeakerHeightTarget {2.0574_m};
     constexpr double kCloseTarget {0};
@@ -264,26 +267,26 @@ namespace VisionConstants {
     constexpr units::meter_t kCameraYOffset {0.0_m};
     constexpr units::meter_t kCameraZOffset {0.0_m};
     constexpr units::radian_t kCameraYawOffset {0.0_rad};
-    constexpr bool kShouldUseVision {false};
+    constexpr bool kShouldUseVision {true};
 
     // Tag poses in order from 1 to 16
     const std::vector<frc::Pose3d> kTagPoses {
-        frc::Pose3d{15.079_m, 0.246_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120_deg}},
-        frc::Pose3d{16.185_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}}
+        frc::Pose3d{15.079_m, 0.246_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120.0_deg}},
+        frc::Pose3d{16.185_m, 0.884_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120.0_deg}},
+        frc::Pose3d{16.579_m, 4.983_m, 1.451_m, frc::Rotation3d{0.0_deg, 0.0_deg, 180.0_deg}},
+        frc::Pose3d{16.579_m, 5.548_m, 1.451_m, frc::Rotation3d{0.0_deg, 0.0_deg, 180.0_deg}},
+        frc::Pose3d{14.701_m, 8.204_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 270.0_deg}},
+        frc::Pose3d{1.842_m, 8.204_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 270.0_deg}},
+        frc::Pose3d{-0.038_m, 5.548_m, 1.451_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{-0.038_m, 4.983_m, 1.451_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.356_m, 0.884_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 60.0_deg}},
+        frc::Pose3d{1.462_m, 0.246_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 60.0_deg}},
+        frc::Pose3d{11.905_m, 3.713_m, 1.321_m, frc::Rotation3d{0.0_deg, 0.0_deg, 300.0_deg}},
+        frc::Pose3d{11.905_m, 4.498_m, 1.321_m, frc::Rotation3d{0.0_deg, 0.0_deg, 60.0_deg}},
+        frc::Pose3d{11.220_m, 4.105_m, 1.321_m, frc::Rotation3d{0.0_deg, 0.0_deg, 60.0_deg}},
+        frc::Pose3d{5.321_m, 4.105_m, 1.321_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{4.641_m, 4.498_m, 1.321_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120.0_deg}},
+        frc::Pose3d{4.641_m, 3.713_m, 1.321_m, frc::Rotation3d{0.0_deg, 0.0_deg, 240.0_deg}}
     };
 }
 

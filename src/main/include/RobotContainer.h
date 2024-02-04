@@ -18,13 +18,14 @@
 
 #include "Constants.h"
 #include "commands/FullIntake.h"
-#include "commands/JoystickDrive.h"
+#include "commands/Drive.h"
 #include "commands/RunIntake.h"
 #include "commands/RunLoader.h"
 #include "commands/RunShooter.h"
 #include "commands/SetIntakeRotation.h"
 #include "commands/SetShooterExtension.h"
 #include "commands/SetShooterRotation.h"
+#include "commands/ShooterAutoAlign.h"
 #include "subsystems/LED.h"
 #include "subsystems/MusicSystem.h"
 #include "subsystems/Climber.h"
@@ -53,10 +54,10 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
   Climber *m_climber = new Climber();
-  PoseEstimatorHelper *m_helper = new PoseEstimatorHelper();
-  Vision *m_vision = new Vision(m_helper);
+  PoseEstimatorHelper *m_estimator = new PoseEstimatorHelper();
+  Vision *m_vision = new Vision(m_estimator);
   Shooter *m_shooter = new Shooter();
-  SwerveDrive *m_swerveDrive = new SwerveDrive(m_helper);
+  SwerveDrive *m_swerveDrive = new SwerveDrive(m_estimator);
   Intake *m_intake = new Intake();
   MusicSystem *m_musicSystem = new MusicSystem(m_swerveDrive->GetMotorsForMusic());
 

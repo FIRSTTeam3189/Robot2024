@@ -55,7 +55,7 @@ void Vision::Periodic() {
 }
 
 frc::Pose3d Vision::TagToCamera() {
-    frc::Pose3d tagPose = VisionConstants::kTagPoses.at(m_data.ID);
+    frc::Pose3d tagPose = VisionConstants::kTagPoses.at(m_data.ID - 1);
     frc::Transform3d tagToCamera = frc::Transform3d(
         units::meter_t{m_data.translationMatrix.at(0)},
         units::meter_t{m_data.translationMatrix.at(1)},
