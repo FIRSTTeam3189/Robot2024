@@ -15,6 +15,9 @@
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelCommandGroup.h>
+#include <frc2/command/ParallelDeadlineGroup.h>
+#include <frc2/command/ParallelRaceGroup.h>
+#include <frc2/command/WaitCommand.h>
 
 #include "Constants.h"
 #include "commands/FullIntake.h"
@@ -32,6 +35,7 @@
 #include "subsystems/Vision.h"
 #include "subsystems/PoseEstimatorHelper.h"
 #include "Autos/TestAuto.h"
+#include <pathplanner/lib/auto/NamedCommands.h>
 
 
 /**
@@ -69,4 +73,5 @@ class RobotContainer {
   void ConfigureDriverBindings();
   void ConfigureCoDriverBindings();
   void CreateAutoPaths();
+  void RegisterAutoCommands();
 };

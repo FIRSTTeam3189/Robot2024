@@ -4,7 +4,7 @@
 
 #include "commands/RunLoader.h"
 
-RunLoader::RunLoader(Shooter *shooter, double power) : m_loader(shooter), m_loaderPower(power) {
+RunLoader::RunLoader(Shooter *shooter, double power) : m_loader(shooter), m_loaderPower(power), m_isFinished(false) {
   AddRequirements(shooter);
   // Use addRequirements() here to declare subsystem dependencies.
 }
@@ -15,7 +15,12 @@ void RunLoader::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void RunLoader::Execute() {}
+void RunLoader::Execute() {
+  if (m_loader->NoteDetected())
+    m_isFinished = true;
+  else 
+    m_isFinished = false;
+}
 
 // Called once the command ends or is interrupted.
 void RunLoader::End(bool interrupted) {
@@ -24,5 +29,5 @@ void RunLoader::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RunLoader::IsFinished() {
-  return false;
+  return m_isFinished;
 }

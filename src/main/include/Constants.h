@@ -171,11 +171,10 @@ namespace AutoConstants {
 
 // Shooter Constants
 namespace ShooterConstants {
-    constexpr int kTopMotorID {13};
-    constexpr int kBottomMotorID {14};
-    constexpr int kLoaderMotorID {15};
-    constexpr int kExtensionMotorID {16};
-    constexpr int kRotationMotorID {17};
+    constexpr int kRollerMotorID {13};
+    constexpr int kLoaderMotorID {14};
+    constexpr int kExtensionMotorID {15};
+    constexpr int kRotationMotorID {16};
     constexpr double kPRotation {1.0};
     constexpr double kIRotation {0.0};
     constexpr double kDRotation {0.0};
@@ -186,6 +185,10 @@ namespace ShooterConstants {
     constexpr double kShootPower {1.0};
 
     constexpr auto kSpeakerHeightTarget {2.0574_m};
+    constexpr double kLoadPower {0.5};
+    constexpr double kLoadAngle {0.0};
+
+    constexpr double kRetractTarget {0.0};
     constexpr double kCloseTarget {0};
     constexpr double kMidTarget {1000};
     constexpr double kFarTarget {2000};
@@ -213,6 +216,7 @@ namespace IntakeConstants{
     constexpr int kRollerMotorID {18};
     
     constexpr double kIntakePower {1.0};
+    constexpr double kLoadPower {0.5};
     
     constexpr double kPRotation {0.5};
     constexpr double kIRotation {0};

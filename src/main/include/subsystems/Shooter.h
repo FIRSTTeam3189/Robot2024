@@ -36,8 +36,7 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-   rev::CANSparkMax m_topMotor;
-   rev::CANSparkMax m_bottomMotor;
+   rev::CANSparkMax m_rollerMotor;
    rev::CANSparkMax m_loaderMotor;
    rev::CANSparkMax m_extensionMotor;
    rev::CANSparkMax m_rotationMotor;
