@@ -181,6 +181,7 @@ namespace ShooterConstants {
     constexpr double kIExtension {0.0};
     constexpr double kDExtension {0.0};
 
+    constexpr auto kSpeakerHeightTarget {2.0574_m};
     constexpr double kLoadPower {0.5};
     constexpr double kLoadAngle {0.0};
 
@@ -269,8 +270,24 @@ namespace VisionConstants {
     constexpr units::radian_t kCameraYawOffset {0.0_rad};
     constexpr bool kShouldUseVision {false};
 
+    // Tag poses in order from 1 to 16
     const std::vector<frc::Pose3d> kTagPoses {
-        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_rad, 0.0_rad, 0.0_rad}}
+        frc::Pose3d{15.079_m, 0.246_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120_deg}},
+        frc::Pose3d{16.185_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}},
+        frc::Pose3d{0.0_m, 0.0_m, 0.0_m, frc::Rotation3d{0.0_deg, 0.0_deg, 0.0_deg}}
     };
 }
 

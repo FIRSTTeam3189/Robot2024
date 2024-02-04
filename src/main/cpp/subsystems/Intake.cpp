@@ -12,7 +12,7 @@ Intake::Intake() :
  m_ultrasonicSensor(IntakeConstants::kUltrasonicPort, IntakeConstants::kUltrasonicValueRange),
  m_noteDetected(false)
 {
-    // m_rotationMotor.RestoreFactoryDefaults();
+    m_rotationMotor.RestoreFactoryDefaults();
     m_rollerMotor.RestoreFactoryDefaults();
     m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
     m_rotationPIDController.SetP(IntakeConstants::kPRotation);

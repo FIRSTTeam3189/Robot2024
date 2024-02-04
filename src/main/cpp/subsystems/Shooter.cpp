@@ -76,6 +76,7 @@ void Shooter::ConfigExtensionMotor() {
 void Shooter::ConfigRotationMotor() {
     m_rotationMotor.RestoreFactoryDefaults();
     m_rotationPIDController.SetFeedbackDevice(m_extensionEncoder);
+    m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_rotationMotor.SetSmartCurrentLimit(ShooterConstants::kRotationCurrentLimit);
     m_rotationPIDController.SetP(ShooterConstants::kPRotation); 
     m_rotationPIDController.SetI(ShooterConstants::kIRotation); 
@@ -96,4 +97,8 @@ void Shooter::UpdateUltrasonic() {
 
 bool Shooter::NoteDetected() {
     return m_noteDetected;
+}
+
+void Shooter::StopRotation() {
+    m_rotationMotor.StopMotor();
 }
