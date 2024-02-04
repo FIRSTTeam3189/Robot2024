@@ -31,6 +31,5 @@ class RunLoader
   private:
    Shooter *m_loader;
    double m_loaderPower;
-
-
+   bool m_isFinished;
 };

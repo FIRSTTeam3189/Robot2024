@@ -24,28 +24,35 @@ RobotContainer::RobotContainer() {
   // Configure the button bindings
   ConfigureDriverBindings();
   ConfigureCoDriverBindings();
+  RegisterAutoCommands();
 }
 
 void RobotContainer::ConfigureDriverBindings() {
    // Bill controls
   frc2::Trigger intakeButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
-  intakeButton.OnTrue(RunIntake(m_intake, 0.5, 0.0).ToPtr());
+  intakeButton.OnTrue(RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0).ToPtr());
   intakeButton.OnFalse(frc2::InstantCommand([this]{
     m_intake->SetRollerPower(0.0);
     m_intake->SetRotationPower(0.0);
   },{m_intake}).ToPtr());
 
   // intakeButton.OnTrue(FullIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget).ToPtr());
-  // intakeButton.OnFalse(frc2::InstantCommand([this]{
-  //   m_intake->SetRotation(IntakeConstants::kRetractTarget);
-  //   m_intake->SetRollerPower(0.0);
-  // },{m_intake}).ToPtr());
 
   frc2::Trigger retractIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
   retractIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget).ToPtr());
 
   frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDCircle)};
-  ampScoreIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget).ToPtr());
+    ampScoreIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget).ToPtr());
+    ampScoreIntakeButton.OnFalse(frc2::SequentialCommandGroup(
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(2.0_s), 
+        RunIntake(m_intake, -1.0 * IntakeConstants::kIntakePower, 0)
+      ),
+      SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
+    ).ToPtr());
+  
+  // frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDCircle)};
+  // ampScoreIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget).ToPtr());
 
   frc2::Trigger extendIntakeButton{m_bill.Button(OperatorConstants::kButtonIDTriangle)};
   extendIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget).ToPtr());
@@ -91,10 +98,76 @@ void RobotContainer::ConfigureCoDriverBindings() {
 
   frc2::Trigger shooterFarRangeButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
   shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterConstants::kFarTarget).ToPtr());
+
+  frc2::Trigger loadButton{m_ted.Button(OperatorConstants::kButtonIDLeftBumper)};
+  loadButton.OnTrue(frc2::SequentialCommandGroup(
+    SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
+    SetShooterRotation(m_shooter, ShooterConstants::kLoadAngle),
+    frc2::ParallelDeadlineGroup(
+      RunLoader(m_shooter, ShooterConstants::kLoadPower),
+      RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
+    ),
+    SetShooterRotation(m_shooter, ShooterConstants::kRetractTarget),
+    SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
+  ).ToPtr());
+  loadButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::InstantCommand([this]{
+      m_intake->SetRollerPower(0.0);
+      m_shooter->SetRollerPower(0.0);
+    },{m_intake, m_shooter}),
+    SetShooterRotation(m_shooter, ShooterConstants::kRetractTarget),
+    SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
+  ).ToPtr());
 }
+
+void RobotContainer::RegisterAutoCommands(){
+
+  //Start of Auto Events
+  pathplanner::NamedCommands::registerCommand("Intake", frc2::SequentialCommandGroup(
+    frc2::ParallelRaceGroup(
+      frc2::WaitCommand(3.0_s),
+      FullIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget)
+    ),
+    frc2::InstantCommand([this]{
+      m_intake->SetRollerPower(0.0);
+    },{m_intake}),
+    SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
+  ).ToPtr());
+
+  pathplanner::NamedCommands::registerCommand("Load", frc2::SequentialCommandGroup(
+    SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
+    SetShooterRotation(m_shooter, ShooterConstants::kLoadAngle),
+    frc2::ParallelRaceGroup(
+      frc2::WaitCommand(2.0_s),
+      RunLoader(m_shooter, ShooterConstants::kLoadPower),
+      RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
+    ),
+    frc2::InstantCommand([this]{
+      m_intake->SetRollerPower(0.0);
+      m_shooter->SetRollerPower(0.0);
+    },{m_intake, m_shooter}),
+    SetShooterRotation(m_shooter, ShooterConstants::kRetractTarget),
+    SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
+  ).ToPtr());
+
+  pathplanner::NamedCommands::registerCommand("ampScoreIntake", frc2::SequentialCommandGroup(
+    SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(2.0_s), 
+      RunIntake(m_intake, -1 * IntakeConstants::kIntakePower, 0)
+    ),
+    SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget),
+    frc2::InstantCommand([this]{
+      m_intake->SetRollerPower(0.0);
+    },{m_intake})
+  ).ToPtr());  
+} 
+
 void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Test Auto", new TestAuto("Test Auto", m_swerveDrive));
 }
+
+
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous

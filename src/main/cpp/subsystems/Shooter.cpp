@@ -5,8 +5,7 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() : 
-m_topMotor(ShooterConstants::kTopMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_bottomMotor(ShooterConstants::kBottomMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_rollerMotor(ShooterConstants::kRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_extensionMotor(ShooterConstants::kExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
@@ -35,7 +34,7 @@ void Shooter::SetExtension(double target) {
 }
 
 void Shooter::SetRollerPower(double power) {
-    m_topMotor.Set(power);
+    m_rollerMotor.Set(power);
 }
 
 void Shooter::SetRotationPower(double power) {
@@ -58,9 +57,9 @@ double Shooter::GetExtension() {
     return m_extensionEncoder.GetPosition();
 }
 
+
 void Shooter::ConfigRollerMotor() {
-    m_topMotor.RestoreFactoryDefaults();
-    m_topMotor.Follow(m_bottomMotor);
+    m_rollerMotor.RestoreFactoryDefaults();
 }
 
 void Shooter::ConfigExtensionMotor() {
