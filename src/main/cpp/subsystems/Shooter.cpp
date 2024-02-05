@@ -78,7 +78,6 @@ double Shooter::GetExtension() {
     return m_extensionEncoder.GetPosition();
 }
 
-
 void Shooter::ConfigRollerMotor() {
     m_rollerMotor.RestoreFactoryDefaults();
 }
@@ -114,8 +113,4 @@ void Shooter::UpdateUltrasonic() {
 
 bool Shooter::NoteDetected() {
     return m_noteDetected;
-}
-
-void Shooter::StopRotation() {
-    m_rotationMotor.StopMotor();
 }

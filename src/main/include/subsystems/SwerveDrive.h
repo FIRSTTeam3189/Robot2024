@@ -41,6 +41,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   void Stop();
   double GetNormalizedYaw();
   void SetRobotYaw(double yaw);
+  units::meters_per_second_t GetTotalVelocity();
   frc::ChassisSpeeds GetRobotRelativeSpeeds();
   void DriveRobotRelative(frc::ChassisSpeeds speeds);
   frc::Pose2d GetEstimatedPose();

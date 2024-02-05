@@ -24,7 +24,6 @@ class Shooter : public frc2::SubsystemBase {
   void SetLoaderPower(double power);
   void SetRotation(units::degree_t target);
   void SetExtension(double target);
-  void StopRotation();
   units::degree_t GetRotation();
   double GetExtension();
   void ConfigRollerMotor();
