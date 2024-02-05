@@ -119,7 +119,7 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
   // This is alliance-dependent 
   auto xDistance = tagPose.X() - currentPose.X();
   auto yDistance = tagPose.Y() - currentPose.Y();
-  double goalAngle = asin(xDistance.value() / yDistance.value());
+  double goalAngle = atan(yDistance.value() / xDistance.value());
 
   // Return next velocity in radians per second as calculated by PIDController and limited by rotLimiter
   units::angular_velocity::radians_per_second_t rot = 

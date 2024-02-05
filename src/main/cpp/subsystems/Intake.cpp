@@ -5,9 +5,11 @@
 #include "subsystems/Intake.h"
 
 Intake::Intake() : 
- m_rotationMotor(IntakeConstants::kRotationMotorID, rev::CANSparkFlex::MotorType::kBrushless),
- m_rollerMotor(IntakeConstants::kRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
- m_rotationPIDController(m_rotationMotor.GetPIDController()),
+ m_rotationMotor(IntakeConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
+ m_rollerMotor(IntakeConstants::kRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
+ m_constraints(IntakeConstants::kMaxRotationVelocity, IntakeConstants::kMaxRotationAcceleration),
+ m_rotationPIDController(IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation, m_constraints),
+ m_ff(IntakeConstants::kSRotation, IntakeConstants::kGRotation, IntakeConstants::kVRotation, IntakeConstants::kARotation),
  m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
  m_ultrasonicSensor(IntakeConstants::kUltrasonicPort, IntakeConstants::kUltrasonicValueRange),
  m_noteDetected(false)
@@ -15,10 +17,6 @@ Intake::Intake() :
     m_rotationMotor.RestoreFactoryDefaults();
     m_rollerMotor.RestoreFactoryDefaults();
     m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
-    m_rotationPIDController.SetP(IntakeConstants::kPRotation);
-    m_rotationPIDController.SetI(IntakeConstants::kIRotation);
-    m_rotationPIDController.SetD(IntakeConstants::kDRotation);
-    m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
     m_rotationEncoder.SetInverted(IntakeConstants::kRotationInverted);
     m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(IntakeConstants::kRotationOffset);
@@ -26,14 +24,30 @@ Intake::Intake() :
 
 // This method will be called once per scheduler run
 void Intake::Periodic() {
-    frc::SmartDashboard::PutNumber("Intake PID target", m_target);
+    frc::SmartDashboard::PutNumber("Intake PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Intake position", m_rotationEncoder.GetPosition());
     UpdateUltrasonic();
 }
 
-void Intake::SetRotation(double target) {
+void Intake::SetRotation(units::degree_t target) {
+    // Calculates PID value in volts based on position and target
+    units::volt_t PIDValue = units::volt_t{m_rotationPIDController.Calculate(GetRotation(), target)};
+
+    // Calculates the change in velocity (acceleration) since last control loop
+    // Uses the acceleration value and desired velocity to calculate feedforward gains
+    // Feedforward gains are approximated based on the current state of the system and a known physics model
+    // Gains calculated with SysID                                   
+    auto acceleration = (m_rotationPIDController.GetSetpoint().velocity - m_lastSpeed) /
+      (frc::Timer::GetFPGATimestamp() - m_lastTime);
+    units::volt_t ffValue = m_ff.Calculate(units::radian_t{target}, units::radians_per_second_t{m_rotationPIDController.GetSetpoint().velocity},
+                                           units::radians_per_second_squared_t{acceleration});
+
+    // Set motor to combined voltage
+    m_rotationMotor.SetVoltage(PIDValue + ffValue);
+
+    m_lastSpeed = m_rotationPIDController.GetSetpoint().velocity;
+    m_lastTime = frc::Timer::GetFPGATimestamp();
     m_target = target;
-    m_rotationPIDController.SetReference(target, rev::ControlType::kPosition);
 }
 
 void Intake::SetRollerPower(double power) {
@@ -44,8 +58,8 @@ void Intake::SetRotationPower(double power) {
     m_rotationMotor.Set(power);
 }
 
-double Intake::GetRotation() {
-    return m_rotationEncoder.GetPosition();
+units::degree_t Intake::GetRotation() {
+    return units::degree_t{m_rotationEncoder.GetPosition()};
 }
 
 void Intake::UpdateUltrasonic() {
