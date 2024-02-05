@@ -7,6 +7,10 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc/AnalogPotentiometer.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/controller/ArmFeedforward.h>
+#include <frc/controller/ProfiledPIDController.h>
+#include <frc/trajectory/TrapezoidProfile.h>
+#include <frc/Timer.h>
 #include <rev/CANSparkMax.h>
 #include <rev/SparkAbsoluteEncoder.h> 
 #include "Constants.h"
@@ -18,9 +22,9 @@ class Shooter : public frc2::SubsystemBase {
   void SetRotationPower(double power);
   void SetExtensionPower(double power);
   void SetLoaderPower(double power);
-  void SetRotation(double target);
+  void SetRotation(units::degree_t target);
   void SetExtension(double target);
-  double GetRotation();
+  units::degree_t GetRotation();
   double GetExtension();
   void ConfigRollerMotor();
   void ConfigExtensionMotor();
@@ -39,10 +43,15 @@ class Shooter : public frc2::SubsystemBase {
    rev::CANSparkMax m_loaderMotor;
    rev::CANSparkMax m_extensionMotor;
    rev::CANSparkMax m_rotationMotor;
-   rev::SparkMaxPIDController m_rotationPIDController;
+   frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
+   frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
+   frc::ArmFeedforward m_ff;
    rev::SparkMaxPIDController m_extensionPIDController;
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
    rev::SparkMaxAbsoluteEncoder m_extensionEncoder;
    frc::AnalogPotentiometer m_ultrasonicSensor;
    bool m_noteDetected;
+   units::degree_t m_target;
+   units::degrees_per_second_t m_lastSpeed;
+   units::second_t m_lastTime;
 };

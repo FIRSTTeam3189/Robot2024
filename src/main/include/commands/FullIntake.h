@@ -18,7 +18,7 @@
 class FullIntake
     : public frc2::CommandHelper<frc2::Command, FullIntake> {
  public:
-  FullIntake(Intake *intake, double speed, double target);
+  FullIntake(Intake *intake, double speed, units::degree_t target);
 
   void Initialize() override;
 
@@ -31,6 +31,6 @@ class FullIntake
  private:
   Intake *m_intake;
   double m_speed;
-  double m_target;
+  units::degree_t m_target;
   bool m_shouldFinish;
 };
