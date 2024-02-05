@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc/filter/SlewRateLimiter.h>
+#include <frc/DriverStation.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc/controller/PIDController.h>
@@ -19,11 +20,13 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class JoystickDrive
-    : public frc2::CommandHelper<frc2::Command, JoystickDrive> {
+class Drive
+    : public frc2::CommandHelper<frc2::Command, Drive> {
  public:
-  JoystickDrive(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, bool isSpecialHeadingMode, bool isFieldRelative = true);
+  Drive(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, 
+                bool isSpecialHeadingMode, bool isFieldRelative = true, bool shouldAlignSpeaker = false);
   units::angular_velocity::radians_per_second_t GetDesiredRotationalVelocity();
+  units::angular_velocity::radians_per_second_t GetRotVelSpeakerAlign();
 
   void Initialize() override;
 
@@ -39,6 +42,7 @@ class JoystickDrive
   frc::PIDController m_rotationPIDController;
   bool m_isSpecialHeadingMode;
   bool m_isFieldRelative;
+  bool m_shouldAlignSpeaker;
   frc::SlewRateLimiter<units::scalar> m_xSpeedLimiter{3 / 1_s};
   frc::SlewRateLimiter<units::scalar> m_ySpeedLimiter{3 / 1_s};
   frc::SlewRateLimiter<units::scalar> m_rotLimiter{3 / 1_s};

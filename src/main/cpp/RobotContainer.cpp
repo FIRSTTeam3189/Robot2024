@@ -6,7 +6,6 @@
 
 #include <frc2/command/button/Trigger.h>
 
-
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   // Runs shooter and shooter angle motor continuously
@@ -15,7 +14,7 @@ RobotContainer::RobotContainer() {
   //   m_shooter->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
   // },{m_shooter}).ToPtr());
 
-  m_swerveDrive->SetDefaultCommand(JoystickDrive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
+  m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
     frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   m_intake->SetDefaultCommand(frc2::RunCommand([this] {
     m_intake->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY));
@@ -57,12 +56,15 @@ void RobotContainer::ConfigureDriverBindings() {
   frc2::Trigger extendIntakeButton{m_bill.Button(OperatorConstants::kButtonIDTriangle)};
   extendIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget).ToPtr());
 
-  frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
+  frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDCreate)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
     m_swerveDrive->ResetGyroscope();
     m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}});
   },{m_swerveDrive}).ToPtr());
 
+  frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
+  alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode, true, true).ToPtr());
+  
   frc2::Trigger extendClimbButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
   extendClimbButton.OnTrue(frc2::InstantCommand([this]{ 
     m_climber->SetPower(ClimberConstants::kExtendMotorSpeed);
@@ -85,10 +87,13 @@ void RobotContainer::ConfigureDriverBindings() {
 void RobotContainer::ConfigureCoDriverBindings() {
   // Ted controls
   frc2::Trigger shootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
-  shootButton.OnTrue(RunShooter(m_shooter, 1.0).ToPtr());
+  shootButton.OnTrue(RunShooter(m_shooter, ShooterConstants::kShootPower).ToPtr());
   shootButton.OnFalse(frc2::InstantCommand([this]{
     m_shooter->SetRollerPower(0.0);
   },{m_shooter}).ToPtr());
+
+  frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
 
   frc2::Trigger shooterCloseRangeButton{m_ted.Button(OperatorConstants::kButtonIDX)};
   shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterConstants::kCloseTarget).ToPtr());
@@ -161,6 +166,19 @@ void RobotContainer::RegisterAutoCommands(){
       m_intake->SetRollerPower(0.0);
     },{m_intake})
   ).ToPtr());  
+
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.emplace_back(SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget).ToPtr().Unwrap());
+  commands.emplace_back(ShooterAutoAlign(m_shooter, m_estimator, m_vision)
+        .Until([this]{ return (m_swerveDrive->GetTotalVelocity() < 0.25_mps); }).Unwrap());
+  commands.emplace_back(frc2::ParallelDeadlineGroup(
+    frc2::WaitCommand(1.0_s),
+    RunShooter(m_shooter, ShooterConstants::kShootPower)
+  ).ToPtr().Unwrap());
+  commands.emplace_back(SetShooterExtension(m_shooter, ShooterConstants::kRetractTarget).ToPtr().Unwrap());
+  commands.emplace_back(SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget).ToPtr().Unwrap());
+  
+  pathplanner::NamedCommands::registerCommand("speakerScore", frc2::SequentialCommandGroup(std::move(commands)).ToPtr());
 } 
 
 void RobotContainer::CreateAutoPaths() {

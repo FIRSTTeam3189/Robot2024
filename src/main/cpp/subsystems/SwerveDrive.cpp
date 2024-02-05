@@ -216,3 +216,11 @@ std::array<ctre::phoenix6::hardware::TalonFX*, 8> SwerveDrive::GetMotorsForMusic
         backRightMotors.first, backRightMotors.second
     };
 }
+
+units::meters_per_second_t SwerveDrive::GetTotalVelocity() {
+    auto chassisSpeeds = GetRobotRelativeSpeeds();
+    auto x = chassisSpeeds.vx.value();
+    auto y = chassisSpeeds.vy.value();
+    double velocity = sqrt((x * x) + (y * y));
+    return units::meters_per_second_t{velocity};
+}
