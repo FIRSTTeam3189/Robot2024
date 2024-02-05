@@ -166,6 +166,19 @@ void RobotContainer::RegisterAutoCommands(){
       m_intake->SetRollerPower(0.0);
     },{m_intake})
   ).ToPtr());  
+
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.emplace_back(SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget).ToPtr().Unwrap());
+  commands.emplace_back(ShooterAutoAlign(m_shooter, m_estimator, m_vision)
+        .Until([this]{ return (m_swerveDrive->GetTotalVelocity() < 0.25_mps); }).Unwrap());
+  commands.emplace_back(frc2::ParallelDeadlineGroup(
+    frc2::WaitCommand(1.0_s),
+    RunShooter(m_shooter, ShooterConstants::kShootPower)
+  ).ToPtr().Unwrap());
+  commands.emplace_back(SetShooterExtension(m_shooter, ShooterConstants::kRetractTarget).ToPtr().Unwrap());
+  commands.emplace_back(SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget).ToPtr().Unwrap());
+  
+  pathplanner::NamedCommands::registerCommand("speakerScore", frc2::SequentialCommandGroup(std::move(commands)).ToPtr());
 } 
 
 void RobotContainer::CreateAutoPaths() {

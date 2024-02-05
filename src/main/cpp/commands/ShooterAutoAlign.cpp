@@ -25,7 +25,6 @@ void ShooterAutoAlign::Execute() {
 
 // Called once the command ends or is interrupted.
 void ShooterAutoAlign::End(bool interrupted) {
-  m_shooter->StopRotation();
 }
 
 // Returns true when the command should end.
