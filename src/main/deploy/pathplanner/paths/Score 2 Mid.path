@@ -4,24 +4,40 @@
     {
       "anchor": {
         "x": 1.36,
-        "y": 7.0
+        "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.24196601125010497,
-        "y": 7.0
+        "x": 3.51260773315418,
+        "y": 5.5504455122942105
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.36,
-        "y": 7.0
+        "x": 2.7756251876140117,
+        "y": 5.55
       },
       "prevControl": {
-        "x": 4.880690632574555,
-        "y": 7.0
+        "x": 2.7732809462395958,
+        "y": 5.5506036436756006
+      },
+      "nextControl": {
+        "x": 2.7779694289884276,
+        "y": 5.549396356324399
+      },
+      "isLocked": true,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.32,
+        "y": 5.55
+      },
+      "prevControl": {
+        "x": 2.257042972267763,
+        "y": 5.61003302006604
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,18 +48,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Align Speaker",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "deadline",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "Shoot",
-      "waypointRelativePos": 0.0,
+      "name": "intake",
+      "waypointRelativePos": 0.35,
       "command": {
         "type": "parallel",
         "data": {
@@ -60,11 +66,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -176.8449833987358,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 178.89601024312438,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }
