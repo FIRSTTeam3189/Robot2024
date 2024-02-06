@@ -3,51 +3,51 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.2,
-        "y": 6.87
+        "x": 1.88,
+        "y": 7.43
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2249903584213158,
-        "y": 6.773172927411935
+        "x": 3.6804552813382228,
+        "y": 7.443049139066995
       },
       "isLocked": true,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.831805481792781,
-        "y": 7.3790380308033345
+        "x": 8.139654097490013,
+        "y": 7.43
       },
       "prevControl": {
-        "x": 7.78181700274267,
-        "y": 7.377964735756813
+        "x": 8.137148844297679,
+        "y": 7.432505253192334
       },
       "nextControl": {
-        "x": 9.137828728233085,
-        "y": 7.4070794577017445
+        "x": 8.210364775608667,
+        "y": 7.359289321881345
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.33920613295772,
-        "y": 7.267093079640705
+        "x": 1.88,
+        "y": 7.43
       },
       "prevControl": {
-        "x": 6.367192370748378,
-        "y": 7.257764333710485
+        "x": 0.928533493429362,
+        "y": 7.4816542360353075
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.4,
-      "rotationDegrees": 174.18559836314853,
+      "waypointRelativePos": 0,
+      "rotationDegrees": 155.91374795050862,
       "rotateFast": false
     }
   ],
@@ -55,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "intake",
-      "waypointRelativePos": 0.25,
+      "waypointRelativePos": 0.9,
       "command": {
         "type": "parallel",
         "data": {
@@ -72,13 +72,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -162.03086025984337,
+    "rotation": -90.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -150.0,
+    "rotation": -90.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
