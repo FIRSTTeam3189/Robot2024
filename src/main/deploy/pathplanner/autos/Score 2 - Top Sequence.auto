@@ -2,32 +2,38 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2,
-      "y": 2
+      "x": 1.36,
+      "y": 7.0
     },
-    "rotation": 0
+    "rotation": -136.02
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": null
-          }
-        },
-        {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "RunIntake"
+                  "name": "SwerveAlign"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpeakerScore"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 2 Top"
           }
         }
       ]
