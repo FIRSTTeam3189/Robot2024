@@ -18,7 +18,7 @@
 class SetIntakeRotation
     : public frc2::CommandHelper<frc2::Command, SetIntakeRotation> {
  public:
-  SetIntakeRotation(Intake *intake, double target);
+  SetIntakeRotation(Intake *intake, units::degree_t target);
     
   void Initialize() override;
 
@@ -30,5 +30,5 @@ class SetIntakeRotation
 
  private:
   Intake *m_intake;
-  double m_target;
+  units::degree_t m_target;
 };

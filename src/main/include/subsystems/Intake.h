@@ -7,11 +7,12 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/AnalogPotentiometer.h>
-#include <rev/CANSparkFlex.h>
-#include <rev/CANSparkMax.h>
-#include <frc/controller/PIDController.h>
-#include <rev/SparkMaxPIDController.h>
+#include <frc/Timer.h>
+#include <frc/controller/ArmFeedforward.h>
+#include <frc/controller/ProfiledPIDController.h>
+#include <frc/trajectory/TrapezoidProfile.h>
 #include <rev/SparkAbsoluteEncoder.h> 
+#include <rev/CANSparkMax.h>
 #include "Constants.h"
 
 class Intake : public frc2::SubsystemBase {
@@ -19,8 +20,8 @@ class Intake : public frc2::SubsystemBase {
   Intake();
   void SetRollerPower(double power);
   void SetRotationPower(double power);
-  void SetRotation(double target);
-  double GetRotation();
+  void SetRotation(units::degree_t target);
+  units::degree_t GetRotation();
   bool NoteDetected();
   void UpdateUltrasonic();
   /**
@@ -31,11 +32,15 @@ class Intake : public frc2::SubsystemBase {
  private:
   rev::CANSparkMax m_rotationMotor;
   rev::CANSparkMax m_rollerMotor;
-  rev::SparkMaxPIDController m_rotationPIDController;
+  frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
+  frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
+  frc::ArmFeedforward m_ff;
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
-  double m_target;
+  units::degree_t m_target;
   frc::AnalogPotentiometer m_ultrasonicSensor;
   bool m_noteDetected;
+  units::degrees_per_second_t m_lastSpeed;
+  units::second_t m_lastTime;
  
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

@@ -4,7 +4,7 @@
 
 #include "commands/FullIntake.h"
 
-FullIntake::FullIntake(Intake *intake, double speed, double target) : 
+FullIntake::FullIntake(Intake *intake, double speed, units::degree_t target) : 
 m_intake(intake), m_speed(speed), m_target(target), m_shouldFinish(false) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(intake);

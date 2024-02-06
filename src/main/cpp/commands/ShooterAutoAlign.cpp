@@ -19,20 +19,19 @@ void ShooterAutoAlign::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void ShooterAutoAlign::Execute() {
-  double angle = CalculateShooterAngle();
+  auto angle = CalculateShooterAngle();
   m_shooter->SetRotation(angle);
 }
 
 // Called once the command ends or is interrupted.
-void ShooterAutoAlign::End(bool interrupted) {
-}
+void ShooterAutoAlign::End(bool interrupted) {}
 
 // Returns true when the command should end.
 bool ShooterAutoAlign::IsFinished() {
   return false;
 }
 
-double ShooterAutoAlign::CalculateShooterAngle() {
+units::degree_t ShooterAutoAlign::CalculateShooterAngle() {
   frc::Pose2d currentPose = m_estimator->GetEstimatedPose();
   frc::Pose3d tagPose = frc::Pose3d{};
   auto autoData = m_vision->GetVisionData();
@@ -63,6 +62,12 @@ double ShooterAutoAlign::CalculateShooterAngle() {
   // Use inverse tangent of height over distance to calculate shooter angle
   double distance = sqrt(pow((tagPose.X().value() - currentPose.X().value()), 2.0) + 
                          pow((tagPose.Y().value() - currentPose.Y().value()), 2.0));
-  double angle = atan(ShooterConstants::kSpeakerHeightTarget.value() / distance);
-  return angle;
+
+  // Subtract distance from shooting axle to center of robot since pose is from center
+  distance -= ShooterConstants::kAxleToCenterDistance.value();
+
+  // Subtract distance from axle to ground since we fire from axle not from ground which the speaker height is measured from
+  double height = ShooterConstants::kSpeakerHeightTarget.value() - ShooterConstants::kAxleToGroundDistance.value();
+  double angle = atan(height / distance);
+  return units::degree_t{units::radian_t{angle}};
 }

@@ -178,12 +178,23 @@ namespace ShooterConstants {
     constexpr double kPRotation {1.0};
     constexpr double kIRotation {0.0};
     constexpr double kDRotation {0.0};
+    constexpr auto kSRotation {0.0_V};
+    constexpr auto kGRotation {0.0_V};
+    constexpr auto kVRotation {0.0_V * 0.0_s / 1.0_rad};
+    constexpr auto kARotation {0.0_V * 0.0_s * 0.0_s / 1.0_rad};
+
+    // In degrees
+    constexpr auto kMaxRotationVelocity {120.0_deg / 1.0_s};
+    constexpr auto kMaxRotationAcceleration {90.0_deg / 1.0_s / 1.0_s};
+
     constexpr double kPExtension {1.0};
     constexpr double kIExtension {0.0};
     constexpr double kDExtension {0.0};
 
     constexpr double kShootPower {1.0};
 
+    constexpr auto kAxleToCenterDistance {0.0741_m};
+    constexpr auto kAxleToGroundDistance {0.2185_m};
     constexpr auto kSpeakerHeightTarget {2.0574_m};
     constexpr double kLoadPower {0.5};
     constexpr double kLoadAngle {0.0};
@@ -196,7 +207,7 @@ namespace ShooterConstants {
     constexpr double kRotationConversion {1.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
-    constexpr double kRotationStopDistance {100.0};
+    constexpr auto kRotationStopDistance {1.0_deg};
 
     constexpr double kExtensionOffset {0.0};
     constexpr double kExtensionConversion {1.0};
@@ -221,15 +232,23 @@ namespace IntakeConstants{
     constexpr double kPRotation {0.5};
     constexpr double kIRotation {0};
     constexpr double kDRotation {0};
+    constexpr auto kSRotation {0.0_V};
+    constexpr auto kGRotation {0.0_V};
+    constexpr auto kVRotation {0.0_V * 0.0_s / 1.0_rad};
+    constexpr auto kARotation {0.0_V * 0.0_s * 0.0_s / 1.0_rad};
 
-    constexpr double kRetractTarget {0};
-    constexpr double kAmpTarget {1000};
-    constexpr double kExtendTarget {2000};
+    // In degrees
+    constexpr auto kMaxRotationVelocity {120.0_deg / 1.0_s};
+    constexpr auto kMaxRotationAcceleration {90.0_deg / 1.0_s / 1.0_s};
+
+    constexpr auto kRetractTarget {90.0_deg};
+    constexpr auto kAmpTarget {60.0_deg};
+    constexpr auto kExtendTarget {-45.0_deg};
     constexpr double kRotationOffset {0};
     constexpr double kRotationConversion {1.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
-    constexpr double kRotationStopDistance {100.0};
+    constexpr auto kRotationStopDistance {5.0_deg};
     constexpr int kUltrasonicPort {0};
     // 5 meters in inches -- max range of sensor; used so sensor reports in inches
     constexpr double kUltrasonicValueRange {196.8504};
@@ -297,9 +316,9 @@ namespace VisionConstants {
 namespace ClimberConstants{
     //FIND IDS - krishna 
     constexpr int kleftServoID {0}; 
-    constexpr int krightServoID {0}; 
-    constexpr int krightMotorID {0};
-    constexpr int klefttMotorID {0};
+    constexpr int krightServoID {1}; 
+    constexpr int krightMotorID {17};
+    constexpr int klefttMotorID {18};
     constexpr int kInvertMotor {false};
     constexpr double kExtendMotorSpeed {0.5};
     constexpr double kExtendServoAngle {0.0};
