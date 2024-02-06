@@ -39,7 +39,7 @@ class SwerveDrive : public frc2::SubsystemBase {
              frc::Translation2d centerOfRotation);
   void Lock();
   void Stop();
-  double GetNormalizedYaw();
+  units::degree_t GetNormalizedYaw();
   void SetRobotYaw(double yaw);
   units::meters_per_second_t GetTotalVelocity();
   frc::ChassisSpeeds GetRobotRelativeSpeeds();

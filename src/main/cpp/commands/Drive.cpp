@@ -42,13 +42,12 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
   // Return next velocity in radians per second as calculated by PIDController and limited by rotLimiter
   units::angular_velocity::radians_per_second_t rot = 
               units::angular_velocity::radians_per_second_t{
-              m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw(), goalAngle))
+              m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), goalAngle))
               * SwerveDriveConstants::kMaxAngularVelocity};
 
   frc::SmartDashboard::PutNumber("Rotation PID Output", rot.value());
     
-  // TODO: Check if necessary, should be redundant if SetTolerance works correctly
-  if (abs(m_swerveDrive->GetNormalizedYaw() - goalAngle) < 2.5) {
+  if (abs(m_swerveDrive->GetNormalizedYaw().value() - goalAngle) < 2.5) {
     rot = units::angular_velocity::radians_per_second_t{0.0};
   }
 
@@ -119,13 +118,14 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
   // This is alliance-dependent 
   auto xDistance = tagPose.X() - currentPose.X();
   auto yDistance = tagPose.Y() - currentPose.Y();
-  double goalAngle = atan(yDistance.value() / xDistance.value());
+  auto goalAngle = units::degree_t{units::radian_t{atan(yDistance.value() / xDistance.value())}};
 
   // Return next velocity in radians per second as calculated by PIDController and limited by rotLimiter
   units::angular_velocity::radians_per_second_t rot = 
               units::angular_velocity::radians_per_second_t{
-              m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw(), goalAngle))
+              m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), goalAngle.value()))
               * SwerveDriveConstants::kMaxAngularVelocity};
 
+  frc::SmartDashboard::PutNumber("Swerve auto align angle (teleop version)", goalAngle.value());
   return rot;
 }

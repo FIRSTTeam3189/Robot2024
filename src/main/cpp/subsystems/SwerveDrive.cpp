@@ -117,11 +117,11 @@ void SwerveDrive::SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredS
     m_modules.m_backRight.SetDesiredState(desiredStates[3]);
 }
 
-double SwerveDrive::GetNormalizedYaw() {
+units::degree_t SwerveDrive::GetNormalizedYaw() {
     // Normalizes yaw to (-180, 180)
-    int yaw =  m_pigeon.GetYaw().GetValue().value(); 
+    double yaw =  m_pigeon.GetYaw().GetValue().value(); 
     // (-360, 360)
-    int normalizedYaw = (yaw % 360);
+    double normalizedYaw = fmod(yaw, 360.0);
     // (-180, 180)
     if (normalizedYaw > 180)
         normalizedYaw -= 360;
@@ -129,7 +129,7 @@ double SwerveDrive::GetNormalizedYaw() {
         normalizedYaw += 360;
 
     frc::SmartDashboard::PutNumber("Normalized Yaw", normalizedYaw);
-    return normalizedYaw;
+    return units::degree_t{normalizedYaw};
 }
 
 void SwerveDrive::SetRobotYaw(double yaw){

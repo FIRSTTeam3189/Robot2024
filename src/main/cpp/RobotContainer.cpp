@@ -7,6 +7,8 @@
 #include <frc2/command/button/Trigger.h>
 
 RobotContainer::RobotContainer() {
+  RegisterAutoCommands();
+  
   // Initialize all of your commands and subsystems here
   // Runs shooter and shooter angle motor continuously
   // m_shooter->SetDefaultCommand(frc2::RunCommand([this] { 
@@ -23,7 +25,6 @@ RobotContainer::RobotContainer() {
   // Configure the button bindings
   ConfigureDriverBindings();
   ConfigureCoDriverBindings();
-  RegisterAutoCommands();
 }
 
 void RobotContainer::ConfigureDriverBindings() {
