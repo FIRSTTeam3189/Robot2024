@@ -60,6 +60,31 @@
               }
             ]
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 3 Top & 1"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AllignSwerve"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ScoreSpeaker"
+                }
+              }
+            ]
+          }
         }
       ]
     }
