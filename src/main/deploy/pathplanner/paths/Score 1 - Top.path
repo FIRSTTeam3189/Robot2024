@@ -3,59 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.35,
+        "x": 1.5,
         "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4394388560370084,
-        "y": 6.955270915158129
+        "x": 1.545230924507174,
+        "y": 6.978688888620574
       },
       "isLocked": true,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6170365068002863,
+        "x": 2.3371741288974612,
         "y": 7.0
       },
       "prevControl": {
-        "x": 2.5559090684731114,
-        "y": 7.0432499811149185
-      },
-      "nextControl": {
-        "x": 2.6986695700099803,
-        "y": 6.942241511524251
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.8520793405223173,
-        "y": 7.351051793012677
-      },
-      "prevControl": {
-        "x": 1.585719491730322,
-        "y": 6.703683629254942
+        "x": 2.3302360956187727,
+        "y": 6.940402485838553
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": -179.79123105099941,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "intake",
-      "waypointRelativePos": 0.95,
+      "name": "AllignShooter",
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -72,13 +50,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0,
+    "rotation": -156.9295877500542,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -156.3,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

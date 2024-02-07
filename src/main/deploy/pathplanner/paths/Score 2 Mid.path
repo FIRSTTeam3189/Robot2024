@@ -3,28 +3,28 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.36,
+        "x": 2.31,
         "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.27005648792891,
-        "y": 5.550395312919717
+        "x": 2.8315976631953266,
+        "y": 5.541275082550166
       },
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.32,
+        "x": 2.31,
         "y": 5.55
       },
       "prevControl": {
-        "x": 2.257042972267763,
+        "x": 2.247042972267763,
         "y": 5.61003302006604
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     }
   ],
@@ -32,10 +32,30 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "intake",
-      "waypointRelativePos": 0.2,
+      "name": "Intake",
+      "waypointRelativePos": 0.3,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Load",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "AllignSpeaker",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "sequential",
         "data": {
           "commands": []
         }

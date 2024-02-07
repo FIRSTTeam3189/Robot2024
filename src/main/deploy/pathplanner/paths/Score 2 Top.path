@@ -3,40 +3,40 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.36,
+        "x": 2.34,
         "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.06,
-        "y": 7.0
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.523749047498095,
-        "y": 7.0
-      },
-      "prevControl": {
-        "x": 2.2169481650318947,
-        "y": 6.846599558766915
-      },
-      "nextControl": {
-        "x": 2.5424065393585327,
-        "y": 7.009328745930218
+        "x": 2.343203436259837,
+        "y": 6.999968329229942
       },
       "isLocked": true,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.2,
+        "x": 2.464045073544694,
+        "y": 7.102907151268847
+      },
+      "prevControl": {
+        "x": 2.513033896602358,
+        "y": 7.112911910907385
+      },
+      "nextControl": {
+        "x": 2.443607220656325,
+        "y": 7.098733223566293
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.197242939940425,
         "y": 6.865957004641282
       },
       "prevControl": {
-        "x": 2.169669568430046,
+        "x": 2.166912508370471,
         "y": 6.8625164523056315
       },
       "nextControl": null,
@@ -46,8 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": -177.09777566352977,
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": 168.92768711180435,
       "rotateFast": false
     }
   ],
@@ -55,7 +55,27 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Load",
+      "waypointRelativePos": 1.15,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "AllignSpeaker",
+      "waypointRelativePos": 1.35,
       "command": {
         "type": "parallel",
         "data": {
@@ -78,7 +98,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -136.01887699564858,
+    "rotation": -156.93,
     "velocity": 0
   },
   "useDefaultConstraints": false

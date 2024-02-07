@@ -16,18 +16,18 @@
     },
     {
       "anchor": {
-        "x": 7.831805481792781,
-        "y": 7.3790380308033345
+        "x": 7.757175514351029,
+        "y": 7.42568176045443
       },
       "prevControl": {
-        "x": 7.78181700274267,
-        "y": 7.377964735756813
+        "x": 7.707200426468168,
+        "y": 7.427259921124415
       },
       "nextControl": {
-        "x": 9.137828728233085,
-        "y": 7.4070794577017445
+        "x": 8.643406377721846,
+        "y": 7.397695522663773
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -40,24 +40,44 @@
         "y": 7.257764333710485
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.4,
-      "rotationDegrees": 174.18559836314853,
+      "rotationDegrees": 159.01947988352336,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "intake",
-      "waypointRelativePos": 0.25,
+      "name": "Intake",
+      "waypointRelativePos": 1.25,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Load",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "AllignSpeaker",
+      "waypointRelativePos": 0.9,
+      "command": {
+        "type": "sequential",
         "data": {
           "commands": []
         }
