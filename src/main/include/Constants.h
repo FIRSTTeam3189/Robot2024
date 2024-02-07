@@ -196,13 +196,17 @@ namespace ShooterConstants {
     constexpr auto kAxleToCenterDistance {0.0741_m};
     constexpr auto kAxleToGroundDistance {0.2185_m};
     constexpr auto kSpeakerHeightTarget {2.0574_m};
+    // Intake load
+    constexpr auto kLoadAngle {0.0_deg};
     constexpr double kLoadPower {0.5};
-    constexpr double kLoadAngle {0.0};
+    // Direct shooter load
+    constexpr auto kDirectLoadAngle {30.0_deg};
+    constexpr double kDirectLoadPower {-0.5};
 
     constexpr double kRetractTarget {0.0};
-    constexpr double kCloseTarget {0};
-    constexpr double kMidTarget {1000};
-    constexpr double kFarTarget {2000};
+    constexpr double kCloseTarget {60.0};
+    constexpr double kMidTarget {30.0};
+    constexpr double kFarTarget {20.0};
     constexpr double kRotationOffset {0.0};
     constexpr double kRotationConversion {1.0};
     constexpr bool kRotationInverted {false};

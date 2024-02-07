@@ -67,7 +67,8 @@ units::degree_t SwerveAutoAlign::GetSpeakerGoalAngle() {
   // This is alliance-dependent 
   auto xDistance = tagPose.X() - currentPose.X();
   auto yDistance = tagPose.Y() - currentPose.Y();
-  auto goalAngle = units::degree_t{units::radian_t{atan(yDistance.value() / xDistance.value())}};
+    // x and y swapped when passed into atan function because our x is their y
+  auto goalAngle = units::degree_t{units::radian_t{atan(xDistance.value() / yDistance.value())}};
   frc::SmartDashboard::PutNumber("Swerve auto align angle", goalAngle.value());
   return goalAngle;
 }

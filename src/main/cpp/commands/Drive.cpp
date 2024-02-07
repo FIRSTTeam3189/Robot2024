@@ -11,7 +11,8 @@ m_swerveDrive(swerveDrive),
 m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot, SwerveDriveConstants::kDRot),
 m_isSpecialHeadingMode(isSpecialHeadingMode),
 m_isFieldRelative(isFieldRelative),
-m_shouldAlignSpeaker(shouldAlignSpeaker) {
+m_shouldAlignSpeaker(shouldAlignSpeaker),
+m_allianceSide(frc::DriverStation::GetAlliance()) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(swerveDrive);
   // 1 degree position tolerance
@@ -23,31 +24,40 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
   // Get raw (-1.0 to 1.0) joystick positions for x and y axis
   // Left, up are -1.0; right, down are 1.0
   // Inverted so forward on joystick is down the field
-  double joystickX = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY);
-  double joystickY = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
+  // If red alliance, flip 180
+  double joystickX, joystickY;
+  if (m_allianceSide == frc::DriverStation::Alliance::kRed) {
+    joystickX = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY);
+    joystickY = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
+  } else {
+    joystickX = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY);
+    joystickY = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
+  }
 
-  // Manual deadband to inputs greater than 2% only
-  // TODO: Figure out if there's a better way to deadband
-  if ((fabs(joystickX) < .05) && (fabs(joystickY) < .05)) 
-    return units::angular_velocity::radians_per_second_t{0.0};
+  // Manual deadband to inputs greater than 5% only
+  // If deadband detected (i.e. user is not giving rotation input), then set goalAngle as last desired angle
+  if ((fabs(joystickX) < .05) && (fabs(joystickY) < .05)) {
+    m_goalAngle = m_lastAngle;
+  } else {
+    // Convert joystick positions to goal angle in degrees
+    // Normalized from -180, 180
+    // Uses arctan2 function -- converts Cartesian coordinates (1, 1) to a polar angle (pi / 4), then multiplies by radians to degrees conversion
+    // Converts rad to degrees
+    m_goalAngle = SwerveDriveConstants::kRadiansToDegreesMultiplier * atan2(joystickY, joystickX);
+  }
+  m_lastAngle = m_goalAngle;
 
-  // Convert joystick positions to goal angle in degrees
-  // Normalized from -180, 180
-  // Uses arctan2 function -- converts Cartesian coordinates (1, 1) to a polar angle (pi / 4), then multiplies by radians to degrees conversion
-  // Converts rad to degrees
-  double goalAngle = SwerveDriveConstants::kRadiansToDegreesMultiplier * atan2(joystickY, joystickX);
-
-  frc::SmartDashboard::PutNumber("Robot Desired Angle", goalAngle);
+  frc::SmartDashboard::PutNumber("Robot Desired Angle", m_goalAngle);
 
   // Return next velocity in radians per second as calculated by PIDController and limited by rotLimiter
   units::angular_velocity::radians_per_second_t rot = 
               units::angular_velocity::radians_per_second_t{
-              m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), goalAngle))
+              m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), m_goalAngle))
               * SwerveDriveConstants::kMaxAngularVelocity};
 
   frc::SmartDashboard::PutNumber("Rotation PID Output", rot.value());
     
-  if (abs(m_swerveDrive->GetNormalizedYaw().value() - goalAngle) < 2.5) {
+  if (abs(m_swerveDrive->GetNormalizedYaw().value() - m_goalAngle) < 2.5) {
     rot = units::angular_velocity::radians_per_second_t{0.0};
   }
 
@@ -59,8 +69,14 @@ void Drive::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void Drive::Execute() {
-  double joystickX = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickY);
-  double joystickY = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickX);
+  double joystickX, joystickY;
+  if (m_allianceSide == frc::DriverStation::Alliance::kRed) {
+    joystickX = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY);
+    joystickY = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
+  } else {
+    joystickX = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY);
+    joystickY = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
+  }
 
   units::meters_per_second_t xSpeed, ySpeed;
 
@@ -105,8 +121,7 @@ bool Drive::IsFinished() {
 
 units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
   frc::Pose3d tagPose;
-  auto allianceSide = frc::DriverStation::GetAlliance();
-    if (allianceSide == frc::DriverStation::Alliance::kRed) {
+    if (m_allianceSide == frc::DriverStation::Alliance::kRed) {
       tagPose = VisionConstants::kTagPoses.at(3);
     } else {
       tagPose = VisionConstants::kTagPoses.at(6);
@@ -118,7 +133,8 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
   // This is alliance-dependent 
   auto xDistance = tagPose.X() - currentPose.X();
   auto yDistance = tagPose.Y() - currentPose.Y();
-  auto goalAngle = units::degree_t{units::radian_t{atan(yDistance.value() / xDistance.value())}};
+  // x and y swapped when passed into atan function because our x is their y
+  auto goalAngle = units::degree_t{units::radian_t{atan(xDistance.value() / yDistance.value())}};
 
   // Return next velocity in radians per second as calculated by PIDController and limited by rotLimiter
   units::angular_velocity::radians_per_second_t rot = 

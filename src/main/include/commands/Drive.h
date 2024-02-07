@@ -46,4 +46,7 @@ class Drive
   frc::SlewRateLimiter<units::scalar> m_xSpeedLimiter{3 / 1_s};
   frc::SlewRateLimiter<units::scalar> m_ySpeedLimiter{3 / 1_s};
   frc::SlewRateLimiter<units::scalar> m_rotLimiter{3 / 1_s};
+  double m_goalAngle;
+  double m_lastAngle;
+  std::optional<frc::DriverStation::Alliance> m_allianceSide;
 };

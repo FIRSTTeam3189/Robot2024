@@ -36,7 +36,7 @@ m_modulePositions(
     // / Setup autobuilder for pathplannerlib
     pathplanner::AutoBuilder::configureHolonomic(
         [this](){ return GetEstimatedPose(); }, // Robot pose supplier
-        [this](frc::Pose2d pose){ SetPose(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
+        [this](frc::Pose2d pose){ SetPose(pose, false); }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ DriveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         AutoConstants::autoConfig,
@@ -168,7 +168,7 @@ void SwerveDrive::UpdateEstimator() {
     m_modulePositions[3] = m_modules.m_backRight.GetPosition(true);
 
     LogModuleStates(m_modulePositions);
-    m_poseHelper->UpdatePoseEstimator(m_modulePositions, m_pigeon.GetRotation2d());
+    m_poseHelper->UpdatePoseEstimator(m_modulePositions, frc::Rotation2d{GetNormalizedYaw()});
 }
 
 void SwerveDrive::ResetDriveEncoders() {
@@ -178,11 +178,16 @@ void SwerveDrive::ResetDriveEncoders() {
     m_modules.m_backRight.ResetDriveEncoder();
 }
 
-void SwerveDrive::SetPose(frc::Pose2d pose) {
+void SwerveDrive::SetPose(frc::Pose2d pose, bool justRotation) {
     UpdateEstimator();
     // TODO: not sure if the encoders should be reset here
-    ResetDriveEncoders();
-    m_poseHelper->ResetPose(m_pigeon.GetRotation2d(), m_modulePositions, pose);
+    // ResetDriveEncoders();
+    if (justRotation) {
+        auto currentPose = GetEstimatedPose();
+        m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, frc::Pose2d{currentPose.X(), currentPose.Y(), pose.Rotation()});
+    }
+    else
+        m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, pose);
 }
 
 void SwerveDrive::ResetGyroscope() {
