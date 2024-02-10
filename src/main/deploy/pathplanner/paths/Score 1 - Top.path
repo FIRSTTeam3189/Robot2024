@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "AllignShooter",
+      "name": "AlignShooter",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",

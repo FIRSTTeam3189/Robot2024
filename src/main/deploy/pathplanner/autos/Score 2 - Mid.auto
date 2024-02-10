@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 1.36,
-      "y": 7.0
+      "y": 5.5555555555
     },
     "rotation": 180.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 1 - Top"
+            "pathName": "Score 1 - Mid"
           }
         },
         {
@@ -39,26 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 2 Top"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AllignSwerve"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ScoreSpeaker"
-                }
-              }
-            ]
+            "pathName": "Score 2 - Mid"
           }
         }
       ]
