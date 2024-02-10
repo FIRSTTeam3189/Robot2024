@@ -3,6 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/Vision.h"
+#include "wpinet/EventLoopRunner.h"
+#include "wpinet/HttpServerConnection.h"
+#include "wpinet/UrlParser.h"
+#include "wpinet/uv/Loop.h"
+#include "wpinet/uv/Tcp.h"
+
+namespace uv = wpi::uv;
 
 Vision::Vision(PoseEstimatorHelper *helper) : 
 m_helper(helper),
@@ -17,8 +24,11 @@ m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCame
   m_rotationMatrixTopic = networkTableInstance.GetFloatArrayTopic("Vision/AprilTag/RMatrix");
 
   // TCP stuff
-//   m_TCP->Connect("10.31.89.59", 8010, [this]{});
+  m_TCP = std::make_shared(wpi::uv::Tcp())
+  m_TCP->Connect("10.31.89.59", 8010, [this]{});
 }
+
+
 
 // This method will be called once per scheduler run
 void Vision::Periodic() {
@@ -34,7 +44,7 @@ void Vision::Periodic() {
             m_data.rotationMatrix = m_rotationMatrixTopic.Subscribe(defaultArray).Get();
             m_data.lastTimestamp = m_lastTimestampTopic.Subscribe(0.0).Get();
 
-            // m_TCP->StartRead();
+            m_TCP->StartRead();
 
             frc::SmartDashboard::PutNumber("Vision X distance", m_data.translationMatrix[0]);
             frc::SmartDashboard::PutNumber("Vision Y distance", m_data.translationMatrix[1]);
@@ -55,9 +65,12 @@ void Vision::Periodic() {
 
             units::second_t timestamp = units::second_t{m_data.lastTimestamp};
             m_helper->AddVisionMeasurement(robotPose.ToPose2d(), timestamp, distanceCompensatedStdDevs);
+            
         }
     }
 }
+
+
 
 frc::Pose3d Vision::TagToCamera() {
     frc::Pose3d tagPose = VisionConstants::kTagPoses.at(m_data.ID - 1);
@@ -86,3 +99,5 @@ frc::Pose3d Vision::CameraToRobot(frc::Pose3d cameraPose) {
 VisionData Vision::GetVisionData() {
     return m_data;
 }
+
+void tcpCommunication
