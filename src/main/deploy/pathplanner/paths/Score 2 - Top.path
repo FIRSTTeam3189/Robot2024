@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.178585448079987,
-        "y": 4.1
+        "x": 2.34,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1821983554287514,
-        "y": 4.0998896313165645
+        "x": 2.343203436259837,
+        "y": 6.999968329229942
       },
       "isLocked": true,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.5424712571063495,
-        "y": 4.1
+        "x": 2.464045073544694,
+        "y": 7.102907151268847
       },
       "prevControl": {
-        "x": 2.5509525533513515,
-        "y": 4.114690036010387
+        "x": 2.513033896602358,
+        "y": 7.112911910907385
       },
       "nextControl": {
-        "x": 2.523635014465196,
-        "y": 4.067374670721826
+        "x": 2.443607220656325,
+        "y": 7.098733223566293
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.178585448079987,
-        "y": 4.1
+        "x": 2.197242939940425,
+        "y": 6.865957004641282
       },
       "prevControl": {
-        "x": 2.1762412543027865,
-        "y": 4.076661971502111
+        "x": 2.166912508370471,
+        "y": 6.8625164523056315
       },
       "nextControl": null,
       "isLocked": true,
@@ -46,8 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.15,
-      "rotationDegrees": -179.70060448476292,
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": 168.92768711180435,
       "rotateFast": false
     }
   ],
@@ -55,9 +55,9 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 1.1,
+      "waypointRelativePos": 0.95,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": []
         }
@@ -65,17 +65,17 @@
     },
     {
       "name": "Load",
-      "waypointRelativePos": 0.7,
+      "waypointRelativePos": 1.15,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": []
         }
       }
     },
     {
-      "name": "AllignShooter",
-      "waypointRelativePos": 0,
+      "name": "AlignSpeaker",
+      "waypointRelativePos": 1.35,
       "command": {
         "type": "parallel",
         "data": {
@@ -85,20 +85,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 145.76442198262316,
+    "rotation": -150.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 147.65470365407916,
+    "rotation": -156.93,
     "velocity": 0
   },
   "useDefaultConstraints": false
