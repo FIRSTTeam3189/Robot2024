@@ -8,6 +8,8 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/AnalogPotentiometer.h>
 #include <frc/Timer.h>
+#include <frc2/command/sysid/SysIdRoutine.h>
+#include <frc/RobotController.h>
 #include <frc/controller/ArmFeedforward.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
@@ -24,6 +26,9 @@ class Intake : public frc2::SubsystemBase {
   units::degree_t GetRotation();
   bool NoteDetected();
   void UpdateUltrasonic();
+
+  frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
+  frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -41,6 +46,7 @@ class Intake : public frc2::SubsystemBase {
   bool m_noteDetected;
   units::degrees_per_second_t m_lastSpeed;
   units::second_t m_lastTime;
+  frc2::sysid::SysIdRoutine m_sysIdRoutine;
  
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

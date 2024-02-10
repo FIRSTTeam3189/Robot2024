@@ -15,6 +15,9 @@ m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCame
   m_lastTimestampTopic = networkTableInstance.GetFloatTopic("Vision/AprilTag/Timestamp");
   m_translationMatrixTopic = networkTableInstance.GetFloatArrayTopic("Vision/AprilTag/TMatrix");
   m_rotationMatrixTopic = networkTableInstance.GetFloatArrayTopic("Vision/AprilTag/RMatrix");
+
+  // TCP stuff
+//   m_TCP->Connect("10.31.89.59", 8010, [this]{});
 }
 
 // This method will be called once per scheduler run
@@ -30,6 +33,8 @@ void Vision::Periodic() {
             m_data.translationMatrix = m_translationMatrixTopic.Subscribe(defaultArray).Get();
             m_data.rotationMatrix = m_rotationMatrixTopic.Subscribe(defaultArray).Get();
             m_data.lastTimestamp = m_lastTimestampTopic.Subscribe(0.0).Get();
+
+            // m_TCP->StartRead();
 
             frc::SmartDashboard::PutNumber("Vision X distance", m_data.translationMatrix[0]);
             frc::SmartDashboard::PutNumber("Vision Y distance", m_data.translationMatrix[1]);
@@ -56,15 +61,16 @@ void Vision::Periodic() {
 
 frc::Pose3d Vision::TagToCamera() {
     frc::Pose3d tagPose = VisionConstants::kTagPoses.at(m_data.ID - 1);
+    // Invert the data since vision reports positive differences and TransformBy adds so we need to subtract
     frc::Transform3d tagToCamera = frc::Transform3d(
-        units::meter_t{m_data.translationMatrix.at(0)},
-        units::meter_t{m_data.translationMatrix.at(1)},
-        units::meter_t{m_data.translationMatrix.at(2)},
+        units::meter_t{-m_data.translationMatrix.at(0)},
+        units::meter_t{-m_data.translationMatrix.at(1)},
+        units::meter_t{-m_data.translationMatrix.at(2)},
         frc::Rotation3d{
             // Just using the yaw rotation only
             0.0_deg,
             // units::degree_t{m_data.rotationMatrix.at(0)},
-            units::degree_t{m_data.rotationMatrix.at(1)},
+            units::degree_t{-m_data.rotationMatrix.at(1)},
             // units::degree_t{m_data.rotationMatrix.at(2)}
             0.0_deg
         }
@@ -77,6 +83,6 @@ frc::Pose3d Vision::CameraToRobot(frc::Pose3d cameraPose) {
     return cameraPose.TransformBy(m_cameraToRobotTransform);
 }
 
-VisionData Vision::GetVisionData(){
+VisionData Vision::GetVisionData() {
     return m_data;
 }

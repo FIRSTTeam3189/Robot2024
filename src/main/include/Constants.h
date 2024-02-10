@@ -208,7 +208,7 @@ namespace ShooterConstants {
     constexpr double kMidTarget {30.0};
     constexpr double kFarTarget {20.0};
     constexpr double kRotationOffset {0.0};
-    constexpr double kRotationConversion {1.0};
+    constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
     constexpr auto kRotationStopDistance {1.0_deg};
@@ -249,7 +249,7 @@ namespace IntakeConstants{
     constexpr auto kAmpTarget {60.0_deg};
     constexpr auto kExtendTarget {-45.0_deg};
     constexpr double kRotationOffset {0};
-    constexpr double kRotationConversion {1.0};
+    constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
     constexpr auto kRotationStopDistance {5.0_deg};

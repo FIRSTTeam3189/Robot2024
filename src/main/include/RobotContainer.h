@@ -35,9 +35,9 @@
 #include "subsystems/Climber.h"
 #include "subsystems/Vision.h"
 #include "subsystems/PoseEstimatorHelper.h"
-#include "Autos/TestAuto.h"
-#include <pathplanner/lib/auto/NamedCommands.h>
 
+#include <pathplanner/lib/auto/NamedCommands.h>
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -73,6 +73,7 @@ class RobotContainer {
 
   void ConfigureDriverBindings();
   void ConfigureCoDriverBindings();
+  void ConfigureSysIDBindings();
   void CreateAutoPaths();
   void RegisterAutoCommands();
 };

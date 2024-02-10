@@ -14,6 +14,8 @@
 #include <frc/DriverStation.h>
 #include "util/SwerveModule.h"
 #include "subsystems/PoseEstimatorHelper.h"
+#include <frc2/command/sysid/SysIdRoutine.h>
+#include <frc/RobotController.h>
 
 struct SwerveModules {
   frc::Translation2d m_frontLeftLocation;
@@ -52,6 +54,10 @@ class SwerveDrive : public frc2::SubsystemBase {
   void UpdateEstimator();
   void LogModuleStates(wpi::array<frc::SwerveModulePosition, 4> modulePositions);
   std::array<ctre::phoenix6::hardware::TalonFX*, 8> GetMotorsForMusic();
+  frc2::CommandPtr DriveSysIdQuasistatic(frc2::sysid::Direction direction);
+  frc2::CommandPtr DriveSysIdDynamic(frc2::sysid::Direction direction);
+  frc2::CommandPtr AngleSysIdQuasistatic(frc2::sysid::Direction direction);
+  frc2::CommandPtr AngleSysIdDynamic(frc2::sysid::Direction direction);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -62,6 +68,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
   SwerveModules m_modules;
+  wpi::array<SwerveModule*, 4> m_moduleArray;
   ctre::phoenix6::hardware::Pigeon2 m_pigeon;
   PoseEstimatorHelper *m_poseHelper;
   wpi::array<frc::SwerveModulePosition, 4> m_modulePositions;
@@ -69,4 +76,6 @@ class SwerveDrive : public frc2::SubsystemBase {
 
   // Tuning mode preference -- when true, will constantly update module preferences
   std::string_view m_tuningModeKey = "Tuning Mode?";
+  frc2::sysid::SysIdRoutine m_driveSysIdRoutine;
+  frc2::sysid::SysIdRoutine m_angleSysIdRoutine;
 };

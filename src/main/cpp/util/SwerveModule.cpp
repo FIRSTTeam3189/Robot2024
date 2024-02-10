@@ -271,3 +271,19 @@ void SwerveModule::UpdatePreferences() {
 std::pair<ctre::phoenix6::hardware::TalonFX*, ctre::phoenix6::hardware::TalonFX*> SwerveModule::GetMotorsForMusic() {
     return std::pair{&m_driveMotor, &m_angleMotor};
 }
+
+units::volt_t SwerveModule::GetDriveVoltage() {
+    return m_driveMotor.GetMotorVoltage().GetValue();
+}
+
+units::volt_t SwerveModule::GetAngleVoltage() {
+    return m_angleMotor.GetMotorVoltage().GetValue();
+}
+
+void SwerveModule::SetAngleVoltage(units::volt_t voltage) {
+    m_angleMotor.SetVoltage(voltage);
+}
+
+void SwerveModule::SetDriveVoltage(units::volt_t voltage) {
+    m_driveMotor.SetVoltage(voltage);
+}

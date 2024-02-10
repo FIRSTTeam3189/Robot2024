@@ -63,6 +63,11 @@ void RobotContainer::ConfigureDriverBindings() {
     m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
   },{m_swerveDrive}).ToPtr());
 
+  frc2::Trigger resetSpeakerPoseButton{m_bill.Button(OperatorConstants::kButtonIDMenu)};
+  resetPoseButton.OnTrue(frc2::InstantCommand([this]{
+    m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 0.0_m, frc::Rotation2d{180.0_deg}}, true);
+  },{m_swerveDrive}).ToPtr());
+
   frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
   alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode, true, true).ToPtr());
   
@@ -204,7 +209,7 @@ void RobotContainer::RegisterAutoCommands() {
 } 
 
 void RobotContainer::CreateAutoPaths() {
-  m_chooser.AddOption("Test Auto", new TestAuto("Test Auto", m_swerveDrive));
+  m_chooser.AddOption("Test Auto", new pathplanner::PathPlannerAuto("Test Auto"));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
@@ -212,3 +217,22 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
   return m_chooser.GetSelected();
 }
 
+void RobotContainer::ConfigureSysIDBindings() {
+  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDX))
+    .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDSquare))
+    .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDTriangle))
+    .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
+  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDCircle))
+    .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
+
+  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDX))
+    .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDSquare))
+    .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDTriangle))
+    .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
+  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDCircle))
+    .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
+}
