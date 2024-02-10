@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.36,
-      "y": 7.0
+      "x": 1.53,
+      "y": 3.96
     },
     "rotation": 180.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 1 - Top"
+            "pathName": "Score 1 - Bottom"
           }
         },
         {
@@ -24,7 +24,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AllignSwerve"
+                  "name": "AlignSwerve"
                 }
               },
               {
@@ -39,7 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 2 Top"
+            "pathName": "Score 2 - Bottom"
           }
         },
         {
@@ -49,32 +49,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AllignSwerve"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ScoreSpeaker"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score 3 Top & 1"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AllignSwerve"
+                  "name": "AlignSwerve"
                 }
               },
               {

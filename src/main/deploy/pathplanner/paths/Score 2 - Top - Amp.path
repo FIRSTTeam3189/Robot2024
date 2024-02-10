@@ -8,36 +8,52 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4394388560370084,
-        "y": 6.955270915158129
-      },
-      "isLocked": true,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.6170365068002863,
-        "y": 7.0
-      },
-      "prevControl": {
-        "x": 2.5559090684731114,
-        "y": 7.0432499811149185
-      },
-      "nextControl": {
-        "x": 2.6986695700099803,
-        "y": 6.942241511524251
+        "x": 2.267595982121196,
+        "y": 7.036188089717885
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.8520793405223173,
-        "y": 7.351051793012677
+        "x": 2.0875484365697825,
+        "y": 7.119698893940025
       },
       "prevControl": {
-        "x": 1.585719491730322,
-        "y": 6.703683629254942
+        "x": 2.046731904964938,
+        "y": 7.148578138177897
+      },
+      "nextControl": {
+        "x": 2.128364968174627,
+        "y": 7.090819649702151
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.509207752615687,
+        "y": 7.0
+      },
+      "prevControl": {
+        "x": 2.076229295641153,
+        "y": 7.21086265206651
+      },
+      "nextControl": {
+        "x": 2.531596742848213,
+        "y": 6.989096450916958
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.8412695440119975,
+        "y": 7.705544138357787
+      },
+      "prevControl": {
+        "x": 1.8409886300477416,
+        "y": 7.708153112591211
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,8 +62,13 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": -179.79123105099941,
+      "waypointRelativePos": 1.9500000000000002,
+      "rotationDegrees": 175.64239536908525,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.75,
+      "rotationDegrees": -90.81938692292591,
       "rotateFast": false
     }
   ],
