@@ -49,7 +49,11 @@ class SwerveModule {
   units::degree_t GetMotorAngle();
   units::degree_t GetEncoderAngle();
   units::meters_per_second_t GetDriveSpeed();
+  units::volt_t GetDriveVoltage();
+  units::volt_t GetAngleVoltage();
   Signals GetSignals();
+  void SetDriveVoltage(units::volt_t voltage);
+  void SetAngleVoltage(units::volt_t voltage);
   void ResetDriveEncoder();
   frc::SwerveModuleState OptimizeAngle(frc::SwerveModuleState desiredState, frc::Rotation2d currentAngle);
   double NormalizeTo0To360(double currentAngle, double targetAngle);

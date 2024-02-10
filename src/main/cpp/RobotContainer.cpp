@@ -217,3 +217,22 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
   return m_chooser.GetSelected();
 }
 
+void RobotContainer::ConfigureSysIDBindings() {
+  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDX))
+    .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDSquare))
+    .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDTriangle))
+    .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
+  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDCircle))
+    .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
+
+  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDX))
+    .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDSquare))
+    .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDTriangle))
+    .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
+  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDCircle))
+    .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
+}

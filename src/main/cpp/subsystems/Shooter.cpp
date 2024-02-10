@@ -16,7 +16,22 @@ m_extensionPIDController(m_extensionMotor.GetPIDController()),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
 m_extensionEncoder(m_extensionMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
 m_ultrasonicSensor(ShooterConstants::kUltrasonicPort, ShooterConstants::kUltrasonicValueRange),
-m_noteDetected(false) {
+m_noteDetected(false),
+m_sysIdRoutine(
+    frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
+    frc2::sysid::Mechanism(
+        [this](units::volt_t driveVoltage) {
+          m_rotationMotor.SetVoltage(driveVoltage);
+        },
+        [this](frc::sysid::SysIdRoutineLog* log) {
+          log->Motor("rotation")
+              .voltage(m_rotationMotor.Get() *
+                       frc::RobotController::GetBatteryVoltage())
+              .position(units::turn_t{GetRotation()})
+              .velocity(units::turns_per_second_t{units::degrees_per_second_t{m_rotationEncoder.GetVelocity()}});
+        },
+        this)
+) {
     ConfigRollerMotor();
     ConfigExtensionMotor();
     ConfigRotationMotor();
@@ -99,6 +114,7 @@ void Shooter::ConfigRotationMotor() {
     m_rotationMotor.SetSmartCurrentLimit(ShooterConstants::kRotationCurrentLimit);
     m_rotationEncoder.SetInverted(ShooterConstants::kRotationInverted);
     m_rotationEncoder.SetPositionConversionFactor(ShooterConstants::kRotationConversion);
+    m_rotationEncoder.SetVelocityConversionFactor(ShooterConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(ShooterConstants::kRotationOffset);
 }
 
@@ -113,4 +129,12 @@ void Shooter::UpdateUltrasonic() {
 
 bool Shooter::NoteDetected() {
     return m_noteDetected;
+}
+
+frc2::CommandPtr Shooter::SysIdQuasistatic(frc2::sysid::Direction direction) {
+  return m_sysIdRoutine.Quasistatic(direction);
+}
+
+frc2::CommandPtr Shooter::SysIdDynamic(frc2::sysid::Direction direction) {
+  return m_sysIdRoutine.Dynamic(direction);
 }

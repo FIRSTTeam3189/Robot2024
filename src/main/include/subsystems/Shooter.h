@@ -11,6 +11,8 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/Timer.h>
+#include <frc2/command/sysid/SysIdRoutine.h>
+#include <frc/RobotController.h>
 #include <rev/CANSparkMax.h>
 #include <rev/SparkAbsoluteEncoder.h> 
 #include "Constants.h"
@@ -31,6 +33,9 @@ class Shooter : public frc2::SubsystemBase {
   void ConfigRotationMotor();
   bool NoteDetected();
   void UpdateUltrasonic();
+  frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
+  frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
+
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -54,4 +59,5 @@ class Shooter : public frc2::SubsystemBase {
    units::degree_t m_target;
    units::degrees_per_second_t m_lastSpeed;
    units::second_t m_lastTime;
+   frc2::sysid::SysIdRoutine m_sysIdRoutine;
 };

@@ -19,6 +19,12 @@ m_modules{
   {3, SwerveModuleConstants::kBackRightDriveID, SwerveModuleConstants::kBackRightAngleID,
    SwerveModuleConstants::kBackRightCANcoderID, SwerveModuleConstants::kBackRightOffset}
 }, 
+m_moduleArray(
+    &m_modules.m_frontLeft,
+    &m_modules.m_frontRight,
+    &m_modules.m_backLeft,
+    &m_modules.m_backRight
+),
 m_pigeon(SwerveDriveConstants::kGyroID, "Swerve"),
 m_poseHelper(helper),
 m_modulePositions(
@@ -26,8 +32,38 @@ m_modulePositions(
     m_modules.m_frontRight.GetPosition(true),
     m_modules.m_backLeft.GetPosition(true),
     m_modules.m_backRight.GetPosition(true)
-)
-{   
+),
+m_driveSysIdRoutine(
+    frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
+    frc2::sysid::Mechanism(
+        [this](units::volt_t driveVoltage) {
+          for (int i = 4; i < 8; i++)
+            m_moduleArray.at(i)->SetDriveVoltage(driveVoltage);
+        },
+        [this](frc::sysid::SysIdRoutineLog* log) {
+        //   log->Motor("rotation")
+        //       .voltage(m_rotationMotor.Get() *
+        //                frc::RobotController::GetBatteryVoltage())
+        //       .position(units::turn_t{GetRotation()})
+        //       .velocity(units::turns_per_second_t{units::degrees_per_second_t{m_rotationEncoder.GetVelocity()}});
+        },
+        this)
+),
+m_angleSysIdRoutine(
+    frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
+    frc2::sysid::Mechanism(
+        [this](units::volt_t driveVoltage) {
+        //   m_rotationMotor.SetVoltage(driveVoltage);
+        },
+        [this](frc::sysid::SysIdRoutineLog* log) {
+        //   log->Motor("rotation")
+        //       .voltage(m_rotationMotor.Get() *
+        //                frc::RobotController::GetBatteryVoltage())
+        //       .position(units::turn_t{GetRotation()})
+        //       .velocity(units::turns_per_second_t{units::degrees_per_second_t{m_rotationEncoder.GetVelocity()}});
+        },
+        this)
+)   {   
     ConfigGyro();
     auto poseEstimator = new frc::SwerveDrivePoseEstimator<4> (SwerveDriveConstants::kKinematics, m_pigeon.GetRotation2d(), 
     m_modulePositions, frc::Pose2d{}, VisionConstants::kEncoderTrustCoefficients, VisionConstants::kVisionTrustCoefficients);
@@ -228,4 +264,20 @@ units::meters_per_second_t SwerveDrive::GetTotalVelocity() {
     auto y = chassisSpeeds.vy.value();
     double velocity = sqrt((x * x) + (y * y));
     return units::meters_per_second_t{velocity};
+}
+
+frc2::CommandPtr SwerveDrive::DriveSysIdQuasistatic(frc2::sysid::Direction direction) {
+  return m_driveSysIdRoutine.Quasistatic(direction);
+}
+
+frc2::CommandPtr SwerveDrive::DriveSysIdDynamic(frc2::sysid::Direction direction) {
+  return m_driveSysIdRoutine.Dynamic(direction);
+}
+
+frc2::CommandPtr SwerveDrive::AngleSysIdQuasistatic(frc2::sysid::Direction direction) {
+  return m_angleSysIdRoutine.Quasistatic(direction);
+}
+
+frc2::CommandPtr SwerveDrive::AngleSysIdDynamic(frc2::sysid::Direction direction) {
+  return m_angleSysIdRoutine.Dynamic(direction);
 }
