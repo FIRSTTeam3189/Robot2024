@@ -7,6 +7,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/geometry/Transform3d.h>
+#include <wpinet/uv/Tcp.h>
 
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableInstance.h>
@@ -49,4 +50,7 @@ class Vision : public frc2::SubsystemBase {
   nt::FloatArrayTopic m_rotationMatrixTopic;
   VisionData m_data;
   frc::Transform3d m_cameraToRobotTransform;
+
+  // TCP stuff
+  // std::shared_ptr<wpi::uv::Tcp> m_TCP;
 };
