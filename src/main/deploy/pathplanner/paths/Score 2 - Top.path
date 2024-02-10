@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.34,
+        "x": 2.0,
         "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.343203436259837,
+        "x": 2.003203436259837,
         "y": 6.999968329229942
       },
       "isLocked": true,
-      "linkedName": null
+      "linkedName": "Score 1 Top Ends"
     },
     {
       "anchor": {
@@ -52,12 +52,12 @@
         "y": 7.0
       },
       "prevControl": {
-        "x": 2.186334608908628,
-        "y": 6.920523403882212
+        "x": 2.1904440743306184,
+        "y": 6.95046440243199
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Score 2 Top Ends"
     }
   ],
   "rotationTargets": [
@@ -76,9 +76,9 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 0.95,
+      "waypointRelativePos": 2.05,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": []
         }
@@ -86,9 +86,9 @@
     },
     {
       "name": "Load",
-      "waypointRelativePos": 1.15,
+      "waypointRelativePos": 2.1999999999999997,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": []
         }
@@ -96,9 +96,9 @@
     },
     {
       "name": "AlignSpeaker",
-      "waypointRelativePos": 1.35,
+      "waypointRelativePos": 2.25,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": []
         }
@@ -113,7 +113,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -150.0,
+    "rotation": -147.02476,
     "rotateFast": false
   },
   "reversed": false,
