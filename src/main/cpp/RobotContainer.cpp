@@ -59,8 +59,8 @@ void RobotContainer::ConfigureDriverBindings() {
 
   frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDCreate)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
-    m_swerveDrive->ResetGyroscope();
-    m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}});
+    // m_swerveDrive->ResetGyroscope();
+    m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
   },{m_swerveDrive}).ToPtr());
 
   frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
@@ -108,9 +108,9 @@ void RobotContainer::ConfigureCoDriverBindings() {
   frc2::Trigger loadButton{m_ted.Button(OperatorConstants::kButtonIDLeftBumper)};
   loadButton.OnTrue(frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
-    SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kLoadAngle}),
+    SetShooterRotation(m_shooter, ShooterConstants::kLoadAngle),
     frc2::ParallelDeadlineGroup(
-      RunLoader(m_shooter, ShooterConstants::kLoadPower),
+      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0),
       RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
     ),
     SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
@@ -120,15 +120,40 @@ void RobotContainer::ConfigureCoDriverBindings() {
     frc2::InstantCommand([this]{
       m_intake->SetRollerPower(0.0);
       m_shooter->SetRollerPower(0.0);
+      m_shooter->SetLoaderPower(0.0);
     },{m_intake, m_shooter}),
+    SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
+    SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
+  ).ToPtr());
+
+  frc2::Trigger directShooterLoadButton{m_ted.Button(OperatorConstants::kButtonIDRightBumper)};
+  directShooterLoadButton.OnTrue(frc2::SequentialCommandGroup(
+    SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget),
+    SetShooterRotation(m_shooter, ShooterConstants::kDirectLoadAngle),
+    RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower),
+    SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
+    SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
+  ).ToPtr());
+  directShooterLoadButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::InstantCommand([this]{
+      m_shooter->SetRollerPower(0.0);
+      m_shooter->SetLoaderPower(0.0);
+    },{m_shooter}),
     SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   ).ToPtr());
 }
 
-void RobotContainer::RegisterAutoCommands(){
+void RobotContainer::RegisterAutoCommands() {
+  // Start of Auto Events
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.emplace_back(SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget).ToPtr().Unwrap());
+  commands.emplace_back(ShooterAutoAlign(m_shooter, m_estimator, m_vision)
+        .Until([this]{ return (m_swerveDrive->GetTotalVelocity() < 0.25_mps); }).Unwrap());
+  pathplanner::NamedCommands::registerCommand("AlignShooter", frc2::SequentialCommandGroup(std::move(commands)).ToPtr());
 
-  //Start of Auto Events
+  pathplanner::NamedCommands::registerCommand("AlignSwerve", SwerveAutoAlign(m_swerveDrive, true).ToPtr());
+
   pathplanner::NamedCommands::registerCommand("Intake", frc2::SequentialCommandGroup(
     frc2::ParallelRaceGroup(
       frc2::WaitCommand(3.0_s),
@@ -142,10 +167,10 @@ void RobotContainer::RegisterAutoCommands(){
 
   pathplanner::NamedCommands::registerCommand("Load", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
-    SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kLoadAngle}),
+    SetShooterRotation(m_shooter, ShooterConstants::kLoadAngle),
     frc2::ParallelRaceGroup(
       frc2::WaitCommand(2.0_s),
-      RunLoader(m_shooter, ShooterConstants::kLoadPower),
+      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0),
       RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
     ),
     frc2::InstantCommand([this]{
@@ -156,7 +181,7 @@ void RobotContainer::RegisterAutoCommands(){
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   ).ToPtr());
 
-  pathplanner::NamedCommands::registerCommand("ampScoreIntake", frc2::SequentialCommandGroup(
+  pathplanner::NamedCommands::registerCommand("ScoreAmp", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(2.0_s), 
@@ -167,26 +192,20 @@ void RobotContainer::RegisterAutoCommands(){
       m_intake->SetRollerPower(0.0);
     },{m_intake})
   ).ToPtr());  
-
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.emplace_back(SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget).ToPtr().Unwrap());
-  commands.emplace_back(ShooterAutoAlign(m_shooter, m_estimator, m_vision)
-        .Until([this]{ return (m_swerveDrive->GetTotalVelocity() < 0.25_mps); }).Unwrap());
-  commands.emplace_back(frc2::ParallelDeadlineGroup(
-    frc2::WaitCommand(1.0_s),
-    RunShooter(m_shooter, ShooterConstants::kShootPower)
-  ).ToPtr().Unwrap());
-  commands.emplace_back(SetShooterExtension(m_shooter, ShooterConstants::kRetractTarget).ToPtr().Unwrap());
-  commands.emplace_back(SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget).ToPtr().Unwrap());
   
-  pathplanner::NamedCommands::registerCommand("speakerScore", frc2::SequentialCommandGroup(std::move(commands)).ToPtr());
+  pathplanner::NamedCommands::registerCommand("ScoreSpeaker", frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(1.0_s),
+      RunShooter(m_shooter, ShooterConstants::kShootPower)
+    ),
+    SetShooterExtension(m_shooter, ShooterConstants::kRetractTarget),
+    SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
+  ).ToPtr());
 } 
 
 void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Test Auto", new TestAuto("Test Auto", m_swerveDrive));
 }
-
-
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous

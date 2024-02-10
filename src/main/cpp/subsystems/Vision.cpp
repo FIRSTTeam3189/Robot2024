@@ -61,9 +61,12 @@ frc::Pose3d Vision::TagToCamera() {
         units::meter_t{m_data.translationMatrix.at(1)},
         units::meter_t{m_data.translationMatrix.at(2)},
         frc::Rotation3d{
-            units::degree_t{m_data.rotationMatrix.at(0)},
+            // Just using the yaw rotation only
+            0.0_deg,
+            // units::degree_t{m_data.rotationMatrix.at(0)},
             units::degree_t{m_data.rotationMatrix.at(1)},
-            units::degree_t{m_data.rotationMatrix.at(2)}
+            // units::degree_t{m_data.rotationMatrix.at(2)}
+            0.0_deg
         }
     );
 

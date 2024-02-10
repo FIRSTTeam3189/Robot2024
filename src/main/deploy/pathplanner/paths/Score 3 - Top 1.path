@@ -74,7 +74,7 @@
       }
     },
     {
-      "name": "AllignSpeaker",
+      "name": "AlignSpeaker",
       "waypointRelativePos": 0.9,
       "command": {
         "type": "sequential",

@@ -45,7 +45,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   frc::ChassisSpeeds GetRobotRelativeSpeeds();
   void DriveRobotRelative(frc::ChassisSpeeds speeds);
   frc::Pose2d GetEstimatedPose();
-  void SetPose(frc::Pose2d pose);
+  void SetPose(frc::Pose2d pose, bool justRotation);
   void ConfigGyro();
   void ResetGyroscope();
   void ResetDriveEncoders();
