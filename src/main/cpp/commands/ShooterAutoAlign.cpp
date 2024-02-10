@@ -43,24 +43,24 @@ units::degree_t ShooterAutoAlign::CalculateShooterAngle() {
   // Based on this side, we use the corresponding speaker pose
   // If vision is not detecting (or isDetected is set to false for testing)
   // Then we get the alliance side from FMS and use that instead
-  if (isDetected) {
-    // Red, use #4
-    if (autoData.ID < 6) {
-      tagPose = VisionConstants::kTagPoses.at(3);
-    } else if (autoData.ID > 5 && autoData.ID < 11) { // Blue, use #7
-      tagPose = VisionConstants::kTagPoses.at(6);
-    }
+  // if (isDetected) {
+  //   // Red, use #4
+  //   if (autoData.ID < 6) {
+  //     tagPose = VisionConstants::kTagPoses.at(3);
+  //   } else if (autoData.ID > 5 && autoData.ID < 11) { // Blue, use #7
+  //     tagPose = VisionConstants::kTagPoses.at(6);
+  //   }
+  // } else {
+  auto allianceSide = frc::DriverStation::GetAlliance();
+  if (allianceSide == frc::DriverStation::Alliance::kRed) {
+    tagPose = VisionConstants::kTagPoses.at(3);
   } else {
-      auto allianceSide = frc::DriverStation::GetAlliance();
-      if (allianceSide == frc::DriverStation::Alliance::kRed) {
-        tagPose = VisionConstants::kTagPoses.at(3);
-      } else {
-        tagPose = VisionConstants::kTagPoses.at(6);
-      }
+    tagPose = VisionConstants::kTagPoses.at(6);
   }
+  // }
 
   // Use inverse tangent of height over distance to calculate shooter angle
-  double distance = sqrt(pow((tagPose.X().value() - currentPose.X().value()), 2.0) + 
+  double distance = sqrt(pow((abs(tagPose.X().value() - currentPose.X().value())), 2.0) + 
                          pow((tagPose.Y().value() - currentPose.Y().value()), 2.0));
 
   // Subtract distance from shooting axle to center of robot since pose is from center

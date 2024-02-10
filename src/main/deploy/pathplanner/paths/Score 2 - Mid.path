@@ -3,28 +3,28 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.31,
-        "y": 5.55
+        "x": 2.3109089349230185,
+        "y": 5.503960098829289
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8315976631953266,
-        "y": 5.541275082550166
+        "x": 2.740236875946508,
+        "y": 5.504021021698531
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Score 1 Mid Ends"
     },
     {
       "anchor": {
-        "x": 2.31,
-        "y": 5.55
+        "x": 2.3109089349230185,
+        "y": 5.503960098829289
       },
       "prevControl": {
-        "x": 2.247042972267763,
-        "y": 5.61003302006604
+        "x": 2.274723270857144,
+        "y": 5.538465137825234
       },
       "nextControl": null,
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": "Score 2 Mid Ends"
     }
   ],

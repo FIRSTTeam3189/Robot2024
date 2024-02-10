@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.3371741288974612,
+        "x": 2.0,
         "y": 7.0
       },
       "prevControl": {
-        "x": 2.3302360956187727,
+        "x": 1.9930619667213114,
         "y": 6.940402485838553
       },
       "nextControl": null,
-      "isLocked": true,
-      "linkedName": null
+      "isLocked": false,
+      "linkedName": "Score 1 Top Ends"
     }
   ],
   "rotationTargets": [],
@@ -50,7 +50,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -156.9295877500542,
+    "rotation": -144.532,
     "rotateFast": false
   },
   "reversed": false,

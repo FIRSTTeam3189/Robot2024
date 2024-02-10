@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.35,
+        "x": 2.0,
         "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.267595982121196,
+        "x": 1.9175959821211959,
         "y": 7.036188089717885
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Score 1 Top Ends"
     },
     {
       "anchor": {
@@ -57,7 +57,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Score 2 Top Amp Ends"
     }
   ],
   "rotationTargets": [

@@ -12,7 +12,7 @@
         "y": 2.1341779281626048
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Score 3 Bottom 5 Ends (REAL)"
     },
     {
       "anchor": {
@@ -41,7 +41,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Score 4 - Bottom 5-4 Ends"
     }
   ],
   "rotationTargets": [
@@ -57,7 +57,7 @@
       "name": "Intake",
       "waypointRelativePos": 1.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": []
         }
@@ -65,9 +65,9 @@
     },
     {
       "name": "Load",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.8,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": []
         }
@@ -75,9 +75,9 @@
     },
     {
       "name": "AlignShooter",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.7,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": []
         }

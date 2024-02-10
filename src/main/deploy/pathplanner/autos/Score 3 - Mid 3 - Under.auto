@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5,
-      "y": 7.0
+      "x": 1.5162444870344285,
+      "y": 5.503960098829289
     },
     "rotation": 180.0
   },
@@ -14,7 +14,32 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 1 - Top"
+            "pathName": "Score 1 - Mid"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AllignSwerve"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ScoreSpeaker"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 2 - Mid"
           }
         },
         {
@@ -39,7 +64,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 2 - Top"
+            "pathName": "Score 3 - Mid 3 - Under"
           }
         },
         {
@@ -49,32 +74,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "AllignSwerve"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "ScoreSpeaker"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score 3 - Top 1 - Amp"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ScoreAmp"
                 }
               }
             ]

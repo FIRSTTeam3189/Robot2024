@@ -59,16 +59,19 @@ units::degree_t SwerveAutoAlign::GetSpeakerGoalAngle() {
       tagPose = VisionConstants::kTagPoses.at(3);
     } else {
       tagPose = VisionConstants::kTagPoses.at(6);
-  }
+    }
 
   auto currentPose = m_swerve->GetEstimatedPose();
   
   // Calculate the angle to rotate to for the robot to point towards the speaker
   // This is alliance-dependent 
-  auto xDistance = tagPose.X() - currentPose.X();
+  double xDistance = abs(tagPose.X().value() - currentPose.X().value());
   auto yDistance = tagPose.Y() - currentPose.Y();
-    // x and y swapped when passed into atan function because our x is their y
-  auto goalAngle = units::degree_t{units::radian_t{atan(xDistance.value() / yDistance.value())}};
+  auto goalAngle = units::degree_t{units::radian_t{atan(yDistance.value() / xDistance)}};
+
+  if (allianceSide == frc::DriverStation::Alliance::kBlue) {
+      goalAngle = 180.0_deg - goalAngle;
+
   frc::SmartDashboard::PutNumber("Swerve auto align angle", goalAngle.value());
   return goalAngle;
 }
