@@ -36,6 +36,14 @@ Intake::Intake() :
     m_rotationEncoder.SetInverted(IntakeConstants::kRotationInverted);
     m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(IntakeConstants::kRotationOffset);
+
+    m_rotationPKey = "Intake Rotation P";
+    m_rotationIKey = "Intake Rotation I";
+    m_rotationDKey = "Intake Rotation D";
+
+    frc::Preferences::InitDouble(m_rotationPKey, IntakeConstants::kPRotation);
+    frc::Preferences::InitDouble(m_rotationIKey, IntakeConstants::kIRotation);
+    frc::Preferences::InitDouble(m_rotationDKey, IntakeConstants::kDRotation);
 }
 
 // This method will be called once per scheduler run
@@ -43,6 +51,8 @@ void Intake::Periodic() {
     frc::SmartDashboard::PutNumber("Intake PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Intake position", m_rotationEncoder.GetPosition());
     UpdateUltrasonic();
+    if (frc::Preferences::GetBoolean("Tuning Mode?", false))
+        UpdatePreferences();
 }
 
 void Intake::SetRotation(units::degree_t target) {
@@ -60,6 +70,7 @@ void Intake::SetRotation(units::degree_t target) {
 
     // Set motor to combined voltage
     m_rotationMotor.SetVoltage(PIDValue + ffValue);
+    frc::SmartDashboard::PutNumber("Intake rotation volts", PIDValue.value() + ffValue.value());
 
     m_lastSpeed = m_rotationPIDController.GetSetpoint().velocity;
     m_lastTime = frc::Timer::GetFPGATimestamp();
@@ -76,6 +87,12 @@ void Intake::SetRotationPower(double power) {
 
 units::degree_t Intake::GetRotation() {
     return units::degree_t{m_rotationEncoder.GetPosition()};
+}
+
+void Intake::UpdatePreferences() {
+    m_rotationPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, IntakeConstants::kPRotation));
+    m_rotationPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, IntakeConstants::kIRotation));
+    m_rotationPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, IntakeConstants::kDRotation));
 }
 
 void Intake::UpdateUltrasonic() {

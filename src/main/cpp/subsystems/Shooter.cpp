@@ -36,6 +36,14 @@ m_sysIdRoutine(
     ConfigRollerMotor();
     ConfigExtensionMotor();
     ConfigRotationMotor();
+
+    m_rotationPKey = "Shooter Rotation P";
+    m_rotationIKey = "Shooter Rotation I";
+    m_rotationDKey = "Shooter Rotation D";
+
+    frc::Preferences::InitDouble(m_rotationPKey, ShooterConstants::kPRotation);
+    frc::Preferences::InitDouble(m_rotationIKey, ShooterConstants::kIRotation);
+    frc::Preferences::InitDouble(m_rotationDKey, ShooterConstants::kDRotation);
 }
 
 // This method will be called once per scheduler run
@@ -43,6 +51,8 @@ void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Shooter rotation", m_rotationEncoder.GetPosition());
     UpdateUltrasonic();
+    if (frc::Preferences::GetBoolean("Tuning Mode?", false))
+        UpdatePreferences();
 }
 
 void Shooter::SetRotation(units::degree_t target) {
@@ -60,6 +70,7 @@ void Shooter::SetRotation(units::degree_t target) {
 
     // Set motor to combined voltage
     m_rotationMotor.SetVoltage(PIDValue + ffValue);
+    frc::SmartDashboard::PutNumber("Shooter rotation volts", PIDValue.value() + ffValue.value());
 
     m_lastSpeed = m_rotationPIDController.GetSetpoint().velocity;
     m_lastTime = frc::Timer::GetFPGATimestamp();
@@ -117,6 +128,12 @@ void Shooter::ConfigRotationMotor() {
     m_rotationEncoder.SetPositionConversionFactor(ShooterConstants::kRotationConversion);
     m_rotationEncoder.SetVelocityConversionFactor(ShooterConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(ShooterConstants::kRotationOffset);
+}
+
+void Shooter::UpdatePreferences() {
+    m_rotationPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, ShooterConstants::kPRotation));
+    m_rotationPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, ShooterConstants::kIRotation));
+    m_rotationPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, ShooterConstants::kDRotation));
 }
 
 void Shooter::UpdateUltrasonic() {

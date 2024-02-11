@@ -12,6 +12,8 @@ void PoseEstimatorHelper::SetPoseEstimator(frc::SwerveDrivePoseEstimator<4> *pos
 
 void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePosition, 4U> modulePositions, frc::Rotation2d rotation) {
     m_poseEstimator->Update(rotation, modulePositions);
+    m_field.SetRobotPose(GetEstimatedPose());
+    frc::SmartDashboard::PutData("Field", &m_field);
 }
 
 frc::Pose2d PoseEstimatorHelper::GetEstimatedPose() {
@@ -26,10 +28,10 @@ void PoseEstimatorHelper::AddVisionMeasurement(frc::Pose2d pose, units::second_t
     m_poseEstimator->SetVisionMeasurementStdDevs(visionMeasurementStdDevs);
 
     // Don't add vision measurement if distance to current one is >1m
-    frc::Pose2d currentPose = GetEstimatedPose();
-    units::meter_t distanceFromCurrentPose = units::meter_t{sqrt(pow(pose.X().value() - currentPose.X().value(), 2.0) 
-                                 + pow(pose.Y().value() - currentPose.Y().value(), 2.0))};
-    if (distanceFromCurrentPose < 1.0_m)
+    // frc::Pose2d currentPose = GetEstimatedPose();
+    // units::meter_t distanceFromCurrentPose = units::meter_t{sqrt(pow(pose.X().value() - currentPose.X().value(), 2.0) 
+    //                              + pow(pose.Y().value() - currentPose.Y().value(), 2.0))};
+    // if (distanceFromCurrentPose < 1.0_m)
         m_poseEstimator->AddVisionMeasurement(pose, timestamp);
 }
 

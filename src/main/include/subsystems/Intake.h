@@ -5,10 +5,11 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <frc2/command/sysid/SysIdRoutine.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/AnalogPotentiometer.h>
 #include <frc/Timer.h>
-#include <frc2/command/sysid/SysIdRoutine.h>
+#include <frc/Preferences.h>
 #include <frc/RobotController.h>
 #include <frc/controller/ArmFeedforward.h>
 #include <frc/controller/ProfiledPIDController.h>
@@ -26,6 +27,7 @@ class Intake : public frc2::SubsystemBase {
   units::degree_t GetRotation();
   bool NoteDetected();
   void UpdateUltrasonic();
+  void UpdatePreferences();
 
   frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
@@ -47,7 +49,11 @@ class Intake : public frc2::SubsystemBase {
   units::degrees_per_second_t m_lastSpeed;
   units::second_t m_lastTime;
   frc2::sysid::SysIdRoutine m_sysIdRoutine;
- 
+  
+  // String keys for PID preferences
+  std::string_view m_rotationPKey;
+  std::string_view m_rotationIKey;
+  std::string_view m_rotationDKey;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

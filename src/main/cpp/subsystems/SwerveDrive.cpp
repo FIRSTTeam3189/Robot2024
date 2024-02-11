@@ -93,6 +93,8 @@ m_angleSysIdRoutine(
         },
         this // Reference to this subsystem to set requirements
     );
+
+    frc::Preferences::InitBoolean(m_tuningModeKey, false);
 }
 
 // This method will be called once per scheduler run

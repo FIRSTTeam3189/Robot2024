@@ -76,4 +76,3 @@ units::degree_t SwerveAutoAlign::GetSpeakerGoalAngle() {
   frc::SmartDashboard::PutNumber("Swerve auto align angle", goalAngle.value());
   return goalAngle;
 }
-}

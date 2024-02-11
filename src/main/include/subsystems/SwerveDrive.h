@@ -5,17 +5,17 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <frc2/command/sysid/SysIdRoutine.h>
 #include <frc/geometry/Translation2d.h>
 #include <frc/kinematics/ChassisSpeeds.h>
 #include <frc/geometry/Pose2d.h>
-#include <ctre/phoenix6/Pigeon2.hpp>
-#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <frc/RobotController.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/DriverStation.h>
+#include <ctre/phoenix6/Pigeon2.hpp>
+#include <pathplanner/lib/auto/AutoBuilder.h>
 #include "util/SwerveModule.h"
 #include "subsystems/PoseEstimatorHelper.h"
-#include <frc2/command/sysid/SysIdRoutine.h>
-#include <frc/RobotController.h>
 
 struct SwerveModules {
   frc::Translation2d m_frontLeftLocation;
@@ -52,7 +52,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   void ConfigGyro();
   void ResetGyroscope();
   void ResetDriveEncoders();
- 
+  void ToggleTuningMode();
   void UpdateEstimator();
   void LogModuleStates(wpi::array<frc::SwerveModulePosition, 4> modulePositions);
   std::array<ctre::phoenix6::hardware::TalonFX*, 8> GetMotorsForMusic();

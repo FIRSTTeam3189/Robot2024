@@ -5,9 +5,11 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <frc/smartdashboard/Field2d.h>
 #include <frc/geometry/Pose2d.h>
-#include "Constants.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
+#include "Constants.h"
 
 class PoseEstimatorHelper : public frc2::SubsystemBase {
  public:
@@ -25,6 +27,7 @@ class PoseEstimatorHelper : public frc2::SubsystemBase {
 
   private:
   frc::SwerveDrivePoseEstimator<4> *m_poseEstimator;
+  frc::Field2d m_field;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };
