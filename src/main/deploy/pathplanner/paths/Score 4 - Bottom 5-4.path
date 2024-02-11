@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.442776852691178,
-        "y": 2.1341779281626048
+        "x": 6.38651944206359,
+        "y": 1.0541515790464224
       },
       "isLocked": false,
       "linkedName": "Score 3 Bottom 5 Ends (REAL)"
@@ -20,12 +20,12 @@
         "y": 2.4440782784699477
       },
       "prevControl": {
-        "x": 7.98360551926343,
-        "y": 2.5110088810207616
+        "x": 7.945232475899279,
+        "y": 2.477156152336274
       },
       "nextControl": {
-        "x": 7.831869986331449,
-        "y": 2.3771476759191343
+        "x": 7.8702430296956045,
+        "y": 2.411000404603623
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 1.02
       },
       "prevControl": {
-        "x": 6.1,
-        "y": 2.520000000000003
+        "x": 6.387028783400067,
+        "y": 1.053598648781028
       },
       "nextControl": null,
       "isLocked": false,
@@ -92,7 +92,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 150.0,
+    "rotation": 144.66987,
     "rotateFast": false
   },
   "reversed": false,

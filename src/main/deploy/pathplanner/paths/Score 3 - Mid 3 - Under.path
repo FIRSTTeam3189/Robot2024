@@ -8,27 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8502967187790804,
-        "y": 4.88079987068609
+        "x": 3.7878408503536676,
+        "y": 4.71759291057066
       },
       "isLocked": false,
       "linkedName": "Score 2 Mid Ends"
-    },
-    {
-      "anchor": {
-        "x": 4.963939669983583,
-        "y": 4.607370429873778
-      },
-      "prevControl": {
-        "x": 4.871449990469963,
-        "y": 4.645392254967634
-      },
-      "nextControl": {
-        "x": 5.013884096920938,
-        "y": 4.5868386443230955
-      },
-      "isLocked": false,
-      "linkedName": null
     },
     {
       "anchor": {
@@ -62,7 +46,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.9,
+      "waypointRelativePos": 0.95,
       "rotationDegrees": 180.0,
       "rotateFast": false
     }
@@ -71,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 2.0,
+      "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -81,7 +65,7 @@
     },
     {
       "name": "Load",
-      "waypointRelativePos": 2.05,
+      "waypointRelativePos": 1.0499999999999998,
       "command": {
         "type": "parallel",
         "data": {
@@ -91,7 +75,7 @@
     },
     {
       "name": "AlignShooter",
-      "waypointRelativePos": 2.0999999999999996,
+      "waypointRelativePos": 1.0999999999999996,
       "command": {
         "type": "parallel",
         "data": {

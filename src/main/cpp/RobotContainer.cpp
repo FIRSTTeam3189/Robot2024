@@ -19,6 +19,7 @@ RobotContainer::RobotContainer() {
   m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
     frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   m_intake->SetDefaultCommand(frc2::RunCommand([this] {
+
     m_intake->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY));
     m_intake->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
   },{m_intake}).ToPtr());
@@ -71,6 +72,9 @@ void RobotContainer::ConfigureDriverBindings() {
   frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
   alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode, true, true).ToPtr());
   
+  frc2::Trigger toggleSlowModeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
+  toggleSlowModeButton.OnTrue(frc2::InstantCommand([this]{ m_swerveDrive->ToggleSlowMode(); },{m_swerveDrive}).ToPtr());
+
   frc2::Trigger extendClimbButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
   extendClimbButton.OnTrue(frc2::InstantCommand([this]{ 
     m_climber->SetPower(ClimberConstants::kExtendMotorSpeed);
@@ -231,21 +235,42 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::ConfigureSysIDBindings() {
-  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDX))
+  (m_test.Button(OperatorConstants::kButtonIDLeftTrigger) && m_test.Button(OperatorConstants::kButtonIDX))
     .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
-  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDSquare))
+  (m_test.Button(OperatorConstants::kButtonIDLeftTrigger) && m_test.Button(OperatorConstants::kButtonIDSquare))
     .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
-  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDTriangle))
+  (m_test.Button(OperatorConstants::kButtonIDLeftTrigger) && m_test.Button(OperatorConstants::kButtonIDTriangle))
     .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
-  (m_bill.Button(OperatorConstants::kButtonIDLeftTrigger) && m_bill.Button(OperatorConstants::kButtonIDCircle))
+  (m_test.Button(OperatorConstants::kButtonIDLeftTrigger) && m_test.Button(OperatorConstants::kButtonIDCircle))
     .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDX))
-    .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
-  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDSquare))
-    .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
-  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDTriangle))
-    .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
-  (m_bill.Button(OperatorConstants::kButtonIDRightTrigger) && m_bill.Button(OperatorConstants::kButtonIDCircle))
-    .WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
+  (m_test.Button(OperatorConstants::kButtonIDRightTrigger) && m_test.Button(OperatorConstants::kButtonIDX))
+    .WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  (m_test.Button(OperatorConstants::kButtonIDRightTrigger) && m_test.Button(OperatorConstants::kButtonIDSquare))
+    .WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  (m_test.Button(OperatorConstants::kButtonIDRightTrigger) && m_test.Button(OperatorConstants::kButtonIDTriangle))
+    .WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kForward));
+  (m_test.Button(OperatorConstants::kButtonIDRightTrigger) && m_test.Button(OperatorConstants::kButtonIDCircle))
+    .WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kReverse));
+
+  // System ID Bindings
+  (m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDX))
+    .WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kForward));
+  (m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDSquare))
+    .WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  (m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle))
+    .WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kForward));
+  (m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDCircle))
+    .WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kReverse));
+
+  (m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDX))
+    .WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kForward));
+  (m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDSquare))
+    .WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  (m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle))
+    .WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kForward));
+  (m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDCircle))
+    .WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
 }
+
+// no matter how nice ethan seems he will slap you and eat you in a bucket

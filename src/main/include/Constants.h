@@ -63,6 +63,8 @@ namespace SwerveDriveConstants {
     constexpr double kPRot {0.005};
     constexpr double kIRot {0.0};
     constexpr double kDRot {0.0};
+
+    constexpr double kExtendDriveSpeed {0.3};
 }
 
 namespace SwerveModuleConstants {
@@ -328,4 +330,5 @@ namespace ClimberConstants{
     constexpr double kExtendServoAngle {0.0};
     constexpr double kRetractMotorSpeed {-0.5};
     constexpr double kRetractServoAngle {0.0};
+    
 }
