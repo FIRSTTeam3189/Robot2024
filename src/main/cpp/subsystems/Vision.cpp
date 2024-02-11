@@ -69,20 +69,16 @@ void Vision::Periodic() {
 
 frc::Pose3d Vision::TagToCamera() {
     frc::Pose3d tagPose = VisionConstants::kTagPoses.at(m_data.ID - 1);
-    // Invert the data since vision reports positive differences and TransformBy adds so we need to subtract
+    // Invert the data for x on tags to the right since vision reports positive differences and 
+    // TransformBy adds so we need to subtract
+    auto xDistance = (tagPose.X() - m_helper->GetEstimatedPose().X() > 0.0_m) ? -m_data.translationMatrix[0] : m_data.translationMatrix[0];
     frc::Transform3d tagToCamera = frc::Transform3d(
-        // units::meter_t{-m_data.translationMatrix.at(0)},
-        // units::meter_t{-m_data.translationMatrix.at(1)},
-        // units::meter_t{-m_data.translationMatrix.at(2)},
-        units::meter_t{-m_data.translationMatrix[0]},
+        units::meter_t{xDistance},
         units::meter_t{-m_data.translationMatrix[1]},
         units::meter_t{-m_data.translationMatrix[2]},
         frc::Rotation3d{
             // Just using the yaw rotation only
             0.0_deg,
-            // units::degree_t{m_data.rotationMatrix.at(0)},
-            // units::degree_t{-m_data.rotationMatrix.at(1)},
-            // units::degree_t{m_data.rotationMatrix.at(2)}
             units::degree_t{-m_data.rotationMatrix[1]},
             0.0_deg
         }

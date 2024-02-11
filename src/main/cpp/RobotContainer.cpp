@@ -210,6 +210,19 @@ void RobotContainer::RegisterAutoCommands() {
 
 void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Test Auto", new pathplanner::PathPlannerAuto("Test Auto"));
+  m_chooser.AddOption("Score 1 - Top", new pathplanner::PathPlannerAuto("Score 1 - Top"));
+  m_chooser.AddOption("Score 1 - Mid", new pathplanner::PathPlannerAuto("Score 1 - Mid"));
+  m_chooser.AddOption("Score 1 - Bottom", new pathplanner::PathPlannerAuto("Score 1 - Bottom"));
+  m_chooser.AddOption("Score 2 - Top", new pathplanner::PathPlannerAuto("Score 2 - Top"));
+  m_chooser.AddOption("Score 2 - Mid", new pathplanner::PathPlannerAuto("Score 2 - Mid"));
+  m_chooser.AddOption("Score 2 - Mid - Amp", new pathplanner::PathPlannerAuto("Score 2 - Mid - Amp"));
+  m_chooser.AddOption("Score 2 - Bottom", new pathplanner::PathPlannerAuto("Score 2 - Bottom"));
+  m_chooser.AddOption("Score 3 - Top 1", new pathplanner::PathPlannerAuto("Score 3 - Top 1"));
+  m_chooser.AddOption("Score 3 - Top - Amp", new pathplanner::PathPlannerAuto("Score 3 - Top - Amp"));
+  m_chooser.AddOption("Score 3 - Top 1 - Amp x2", new pathplanner::PathPlannerAuto("Score 3 - Top 1 - Amp x2"));
+  m_chooser.AddOption("Score 3 - Mid 2", new pathplanner::PathPlannerAuto("Score 3 - Mid 2"));
+  m_chooser.AddOption("Score 3 - Mid 3 - Under", new pathplanner::PathPlannerAuto("Score 3 - Mid 3 - Under"));
+  m_chooser.AddOption("Score 3 - Bottom 5", new pathplanner::PathPlannerAuto("Score 3 - Bottom 5"));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
