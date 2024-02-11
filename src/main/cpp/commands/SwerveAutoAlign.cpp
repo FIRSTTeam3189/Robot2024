@@ -69,7 +69,7 @@ units::degree_t SwerveAutoAlign::GetSpeakerGoalAngle() {
   auto yDistance = tagPose.Y() - currentPose.Y();
   auto goalAngle = units::degree_t{units::radian_t{atan(yDistance.value() / xDistance)}};
 
-  if (allianceSide == frc::DriverStation::Alliance::kBlue) {
+  if (allianceSide == frc::DriverStation::Alliance::kBlue)
       goalAngle = 180.0_deg - goalAngle;
 
   frc::SmartDashboard::PutNumber("Swerve auto align angle", goalAngle.value());

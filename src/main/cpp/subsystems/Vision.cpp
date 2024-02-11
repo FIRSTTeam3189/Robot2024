@@ -16,35 +16,37 @@ m_helper(helper),
 m_data(), 
 m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCameraYOffset, VisionConstants::kCameraZOffset,
   frc::Rotation3d{0.0_rad, 0.0_rad, VisionConstants::kCameraYawOffset}) { 
-  nt::NetworkTableInstance networkTableInstance = nt::NetworkTableInstance::GetDefault();
-  m_isDetectedTopic = networkTableInstance.GetBooleanTopic("Vision/Detection");
-  m_tagIDTopic = networkTableInstance.GetIntegerTopic("Vision/AprilTag/ID");
-  m_lastTimestampTopic = networkTableInstance.GetFloatTopic("Vision/AprilTag/Timestamp");
-  m_translationMatrixTopic = networkTableInstance.GetFloatArrayTopic("Vision/AprilTag/TMatrix");
-  m_rotationMatrixTopic = networkTableInstance.GetFloatArrayTopic("Vision/AprilTag/RMatrix");
+//   nt::NetworkTableInstance networkTableInstance = nt::NetworkTableInstance::GetDefault();
+//   m_isDetectedTopic = networkTableInstance.GetBooleanTopic("Vision/Detection");
+//   m_tagIDTopic = networkTableInstance.GetIntegerTopic("Vision/AprilTag/ID");
+//   m_lastTimestampTopic = networkTableInstance.GetFloatTopic("Vision/AprilTag/Timestamp");
+//   m_translationMatrixTopic = networkTableInstance.GetFloatArrayTopic("Vision/AprilTag/TMatrix");
+//   m_rotationMatrixTopic = networkTableInstance.GetFloatArrayTopic("Vision/AprilTag/RMatrix");
 
   // TCP stuff
-  m_TCP = std::make_shared(wpi::uv::Tcp())
-  m_TCP->Connect("10.31.89.59", 8010, [this]{});
+  SetupTCPConnection();
+//   m_TCP->Connect("10.31.89.59", 8010, [this]{});
 }
-
-
 
 // This method will be called once per scheduler run
 void Vision::Periodic() {
     if (VisionConstants::kShouldUseVision) {
-        bool isDetected = m_isDetectedTopic.Subscribe(0).Get();
+        // bool isDetected = m_isDetectedTopic.Subscribe(0).Get();
+        bool isDetected = false;
+        m_TCP->StartRead();
+        connect->Succeeded(tcp);
+        
 
         if (isDetected) {
-            m_data.ID = m_tagIDTopic.Subscribe(-1).Get();
-            float defaultArray[]{0.0f, 0.0f, 0.0f};
-            std::span s{defaultArray, 3};
+            // m_data.ID = m_tagIDTopic.Subscribe(-1).Get();
+            // float defaultArray[]{0.0f, 0.0f, 0.0f};
+            // std::span s{defaultArray, 3};
 
-            m_data.translationMatrix = m_translationMatrixTopic.Subscribe(defaultArray).Get();
-            m_data.rotationMatrix = m_rotationMatrixTopic.Subscribe(defaultArray).Get();
-            m_data.lastTimestamp = m_lastTimestampTopic.Subscribe(0.0).Get();
+            // m_data.translationMatrix = m_translationMatrixTopic.Subscribe(defaultArray).Get();
+            // m_data.rotationMatrix = m_rotationMatrixTopic.Subscribe(defaultArray).Get();
+            // m_data.lastTimestamp = m_lastTimestampTopic.Subscribe(0.0).Get();
 
-            m_TCP->StartRead();
+            // m_TCP->StartRead();
 
             frc::SmartDashboard::PutNumber("Vision X distance", m_data.translationMatrix[0]);
             frc::SmartDashboard::PutNumber("Vision Y distance", m_data.translationMatrix[1]);
@@ -65,26 +67,27 @@ void Vision::Periodic() {
 
             units::second_t timestamp = units::second_t{m_data.lastTimestamp};
             m_helper->AddVisionMeasurement(robotPose.ToPose2d(), timestamp, distanceCompensatedStdDevs);
-            
         }
     }
 }
-
-
 
 frc::Pose3d Vision::TagToCamera() {
     frc::Pose3d tagPose = VisionConstants::kTagPoses.at(m_data.ID - 1);
     // Invert the data since vision reports positive differences and TransformBy adds so we need to subtract
     frc::Transform3d tagToCamera = frc::Transform3d(
-        units::meter_t{-m_data.translationMatrix.at(0)},
-        units::meter_t{-m_data.translationMatrix.at(1)},
-        units::meter_t{-m_data.translationMatrix.at(2)},
+        // units::meter_t{-m_data.translationMatrix.at(0)},
+        // units::meter_t{-m_data.translationMatrix.at(1)},
+        // units::meter_t{-m_data.translationMatrix.at(2)},
+        units::meter_t{-m_data.translationMatrix[0]},
+        units::meter_t{-m_data.translationMatrix[1]},
+        units::meter_t{-m_data.translationMatrix[2]},
         frc::Rotation3d{
             // Just using the yaw rotation only
             0.0_deg,
             // units::degree_t{m_data.rotationMatrix.at(0)},
-            units::degree_t{-m_data.rotationMatrix.at(1)},
+            // units::degree_t{-m_data.rotationMatrix.at(1)},
             // units::degree_t{m_data.rotationMatrix.at(2)}
+            units::degree_t{-m_data.rotationMatrix[1]},
             0.0_deg
         }
     );
@@ -100,4 +103,29 @@ VisionData Vision::GetVisionData() {
     return m_data;
 }
 
-void tcpCommunication
+void Vision::SetupTCPConnection() {
+    wpi::EventLoopRunner loop;
+    loop.ExecAsync([](uv::Loop& loop) {
+        m_TCP = uv::Tcp::Create(loop);
+
+        // bind to listen address and port
+        m_TCP->Bind("10.31.89.59", 8010);
+
+        // when we get a connection, accept it and start reading
+        m_TCP->connection.connect([srv = m_TCP.get()] {
+            auto m_TCP = srv->Accept();
+            if (!m_TCP) {
+                return;
+            }
+            std::fputs("Got a connection\n", stderr);
+        });
+
+        // start listening for incoming connections
+        m_TCP->Listen();
+
+        std::fputs("Listening on port 8010\n", stderr);
+    });
+
+    // wait for a keypress to terminate
+    // std::getchar();
+}
