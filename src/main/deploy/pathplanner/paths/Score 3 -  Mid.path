@@ -52,7 +52,7 @@
       }
     },
     {
-      "name": "AlignSpeaker",
+      "name": "AlignShooter",
       "waypointRelativePos": 0.3,
       "command": {
         "type": "sequential",

@@ -18,11 +18,16 @@ RobotContainer::RobotContainer() {
 
   m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
     frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
+  
   m_intake->SetDefaultCommand(frc2::RunCommand([this] {
-
     m_intake->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY));
-    m_intake->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
   },{m_intake}).ToPtr());
+
+  m_shooter->SetDefaultCommand(frc2::RunCommand([this]{
+    m_shooter->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
+    // May need to change joystick axis
+  }, {m_shooter}).ToPtr());
+  
   // Configure the button bindings
   ConfigureDriverBindings();
   ConfigureCoDriverBindings();
@@ -174,6 +179,13 @@ void RobotContainer::RegisterAutoCommands() {
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   ).ToPtr());
 
+  pathplanner::NamedCommands::registerCommand("ImmediateShoot", frc2:SequentialCommandGroup(
+    SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
+    RunIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget),
+    SetShooterRotation(m_shooter, ShooterConstants::kImmediateShootAngle),
+    RunShooter(m_shooter, ShooterConstants::kShootPower)
+  ).ToPtr());
+
   pathplanner::NamedCommands::registerCommand("Load", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
     SetShooterRotation(m_shooter, ShooterConstants::kLoadAngle),
@@ -189,6 +201,8 @@ void RobotContainer::RegisterAutoCommands() {
     SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   ).ToPtr());
+
+  pathplanner::NamedCommands::registerCommand("AlignToAmp", SwerveAutoAlign(m_swerveDrive, false, 90_deg).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("ScoreAmp", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget),
@@ -273,4 +287,4 @@ void RobotContainer::ConfigureSysIDBindings() {
     .WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
 }
 
-// no matter how nice ethan seems he will slap you and eat you in a bucket
+// no matter how nice ethan seems he will slap you with a piece of chicken and eat you in a bucket with skibidi toilet

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5162444870344285,
-      "y": 5.503960098829289
+      "x": 1.36,
+      "y": 7.0
     },
     "rotation": 180.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 1 - Mid"
+            "pathName": "Score 1 - Top Skip First"
           }
         },
         {
@@ -31,31 +31,6 @@
                 "type": "named",
                 "data": {
                   "name": "ScoreSpeaker"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score 2 - Mid - Amp"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AlignToAmp"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ScoreAmp"
                 }
               }
             ]

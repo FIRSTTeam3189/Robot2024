@@ -75,7 +75,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "intake",
+      "name": "Intake",
       "waypointRelativePos": 0.95,
       "command": {
         "type": "parallel",

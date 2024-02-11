@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 1 - Top"
+            "pathName": "Score 3 - Mid"
           }
         },
         {
@@ -71,6 +71,12 @@
           "type": "sequential",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignToAmp"
+                }
+              },
               {
                 "type": "named",
                 "data": {
