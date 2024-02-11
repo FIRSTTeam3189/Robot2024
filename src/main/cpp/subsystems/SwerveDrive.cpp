@@ -37,33 +37,37 @@ m_driveSysIdRoutine(
     frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
     frc2::sysid::Mechanism(
         [this](units::volt_t driveVoltage) {
-          for (int i = 4; i < 8; i++)
+          for (int i = 0; i < 4; i++)
             m_moduleArray.at(i)->SetDriveVoltage(driveVoltage);
         },
         [this](frc::sysid::SysIdRoutineLog* log) {
-        //   log->Motor("rotation")
-        //       .voltage(m_rotationMotor.Get() *
-        //                frc::RobotController::GetBatteryVoltage())
-        //       .position(units::turn_t{GetRotation()})
-        //       .velocity(units::turns_per_second_t{units::degrees_per_second_t{m_rotationEncoder.GetVelocity()}});
+            for (int i = 0; i < 4; i++) {
+                log->Motor("Drive " + std::to_string(i))
+                    .voltage(m_moduleArray[i]->GetDriveVoltage())
+                    .position(m_moduleArray[i]->GetPosition(true).distance)
+                    .velocity(m_moduleArray[i]->GetDriveSpeed());
+            }
         },
         this)
 ),
 m_angleSysIdRoutine(
+    // Might want to reduce voltage values later
     frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
     frc2::sysid::Mechanism(
-        [this](units::volt_t driveVoltage) {
-        //   m_rotationMotor.SetVoltage(driveVoltage);
+        [this](units::volt_t angleVoltage) {
+            for (int i = 0; i < 4; i++)
+            m_moduleArray.at(i)->SetAngleVoltage(angleVoltage);
         },
         [this](frc::sysid::SysIdRoutineLog* log) {
-        //   log->Motor("rotation")
-        //       .voltage(m_rotationMotor.Get() *
-        //                frc::RobotController::GetBatteryVoltage())
-        //       .position(units::turn_t{GetRotation()})
-        //       .velocity(units::turns_per_second_t{units::degrees_per_second_t{m_rotationEncoder.GetVelocity()}});
+            for (int i = 0; i < 4; i++) {
+                log->Motor("Angle " + std::to_string(i))
+                    .voltage(m_moduleArray[i]->GetAngleVoltage())
+                    .position(units::turn_t{m_moduleArray[i]->GetPosition(true).angle.Degrees()})
+                    .velocity(m_moduleArray[i]->GetSignals().angleVelocity.GetValue());
+            }
         },
         this)
-)   {   
+) {   
     ConfigGyro();
     auto poseEstimator = new frc::SwerveDrivePoseEstimator<4> (SwerveDriveConstants::kKinematics, m_pigeon.GetRotation2d(), 
     m_modulePositions, frc::Pose2d{}, VisionConstants::kEncoderTrustCoefficients, VisionConstants::kVisionTrustCoefficients);
@@ -133,7 +137,11 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 
     frc::SmartDashboard::PutNumberArray("AdvantageScope Desired States", AdvantageScopeDesiredStates);
 
-    SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
+         if (m_slowMode)
+        SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed * SwerveDriveConstants::kExtendDriveSpeed);
+        else
+        SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
+
     SetModuleStates(states);
 }
 
@@ -144,6 +152,10 @@ void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
     m_modules.m_frontRight.SetDesiredState(states[1]);
     m_modules.m_backLeft.SetDesiredState(states[2]);
     m_modules.m_backRight.SetDesiredState(states[3]);
+}
+
+void SwerveDrive::ToggleSlowMode() {
+    m_slowMode = !m_slowMode;
 }
 
 void SwerveDrive::SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates) {

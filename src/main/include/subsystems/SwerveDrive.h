@@ -46,11 +46,13 @@ class SwerveDrive : public frc2::SubsystemBase {
   units::meters_per_second_t GetTotalVelocity();
   frc::ChassisSpeeds GetRobotRelativeSpeeds();
   void DriveRobotRelative(frc::ChassisSpeeds speeds);
+  void ToggleSlowMode();
   frc::Pose2d GetEstimatedPose();
   void SetPose(frc::Pose2d pose, bool justRotation);
   void ConfigGyro();
   void ResetGyroscope();
   void ResetDriveEncoders();
+ 
   void UpdateEstimator();
   void LogModuleStates(wpi::array<frc::SwerveModulePosition, 4> modulePositions);
   std::array<ctre::phoenix6::hardware::TalonFX*, 8> GetMotorsForMusic();
@@ -78,4 +80,5 @@ class SwerveDrive : public frc2::SubsystemBase {
   std::string_view m_tuningModeKey = "Tuning Mode?";
   frc2::sysid::SysIdRoutine m_driveSysIdRoutine;
   frc2::sysid::SysIdRoutine m_angleSysIdRoutine;
+  bool m_slowMode = false;
 };

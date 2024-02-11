@@ -18,6 +18,7 @@ m_extensionEncoder(m_extensionMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEnco
 m_ultrasonicSensor(ShooterConstants::kUltrasonicPort, ShooterConstants::kUltrasonicValueRange),
 m_noteDetected(false),
 m_sysIdRoutine(
+    // Might want to reduce voltage values later
     frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
     frc2::sysid::Mechanism(
         [this](units::volt_t driveVoltage) {

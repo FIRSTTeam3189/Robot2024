@@ -14,6 +14,7 @@ Intake::Intake() :
  m_ultrasonicSensor(IntakeConstants::kUltrasonicPort, IntakeConstants::kUltrasonicValueRange),
  m_noteDetected(false),
  m_sysIdRoutine(
+    // Might want to reduce voltage values later
     frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
     frc2::sysid::Mechanism(
         [this](units::volt_t driveVoltage) {

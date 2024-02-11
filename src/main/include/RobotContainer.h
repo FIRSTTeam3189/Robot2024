@@ -56,6 +56,9 @@ class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   frc2::CommandJoystick m_bill{OperatorConstants::kDriverControllerPort};
   frc2::CommandJoystick m_ted{OperatorConstants::kCoDriverControllerPort};
+  frc2::CommandJoystick m_test{OperatorConstants::kTestControllerPort};
+
+  //3 is port number
 
   // The robot's subsystems are defined here...
   Climber *m_climber = new Climber();
