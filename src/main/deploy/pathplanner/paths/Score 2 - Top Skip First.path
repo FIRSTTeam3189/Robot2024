@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.178585448079987,
-        "y": 4.1
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1785854480799873,
-        "y": 4.1
-      },
-      "isLocked": false,
-      "linkedName": "Score 2 Bottom Ends"
-    },
-    {
-      "anchor": {
-        "x": 8.048067606106722,
-        "y": 0.7952025020859156
-      },
-      "prevControl": {
-        "x": 7.673854663948643,
-        "y": 0.8068966565283563
-      },
-      "nextControl": {
-        "x": 8.13071741866567,
-        "y": 0.7926196954434483
+        "x": 3.0,
+        "y": 7.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.35,
-        "y": 1.02
+        "x": 7.835755491330802,
+        "y": 7.414251945621009
       },
       "prevControl": {
-        "x": 6.335893036243795,
-        "y": 0.8505863241247003
+        "x": 7.278961206571061,
+        "y": 7.71514472308224
+      },
+      "nextControl": {
+        "x": 8.392549776090535,
+        "y": 7.1133591681597785
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.356602983476237,
+        "y": 6.4528028155155415
+      },
+      "prevControl": {
+        "x": 5.356602983476237,
+        "y": 6.4528028155155415
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score 3 Bottom 5 Ends (REAL)"
+      "linkedName": "Score 2 Top Skip First end"
     }
   ],
   "rotationTargets": [
@@ -55,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 1.05,
+      "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -67,7 +67,7 @@
       "name": "Load",
       "waypointRelativePos": 1.2,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": []
         }
@@ -75,9 +75,9 @@
     },
     {
       "name": "AlignShooter",
-      "waypointRelativePos": 1.3,
+      "waypointRelativePos": 1.35,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": []
         }
@@ -85,21 +85,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 144.6698,
+    "rotation": -172.37752,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 145.76,
+    "rotation": -148.61,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

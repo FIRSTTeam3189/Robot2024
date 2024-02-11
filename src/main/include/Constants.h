@@ -179,6 +179,7 @@ namespace ShooterConstants {
     constexpr auto kGRotation {0.0_V};
     constexpr auto kVRotation {0.0_V * 0.0_s / 1.0_rad};
     constexpr auto kARotation {0.0_V * 0.0_s * 0.0_s / 1.0_rad};
+    
 
     // In degrees
     constexpr auto kMaxRotationVelocity {120.0_deg / 1.0_s};
@@ -199,6 +200,7 @@ namespace ShooterConstants {
     // Direct shooter load
     constexpr auto kDirectLoadAngle {30.0_deg};
     constexpr double kDirectLoadPower {-0.5};
+    constexpr auto kImmediateShootAngle {25.0_deg};
 
     constexpr double kRetractTarget {0.0};
     constexpr double kCloseTarget {60.0};

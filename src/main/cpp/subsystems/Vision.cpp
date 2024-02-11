@@ -49,6 +49,9 @@ void Vision::Periodic() {
             frc::SmartDashboard::PutNumber("Vision X distance", m_data.translationMatrix[0]);
             frc::SmartDashboard::PutNumber("Vision Y distance", m_data.translationMatrix[1]);
             frc::SmartDashboard::PutNumber("Vision Z distance", m_data.translationMatrix[2]);
+            frc::SmartDashboard::PutNumber("Rotation X", m_data.rotationMatrix[0]);
+            frc::SmartDashboard::PutNumber("Rotation Y", m_data.rotationMatrix[1]);
+            frc::SmartDashboard::PutNumber("Rotation Z", m_data.rotationMatrix[2]);
 
             // Turn distances into robot pose
             frc::Pose3d cameraPose = TagToCamera();

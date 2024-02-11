@@ -24,7 +24,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AllignSwerve"
+                  "name": "AlignSwerve"
                 }
               },
               {
@@ -39,7 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 2 - Mid"
+            "pathName": "Score 3 -  Mid"
           }
         }
       ]
