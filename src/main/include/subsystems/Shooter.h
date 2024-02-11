@@ -16,6 +16,7 @@
 #include <frc/RobotController.h>
 #include <rev/CANSparkMax.h>
 #include <rev/SparkAbsoluteEncoder.h> 
+#include <rev/SparkRelativeEncoder.h> 
 #include "Constants.h"
 
 class Shooter : public frc2::SubsystemBase {
@@ -55,7 +56,7 @@ class Shooter : public frc2::SubsystemBase {
    frc::ArmFeedforward m_ff;
    rev::SparkMaxPIDController m_extensionPIDController;
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
-   rev::SparkMaxAbsoluteEncoder m_extensionEncoder;
+   rev::SparkMaxAlternateEncoder m_extensionEncoder;
    frc::AnalogPotentiometer m_ultrasonicSensor;
    bool m_noteDetected;
    units::degree_t m_target;
@@ -63,7 +64,7 @@ class Shooter : public frc2::SubsystemBase {
    units::second_t m_lastTime;
    frc2::sysid::SysIdRoutine m_sysIdRoutine;
    // String keys for PID preferences
-   std::string_view m_rotationPKey;
-   std::string_view m_rotationIKey;
-   std::string_view m_rotationDKey;
+   std::string m_rotationPKey;
+   std::string m_rotationIKey;
+   std::string m_rotationDKey;
 };

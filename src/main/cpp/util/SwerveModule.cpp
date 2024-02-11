@@ -34,6 +34,7 @@ m_signals{m_drivePosition, m_anglePosition, m_driveVelocity, m_angleVelocity}
     frc::Preferences::InitDouble(m_anglePKey, m_driveConfigs.Slot0.kP);
     frc::Preferences::InitDouble(m_angleIKey, m_driveConfigs.Slot0.kI);
     frc::Preferences::InitDouble(m_angleDKey, m_driveConfigs.Slot0.kD);
+    std::cout << "Module constructing\n";
 }
 
 void SwerveModule::ConfigDriveMotor() {
@@ -54,7 +55,7 @@ void SwerveModule::ConfigDriveMotor() {
     m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
 
     m_driveConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kDriveNeutralMode;
-    
+        
     m_driveConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kDriveGearRatio;
 
     m_driveMotor.GetConfigurator().Apply(m_driveConfigs);

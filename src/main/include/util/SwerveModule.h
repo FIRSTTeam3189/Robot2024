@@ -87,10 +87,10 @@ class SwerveModule {
   ctre::phoenix6::controls::PositionVoltage m_angleSetter{0.0_rad};
 
   // String keys for PID preferences
-  std::string_view m_drivePKey;
-  std::string_view m_driveIKey;
-  std::string_view m_driveDKey;
-  std::string_view m_anglePKey;
-  std::string_view m_angleIKey;
-  std::string_view m_angleDKey;
+  std::string m_drivePKey;
+  std::string m_driveIKey;
+  std::string m_driveDKey;
+  std::string m_anglePKey;
+  std::string m_angleIKey;
+  std::string m_angleDKey;
 };

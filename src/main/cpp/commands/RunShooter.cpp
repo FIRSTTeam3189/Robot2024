@@ -13,6 +13,7 @@ m_shooter(shooter), m_power(power) {
 // Called when the command is initially scheduled.
 void RunShooter::Initialize() {
   m_shooter->SetRollerPower(m_power);
+  m_shooter->SetLoaderPower(m_power);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -21,6 +22,7 @@ void RunShooter::Execute() {}
 // Called once the command ends or is interrupted.
 void RunShooter::End(bool interrupted) {
   m_shooter->SetRollerPower(0.0);
+  m_shooter->SetLoaderPower(0.0);
 }
 
 // Returns true when the command should end.

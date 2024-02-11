@@ -42,7 +42,8 @@ m_driveSysIdRoutine(
         },
         [this](frc::sysid::SysIdRoutineLog* log) {
             for (int i = 0; i < 4; i++) {
-                log->Motor("Drive " + std::to_string(i))
+                auto name = "Drive " + std::to_string(i);
+                log->Motor(name)
                     .voltage(m_moduleArray[i]->GetDriveVoltage())
                     .position(m_moduleArray[i]->GetPosition(true).distance)
                     .velocity(m_moduleArray[i]->GetDriveSpeed());
@@ -60,7 +61,8 @@ m_angleSysIdRoutine(
         },
         [this](frc::sysid::SysIdRoutineLog* log) {
             for (int i = 0; i < 4; i++) {
-                log->Motor("Angle " + std::to_string(i))
+                auto name = "Angle " + std::to_string(i);
+                log->Motor(name)
                     .voltage(m_moduleArray[i]->GetAngleVoltage())
                     .position(units::turn_t{m_moduleArray[i]->GetPosition(true).angle.Degrees()})
                     .velocity(m_moduleArray[i]->GetSignals().angleVelocity.GetValue());
@@ -95,6 +97,7 @@ m_angleSysIdRoutine(
     );
 
     frc::Preferences::InitBoolean(m_tuningModeKey, false);
+    std::cout << "Swerve constructing\n";
 }
 
 // This method will be called once per scheduler run
@@ -139,9 +142,9 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 
     frc::SmartDashboard::PutNumberArray("AdvantageScope Desired States", AdvantageScopeDesiredStates);
 
-         if (m_slowMode)
+    if (m_slowMode)
         SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed * SwerveDriveConstants::kExtendDriveSpeed);
-        else
+    else
         SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
 
     SetModuleStates(states);

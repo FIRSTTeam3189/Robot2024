@@ -92,7 +92,17 @@
     "valarray": "cpp",
     "variant": "cpp",
     "xstring": "cpp",
-    "*.inc": "cpp"
+    "*.inc": "cpp",
+    "ios": "cpp",
+    "xfacet": "cpp",
+    "xiosbase": "cpp",
+    "xlocale": "cpp",
+    "xlocinfo": "cpp",
+    "xlocnum": "cpp",
+    "xmemory": "cpp",
+    "xstddef": "cpp",
+    "xtr1common": "cpp",
+    "xutility": "cpp"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

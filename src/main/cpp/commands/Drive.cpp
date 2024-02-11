@@ -18,6 +18,14 @@ m_allianceSide(frc::DriverStation::GetAlliance()) {
   // 1 degree position tolerance
   m_rotationPIDController.SetTolerance(1.0);
   m_rotationPIDController.EnableContinuousInput(0, 360);
+
+  m_rotationPKey = "Robot Rotation P";
+  m_rotationIKey = "Robot Rotation I";
+  m_rotationDKey = "Robot Rotation D";
+
+  frc::Preferences::InitDouble(m_rotationPKey, SwerveDriveConstants::kPRot);
+  frc::Preferences::InitDouble(m_rotationIKey, SwerveDriveConstants::kIRot);
+  frc::Preferences::InitDouble(m_rotationDKey, SwerveDriveConstants::kDRot);
 }
 
 units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocity() {
@@ -69,6 +77,8 @@ void Drive::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void Drive::Execute() {
+  UpdatePreferences();
+
   double joystickX, joystickY;
   if (m_allianceSide == frc::DriverStation::Alliance::kRed) {
     joystickX = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY);
@@ -144,4 +154,12 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
 
   frc::SmartDashboard::PutNumber("Swerve auto align angle (teleop version)", goalAngle.value());
   return rot;
+}
+
+void Drive::UpdatePreferences() {
+  if (frc::Preferences::GetBoolean("Tuning Mode?", false)) {
+    m_rotationPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, SwerveDriveConstants::kPRot));
+    m_rotationPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, SwerveDriveConstants::kIRot));
+    m_rotationPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, SwerveDriveConstants::kDRot));
+  }
 }

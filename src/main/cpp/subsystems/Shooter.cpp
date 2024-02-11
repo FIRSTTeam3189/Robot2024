@@ -14,7 +14,7 @@ m_rotationPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotati
 m_ff(ShooterConstants::kSRotation, ShooterConstants::kGRotation, ShooterConstants::kVRotation, ShooterConstants::kARotation),
 m_extensionPIDController(m_extensionMotor.GetPIDController()),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
-m_extensionEncoder(m_extensionMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
+m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::Type::kQuadrature, ShooterConstants::kExtensionCountsPerRev)),
 m_ultrasonicSensor(ShooterConstants::kUltrasonicPort, ShooterConstants::kUltrasonicValueRange),
 m_noteDetected(false),
 m_sysIdRoutine(
@@ -44,12 +44,15 @@ m_sysIdRoutine(
     frc::Preferences::InitDouble(m_rotationPKey, ShooterConstants::kPRotation);
     frc::Preferences::InitDouble(m_rotationIKey, ShooterConstants::kIRotation);
     frc::Preferences::InitDouble(m_rotationDKey, ShooterConstants::kDRotation);
+
+    std::cout << "Shooter constructing\n";
 }
 
 // This method will be called once per scheduler run
 void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Shooter rotation", m_rotationEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Shooter extension", m_extensionEncoder.GetPosition());
     UpdateUltrasonic();
     if (frc::Preferences::GetBoolean("Tuning Mode?", false))
         UpdatePreferences();
@@ -117,7 +120,6 @@ void Shooter::ConfigExtensionMotor() {
     m_extensionPIDController.SetD(ShooterConstants::kDExtension);
     m_extensionEncoder.SetInverted(ShooterConstants::kExtensionInverted);
     m_extensionEncoder.SetPositionConversionFactor(ShooterConstants::kExtensionConversion);
-    m_extensionEncoder.SetZeroOffset(ShooterConstants::kExtensionOffset);
 }
 
 void Shooter::ConfigRotationMotor() {

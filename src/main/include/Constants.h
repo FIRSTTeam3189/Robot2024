@@ -27,6 +27,7 @@
 #include <frc/geometry/Rotation3d.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
+#include <iostream>
 #include <vector>
 
 #define Pi 3.14159265358979323846
@@ -97,8 +98,8 @@ namespace SwerveModuleConstants {
     constexpr auto kCANcoderSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf;
 
     // Motor neutral modes -- what they do when no power is applied
-    constexpr auto kDriveNeutralMode = ctre::phoenix6::signals::NeutralModeValue::Coast;
-    constexpr auto kAngleNeutralMode = ctre::phoenix6::signals::NeutralModeValue::Coast;
+    constexpr auto kDriveNeutralMode = ctre::phoenix6::signals::NeutralModeValue::Brake;
+    constexpr auto kAngleNeutralMode = ctre::phoenix6::signals::NeutralModeValue::Brake;
 
     // TalonFX Remote Sensor Type Settings
     constexpr int kRotorSensor{0};
@@ -108,13 +109,6 @@ namespace SwerveModuleConstants {
     constexpr int kRemotePigeon2_Roll{4};
     constexpr int kFusedCANcoder{5};
     constexpr int kSyncCANcoder{6};
-
-    // Robot maxes - approximated and varies by robot
-    // Original max speed: 3.0
-    constexpr auto kMaxDrive {3.0_mps};
-    constexpr auto kMaxAcceleration {2.0_mps_sq};
-    constexpr units::radians_per_second_t kMaxAngularVelocity {Pi};
-    constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {Pi / 2};
 
     constexpr double kPDrive {1.0};
     constexpr double kIDrive {0.0};
@@ -161,7 +155,8 @@ namespace AutoConstants {
     constexpr double kIRotationAuto {0.0};
     constexpr double kDRotationAuto {0.0};
     constexpr auto kMaxAutoSpeed {4.5_mps};
-    constexpr auto kDriveBaseRadius {0.3048_m};
+    // Distance from robot center to furthest module
+    constexpr auto kDriveBaseRadius {0.282575_m};
     const pathplanner::HolonomicPathFollowerConfig autoConfig {
         pathplanner::PIDConstants(kPTranslationAuto, kITranslationAuto, kDTranslationAuto), // Translation PID constants
         pathplanner::PIDConstants(kPRotationAuto, kIRotationAuto, kDRotationAuto), // Rotation PID constants
@@ -219,6 +214,7 @@ namespace ShooterConstants {
     constexpr double kExtensionConversion {1.0};
     constexpr bool kExtensionInverted {false};
     constexpr double kExtensionStopDistance {100.0};
+    constexpr int kExtensionCountsPerRev {8192};
 
     constexpr int kUltrasonicPort {0};
     constexpr double kUltrasonicValueRange {196.8504}; // 5 meters in inches -- max range of sensor; used so sensor reports in inches

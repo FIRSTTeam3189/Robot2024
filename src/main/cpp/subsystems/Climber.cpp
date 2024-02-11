@@ -14,7 +14,7 @@ m_rightServo(ClimberConstants::krightServoID)
     m_rightMotor.RestoreFactoryDefaults();
     m_leftMotor.SetInverted(ClimberConstants::kInvertMotor);
     m_leftMotor.Follow(m_rightMotor);
-
+    std::cout << "Climber constructing\n";
 }
 // This method will be called once per scheduler run
 void Climber::Periodic() {}
