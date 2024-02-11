@@ -32,12 +32,8 @@ m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCame
 void Vision::Periodic() {
     if (VisionConstants::kShouldUseVision) {
         // bool isDetected = m_isDetectedTopic.Subscribe(0).Get();
-        bool isDetected = false;
-        m_TCP->StartRead();
-        connect->Succeeded(tcp);
-        
 
-        if (isDetected) {
+        if (m_data.isDetected) {
             // m_data.ID = m_tagIDTopic.Subscribe(-1).Get();
             // float defaultArray[]{0.0f, 0.0f, 0.0f};
             // std::span s{defaultArray, 3};
@@ -105,15 +101,15 @@ VisionData Vision::GetVisionData() {
 
 void Vision::SetupTCPConnection() {
     wpi::EventLoopRunner loop;
-    loop.ExecAsync([](uv::Loop& loop) {
+    loop.ExecAsync([this](uv::Loop& loop) {
         m_TCP = uv::Tcp::Create(loop);
 
         // bind to listen address and port
         m_TCP->Bind("10.31.89.59", 8010);
 
         // when we get a connection, accept it and start reading
-        m_TCP->connection.connect([srv = m_TCP.get()] {
-            auto m_TCP = srv->Accept();
+        m_TCP->connection.connect([srv = m_TCP.get(), this] {
+            m_TCP = srv->Accept();
             if (!m_TCP) {
                 return;
             }
@@ -126,6 +122,17 @@ void Vision::SetupTCPConnection() {
         std::fputs("Listening on port 8010\n", stderr);
     });
 
-    // wait for a keypress to terminate
-    // std::getchar();
+    m_TCP->data.connect_connection([this](uv::Buffer& buf, size_t size) {
+        if (size == 0)
+            return;
+        auto byteSpan = buf.bytes();  
+        std::vector<uint8_t> data;
+        for (uint8_t Tascheel: byteSpan) {
+            data.emplace_back(Tascheel);
+        }
+        void* rawData = data.data();
+        m_data = *reinterpret_cast<VisionData*>(rawData);
+    });
+
+    m_TCP->StartRead();
 }

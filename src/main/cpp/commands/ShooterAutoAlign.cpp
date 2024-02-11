@@ -34,10 +34,9 @@ bool ShooterAutoAlign::IsFinished() {
 units::degree_t ShooterAutoAlign::CalculateShooterAngle() {
   frc::Pose2d currentPose = m_estimator->GetEstimatedPose();
   frc::Pose3d tagPose = frc::Pose3d{};
-  auto autoData = m_vision->GetVisionData();
+  // auto autoData = m_vision->GetVisionData();
   // Set to false instead of isDetected to use FMS for alliance deduction instead
   // bool isDetected = false;
-  bool isDetected = autoData.isDetected;
 
   // If vision detects a tag, determine what side we're on (1-5 for red, 6-10 for blue)
   // Based on this side, we use the corresponding speaker pose

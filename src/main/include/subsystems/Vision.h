@@ -26,15 +26,20 @@
 #include <iostream>
 #include <span>
 
+// Pack struct tightly so the are no buffer bytes in between data members
+#pragma pack(push, 1)
+
 struct VisionData {
-  bool isDetected = false;
-  int ID = 0;
+  uint8_t isDetected = 0;
+  uint64_t ID = 0;
   double lastTimestamp = 0.0;
   // std::vector<float> translationMatrix{0.0f, 0.0f, 0.0f};
   // std::vector<float> rotationMatrix{0.0f, 0.0f, 0.0f};
   double translationMatrix[3] = {0.0, 0.0, 0.0};
   double rotationMatrix[3] = {0.0, 0.0, 0.0};
 };
+
+#pragma pack(pop)
 
 class Vision : public frc2::SubsystemBase {
  public:
