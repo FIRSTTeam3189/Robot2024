@@ -199,9 +199,9 @@ void RobotContainer::RegisterAutoCommands() {
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   ).ToPtr());
 
-  pathplanner::NamedCommands::registerCommand("ImmediateShoot", frc2:SequentialCommandGroup(
+  pathplanner::NamedCommands::registerCommand("ImmediateShoot", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
-    RunIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget),
+    RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0),
     SetShooterRotation(m_shooter, ShooterConstants::kImmediateShootAngle),
     RunShooter(m_shooter, ShooterConstants::kShootPower)
   ).ToPtr());

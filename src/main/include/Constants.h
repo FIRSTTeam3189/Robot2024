@@ -253,7 +253,7 @@ namespace IntakeConstants{
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
     constexpr auto kRotationStopDistance {5.0_deg};
-    constexpr int kUltrasonicPort {0};
+    constexpr int kUltrasonicPort {1};
     // 5 meters in inches -- max range of sensor; used so sensor reports in inches
     constexpr double kUltrasonicValueRange {196.8504};
 }
@@ -319,14 +319,13 @@ namespace VisionConstants {
 
 namespace ClimberConstants{
     //FIND IDS - krishna 
-    constexpr int kleftServoID {0}; 
-    constexpr int krightServoID {1}; 
-    constexpr int krightMotorID {17};
-    constexpr int klefttMotorID {18};
+    constexpr int kLeftServoID {0}; 
+    constexpr int kRightServoID {1}; 
+    constexpr int kRightMotorID {19};
+    constexpr int kLefttMotorID {20};
     constexpr int kInvertMotor {false};
     constexpr double kExtendMotorSpeed {0.5};
     constexpr double kExtendServoAngle {0.0};
     constexpr double kRetractMotorSpeed {-0.5};
     constexpr double kRetractServoAngle {0.0};
-    
 }

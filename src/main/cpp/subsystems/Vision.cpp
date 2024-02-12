@@ -127,17 +127,17 @@ void Vision::SetupTCPConnection() {
     });
 
     std::cout << "Defining data conversion\n";
-    m_TCP->data.connect_connection([this](uv::Buffer& buf, size_t size) {
-        if (size == 0)
-            return;
-        auto byteSpan = buf.bytes();  
-        std::vector<uint8_t> data;
-        for (uint8_t Tascheel: byteSpan) {
-            data.emplace_back(Tascheel);
-        }
-        void* rawData = data.data();
-        m_data = *reinterpret_cast<VisionData*>(rawData);
-    });
+    // m_TCP->data.connect([this](uv::Buffer& buf, size_t size) {
+        // if (buf.len == 0)
+        //     return;
+    //     auto byteSpan = buf.bytes();  
+    //     std::vector<uint8_t> data;
+    //     for (uint8_t Tascheel: byteSpan) {
+    //         data.emplace_back(Tascheel);
+    //     }
+    //     void* rawData = data.data();
+    //     m_data = *reinterpret_cast<VisionData*>(rawData);
+    // });
 
     std::cout << "Reading TCP\n";
     m_TCP->StartRead();
