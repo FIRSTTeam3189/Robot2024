@@ -8,46 +8,46 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0036129073487645,
-        "y": 3.999889631316565
+        "x": 2.05,
+        "y": 4.0
       },
       "isLocked": true,
       "linkedName": "Score 1 Bottom Ends"
     },
     {
       "anchor": {
-        "x": 2.3963887599700304,
-        "y": 4.1
+        "x": 2.4488520676563446,
+        "y": 4.126484918399676
       },
       "prevControl": {
-        "x": 2.4048700562150325,
-        "y": 4.114690036010387
+        "x": 2.3988520676563447,
+        "y": 4.126484918399676
       },
       "nextControl": {
-        "x": 2.3775525173288767,
-        "y": 4.067374670721826
+        "x": 2.4988520676563444,
+        "y": 4.126484918399676
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.178585448079987,
-        "y": 4.1
+        "x": 2.3612083659381726,
+        "y": 4.234402634328386
       },
       "prevControl": {
-        "x": 2.1762412543027865,
-        "y": 4.076661971502111
+        "x": 2.33045072670748,
+        "y": 4.479605575526604
       },
       "nextControl": null,
       "isLocked": true,
-      "linkedName": "Score 2 Bottom Ends"
+      "linkedName": "Real Score 2 - Bottom"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.25,
-      "rotationDegrees": -179.70060448476292,
+      "waypointRelativePos": 1,
+      "rotationDegrees": 178.85423716182478,
       "rotateFast": false
     }
   ],
@@ -55,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 1.1,
+      "waypointRelativePos": 1.05,
       "command": {
         "type": "sequential",
         "data": {
@@ -64,8 +64,8 @@
       }
     },
     {
-      "name": "Load",
-      "waypointRelativePos": 0.7,
+      "name": "AlignSpeaker",
+      "waypointRelativePos": 1.2,
       "command": {
         "type": "sequential",
         "data": {
@@ -74,10 +74,10 @@
       }
     },
     {
-      "name": "AlignShooter",
-      "waypointRelativePos": 0,
+      "name": "ScoreSpeaker",
+      "waypointRelativePos": 1.45,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": []
         }
@@ -92,14 +92,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 145.0878,
+    "rotation": 149.8905,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 147.65470365407916,
+    "rotation": 142.78,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

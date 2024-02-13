@@ -8,11 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.0497135010348617,
+        "y": 7.005344886795518
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Score 1 Top Ends"
     },
     {
       "anchor": {
@@ -20,12 +20,12 @@
         "y": 7.414251945621009
       },
       "prevControl": {
-        "x": 7.278961206571061,
-        "y": 7.71514472308224
+        "x": 7.791950984939507,
+        "y": 7.438359314200243
       },
       "nextControl": {
-        "x": 8.392549776090535,
-        "y": 7.1133591681597785
+        "x": 7.8795599977220965,
+        "y": 7.3901445770417755
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 6.4528028155155415
       },
       "prevControl": {
-        "x": 5.356602983476237,
-        "y": 6.4528028155155415
+        "x": 6.402645616645277,
+        "y": 6.472298351693375
       },
       "nextControl": null,
       "isLocked": false,
@@ -98,7 +98,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -148.61,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

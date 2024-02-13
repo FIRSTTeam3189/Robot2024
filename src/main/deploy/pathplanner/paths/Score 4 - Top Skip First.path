@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.486028827913511,
-        "y": 6.434313409167359
+        "x": 6.406100458159296,
+        "y": 6.445731747703676
       },
       "isLocked": false,
       "linkedName": "Score 3 skip first end"
@@ -20,12 +20,12 @@
         "y": 4.067669396600055
       },
       "prevControl": {
-        "x": 8.029894257986713,
-        "y": 4.058424693425964
+        "x": 7.950341348540976,
+        "y": 4.06410704410066
       },
       "nextControl": {
-        "x": 7.759411030353722,
-        "y": 4.077744923971179
+        "x": 7.850595478557904,
+        "y": 4.071231749099451
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 6.4528028155155415
       },
       "prevControl": {
-        "x": 6.254911248561235,
-        "y": 6.415824002819177
+        "x": 6.309613312301815,
+        "y": 6.435715662361206
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,6 +56,26 @@
     {
       "name": "Intake",
       "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Load",
+      "waypointRelativePos": 0.85,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "AlignSpeaker",
+      "waypointRelativePos": 1.2,
       "command": {
         "type": "parallel",
         "data": {
