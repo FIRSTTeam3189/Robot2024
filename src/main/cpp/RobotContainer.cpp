@@ -107,6 +107,18 @@ void RobotContainer::ConfigureCoDriverBindings() {
     m_shooter->SetRollerPower(0.0);
   },{m_shooter}).ToPtr());
 
+    frc2::Trigger loadClimbPieceButton{m_ted.Button(OperatorConstants::kButtonIDMenu)};
+    loadClimbPieceButton.OnTrue(frc2::SequentialCommandGroup(
+      TransferLoader(m_shooter, ShooterConstants::kLoadPower, 0.0)
+    ).ToPtr());
+
+  frc2::Trigger extendShooterButton{m_ted.Button(OperatorConstants::kButtonIDMicrophone)};
+  extendShooterButton.OnTrue(frc2::SequentialCommandGroup(
+      SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget),
+      SetShooterExtension(m_shooter, ShooterConstants::kTrapExtension),
+      SetShooterRotation(m_shooter, ShooterConstants::kTrapExtensionAngle)
+    ).ToPtr());
+
   frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
   shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
 
@@ -179,9 +191,9 @@ void RobotContainer::RegisterAutoCommands() {
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   ).ToPtr());
 
-  pathplanner::NamedCommands::registerCommand("ImmediateShoot", frc2:SequentialCommandGroup(
+  pathplanner::NamedCommands::registerCommand("ImmediateShoot", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
-    RunIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget),
+    RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0),
     SetShooterRotation(m_shooter, ShooterConstants::kImmediateShootAngle),
     RunShooter(m_shooter, ShooterConstants::kShootPower)
   ).ToPtr());
@@ -287,4 +299,4 @@ void RobotContainer::ConfigureSysIDBindings() {
     .WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
 }
 
-// no matter how nice ethan seems he will slap you with a piece of chicken and eat you in a bucket with skibidi toilet
+// no matter how nice ethan seems he will slap you with a piece of chicken and eat you in a bucket

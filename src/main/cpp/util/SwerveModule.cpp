@@ -11,7 +11,6 @@ m_angleMotor(angleMotorID, "Swerve"),
 m_CANcoder(CANcoderID, "Swerve"),
 m_PIDValues{SwerveModuleConstants::kPDrive, SwerveModuleConstants::kIDrive, SwerveModuleConstants::kDDrive,
             SwerveModuleConstants::kPAngle, SwerveModuleConstants::kIAngle, SwerveModuleConstants::kDAngle},
-m_moduleNumber(moduleNumber),
 m_CANcoderOffset(CANcoderOffset),
 m_signals{m_drivePosition, m_anglePosition, m_driveVelocity, m_angleVelocity}
  {
@@ -21,19 +20,6 @@ m_signals{m_drivePosition, m_anglePosition, m_driveVelocity, m_angleVelocity}
     
     // Setup preferences class, which allows editing values while robot is enabled
     // Very useful for PID tuning
-    m_drivePKey = "DriveP" + std::to_string(m_moduleNumber);
-    m_driveIKey = "DriveI" + std::to_string(m_moduleNumber);
-    m_driveDKey = "DriveD" + std::to_string(m_moduleNumber);
-    m_anglePKey = "AngleP" + std::to_string(m_moduleNumber);
-    m_angleIKey = "AngleI" + std::to_string(m_moduleNumber);
-    m_angleDKey = "AngleD" + std::to_string(m_moduleNumber);
-
-    frc::Preferences::InitDouble(m_drivePKey, m_driveConfigs.Slot0.kP);
-    frc::Preferences::InitDouble(m_driveIKey, m_driveConfigs.Slot0.kI);
-    frc::Preferences::InitDouble(m_driveDKey, m_driveConfigs.Slot0.kD);
-    frc::Preferences::InitDouble(m_anglePKey, m_driveConfigs.Slot0.kP);
-    frc::Preferences::InitDouble(m_angleIKey, m_driveConfigs.Slot0.kI);
-    frc::Preferences::InitDouble(m_angleDKey, m_driveConfigs.Slot0.kD);
 }
 
 void SwerveModule::ConfigDriveMotor() {
@@ -60,6 +46,19 @@ void SwerveModule::ConfigDriveMotor() {
     m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
 
     m_driveMotor.SetPosition(0.0_rad);
+}
+
+void SwerveModule::UpdatePreferences() {
+    m_driveConfigs.Slot0.kP = frc::Preferences::GetDouble("DriveP", SwerveModuleConstants::kPDrive);
+    m_driveConfigs.Slot0.kI = frc::Preferences::GetDouble("DriveI", SwerveModuleConstants::kIDrive);
+    m_driveConfigs.Slot0.kD = frc::Preferences::GetDouble("DriveD", SwerveModuleConstants::kDDrive);
+    m_angleConfigs.Slot0.kP = frc::Preferences::GetDouble("AngleP", SwerveModuleConstants::kPAngle);
+    m_angleConfigs.Slot0.kI = frc::Preferences::GetDouble("AngleI", SwerveModuleConstants::kIAngle);
+    m_angleConfigs.Slot0.kD = frc::Preferences::GetDouble("AngleD", SwerveModuleConstants::kDAngle);
+
+    m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
+    m_angleMotor.GetConfigurator().Apply(m_angleConfigs);
+    // m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
 }
 
 void SwerveModule::ConfigAngleMotor(int CANcoderID) {
@@ -255,18 +254,7 @@ void SwerveModule::ResetDriveEncoder() {
     m_driveMotor.SetPosition(units::turn_t{0.0});
 }
 
-void SwerveModule::UpdatePreferences() {
-    m_driveConfigs.Slot0.kP = frc::Preferences::GetDouble(m_drivePKey, SwerveModuleConstants::kPDrive);
-    m_driveConfigs.Slot0.kI = frc::Preferences::GetDouble(m_driveIKey, SwerveModuleConstants::kIDrive);
-    m_driveConfigs.Slot0.kD = frc::Preferences::GetDouble(m_driveDKey, SwerveModuleConstants::kDDrive);
-    m_angleConfigs.Slot0.kP = frc::Preferences::GetDouble(m_anglePKey, SwerveModuleConstants::kPAngle);
-    m_angleConfigs.Slot0.kI = frc::Preferences::GetDouble(m_angleIKey, SwerveModuleConstants::kIAngle);
-    m_angleConfigs.Slot0.kD = frc::Preferences::GetDouble(m_angleDKey, SwerveModuleConstants::kDAngle);
 
-    m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
-    m_angleMotor.GetConfigurator().Apply(m_angleConfigs);
-    // m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
-}
 
 std::pair<ctre::phoenix6::hardware::TalonFX*, ctre::phoenix6::hardware::TalonFX*> SwerveModule::GetMotorsForMusic() {
     return std::pair{&m_driveMotor, &m_angleMotor};

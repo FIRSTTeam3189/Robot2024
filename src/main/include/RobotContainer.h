@@ -30,6 +30,7 @@
 #include "commands/SetShooterRotation.h"
 #include "commands/ShooterAutoAlign.h"
 #include "commands/SwerveAutoAlign.h"
+#include "commands/TransferLoader.h"
 #include "subsystems/LED.h"
 #include "subsystems/MusicSystem.h"
 #include "subsystems/Climber.h"

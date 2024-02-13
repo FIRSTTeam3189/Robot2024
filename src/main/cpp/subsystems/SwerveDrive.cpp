@@ -4,7 +4,7 @@
 
 #include "subsystems/SwerveDrive.h"
 
-SwerveDrive::SwerveDrive(PoseEstimatorHelper *helper) :
+SwerveDrive::SwerveDrive(PoseEstimatorHelper *helper):
 m_modules{
   {+SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
   {+SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter},
@@ -95,6 +95,19 @@ m_angleSysIdRoutine(
     );
 
     frc::Preferences::InitBoolean(m_tuningModeKey, false);
+    m_drivePKey = "DriveP";
+    m_driveIKey = "DriveI";
+    m_driveDKey = "DriveD";
+    m_anglePKey = "AngleP";
+    m_angleIKey = "AngleI";
+    m_angleDKey = "AngleD";
+
+    frc::Preferences::InitDouble(m_drivePKey, SwerveModuleConstants::kPDrive);
+    frc::Preferences::InitDouble(m_driveIKey, SwerveModuleConstants::kIDrive);
+    frc::Preferences::InitDouble(m_driveDKey, SwerveModuleConstants::kDDrive);
+    frc::Preferences::InitDouble(m_anglePKey, SwerveModuleConstants::kPAngle);
+    frc::Preferences::InitDouble(m_angleIKey, SwerveModuleConstants::kIAngle);
+    frc::Preferences::InitDouble(m_angleDKey, SwerveModuleConstants::kDAngle);
 }
 
 // This method will be called once per scheduler run
