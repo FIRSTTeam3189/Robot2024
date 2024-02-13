@@ -216,6 +216,8 @@ namespace ShooterConstants {
     constexpr bool kExtensionInverted {false};
     constexpr double kExtensionStopDistance {100.0};
     constexpr int kExtensionCountsPerRev {8192};
+    constexpr auto kTrapExtensionAngle {0.0_deg};
+    constexpr double kTrapExtension {0.0};
 
     constexpr int kUltrasonicPort {0};
     constexpr double kUltrasonicValueRange {196.8504}; // 5 meters in inches -- max range of sensor; used so sensor reports in inches

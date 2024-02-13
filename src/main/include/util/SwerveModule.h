@@ -42,8 +42,8 @@ class SwerveModule {
   void ConfigAngleMotor(int CANcoderID);
   void ConfigCANcoder();
   void Stop();
-  void SetDesiredState(const frc::SwerveModuleState &state);
   void UpdatePosition();
+  void SetDesiredState(const frc::SwerveModuleState &state);
   frc::SwerveModulePosition GetPosition(bool refresh);
   frc::SwerveModuleState GetState(bool refresh);
   units::degree_t GetMotorAngle();

@@ -31,7 +31,7 @@ struct SwerveModules {
 
 class SwerveDrive : public frc2::SubsystemBase {
  public:
-
+  void UpdatePreferences();
   SwerveDrive(PoseEstimatorHelper *helper);
   void SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates);
   void Drive(units::meters_per_second_t xSpeed,
@@ -81,4 +81,12 @@ class SwerveDrive : public frc2::SubsystemBase {
   frc2::sysid::SysIdRoutine m_driveSysIdRoutine;
   frc2::sysid::SysIdRoutine m_angleSysIdRoutine;
   bool m_slowMode = false;
+
+  int m_moduleNumber;
+  std::string m_drivePKey;
+  std::string m_driveIKey;
+  std::string m_driveDKey;
+  std::string m_anglePKey;
+  std::string m_angleIKey;
+  std::string m_angleDKey;
 };
