@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
-      "y": 7.0
+      "x": 1.5148426719035912,
+      "y": 7.01
     },
-    "rotation": -148.61
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 2 - Top Skip First"
+            "pathName": "Score 1 - Top"
           }
         },
         {
@@ -34,6 +34,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 2 - Top Skip First"
           }
         }
       ]
