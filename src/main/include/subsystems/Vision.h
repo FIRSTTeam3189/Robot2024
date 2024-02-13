@@ -66,4 +66,6 @@ class Vision : public frc2::SubsystemBase {
 
   // TCP stuff
   std::shared_ptr<wpi::uv::Tcp> m_TCP;
+  bool m_TCPConnected;
+  int m_numWrites;
 };

@@ -31,6 +31,7 @@ RobotContainer::RobotContainer() {
   // Configure the button bindings
   ConfigureDriverBindings();
   ConfigureCoDriverBindings();
+  CreateAutoPaths();
 }
 
 void RobotContainer::ConfigureDriverBindings() {
@@ -247,7 +248,7 @@ void RobotContainer::RegisterAutoCommands() {
 } 
 
 void RobotContainer::CreateAutoPaths() {
-  m_chooser.AddOption("Test Auto", new pathplanner::PathPlannerAuto("Test Auto"));
+  m_chooser.SetDefaultOption("N/A", nullptr);
   m_chooser.AddOption("Score 1 - Top", new pathplanner::PathPlannerAuto("Score 1 - Top"));
   m_chooser.AddOption("Score 1 - Mid", new pathplanner::PathPlannerAuto("Score 1 - Mid"));
   m_chooser.AddOption("Score 1 - Bottom", new pathplanner::PathPlannerAuto("Score 1 - Bottom"));
@@ -261,6 +262,7 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Score 3 - Mid 2", new pathplanner::PathPlannerAuto("Score 3 - Mid 2"));
   m_chooser.AddOption("Score 3 - Mid 3 - Under", new pathplanner::PathPlannerAuto("Score 3 - Mid 3 - Under"));
   m_chooser.AddOption("Score 3 - Bottom 5", new pathplanner::PathPlannerAuto("Score 3 - Bottom 5"));
+  frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
