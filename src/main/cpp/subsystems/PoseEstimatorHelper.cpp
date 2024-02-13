@@ -4,7 +4,9 @@
 
 #include "subsystems/PoseEstimatorHelper.h"
 
-PoseEstimatorHelper::PoseEstimatorHelper() = default;
+PoseEstimatorHelper::PoseEstimatorHelper() {
+    std::cout << "Helper constructing\n";
+}
 
 void PoseEstimatorHelper::SetPoseEstimator(frc::SwerveDrivePoseEstimator<4> *poseEstimator) {
     m_poseEstimator = poseEstimator;

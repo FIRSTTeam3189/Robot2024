@@ -5,16 +5,16 @@
 #include "subsystems/Climber.h"
 
 Climber::Climber() : 
-m_leftMotor(ClimberConstants::klefttMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless),
-m_rightMotor(ClimberConstants::krightMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
-m_leftServo(ClimberConstants::kleftServoID),
-m_rightServo(ClimberConstants::krightServoID)
+m_leftMotor(ClimberConstants::kLefttMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless),
+m_rightMotor(ClimberConstants::kRightMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
+m_leftServo(ClimberConstants::kLeftServoID),
+m_rightServo(ClimberConstants::kRightServoID)
 {
     m_leftMotor.RestoreFactoryDefaults();
     m_rightMotor.RestoreFactoryDefaults();
     m_leftMotor.SetInverted(ClimberConstants::kInvertMotor);
     m_leftMotor.Follow(m_rightMotor);
-
+    std::cout << "Climber constructing\n";
 }
 // This method will be called once per scheduler run
 void Climber::Periodic() {}

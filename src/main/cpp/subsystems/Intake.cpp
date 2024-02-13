@@ -32,6 +32,7 @@ Intake::Intake() :
 {
     m_rotationMotor.RestoreFactoryDefaults();
     m_rollerMotor.RestoreFactoryDefaults();
+    m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
     m_rotationEncoder.SetInverted(IntakeConstants::kRotationInverted);
     m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
@@ -44,6 +45,8 @@ Intake::Intake() :
     frc::Preferences::InitDouble(m_rotationPKey, IntakeConstants::kPRotation);
     frc::Preferences::InitDouble(m_rotationIKey, IntakeConstants::kIRotation);
     frc::Preferences::InitDouble(m_rotationDKey, IntakeConstants::kDRotation);
+
+    std::cout << "Intake constructing\n";
 }
 
 // This method will be called once per scheduler run

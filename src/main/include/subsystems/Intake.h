@@ -51,9 +51,9 @@ class Intake : public frc2::SubsystemBase {
   frc2::sysid::SysIdRoutine m_sysIdRoutine;
   
   // String keys for PID preferences
-  std::string_view m_rotationPKey;
-  std::string_view m_rotationIKey;
-  std::string_view m_rotationDKey;
+  std::string m_rotationPKey;
+  std::string m_rotationIKey;
+  std::string m_rotationDKey;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

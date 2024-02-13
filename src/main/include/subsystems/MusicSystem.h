@@ -8,6 +8,7 @@
 #include <ctre/phoenix6/TalonFX.hpp>
 #include <ctre/phoenix6/Orchestra.hpp>
 #include <frc/Filesystem.h>
+#include "Constants.h"
 
 class MusicSystem : public frc2::SubsystemBase {
  public:

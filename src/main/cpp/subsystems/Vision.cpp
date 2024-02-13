@@ -24,8 +24,10 @@ m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCame
 //   m_rotationMatrixTopic = networkTableInstance.GetFloatArrayTopic("Vision/AprilTag/RMatrix");
 
   // TCP stuff
+  std::cout << "About to connect TCP\n";
   SetupTCPConnection();
 //   m_TCP->Connect("10.31.89.59", 8010, [this]{});
+    std::cout << "Vision constructing\n";
 }
 
 // This method will be called once per scheduler run
@@ -100,12 +102,14 @@ VisionData Vision::GetVisionData() {
 
 void Vision::SetupTCPConnection() {
     wpi::EventLoopRunner loop;
+    std::cout << "Defining event loop\n";
     loop.ExecAsync([this](uv::Loop& loop) {
         m_TCP = uv::Tcp::Create(loop);
 
         // bind to listen address and port
-        m_TCP->Bind("10.31.89.59", 8010);
-
+        m_TCP->Bind("10.31.89.69", 8010);
+        
+        std::cout << "Connecting TCP\n";
         // when we get a connection, accept it and start reading
         m_TCP->connection.connect([srv = m_TCP.get(), this] {
             m_TCP = srv->Accept();
@@ -117,21 +121,24 @@ void Vision::SetupTCPConnection() {
 
         // start listening for incoming connections
         m_TCP->Listen();
+        std::cout << "Listening for connection\n";
 
         std::fputs("Listening on port 8010\n", stderr);
     });
 
-    m_TCP->data.connect_connection([this](uv::Buffer& buf, size_t size) {
-        if (size == 0)
-            return;
-        auto byteSpan = buf.bytes();  
-        std::vector<uint8_t> data;
-        for (uint8_t Tascheel: byteSpan) {
-            data.emplace_back(Tascheel);
-        }
-        void* rawData = data.data();
-        m_data = *reinterpret_cast<VisionData*>(rawData);
-    });
+    std::cout << "Defining data conversion\n";
+    // m_TCP->data.connect([this](uv::Buffer& buf, size_t size) {
+        // if (buf.len == 0)
+        //     return;
+    //     auto byteSpan = buf.bytes();  
+    //     std::vector<uint8_t> data;
+    //     for (uint8_t Tascheel: byteSpan) {
+    //         data.emplace_back(Tascheel);
+    //     }
+    //     void* rawData = data.data();
+    //     m_data = *reinterpret_cast<VisionData*>(rawData);
+    // });
 
+    std::cout << "Reading TCP\n";
     m_TCP->StartRead();
 }

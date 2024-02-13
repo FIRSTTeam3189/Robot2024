@@ -34,7 +34,24 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::ConfigureDriverBindings() {
-   // Bill controls
+  // Bill controls
+
+  frc2::Trigger toggleATan2RotButton{m_bill.Button(OperatorConstants::kButtonIDRightStick)};
+  toggleATan2RotButton.OnTrue(
+    frc2::InstantCommand([this]{
+      m_isSpecialHeadingMode = !m_isSpecialHeadingMode;
+      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode, m_isFieldRelative));
+    },{m_swerveDrive}).ToPtr()
+  );
+
+  frc2::Trigger toggleFieldRelativeButton{m_bill.Button(OperatorConstants::kButtonIDLeftStick)};
+  toggleFieldRelativeButton.OnTrue(
+    frc2::InstantCommand([this]{
+      m_isFieldRelative = !m_isFieldRelative;
+      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode, m_isFieldRelative));
+    },{m_swerveDrive}).ToPtr()
+  );
+
   frc2::Trigger intakeButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
   intakeButton.OnTrue(RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0).ToPtr());
   intakeButton.OnFalse(frc2::InstantCommand([this]{
@@ -75,7 +92,7 @@ void RobotContainer::ConfigureDriverBindings() {
   },{m_swerveDrive}).ToPtr());
 
   frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
-  alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode, true, true).ToPtr());
+  alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, false, true, true).ToPtr());
   
   frc2::Trigger toggleSlowModeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
   toggleSlowModeButton.OnTrue(frc2::InstantCommand([this]{ m_swerveDrive->ToggleSlowMode(); },{m_swerveDrive}).ToPtr());
@@ -121,6 +138,9 @@ void RobotContainer::ConfigureCoDriverBindings() {
 
   frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
   shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
+  shooterAlignButton.OnFalse(frc2::InstantCommand([this]{
+    m_shooter->SetRotationPower(0.0);
+  },{m_shooter}).ToPtr());
 
   frc2::Trigger shooterCloseRangeButton{m_ted.Button(OperatorConstants::kButtonIDX)};
   shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kCloseTarget}).ToPtr());

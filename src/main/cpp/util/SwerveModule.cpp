@@ -40,7 +40,7 @@ void SwerveModule::ConfigDriveMotor() {
     m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
 
     m_driveConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kDriveNeutralMode;
-    
+        
     m_driveConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kDriveGearRatio;
 
     m_driveMotor.GetConfigurator().Apply(m_driveConfigs);

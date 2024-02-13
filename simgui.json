@@ -20,14 +20,47 @@
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/CANcoder (v6) [10]": "Gyro",
+      "/LiveWindow/Ungrouped/CANcoder (v6) [11]": "Gyro",
+      "/LiveWindow/Ungrouped/CANcoder (v6) [12]": "Gyro",
+      "/LiveWindow/Ungrouped/CANcoder (v6) [9]": "Gyro",
+      "/LiveWindow/Ungrouped/Pigeon 2 (v6) [13]": "Gyro",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [1]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [2]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [3]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [4]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [5]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [6]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [7]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [8]": "Motor Controller",
+      "/LiveWindow/Ungrouped/class frc2::SubsystemBase": "Subsystem",
+      "/SmartDashboard/Auto Routines": "String Chooser",
+      "/SmartDashboard/Field": "Field2d"
     }
   },
   "NetworkTables": {
+    "LiveWindow": {
+      "Ungrouped": {
+        "Talon FX (v6) [1]": {
+          "open": true
+        }
+      }
+    },
+    "PathPlanner": {
+      "open": true
+    },
     "Shuffleboard": {
       "open": true
     },
     "SmartDashboard": {
+      "double[]##v_/SmartDashboard/AdvantageScope Desired States": {
+        "open": true
+      },
+      "double[]##v_/SmartDashboard/AdvantageScope Measured States": {
+        "open": true
+      },
       "open": true
     },
     "combined": true,

@@ -27,6 +27,7 @@ class Drive
                 bool isSpecialHeadingMode, bool isFieldRelative = true, bool shouldAlignSpeaker = false);
   units::angular_velocity::radians_per_second_t GetDesiredRotationalVelocity();
   units::angular_velocity::radians_per_second_t GetRotVelSpeakerAlign();
+  void UpdatePreferences();
 
   void Initialize() override;
 
@@ -49,4 +50,7 @@ class Drive
   double m_goalAngle;
   double m_lastAngle;
   std::optional<frc::DriverStation::Alliance> m_allianceSide;
+  std::string m_rotationPKey;
+  std::string m_rotationIKey;
+  std::string m_rotationDKey;
 };
