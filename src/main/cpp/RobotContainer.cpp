@@ -201,8 +201,8 @@ void RobotContainer::RegisterAutoCommands() {
 
   pathplanner::NamedCommands::registerCommand("ImmediateShoot", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
-    RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0),
     SetShooterRotation(m_shooter, ShooterConstants::kImmediateShootAngle),
+    RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0),
     RunShooter(m_shooter, ShooterConstants::kShootPower)
   ).ToPtr());
 
@@ -252,15 +252,18 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Score 1 - Mid", new pathplanner::PathPlannerAuto("Score 1 - Mid"));
   m_chooser.AddOption("Score 1 - Bottom", new pathplanner::PathPlannerAuto("Score 1 - Bottom"));
   m_chooser.AddOption("Score 2 - Top", new pathplanner::PathPlannerAuto("Score 2 - Top"));
+  m_chooser.AddOption("Score 2 - Skip First Top", new pathplanner::PathPlannerAuto("Score 2 - Skip First Top"));
   m_chooser.AddOption("Score 2 - Mid", new pathplanner::PathPlannerAuto("Score 2 - Mid"));
   m_chooser.AddOption("Score 2 - Mid - Amp", new pathplanner::PathPlannerAuto("Score 2 - Mid - Amp"));
   m_chooser.AddOption("Score 2 - Bottom", new pathplanner::PathPlannerAuto("Score 2 - Bottom"));
   m_chooser.AddOption("Score 3 - Top 1", new pathplanner::PathPlannerAuto("Score 3 - Top 1"));
   m_chooser.AddOption("Score 3 - Top - Amp", new pathplanner::PathPlannerAuto("Score 3 - Top - Amp"));
   m_chooser.AddOption("Score 3 - Top 1 - Amp x2", new pathplanner::PathPlannerAuto("Score 3 - Top 1 - Amp x2"));
+  m_chooser.AddOption("Score 3 - Skip First Top", new pathplanner::PathPlannerAuto("Score 3 - Skip First Top"));
   m_chooser.AddOption("Score 3 - Mid 2", new pathplanner::PathPlannerAuto("Score 3 - Mid 2"));
   m_chooser.AddOption("Score 3 - Mid 3 - Under", new pathplanner::PathPlannerAuto("Score 3 - Mid 3 - Under"));
   m_chooser.AddOption("Score 3 - Bottom 5", new pathplanner::PathPlannerAuto("Score 3 - Bottom 5"));
+  m_chooser.AddOption("Sweep Auto", new pathplanner::PathPlannerAuto("Sweep Auto"));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

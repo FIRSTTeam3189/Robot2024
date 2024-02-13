@@ -55,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.95,
       "command": {
         "type": "parallel",
         "data": {
@@ -65,7 +65,7 @@
     },
     {
       "name": "Load",
-      "waypointRelativePos": 1.25,
+      "waypointRelativePos": 1.1,
       "command": {
         "type": "parallel",
         "data": {
@@ -75,7 +75,7 @@
     },
     {
       "name": "AlignShooter",
-      "waypointRelativePos": 1.35,
+      "waypointRelativePos": 1.2,
       "command": {
         "type": "parallel",
         "data": {
