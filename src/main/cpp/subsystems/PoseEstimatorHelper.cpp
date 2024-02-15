@@ -29,6 +29,10 @@ void PoseEstimatorHelper::ResetPose(frc::Rotation2d rotation, wpi::array<frc::Sw
 void PoseEstimatorHelper::AddVisionMeasurement(frc::Pose2d pose, units::second_t timestamp, wpi::array<double, 3> visionMeasurementStdDevs) {
     m_poseEstimator->SetVisionMeasurementStdDevs(visionMeasurementStdDevs);
 
+    frc::SmartDashboard::PutNumber("Vision robot x", pose.X().value());
+    frc::SmartDashboard::PutNumber("Vision robot y", pose.Y().value());
+    frc::SmartDashboard::PutNumber("Vision robot angle", pose.Rotation().Degrees().value());
+    
     // Don't add vision measurement if distance to current one is >1m
     // frc::Pose2d currentPose = GetEstimatedPose();
     // units::meter_t distanceFromCurrentPose = units::meter_t{sqrt(pow(pose.X().value() - currentPose.X().value(), 2.0) 

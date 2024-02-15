@@ -82,7 +82,6 @@ class SwerveDrive : public frc2::SubsystemBase {
   frc2::sysid::SysIdRoutine m_angleSysIdRoutine;
   bool m_slowMode = false;
 
-  int m_moduleNumber;
   std::string m_drivePKey;
   std::string m_driveIKey;
   std::string m_driveDKey;

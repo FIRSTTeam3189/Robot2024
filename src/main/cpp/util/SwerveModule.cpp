@@ -11,6 +11,7 @@ m_angleMotor(angleMotorID, "Swerve"),
 m_CANcoder(CANcoderID, "Swerve"),
 m_PIDValues{SwerveModuleConstants::kPDrive, SwerveModuleConstants::kIDrive, SwerveModuleConstants::kDDrive,
             SwerveModuleConstants::kPAngle, SwerveModuleConstants::kIAngle, SwerveModuleConstants::kDAngle},
+m_moduleNumber(moduleNumber),
 m_CANcoderOffset(CANcoderOffset),
 m_signals{m_drivePosition, m_anglePosition, m_driveVelocity, m_angleVelocity}
  {
@@ -216,9 +217,6 @@ void SwerveModule::UpdatePosition() {
     
     frc::Rotation2d angle{units::degree_t{angleRotations}};
     m_position.angle = angle;
-
-    frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " distance", distance);
-    frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " angle", angle.Degrees().value());
 }
 
 frc::SwerveModulePosition SwerveModule::GetPosition(bool refresh) {
@@ -253,8 +251,6 @@ units::meters_per_second_t SwerveModule::GetDriveSpeed() {
 void SwerveModule::ResetDriveEncoder() {
     m_driveMotor.SetPosition(units::turn_t{0.0});
 }
-
-
 
 std::pair<ctre::phoenix6::hardware::TalonFX*, ctre::phoenix6::hardware::TalonFX*> SwerveModule::GetMotorsForMusic() {
     return std::pair{&m_driveMotor, &m_angleMotor};
