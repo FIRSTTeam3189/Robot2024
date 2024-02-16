@@ -153,9 +153,13 @@ bool Shooter::NoteDetected() {
 }
 
 frc2::CommandPtr Shooter::SysIdQuasistatic(frc2::sysid::Direction direction) {
+    for (int i = 0; i < 10; i++) 
+        std::cout << "Shooter Quasistatic\n";
   return m_sysIdRoutine.Quasistatic(direction);
 }
 
 frc2::CommandPtr Shooter::SysIdDynamic(frc2::sysid::Direction direction) {
+    for (int i = 0; i < 10; i++) 
+        std::cout << "Shooter Quasistatic\n";
   return m_sysIdRoutine.Dynamic(direction);
 }

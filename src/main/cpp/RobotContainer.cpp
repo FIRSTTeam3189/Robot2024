@@ -262,6 +262,7 @@ void RobotContainer::RegisterAutoCommands() {
 
 void RobotContainer::CreateAutoPaths() {
   m_chooser.SetDefaultOption("N/A", nullptr);
+  m_chooser.AddOption("Do Nothing - Mid", new pathplanner::PathPlannerAuto("Do Nothing - Mid"));
   m_chooser.AddOption("Score 1 - Top", new pathplanner::PathPlannerAuto("Score 1 - Top"));
   m_chooser.AddOption("Score 1 - Mid", new pathplanner::PathPlannerAuto("Score 1 - Mid"));
   m_chooser.AddOption("Score 1 - Bottom", new pathplanner::PathPlannerAuto("Score 1 - Bottom"));
@@ -278,6 +279,9 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Score 3 - Mid 3 - Under", new pathplanner::PathPlannerAuto("Score 3 - Mid 3 - Under"));
   m_chooser.AddOption("Score 3 - Bottom 5", new pathplanner::PathPlannerAuto("Score 3 - Bottom 5"));
   m_chooser.AddOption("Sweep Auto", new pathplanner::PathPlannerAuto("Sweep Auto"));
+  m_chooser.AddOption("Test - Line", new pathplanner::PathPlannerAuto("Test - Line"));
+  m_chooser.AddOption("Test - Line Rotate", new pathplanner::PathPlannerAuto("Test - Line Rotate"));
+  m_chooser.AddOption("Test - S", new pathplanner::PathPlannerAuto("Test - S"));
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
 }
 
@@ -287,6 +291,9 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::ConfigureSysIDBindings() {
+  // System ID Bindings
+  m_test.Button(OperatorConstants::kButtonIDLeftTrigger).WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+
   (m_test.Button(OperatorConstants::kButtonIDLeftTrigger) && m_test.Button(OperatorConstants::kButtonIDX))
     .WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
   (m_test.Button(OperatorConstants::kButtonIDLeftTrigger) && m_test.Button(OperatorConstants::kButtonIDSquare))
@@ -305,7 +312,6 @@ void RobotContainer::ConfigureSysIDBindings() {
   (m_test.Button(OperatorConstants::kButtonIDRightTrigger) && m_test.Button(OperatorConstants::kButtonIDCircle))
     .WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  // System ID Bindings
   (m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDX))
     .WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kForward));
   (m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDSquare))

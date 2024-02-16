@@ -54,7 +54,7 @@ Intake::Intake() :
 // This method will be called once per scheduler run
 void Intake::Periodic() {
     frc::SmartDashboard::PutNumber("Intake PID target", m_target.value());
-    frc::SmartDashboard::PutNumber("Intake position", m_rotationEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Intake rotation", m_rotationEncoder.GetPosition());
     UpdateUltrasonic();
     if (frc::Preferences::GetBoolean("Tuning Mode?", false))
         UpdatePreferences();
@@ -114,9 +114,13 @@ bool Intake::NoteDetected() {
 }
 
 frc2::CommandPtr Intake::SysIdQuasistatic(frc2::sysid::Direction direction) {
-  return m_sysIdRoutine.Quasistatic(direction);
+    for (int i = 0; i < 10; i++) 
+        std::cout << "Intake Quasistatic\n";
+    return m_sysIdRoutine.Quasistatic(direction);
 }
 
 frc2::CommandPtr Intake::SysIdDynamic(frc2::sysid::Direction direction) {
-  return m_sysIdRoutine.Dynamic(direction);
+    for (int i = 0; i < 10; i++) 
+        std::cout << "Intake Dynamic\n";
+    return m_sysIdRoutine.Dynamic(direction);
 }
