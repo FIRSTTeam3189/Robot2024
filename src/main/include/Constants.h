@@ -85,7 +85,7 @@ namespace SwerveModuleConstants {
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
     constexpr double kFrontLeftOffset {-0.171143};
-    constexpr double kFrontRightOffset {-0.390137};
+    constexpr double kFrontRightOffset {0.105469};
     constexpr double kBackLeftOffset {0.154785};
     constexpr double kBackRightOffset {0.425781};
 
@@ -172,7 +172,7 @@ namespace ShooterConstants {
     constexpr int kLoaderMotorID {14};
     constexpr int kExtensionMotorID {15};
     constexpr int kRotationMotorID {16};
-    constexpr double kPRotation {1.0};
+    constexpr double kPRotation {0.0};
     constexpr double kIRotation {0.0};
     constexpr double kDRotation {0.0};
     constexpr auto kSRotation {0.0_V};
@@ -184,7 +184,7 @@ namespace ShooterConstants {
     constexpr auto kMaxRotationVelocity {120.0_deg / 1.0_s};
     constexpr auto kMaxRotationAcceleration {90.0_deg / 1.0_s / 1.0_s};
 
-    constexpr double kPExtension {1.0};
+    constexpr double kPExtension {0.0};
     constexpr double kIExtension {0.0};
     constexpr double kDExtension {0.0};
 
@@ -205,11 +205,13 @@ namespace ShooterConstants {
     constexpr double kCloseTarget {60.0};
     constexpr double kMidTarget {30.0};
     constexpr double kFarTarget {20.0};
-    constexpr double kRotationOffset {0.0};
+    constexpr double kRotationOffset {23.5};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
     constexpr auto kRotationStopDistance {1.0_deg};
+
+    constexpr bool kRollerInverted {true};
 
     constexpr double kExtensionOffset {0.0};
     constexpr double kExtensionConversion {1.0};
@@ -234,7 +236,7 @@ namespace IntakeConstants{
     constexpr double kIntakePower {1.0};
     constexpr double kLoadPower {0.5};
     
-    constexpr double kPRotation {0.5};
+    constexpr double kPRotation {0.0};
     constexpr double kIRotation {0};
     constexpr double kDRotation {0};
     constexpr auto kSRotation {0.0_V};
@@ -246,10 +248,11 @@ namespace IntakeConstants{
     constexpr auto kMaxRotationVelocity {120.0_deg / 1.0_s};
     constexpr auto kMaxRotationAcceleration {90.0_deg / 1.0_s / 1.0_s};
 
+    constexpr bool kRollerInverted {true};
     constexpr auto kRetractTarget {90.0_deg};
     constexpr auto kAmpTarget {60.0_deg};
     constexpr auto kExtendTarget {-45.0_deg};
-    constexpr double kRotationOffset {0};
+    constexpr double kRotationOffset {100.0};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};

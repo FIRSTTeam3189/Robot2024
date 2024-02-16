@@ -13,7 +13,7 @@ m_shooter(shooter), m_power(power) {
 // Called when the command is initially scheduled.
 void RunShooter::Initialize() {
   m_shooter->SetRollerPower(m_power);
-  m_shooter->SetLoaderPower(m_power);
+  // m_shooter->SetLoaderPower(m_power);
 }
 
 // Called repeatedly when this Command is scheduled to run

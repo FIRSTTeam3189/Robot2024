@@ -110,6 +110,7 @@ double Shooter::GetExtension() {
 
 void Shooter::ConfigRollerMotor() {
     m_rollerMotor.RestoreFactoryDefaults();
+    m_rollerMotor.SetInverted(ShooterConstants::kRollerInverted);
 }
 
 void Shooter::ConfigExtensionMotor() {

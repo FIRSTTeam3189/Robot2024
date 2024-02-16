@@ -24,7 +24,7 @@ RobotContainer::RobotContainer() {
   },{m_intake}).ToPtr());
 
   m_shooter->SetDefaultCommand(frc2::RunCommand([this]{
-    m_shooter->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
+    m_shooter->SetRotationPower(-m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
     // May need to change joystick axis
   }, {m_shooter}).ToPtr());
   
@@ -123,6 +123,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   shootButton.OnTrue(RunShooter(m_shooter, ShooterConstants::kShootPower).ToPtr());
   shootButton.OnFalse(frc2::InstantCommand([this]{
     m_shooter->SetRollerPower(0.0);
+    m_shooter->SetLoaderPower(0.0);
   },{m_shooter}).ToPtr());
 
     frc2::Trigger loadClimbPieceButton{m_ted.Button(OperatorConstants::kButtonIDMenu)};

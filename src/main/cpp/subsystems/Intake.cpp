@@ -36,7 +36,9 @@ Intake::Intake() :
     m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
     m_rotationEncoder.SetInverted(IntakeConstants::kRotationInverted);
     m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
+    m_rotationEncoder.SetVelocityConversionFactor(IntakeConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(IntakeConstants::kRotationOffset);
+    m_rollerMotor.SetInverted(IntakeConstants::kRollerInverted);
 
     m_rotationPKey = "Intake Rotation P";
     m_rotationIKey = "Intake Rotation I";

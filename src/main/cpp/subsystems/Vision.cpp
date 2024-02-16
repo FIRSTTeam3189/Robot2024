@@ -68,7 +68,7 @@ VisionData Vision::GetVisionData() {
 }
 
 void Vision::UpdateData() {
-    std::cout << "Readable bytes: " << m_serialCam.GetBytesReceived() << "\n";
+    // std::cout << "Readable bytes: " << m_serialCam.GetBytesReceived() << "\n";
     frc::SmartDashboard::PutNumber("Readable bytes", m_serialCam.GetBytesReceived());
     if (m_serialCam.GetBytesReceived() >= 65) {
         char* buffer = 0;

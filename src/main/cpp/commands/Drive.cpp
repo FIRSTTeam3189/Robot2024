@@ -17,7 +17,7 @@ m_allianceSide(frc::DriverStation::GetAlliance()) {
   AddRequirements(swerveDrive);
   // 1 degree position tolerance
   m_rotationPIDController.SetTolerance(1.0);
-  m_rotationPIDController.EnableContinuousInput(0, 360);
+  m_rotationPIDController.EnableContinuousInput(-180, 180);
 
   m_rotationPKey = "Robot Rotation P";
   m_rotationIKey = "Robot Rotation I";
@@ -81,11 +81,11 @@ void Drive::Execute() {
 
   double joystickX, joystickY;
   if (m_allianceSide == frc::DriverStation::Alliance::kRed) {
-    joystickX = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY);
-    joystickY = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
+    joystickX = m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickY);
+    joystickY = m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickX);
   } else {
-    joystickX = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY);
-    joystickY = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
+    joystickX = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickY);
+    joystickY = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickX);
   }
 
   units::meters_per_second_t xSpeed, ySpeed;
