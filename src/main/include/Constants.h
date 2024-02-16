@@ -300,6 +300,9 @@ namespace VisionConstants {
     constexpr units::radian_t kCameraYawOffset {0.0_rad};
     constexpr bool kShouldUseVision {true};
 
+    constexpr int kBaudRate {115200};
+    constexpr int kBufferSize {1024};
+    
     // Tag poses in order from 1 to 16
     const std::vector<frc::Pose3d> kTagPoses {
         frc::Pose3d{15.079_m, 0.246_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120.0_deg}},
