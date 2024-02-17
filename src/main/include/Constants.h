@@ -254,9 +254,10 @@ namespace IntakeConstants{
     constexpr auto kRetractTarget {120.0_deg};
     constexpr auto kAmpTarget {60.0_deg};
     constexpr auto kExtendTarget {10.0_deg};
-    constexpr double kRotationOffset {100.0};
+    constexpr double kRotationOffset {105.0};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
+    constexpr bool kRotationMotorInverted {true};
     constexpr unsigned int kRotationCurrentLimit {30};
     constexpr auto kRotationStopDistance {5.0_deg};
     constexpr int kUltrasonicPort {1};

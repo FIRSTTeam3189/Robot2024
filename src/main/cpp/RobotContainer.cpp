@@ -19,9 +19,9 @@ RobotContainer::RobotContainer() {
   m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
     frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   
-  m_intake->SetDefaultCommand(frc2::RunCommand([this] {
-    m_intake->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY));
-  },{m_intake}).ToPtr());
+  // m_intake->SetDefaultCommand(frc2::RunCommand([this] {
+  //   m_intake->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY));
+  // },{m_intake}).ToPtr());
 
   m_shooter->SetDefaultCommand(frc2::RunCommand([this]{
     m_shooter->SetRotationPower(-m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
@@ -87,7 +87,7 @@ void RobotContainer::ConfigureDriverBindings() {
 
   frc2::Trigger resetSpeakerPoseButton{m_bill.Button(OperatorConstants::kButtonIDMenu)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
-    m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 0.0_m, frc::Rotation2d{180.0_deg}}, false);
+    m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{180.0_deg}}, false);
   },{m_swerveDrive}).ToPtr());
 
   frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
