@@ -29,6 +29,8 @@
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <iostream>
 #include <vector>
+#include <array>
+#include <string>
 
 #define Pi 3.14159265358979323846
 
@@ -335,4 +337,30 @@ namespace ClimberConstants{
     constexpr double kExtendServoAngle {0.0};
     constexpr double kRetractMotorSpeed {-0.5};
     constexpr double kRetractServoAngle {0.0};
+}
+
+namespace AutoConstants {
+    using namespace std::literals;
+    constexpr std::array kAutonomousPaths {
+        "Do Nothing - Mid"sv,
+        "Score 1 - Top"sv,
+        "Score 1 - Mid"sv,
+        "Score 1 - Bottom"sv,
+        "Score 2 - Top"sv,
+        "Score 2 - Skip First Top"sv,
+        "Score 2 - Mid"sv,
+        "Score 2 - Mid - Amp"sv,
+        "Score 2 - Bottom"sv,
+        "Score 3 - Top 1"sv,
+        "Score 3 - Top - Amp"sv,
+        "Score 3 - Top 1 - Amp x2"sv,
+        "Score 3 - Skip First Top"sv,
+        "Score 3 - Mid 2"sv,
+        "Score 3 - Mid 3 - Under"sv,
+        "Score 3 - Bottom 5"sv,
+        "Sweep Auto"sv,
+        "Test - Line"sv,
+        "Test - Line Rotate"sv,
+        "Test - S"sv
+    };
 }

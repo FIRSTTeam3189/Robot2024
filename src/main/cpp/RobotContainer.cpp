@@ -263,26 +263,9 @@ void RobotContainer::RegisterAutoCommands() {
 
 void RobotContainer::CreateAutoPaths() {
   m_chooser.SetDefaultOption("N/A", nullptr);
-  m_chooser.AddOption("Do Nothing - Mid", new pathplanner::PathPlannerAuto("Do Nothing - Mid"));
-  m_chooser.AddOption("Score 1 - Top", new pathplanner::PathPlannerAuto("Score 1 - Top"));
-  m_chooser.AddOption("Score 1 - Mid", new pathplanner::PathPlannerAuto("Score 1 - Mid"));
-  m_chooser.AddOption("Score 1 - Bottom", new pathplanner::PathPlannerAuto("Score 1 - Bottom"));
-  m_chooser.AddOption("Score 2 - Top", new pathplanner::PathPlannerAuto("Score 2 - Top"));
-  m_chooser.AddOption("Score 2 - Skip First Top", new pathplanner::PathPlannerAuto("Score 2 - Skip First Top"));
-  m_chooser.AddOption("Score 2 - Mid", new pathplanner::PathPlannerAuto("Score 2 - Mid"));
-  m_chooser.AddOption("Score 2 - Mid - Amp", new pathplanner::PathPlannerAuto("Score 2 - Mid - Amp"));
-  m_chooser.AddOption("Score 2 - Bottom", new pathplanner::PathPlannerAuto("Score 2 - Bottom"));
-  m_chooser.AddOption("Score 3 - Top 1", new pathplanner::PathPlannerAuto("Score 3 - Top 1"));
-  m_chooser.AddOption("Score 3 - Top - Amp", new pathplanner::PathPlannerAuto("Score 3 - Top - Amp"));
-  m_chooser.AddOption("Score 3 - Top 1 - Amp x2", new pathplanner::PathPlannerAuto("Score 3 - Top 1 - Amp x2"));
-  m_chooser.AddOption("Score 3 - Skip First Top", new pathplanner::PathPlannerAuto("Score 3 - Skip First Top"));
-  m_chooser.AddOption("Score 3 - Mid 2", new pathplanner::PathPlannerAuto("Score 3 - Mid 2"));
-  m_chooser.AddOption("Score 3 - Mid 3 - Under", new pathplanner::PathPlannerAuto("Score 3 - Mid 3 - Under"));
-  m_chooser.AddOption("Score 3 - Bottom 5", new pathplanner::PathPlannerAuto("Score 3 - Bottom 5"));
-  m_chooser.AddOption("Sweep Auto", new pathplanner::PathPlannerAuto("Sweep Auto"));
-  m_chooser.AddOption("Test - Line", new pathplanner::PathPlannerAuto("Test - Line"));
-  m_chooser.AddOption("Test - Line Rotate", new pathplanner::PathPlannerAuto("Test - Line Rotate"));
-  m_chooser.AddOption("Test - S", new pathplanner::PathPlannerAuto("Test - S"));
+  for (auto autoPath : AutoConstants::kAutonomousPaths) {
+    m_chooser.AddOption(autoPath, new pathplanner::PathPlannerAuto(std::string{autoPath}));
+  }
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
 }
 
