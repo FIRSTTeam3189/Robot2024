@@ -61,7 +61,7 @@ namespace SwerveDriveConstants {
     constexpr auto ka {3.409 * 1_V * 1_s * 1_s / 1_m};
 
     // These are for robot rotation, not wheel rotation
-    constexpr double kPRot {0.005};
+    constexpr double kPRot {0.001};
     constexpr double kIRot {0.0};
     constexpr double kDRot {0.0};
 
@@ -116,7 +116,7 @@ namespace SwerveModuleConstants {
     constexpr double kVDrive {0.0};
     constexpr double kSDrive {0.0};
 
-    constexpr double kPAngle {5.0};
+    constexpr double kPAngle {10.0};
     constexpr double kIAngle {0.0};
     constexpr double kDAngle {0.0};
     constexpr double kVAngle {0.0};
@@ -194,18 +194,18 @@ namespace ShooterConstants {
     constexpr auto kAxleToGroundDistance {0.2185_m};
     constexpr auto kSpeakerHeightTarget {2.0574_m};
     // Intake load
-    constexpr auto kLoadAngle {0.0_deg};
+    constexpr auto kLoadAngle {10.0_deg};
     constexpr double kLoadPower {0.5};
     // Direct shooter load
     constexpr auto kDirectLoadAngle {30.0_deg};
     constexpr double kDirectLoadPower {-0.5};
     constexpr auto kImmediateShootAngle {25.0_deg};
 
-    constexpr double kRetractTarget {0.0};
+    constexpr double kRetractTarget {60.0};
     constexpr double kCloseTarget {60.0};
     constexpr double kMidTarget {30.0};
     constexpr double kFarTarget {20.0};
-    constexpr double kRotationOffset {23.5};
+    constexpr double kRotationOffset {46.67};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
@@ -236,22 +236,22 @@ namespace IntakeConstants{
     constexpr double kIntakePower {1.0};
     constexpr double kLoadPower {0.5};
     
-    constexpr double kPRotation {0.0};
+    constexpr double kPRotation {0.87709};
     constexpr double kIRotation {0};
-    constexpr double kDRotation {0};
-    constexpr auto kSRotation {0.0_V};
-    constexpr auto kGRotation {0.0_V};
-    constexpr auto kVRotation {0.0_V * 0.0_s / 1.0_rad};
-    constexpr auto kARotation {0.0_V * 0.0_s * 0.0_s / 1.0_rad};
+    constexpr double kDRotation {0.033729};
+    constexpr auto kSRotation {0.84149_V};
+    constexpr auto kGRotation {0.52939_V};
+    constexpr auto kVRotation {0.015044_V * 1.0_s / 1.0_rad};
+    constexpr auto kARotation {0.0006516_V * 1.0_s * 1.0_s / 1.0_rad};
 
     // In degrees
     constexpr auto kMaxRotationVelocity {120.0_deg / 1.0_s};
     constexpr auto kMaxRotationAcceleration {90.0_deg / 1.0_s / 1.0_s};
 
     constexpr bool kRollerInverted {true};
-    constexpr auto kRetractTarget {90.0_deg};
+    constexpr auto kRetractTarget {120.0_deg};
     constexpr auto kAmpTarget {60.0_deg};
-    constexpr auto kExtendTarget {-45.0_deg};
+    constexpr auto kExtendTarget {10.0_deg};
     constexpr double kRotationOffset {100.0};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
