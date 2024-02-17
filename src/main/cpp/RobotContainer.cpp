@@ -238,6 +238,8 @@ void RobotContainer::RegisterAutoCommands() {
 
   pathplanner::NamedCommands::registerCommand("AlignToAmp", SwerveAutoAlign(m_swerveDrive, false, 90_deg).ToPtr());
 
+
+
   pathplanner::NamedCommands::registerCommand("ScoreAmp", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget),
     frc2::ParallelDeadlineGroup(

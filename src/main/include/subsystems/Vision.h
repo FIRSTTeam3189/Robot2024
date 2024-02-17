@@ -30,6 +30,7 @@ class Vision : public frc2::SubsystemBase {
   VisionData GetVisionData();
   frc::Pose3d TagToCamera();
   frc::Pose3d CameraToRobot(frc::Pose3d cameraPose);
+  void UpdatePosition();
   void UpdateData();
 
   /**
