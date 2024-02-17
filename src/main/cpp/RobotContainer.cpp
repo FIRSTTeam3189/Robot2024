@@ -55,13 +55,13 @@ void RobotContainer::ConfigureDriverBindings() {
   );
 
   frc2::Trigger intakeButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
-  intakeButton.OnTrue(RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0).ToPtr());
+  intakeButton.OnTrue(FullIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget).ToPtr());
   intakeButton.OnFalse(frc2::InstantCommand([this]{
     m_intake->SetRollerPower(0.0);
     m_intake->SetRotationPower(0.0);
   },{m_intake}).ToPtr());
 
-  // intakeButton.OnTrue(FullIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget).ToPtr());
+  // intakeButton.OnTrue(RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0).ToPtr());
 
   frc2::Trigger retractIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
   retractIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget).ToPtr());
@@ -75,9 +75,6 @@ void RobotContainer::ConfigureDriverBindings() {
       ),
       SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
     ).ToPtr());
-  
-  // frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDCircle)};
-  // ampScoreIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget).ToPtr());
 
   frc2::Trigger extendIntakeButton{m_bill.Button(OperatorConstants::kButtonIDTriangle)};
   extendIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget).ToPtr());
@@ -90,32 +87,32 @@ void RobotContainer::ConfigureDriverBindings() {
 
   frc2::Trigger resetSpeakerPoseButton{m_bill.Button(OperatorConstants::kButtonIDMenu)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
-    m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 0.0_m, frc::Rotation2d{180.0_deg}}, true);
+    m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 0.0_m, frc::Rotation2d{180.0_deg}}, false);
   },{m_swerveDrive}).ToPtr());
 
   frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
   alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, false, true, true).ToPtr());
   
-  frc2::Trigger toggleSlowModeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
-  toggleSlowModeButton.OnTrue(frc2::InstantCommand([this]{ m_swerveDrive->ToggleSlowMode(); },{m_swerveDrive}).ToPtr());
+  // frc2::Trigger toggleSlowModeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
+  // toggleSlowModeButton.OnTrue(frc2::InstantCommand([this]{ m_swerveDrive->ToggleSlowMode(); },{m_swerveDrive}).ToPtr());
 
-  frc2::Trigger extendClimbButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  extendClimbButton.OnTrue(frc2::InstantCommand([this]{ 
-    m_climber->SetPower(ClimberConstants::kExtendMotorSpeed);
-    m_climber->SetServoRotation(ClimberConstants::kExtendServoAngle);
-  },{m_climber}).ToPtr());
-  extendClimbButton.OnFalse(frc2::InstantCommand([this]{
-    m_climber->SetPower(0.0);
-    m_climber->SetServoRotation(ClimberConstants::kRetractServoAngle);
-  },{m_climber}).ToPtr());
+  // frc2::Trigger extendClimbButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // extendClimbButton.OnTrue(frc2::InstantCommand([this]{ 
+  //   m_climber->SetPower(ClimberConstants::kExtendMotorSpeed);
+  //   m_climber->SetServoRotation(ClimberConstants::kExtendServoAngle);
+  // },{m_climber}).ToPtr());
+  // extendClimbButton.OnFalse(frc2::InstantCommand([this]{
+  //   m_climber->SetPower(0.0);
+  //   m_climber->SetServoRotation(ClimberConstants::kRetractServoAngle);
+  // },{m_climber}).ToPtr());
 
-  frc2::Trigger retractClimbButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
-  retractClimbButton.OnTrue(frc2::InstantCommand([this]{
-    m_climber->SetPower(ClimberConstants::kRetractMotorSpeed);
-  },{m_climber}).ToPtr());
-  retractClimbButton.OnFalse(frc2::InstantCommand([this]{
-    m_climber->SetPower(0.0);
-  },{m_climber}).ToPtr());
+  // frc2::Trigger retractClimbButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
+  // retractClimbButton.OnTrue(frc2::InstantCommand([this]{
+  //   m_climber->SetPower(ClimberConstants::kRetractMotorSpeed);
+  // },{m_climber}).ToPtr());
+  // retractClimbButton.OnFalse(frc2::InstantCommand([this]{
+  //   m_climber->SetPower(0.0);
+  // },{m_climber}).ToPtr());
 }
 
 void RobotContainer::ConfigureCoDriverBindings() {
@@ -127,17 +124,17 @@ void RobotContainer::ConfigureCoDriverBindings() {
     m_shooter->SetLoaderPower(0.0);
   },{m_shooter}).ToPtr());
 
-    frc2::Trigger loadClimbPieceButton{m_ted.Button(OperatorConstants::kButtonIDMenu)};
-    loadClimbPieceButton.OnTrue(frc2::SequentialCommandGroup(
-      TransferLoader(m_shooter, ShooterConstants::kLoadPower, 0.0)
-    ).ToPtr());
+  // frc2::Trigger loadClimbPieceButton{m_ted.Button(OperatorConstants::kButtonIDMenu)};
+  // loadClimbPieceButton.OnTrue(frc2::SequentialCommandGroup(
+  //   TransferLoader(m_shooter, ShooterConstants::kLoadPower, 0.0)
+  // ).ToPtr());
 
-  frc2::Trigger extendShooterButton{m_ted.Button(OperatorConstants::kButtonIDMicrophone)};
-  extendShooterButton.OnTrue(frc2::SequentialCommandGroup(
-      SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget),
-      SetShooterExtension(m_shooter, ShooterConstants::kTrapExtension),
-      SetShooterRotation(m_shooter, ShooterConstants::kTrapExtensionAngle)
-    ).ToPtr());
+  // frc2::Trigger extendShooterButton{m_ted.Button(OperatorConstants::kButtonIDMicrophone)};
+  // extendShooterButton.OnTrue(frc2::SequentialCommandGroup(
+  //     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget),
+  //     SetShooterExtension(m_shooter, ShooterConstants::kTrapExtension),
+  //     SetShooterRotation(m_shooter, ShooterConstants::kTrapExtensionAngle)
+  //   ).ToPtr());
 
   frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
   shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
@@ -160,7 +157,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     SetShooterRotation(m_shooter, ShooterConstants::kLoadAngle),
     frc2::ParallelDeadlineGroup(
       RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0),
-      RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
+      RunIntake(m_intake, IntakeConstants::kIntakePower / 2.0, 0.0)
     ),
     SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)

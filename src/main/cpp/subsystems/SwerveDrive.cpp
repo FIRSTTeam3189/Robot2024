@@ -251,8 +251,11 @@ void SwerveDrive::SetPose(frc::Pose2d pose, bool justRotation) {
         auto currentPose = GetEstimatedPose();
         m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, frc::Pose2d{currentPose.X(), currentPose.Y(), pose.Rotation()});
     }
-    else
+    else {
         m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, pose);
+    }
+
+    m_pigeon.SetYaw(pose.Rotation().Degrees());
 }
 
 void SwerveDrive::ResetGyroscope() {
