@@ -31,6 +31,7 @@ RobotContainer::RobotContainer() {
   // Configure the button bindings
   ConfigureDriverBindings();
   ConfigureCoDriverBindings();
+  ConfigureSysIDBindings();
   CreateAutoPaths();
 }
 
@@ -292,55 +293,55 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
 void RobotContainer::ConfigureSysIDBindings() {
   // System ID Bindings
-  m_test.Button(OperatorConstants::kButtonIDLeftTrigger).WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  // m_test.Button(OperatorConstants::kButtonIDLeftTrigger).WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger) && m_test.Button(OperatorConstants::kButtonIDX)};
+  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
   ObamaButton.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger) && m_test.Button(OperatorConstants::kButtonIDSquare)};
-  ObamaButton.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  frc2::Trigger Obama1Button{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
+  Obama1Button.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  ObamaButton.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
+  frc2::Trigger Obama2Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper)};
+  Obama2Button.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger) && m_test.Button(OperatorConstants::kButtonIDCircle)};
-  ObamaButton.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
+  frc2::Trigger Obama3Button{m_test.Button(OperatorConstants::kButtonIDRightBumper)};
+  Obama3Button.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDRightTrigger) && m_test.Button(OperatorConstants::kButtonIDX)};
-  ObamaButton.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  frc2::Trigger Obama4Button{m_test.Button(OperatorConstants::kButtonIDX)};
+  Obama4Button.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDRightTrigger) && m_test.Button(OperatorConstants::kButtonIDSquare)};
-  ObamaButton.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  frc2::Trigger Obama5Button{m_test.Button(OperatorConstants::kButtonIDSquare)};
+  Obama5Button.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDRightTrigger) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  ObamaButton.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kForward));
+  frc2::Trigger Obama6Button{m_test.Button(OperatorConstants::kButtonIDCircle)};
+  Obama6Button.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDRightTrigger) && m_test.Button(OperatorConstants::kButtonIDCircle)};
-  ObamaButton.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kReverse));
+  frc2::Trigger Obama7Button{m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  Obama7Button.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
-  ObamaButton.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kForward));
+  frc2::Trigger Obama8Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
+  Obama8Button.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
-  ObamaButton.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  frc2::Trigger Obama9Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
+  Obama9Button.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  ObamaButton.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kForward));
+  frc2::Trigger Obama10Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  Obama10Button.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDCircle)};
-  ObamaButton.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger Obama11Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && };
+  // Obama11Button.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
-  ObamaButton.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kForward));
+  frc2::Trigger Obama12Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
+  Obama12Button.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
-  ObamaButton.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  frc2::Trigger Obama13Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
+  Obama13Button.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  ObamaButton.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
+  frc2::Trigger Obama14Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  Obama14Button.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDCircle)};
-  ObamaButton.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
+  frc2::Trigger Obama15Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDCircle)};
+  Obama15Button.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
   
 }
 
