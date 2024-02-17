@@ -48,7 +48,7 @@ Intake::Intake() :
     frc::Preferences::InitDouble(m_rotationIKey, IntakeConstants::kIRotation);
     frc::Preferences::InitDouble(m_rotationDKey, IntakeConstants::kDRotation);
 
-    std::cout << "Intake constructing\n";
+    std::cout << "Intake constructed\n";
 }
 
 // This method will be called once per scheduler run
