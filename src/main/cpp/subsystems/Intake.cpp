@@ -12,6 +12,7 @@ Intake::Intake() :
  m_rotationPIDController(m_rotationMotor.GetPIDController()),
  m_ff(IntakeConstants::kSRotation, IntakeConstants::kGRotation, IntakeConstants::kVRotation, IntakeConstants::kARotation),
  m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
+ m_target(120.0_deg),
  m_ultrasonicSensor(IntakeConstants::kUltrasonicPort, IntakeConstants::kUltrasonicValueRange),
  m_noteDetected(false),
  m_sysIdRoutine(
@@ -40,9 +41,11 @@ Intake::Intake() :
     m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
     m_rotationEncoder.SetVelocityConversionFactor(IntakeConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(IntakeConstants::kRotationOffset);
+    m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
     m_rotationPIDController.SetP(IntakeConstants::kPRotation);
     m_rotationPIDController.SetI(IntakeConstants::kIRotation);
     m_rotationPIDController.SetD(IntakeConstants::kDRotation);
+    m_rotationPIDController.SetIMaxAccum(1.0);
 
     m_rollerMotor.SetInverted(IntakeConstants::kRollerInverted);
 
@@ -85,12 +88,23 @@ void Intake::SetRotation(units::degree_t target) {
     // else if (GetRotation() >= 110.0_deg && (PIDValue + ffValue).value() <= 0.0)
     //     m_rotationMotor.SetVoltage(0.0_V);
 
+    double ff = 0.0;
     if (GetRotation() < 15.0_deg && target < GetRotation())
         m_rotationMotor.SetVoltage(0.0_V);
-    else if (GetRotation() > 110.0_deg && target > GetRotation())
-        m_rotationMotor.SetVoltage(0.0_V);
-    else
-        m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition);
+    else if (GetRotation() > 110.0_deg && target > GetRotation()){
+        // m_rotationMotor.SetVoltage(0.0_V);
+    }
+    else {
+        if (target < GetRotation()) {
+            m_rotationPIDController.SetP(IntakeConstants::kPRotation / 1.25);
+            // ff = -IntakeConstants::kFeedforward / 2.0;
+        }
+        else {
+            m_rotationPIDController.SetP(IntakeConstants::kPRotation);
+            ff = IntakeConstants::kFeedforward;
+        }
+        m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 0, ff);
+    }
 
     // frc::SmartDashboard::PutNumber("Intake rotation volts", PIDValue.value() + ffValue.value());
 
@@ -106,7 +120,7 @@ void Intake::SetRollerPower(double power) {
 void Intake::SetRotationPower(double power) {
     if (GetRotation() <= 15.0_deg && power >= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
-    else if (GetRotation() >= 110.0_deg && power <= 0.0)
+    else if (GetRotation() >= 120.0_deg && power <= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
     else
         m_rotationMotor.Set(power);
@@ -132,7 +146,8 @@ void Intake::UpdateUltrasonic() {
 }
 
 bool Intake::NoteDetected() {
-    return m_noteDetected;
+    // return m_noteDetected;
+    return false;
 }
 
 frc2::CommandPtr Intake::SysIdQuasistatic(frc2::sysid::Direction direction) {

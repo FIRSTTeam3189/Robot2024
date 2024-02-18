@@ -80,7 +80,8 @@ m_angleSysIdRoutine(
         [this](){ return GetEstimatedPose(); }, // Robot pose supplier
         [this](frc::Pose2d pose){ SetPose(pose, false); }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        [this](frc::ChassisSpeeds speeds){ DriveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        // [this](frc::ChassisSpeeds speeds){ DriveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        [this](frc::ChassisSpeeds speeds){},
         AutoConstants::autoConfig,
         []() {
             // Boolean supplier that controls when the path will be mirrored for the red alliance

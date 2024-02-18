@@ -16,6 +16,7 @@
 #include <frc/RobotController.h>
 #include <rev/CANSparkMax.h>
 #include <rev/SparkAbsoluteEncoder.h> 
+#include <rev/SparkMaxPIDController.h>
 #include <rev/SparkRelativeEncoder.h> 
 #include "Constants.h"
 
@@ -52,7 +53,8 @@ class Shooter : public frc2::SubsystemBase {
    rev::CANSparkMax m_extensionMotor;
    rev::CANSparkMax m_rotationMotor;
    frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
-   frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
+   // frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
+   rev::SparkMaxPIDController m_rotationPIDController;
    frc::ArmFeedforward m_ff;
    rev::SparkMaxPIDController m_extensionPIDController;
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;

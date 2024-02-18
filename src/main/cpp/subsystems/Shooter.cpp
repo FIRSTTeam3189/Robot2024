@@ -10,7 +10,8 @@ m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBr
 m_extensionMotor(ShooterConstants::kExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_constraints(IntakeConstants::kMaxRotationVelocity, IntakeConstants::kMaxRotationAcceleration),
-m_rotationPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
+// m_rotationPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
+m_rotationPIDController(m_rotationMotor.GetPIDController()),
 m_ff(ShooterConstants::kSRotation, ShooterConstants::kGRotation, ShooterConstants::kVRotation, ShooterConstants::kARotation),
 m_extensionPIDController(m_extensionMotor.GetPIDController()),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
@@ -60,23 +61,41 @@ void Shooter::Periodic() {
 
 void Shooter::SetRotation(units::degree_t target) {
     // Calculates PID value in volts based on position and target
-    units::volt_t PIDValue = units::volt_t{m_rotationPIDController.Calculate(GetRotation(), target)};
+    // units::volt_t PIDValue = units::volt_t{m_rotationPIDController.Calculate(GetRotation(), target)};
 
-    // Calculates the change in velocity (acceleration) since last control loop
-    // Uses the acceleration value and desired velocity to calculate feedforward gains
-    // Feedforward gains are approximated based on the current state of the system and a known physics model
-    // Gains calculated with SysID                                   
-    auto acceleration = (m_rotationPIDController.GetSetpoint().velocity - m_lastSpeed) /
-      (frc::Timer::GetFPGATimestamp() - m_lastTime);
-    units::volt_t ffValue = m_ff.Calculate(units::radian_t{target}, units::radians_per_second_t{m_rotationPIDController.GetSetpoint().velocity},
-                                           units::radians_per_second_squared_t{acceleration});
+    // // Calculates the change in velocity (acceleration) since last control loop
+    // // Uses the acceleration value and desired velocity to calculate feedforward gains
+    // // Feedforward gains are approximated based on the current state of the system and a known physics model
+    // // Gains calculated with SysID                                   
+    // auto acceleration = (m_rotationPIDController.GetSetpoint().velocity - m_lastSpeed) /
+    //   (frc::Timer::GetFPGATimestamp() - m_lastTime);
+    // units::volt_t ffValue = m_ff.Calculate(units::radian_t{target}, units::radians_per_second_t{m_rotationPIDController.GetSetpoint().velocity},
+    //                                        units::radians_per_second_squared_t{acceleration});
 
-    // Set motor to combined voltage
-    m_rotationMotor.SetVoltage(PIDValue + ffValue);
-    frc::SmartDashboard::PutNumber("Shooter rotation volts", PIDValue.value() + ffValue.value());
+    // // Set motor to combined voltage
+    // m_rotationMotor.SetVoltage(PIDValue + ffValue);
+    // frc::SmartDashboard::PutNumber("Shooter rotation volts", PIDValue.value() + ffValue.value());
 
-    m_lastSpeed = m_rotationPIDController.GetSetpoint().velocity;
-    m_lastTime = frc::Timer::GetFPGATimestamp();
+    // m_lastSpeed = m_rotationPIDController.GetSetpoint().velocity;
+    // m_lastTime = frc::Timer::GetFPGATimestamp();
+
+    double ff = 0.0;
+     if (GetRotation() < 10.0_deg && target < GetRotation())
+        m_rotationMotor.SetVoltage(0.0_V);
+    else if (GetRotation() > 60.0_deg && target > GetRotation())
+        m_rotationMotor.SetVoltage(0.0_V);
+    else {
+        if (target < GetRotation()) {
+            m_rotationPIDController.SetP(ShooterConstants::kPRotation / 1.25);
+            // ff = ShooterConstants::kFeedforward / 2.0;
+        }
+        else {
+            m_rotationPIDController.SetP(ShooterConstants::kPRotation);
+            ff = ShooterConstants::kFeedforward;
+        }
+        m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 0, ff);
+    }
+
     m_target = target;
 }
 
@@ -86,6 +105,7 @@ void Shooter::SetExtension(double target) {
 
 void Shooter::SetRollerPower(double power) {
     m_rollerMotor.Set(power);
+    frc::SmartDashboard::PutNumber("Shooter power", m_rollerMotor.Get());
 }
 
 void Shooter::SetRotationPower(double power) {
@@ -131,6 +151,10 @@ void Shooter::ConfigRotationMotor() {
     m_rotationEncoder.SetPositionConversionFactor(ShooterConstants::kRotationConversion);
     m_rotationEncoder.SetVelocityConversionFactor(ShooterConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(ShooterConstants::kRotationOffset);
+    m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
+    m_rotationPIDController.SetP(ShooterConstants::kPRotation);
+    m_rotationPIDController.SetI(ShooterConstants::kIRotation);
+    m_rotationPIDController.SetD(ShooterConstants::kDRotation);
 }
 
 void Shooter::UpdatePreferences() {
@@ -149,7 +173,8 @@ void Shooter::UpdateUltrasonic() {
 }
 
 bool Shooter::NoteDetected() {
-    return m_noteDetected;
+    // return m_noteDetected;
+    return false;
 }
 
 frc2::CommandPtr Shooter::SysIdQuasistatic(frc2::sysid::Direction direction) {
