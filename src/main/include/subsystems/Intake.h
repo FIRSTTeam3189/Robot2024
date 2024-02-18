@@ -19,6 +19,8 @@
 #include <rev/CANSparkMax.h>
 #include "Constants.h"
 
+enum class IntakeState { None, Extended, Amp, Retracted };
+
 class Intake : public frc2::SubsystemBase {
  public:
   Intake();
@@ -36,7 +38,10 @@ class Intake : public frc2::SubsystemBase {
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
- 
+
+ protected:
+  void Config();
+  
  private:
   rev::CANSparkMax m_rotationMotor;
   rev::CANSparkMax m_rollerMotor;
@@ -51,6 +56,8 @@ class Intake : public frc2::SubsystemBase {
   units::degrees_per_second_t m_lastSpeed;
   units::second_t m_lastTime;
   frc2::sysid::SysIdRoutine m_sysIdRoutine;
+  IntakeState m_currentState;
+  IntakeState m_prevState;
   
   // String keys for PID preferences
   std::string m_rotationPKey;

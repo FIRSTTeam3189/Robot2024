@@ -30,7 +30,9 @@ Intake::Intake() :
               .velocity(units::turns_per_second_t{units::degrees_per_second_t{m_rotationEncoder.GetVelocity()}});
         },
         this)
-) 
+),
+m_currentState(IntakeState::Retracted),
+m_prevState(IntakeState::None)
 {
     m_rotationMotor.RestoreFactoryDefaults();
     m_rollerMotor.RestoreFactoryDefaults();
@@ -41,10 +43,7 @@ Intake::Intake() :
     m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
     m_rotationEncoder.SetVelocityConversionFactor(IntakeConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(IntakeConstants::kRotationOffset);
-    m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
-    m_rotationPIDController.SetP(IntakeConstants::kPRotation);
-    m_rotationPIDController.SetI(IntakeConstants::kIRotation);
-    m_rotationPIDController.SetD(IntakeConstants::kDRotation);
+
     m_rotationPIDController.SetIMaxAccum(1.0);
 
     m_rollerMotor.SetInverted(IntakeConstants::kRollerInverted);
@@ -58,6 +57,21 @@ Intake::Intake() :
     frc::Preferences::InitDouble(m_rotationDKey, IntakeConstants::kDRotation);
 
     std::cout << "Intake constructed\n";
+}
+
+void Intake::Config() {
+    m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
+    m_rotationPIDController.SetP(IntakeConstants::kRotationTargetPID[IntakeState::Extended][0]);
+    m_rotationPIDController.SetI(IntakeConstants::kRotationTargetPID[IntakeState::Extended][1]);
+    m_rotationPIDController.SetD(IntakeConstants::kRotationTargetPID[IntakeState::Extended][2]);
+
+    m_rotationPIDController.SetP(IntakeConstants::kRotationTargetPID[IntakeState::Amp][0], 1);
+    m_rotationPIDController.SetI(IntakeConstants::kRotationTargetPID[IntakeState::Amp][1], 1);
+    m_rotationPIDController.SetD(IntakeConstants::kRotationTargetPID[IntakeState::Amp][2], 1);
+
+    m_rotationPIDController.SetP(IntakeConstants::kRotationTargetPID[IntakeState::Retracted][0], 2);
+    m_rotationPIDController.SetI(IntakeConstants::kRotationTargetPID[IntakeState::Retracted][1], 2);
+    m_rotationPIDController.SetD(IntakeConstants::kRotationTargetPID[IntakeState::Retracted][2], 2);
 }
 
 // This method will be called once per scheduler run
@@ -88,6 +102,26 @@ void Intake::SetRotation(units::degree_t target) {
     // else if (GetRotation() >= 110.0_deg && (PIDValue + ffValue).value() <= 0.0)
     //     m_rotationMotor.SetVoltage(0.0_V);
 
+    switch (target) {
+    case IntakeConstants::kRetractTarget :
+        m_prevState = m_currentState;
+        m_currentState = IntakeState::Retracted;
+        break;
+
+    case IntakeConstants::kExtendTarget :
+        m_prevState = m_currentState;
+        m_currentState = IntakeState::Extended;
+        break;
+
+    case IntakeConstants::kAmpTarget :
+        m_prevState = m_currentState;
+        m_currentState = IntakeState::Amp;
+        break;
+    
+    default:
+        break;
+    }
+
     double ff = 0.0;
     if (GetRotation() < 15.0_deg && target < GetRotation())
         m_rotationMotor.SetVoltage(0.0_V);
@@ -103,7 +137,14 @@ void Intake::SetRotation(units::degree_t target) {
             m_rotationPIDController.SetP(IntakeConstants::kPRotation);
             ff = IntakeConstants::kFeedforward;
         }
-        m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 0, ff);
+
+        if (m_currentState == IntakeState::Extended) {
+            m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 0, ff);
+        } else if (m_currentState == IntakeState::Amp) {
+            m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 1, ff);
+        } else {
+            m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 2, ff);
+        }
     }
 
     // frc::SmartDashboard::PutNumber("Intake rotation volts", PIDValue.value() + ffValue.value());
