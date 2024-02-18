@@ -38,7 +38,10 @@ void SwerveModule::ConfigDriveMotor() {
     m_driveConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kDrivePeakCurrentDuration;
     m_driveConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kDriveEnableCurrentLimit;
 
-    m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
+    if (m_moduleNumber == 1)
+        m_driveConfigs.MotorOutput.Inverted = !SwerveModuleConstants::kDriveMotorInverted;
+    else 
+        m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
 
     m_driveConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kDriveNeutralMode;
         

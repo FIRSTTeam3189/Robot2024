@@ -20,6 +20,7 @@
 #include <frc2/command/WaitCommand.h>
 
 #include "Constants.h"
+#include "commands/AmpScore.h"
 #include "commands/FullIntake.h"
 #include "commands/Drive.h"
 #include "commands/RunIntake.h"

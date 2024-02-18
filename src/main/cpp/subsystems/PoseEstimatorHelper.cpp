@@ -13,7 +13,7 @@ void PoseEstimatorHelper::SetPoseEstimator(frc::SwerveDrivePoseEstimator<4> *pos
 } 
 
 void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePosition, 4U> modulePositions, frc::Rotation2d rotation) {
-    m_poseEstimator->Update(rotation, modulePositions);
+    m_poseEstimator->Update(-rotation, modulePositions);
     m_field.SetRobotPose(GetEstimatedPose());
     frc::SmartDashboard::PutData("Field", &m_field);
 }

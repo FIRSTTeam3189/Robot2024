@@ -45,7 +45,8 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
   // Manual deadband to inputs greater than 5% only
   // If deadband detected (i.e. user is not giving rotation input), then set goalAngle as last desired angle
   if ((fabs(joystickX) < .05) && (fabs(joystickY) < .05)) {
-    m_goalAngle = m_lastAngle;
+    // m_goalAngle = m_lastAngle;
+    return units::angular_velocity::radians_per_second_t{0.0};
   } else {
     // Convert joystick positions to goal angle in degrees
     // Normalized from -180, 180

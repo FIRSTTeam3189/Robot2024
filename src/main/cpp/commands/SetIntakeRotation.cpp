@@ -10,7 +10,9 @@ SetIntakeRotation::SetIntakeRotation(Intake *intake, units::degree_t target) : m
 }
 
 // Called when the command is initially scheduled.
-void SetIntakeRotation::Initialize() {}
+void SetIntakeRotation::Initialize() {
+  
+}
 
 // Called repeatedly when this Command is scheduled to run
 void SetIntakeRotation::Execute() {
@@ -24,7 +26,8 @@ void SetIntakeRotation::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool SetIntakeRotation::IsFinished() {
-  if (abs(m_target.value() - m_intake->GetRotation().value()) < IntakeConstants::kRotationStopDistance.value()) {
+  if (abs(m_target.value() - m_intake->GetRotation().value()) < IntakeConstants::kRotationStopDistance.value() 
+    && m_target != IntakeConstants::kRetractTarget) {
     return true;
   }
   return false;

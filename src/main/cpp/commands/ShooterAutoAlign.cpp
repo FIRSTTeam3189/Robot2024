@@ -68,5 +68,8 @@ units::degree_t ShooterAutoAlign::CalculateShooterAngle() {
   // Subtract distance from axle to ground since we fire from axle not from ground which the speaker height is measured from
   double height = ShooterConstants::kSpeakerHeightTarget.value() - ShooterConstants::kAxleToGroundDistance.value();
   double angle = atan(height / distance);
+  frc::SmartDashboard::PutNumber("Shooter auto align distance", distance);
+  frc::SmartDashboard::PutNumber("Shooter auto align height", height);
+  frc::SmartDashboard::PutNumber("Shooter auto align angle", units::degree_t{units::radian_t{angle}}.value());
   return units::degree_t{units::radian_t{angle}};
 }
