@@ -29,3 +29,5 @@ pluginManagement {
 Properties props = System.getProperties();
 props.setProperty("org.gradle.internal.native.headers.unresolved.dependencies.ignore", "true");
 props.setProperty("org.gradle.caching", "true");
+props.setProperty("org.gradle.daemon", "true");
+props.setProperty("org.gradle.parallel", "true");

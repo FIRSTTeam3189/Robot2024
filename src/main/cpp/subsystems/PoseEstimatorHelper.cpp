@@ -13,7 +13,7 @@ void PoseEstimatorHelper::SetPoseEstimator(frc::SwerveDrivePoseEstimator<4> *pos
 } 
 
 void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePosition, 4U> modulePositions, frc::Rotation2d rotation) {
-    m_poseEstimator->Update(-rotation, modulePositions);
+    m_poseEstimator->Update(rotation, modulePositions);
     m_field.SetRobotPose(GetEstimatedPose());
     frc::SmartDashboard::PutData("Field", &m_field);
 }
@@ -38,6 +38,7 @@ void PoseEstimatorHelper::AddVisionMeasurement(frc::Pose2d pose, units::second_t
     // units::meter_t distanceFromCurrentPose = units::meter_t{sqrt(pow(pose.X().value() - currentPose.X().value(), 2.0) 
     //                              + pow(pose.Y().value() - currentPose.Y().value(), 2.0))};
     // if (distanceFromCurrentPose < 1.0_m)
+        frc::SmartDashboard::PutNumber("Last vision timestamp", timestamp.value());
         m_poseEstimator->AddVisionMeasurement(pose, timestamp);
 }
 

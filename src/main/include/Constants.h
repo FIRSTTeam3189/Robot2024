@@ -86,10 +86,10 @@ namespace SwerveModuleConstants {
     constexpr int kBackRightCANcoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
-    constexpr double kFrontLeftOffset {-0.171143};
-    constexpr double kFrontRightOffset {0.105469};
-    constexpr double kBackLeftOffset {0.154785};
-    constexpr double kBackRightOffset {0.425781};
+    constexpr double kFrontLeftOffset {0.425781};
+    constexpr double kFrontRightOffset {0.154785};
+    constexpr double kBackLeftOffset {0.105469};
+    constexpr double kBackRightOffset {-0.171143};
 
     // Motor + sensor inversions
     constexpr bool kDriveMotorInverted = true;
@@ -177,8 +177,8 @@ namespace ShooterConstants {
     constexpr double kPRotation {0.02};
     constexpr double kIRotation {0};
     constexpr double kDRotation {0.0};
-    constexpr auto kSRotation {0.0_V};
     constexpr auto kGRotation {0.0_V};
+    constexpr auto kSRotation {0.0_V};
     constexpr auto kVRotation {0.0_V * 0.0_s / 1.0_rad};
     constexpr auto kARotation {0.0_V * 0.0_s * 0.0_s / 1.0_rad};
 

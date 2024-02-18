@@ -41,9 +41,9 @@ class Intake : public frc2::SubsystemBase {
   rev::CANSparkMax m_rotationMotor;
   rev::CANSparkMax m_rollerMotor;
   frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
-  // frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
-  rev::SparkMaxPIDController m_rotationPIDController;
-  frc::ArmFeedforward m_ff;
+  frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
+  // rev::SparkMaxPIDController m_rotationPIDController;
+  frc::ArmFeedforward *m_ff;
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
   units::degree_t m_target;
   frc::AnalogPotentiometer m_ultrasonicSensor;
@@ -56,6 +56,10 @@ class Intake : public frc2::SubsystemBase {
   std::string m_rotationPKey;
   std::string m_rotationIKey;
   std::string m_rotationDKey;
+  std::string m_rotationGKey;
+  std::string m_rotationSKey;
+  std::string m_rotationVKey;
+  std::string m_rotationAKey;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };
