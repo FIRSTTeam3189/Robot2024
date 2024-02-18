@@ -53,9 +53,9 @@ class Shooter : public frc2::SubsystemBase {
    rev::CANSparkMax m_extensionMotor;
    rev::CANSparkMax m_rotationMotor;
    frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
-   // frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
-   rev::SparkMaxPIDController m_rotationPIDController;
-   frc::ArmFeedforward m_ff;
+   frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
+   // rev::SparkMaxPIDController m_rotationPIDController;
+   frc::ArmFeedforward *m_ff;
    rev::SparkMaxPIDController m_extensionPIDController;
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
    rev::SparkMaxAlternateEncoder m_extensionEncoder;
@@ -69,4 +69,8 @@ class Shooter : public frc2::SubsystemBase {
    std::string m_rotationPKey;
    std::string m_rotationIKey;
    std::string m_rotationDKey;
+   std::string m_rotationGKey;
+   std::string m_rotationSKey;
+   std::string m_rotationVKey;
+   std::string m_rotationAKey;
 };
