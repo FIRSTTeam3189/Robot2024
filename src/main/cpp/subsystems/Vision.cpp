@@ -98,18 +98,16 @@ void Vision::UpdateData() {
                 syncedBuffer = SubString(buffer, i + 4, (int)sizeof(VisionData), syncedBuffer);
                 std::cout << "Synced bytes read: " << strlen(syncedBuffer) << "\n";
                 frc::SmartDashboard::PutNumber("Synced bytes read", strlen(syncedBuffer));
+                if (strlen(syncedBuffer) >= sizeof(VisionData)) {
+                    m_data = *reinterpret_cast<VisionData*>(syncedBuffer);
+                } else {
+                    // Implement based on notes and slack message -- set flag to wait for next message since sync bytes already found
+                    
+                }
                 UpdatePosition();
                 break;
             }
         }
-        
-        if (strlen(syncedBuffer) >= sizeof(VisionData)) {
-            m_data = *reinterpret_cast<VisionData*>(syncedBuffer);
-        } else {
-            // Implement based on notes and slack message -- set flag to wait for next message since sync bytes already found
-            
-        }
-        // After syncing, if we have >=1 message in bytes, read it
     }
 
     frc::SmartDashboard::PutBoolean("Detected", m_data.isDetected);
