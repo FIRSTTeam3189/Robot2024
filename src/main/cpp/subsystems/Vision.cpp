@@ -18,24 +18,6 @@ m_serialCam(VisionConstants::kBaudRate, frc::SerialPort::Port::kMXP) {
 void Vision::Periodic() {
     if (VisionConstants::kShouldUseVision) {
         UpdateData();
-
-        if (m_data.isDetected) {
-            // Turn distances into robot pose
-            frc::Pose3d cameraPose = TagToCamera();
-            frc::Pose3d robotPose = CameraToRobot(cameraPose);
-            units::meter_t tagDistance = units::meter_t{sqrt(pow(m_data.translationMatrix[0], 2.0) 
-                                                           + pow(m_data.translationMatrix[1], 2.0))};
-            // Calculate vision std devs based on tag distance
-            double stdDevDistanceCompensation = tagDistance.value() * VisionConstants::kVisionStdDevPerMeter;
-            auto baseVisionStdDevs = VisionConstants::kVisionTrustCoefficients;
-            auto distanceCompensatedStdDevs = wpi::array<double, 3>{
-                                                baseVisionStdDevs[0] + stdDevDistanceCompensation,
-                                                baseVisionStdDevs[1] + stdDevDistanceCompensation,
-                                                baseVisionStdDevs[2] + stdDevDistanceCompensation};
-
-            units::second_t timestamp = units::second_t{m_data.lastTimestamp};
-            m_helper->AddVisionMeasurement(robotPose.ToPose2d(), timestamp, distanceCompensatedStdDevs);
-        }
     }
 }
 
@@ -61,6 +43,26 @@ frc::Pose3d Vision::TagToCamera() {
 
 frc::Pose3d Vision::CameraToRobot(frc::Pose3d cameraPose) {
     return cameraPose.TransformBy(m_cameraToRobotTransform);
+}
+
+void Vision::UpdatePosition(){
+if (m_data.isDetected) {
+            // Turn distances into robot pose
+            frc::Pose3d cameraPose = TagToCamera();
+            frc::Pose3d robotPose = CameraToRobot(cameraPose);
+            units::meter_t tagDistance = units::meter_t{sqrt(pow(m_data.translationMatrix[0], 2.0) 
+                                                           + pow(m_data.translationMatrix[1], 2.0))};
+            // Calculate vision std devs based on tag distance
+            double stdDevDistanceCompensation = tagDistance.value() * VisionConstants::kVisionStdDevPerMeter;
+            auto baseVisionStdDevs = VisionConstants::kVisionTrustCoefficients;
+            auto distanceCompensatedStdDevs = wpi::array<double, 3>{
+                                                baseVisionStdDevs[0] + stdDevDistanceCompensation,
+                                                baseVisionStdDevs[1] + stdDevDistanceCompensation,
+                                                baseVisionStdDevs[2] + stdDevDistanceCompensation};
+
+            units::second_t timestamp = units::second_t{m_data.lastTimestamp};
+            m_helper->AddVisionMeasurement(robotPose.ToPose2d(), timestamp, distanceCompensatedStdDevs);
+        }
 }
 
 VisionData Vision::GetVisionData() {
@@ -93,9 +95,10 @@ void Vision::UpdateData() {
         // Search for sync bytes in raw buffer
         for (int i = 0; i < bytesRead - 4; i++) {
             if (buffer[i] == 0x1A && buffer[i+1] == 0xCF && buffer[i+2] == 0xFC && buffer[i+3] == 0x1D) {
-                syncedBuffer = SubString(buffer, i + 4, bytesRead - (i + 4), syncedBuffer);
+                syncedBuffer = SubString(buffer, i + 4, (int)sizeof(VisionData), syncedBuffer);
                 std::cout << "Synced bytes read: " << strlen(syncedBuffer) << "\n";
                 frc::SmartDashboard::PutNumber("Synced bytes read", strlen(syncedBuffer));
+                UpdatePosition();
                 break;
             }
         }
@@ -104,6 +107,7 @@ void Vision::UpdateData() {
             m_data = *reinterpret_cast<VisionData*>(syncedBuffer);
         } else {
             // Implement based on notes and slack message -- set flag to wait for next message since sync bytes already found
+            
         }
         // After syncing, if we have >=1 message in bytes, read it
     }
