@@ -606,5 +606,53 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/Intake Rotation P",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Rotation I",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Rotation D",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Robot Rotation P",
+    "type": "double",
+    "value": 0.005,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Robot Rotation I",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Robot Rotation D",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

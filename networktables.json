@@ -654,5 +654,69 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/Shooter Rotation G",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter Rotation S",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter Rotation V",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter Rotation A",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Rotation G",
+    "type": "double",
+    "value": 0.52939,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Rotation S",
+    "type": "double",
+    "value": 0.84149,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Rotation V",
+    "type": "double",
+    "value": 0.015044,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Rotation A",
+    "type": "double",
+    "value": 0.0006516,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

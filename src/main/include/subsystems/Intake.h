@@ -19,8 +19,6 @@
 #include <rev/CANSparkMax.h>
 #include "Constants.h"
 
-enum class IntakeState { None, Extended, Amp, Retracted };
-
 class Intake : public frc2::SubsystemBase {
  public:
   Intake();
@@ -41,13 +39,13 @@ class Intake : public frc2::SubsystemBase {
 
  protected:
   void Config();
-  
+
  private:
   rev::CANSparkMax m_rotationMotor;
   rev::CANSparkMax m_rollerMotor;
   frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
-  frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
-  // rev::SparkMaxPIDController m_rotationPIDController;
+  frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
+  rev::SparkMaxPIDController m_rotationPIDController;
   frc::ArmFeedforward *m_ff;
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
   units::degree_t m_target;
@@ -69,4 +67,10 @@ class Intake : public frc2::SubsystemBase {
   std::string m_rotationAKey;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
+
+  std::map<IntakeState, std::array<double, 3>> kRotationTargetPID {
+        {{IntakeState::Extended}, {IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation}},
+        {{IntakeState::Amp}, {IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation}},
+        {{IntakeState::Retracted}, {IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation}}
+    };
 };

@@ -91,7 +91,7 @@ void RobotContainer::ConfigureDriverBindings() {
   frc2::Trigger retractIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
   retractIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget).ToPtr());
 
-  frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonRightTrigger)};
+  frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
   ampScoreIntakeButton.OnTrue(frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget)
   ).ToPtr());

@@ -33,6 +33,8 @@
 #include <string>
 #include <map>
 
+enum class IntakeState { None, Extended, Amp, Retracted };
+
 #define Pi 3.14159265358979323846
 
 namespace SwerveDriveConstants {
@@ -251,12 +253,6 @@ namespace IntakeConstants{
     constexpr auto kGRotation {0.52939_V};
     constexpr auto kVRotation {0.015044_V * 1.0_s / 1.0_rad};
     constexpr auto kARotation {0.0006516_V * 1.0_s * 1.0_s / 1.0_rad};
-
-    constexpr std::map<IntakeState, std::array<double, 3>> kRotationTargetPID {
-        {{IntakeState::Extended}, {kPRotation, kIRotation, kDRotation}},
-        {{IntakeState::Amp}, {kPRotation, kIRotation, kDRotation}},
-        {{IntakeState::Retracted}, {kPRotation, kIRotation, kDRotation}}
-    };
 
     constexpr double kFeedforward {1.0};
 
