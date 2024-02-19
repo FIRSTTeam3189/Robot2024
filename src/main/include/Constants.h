@@ -35,6 +35,7 @@
 
 enum class IntakeState { None, Extended, Amp, Retracted };
 
+
 #define Pi 3.14159265358979323846
 
 namespace SwerveDriveConstants {
@@ -201,18 +202,17 @@ namespace ShooterConstants {
     constexpr auto kAxleToGroundDistance {0.2185_m};
     constexpr auto kSpeakerHeightTarget {2.0574_m};
     // Intake load
-    constexpr auto kLoadAngle {10.0_deg};
+    constexpr auto kLoadTarget {10.0_deg};
     constexpr double kLoadPower {0.5};
     constexpr double kUnloadPower {-0.25};
     // Direct shooter load
     constexpr auto kDirectLoadAngle {30.0_deg};
     constexpr double kDirectLoadPower {-0.5};
-    constexpr auto kImmediateShootAngle {25.0_deg};
-
-    constexpr double kRetractTarget {55.0};
-    constexpr double kCloseTarget {55.0};
-    constexpr double kMidTarget {30.0};
-    constexpr double kFarTarget {15.0};
+ 
+    constexpr auto kRetractTarget {55.0_deg};
+    constexpr auto kCloseTarget {55.0_deg};
+    constexpr auto kMidTarget {30.0_deg};
+    constexpr auto kFarTarget {15.0_deg};
     constexpr double kRotationOffset {46.67};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
@@ -231,9 +231,8 @@ namespace ShooterConstants {
 
     constexpr int kUltrasonicPort {0};
     constexpr double kUltrasonicValueRange {196.8504}; // 5 meters in inches -- max range of sensor; used so sensor reports in inches
-
 }
-
+    
 namespace LedConstants{
     constexpr int kCandleID {1};
 }
@@ -376,4 +375,5 @@ namespace AutoConstants {
         "Test - Line Rotate"sv,
         "Test - S"sv
     };
+    auto ethanbucket = kAutonomousPaths.at(0);
 }

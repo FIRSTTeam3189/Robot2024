@@ -12,6 +12,8 @@ m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCame
 m_serialCam(VisionConstants::kBaudRate, frc::SerialPort::Port::kMXP) { 
     // Number of bytes in one chunk of vision data
     m_serialCam.SetReadBufferSize(VisionConstants::kBufferSize);
+    frc::PowerDistribution PDH{};
+    PDH.SetSwitchableChannel(true);
 }
 
 // This method will be called once per scheduler run

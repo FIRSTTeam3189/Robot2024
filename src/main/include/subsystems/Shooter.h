@@ -20,8 +20,11 @@
 #include <rev/SparkRelativeEncoder.h> 
 #include "Constants.h"
 
+enum class ShooterState { None, Retracted, Load, Close, Mid, Far} ;
+
 class Shooter : public frc2::SubsystemBase {
  public:
+ 
   Shooter();
   void SetRollerPower(double power);
   void SetRotationPower(double power);
@@ -39,6 +42,9 @@ class Shooter : public frc2::SubsystemBase {
   void UpdatePreferences();
   frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
+  void SetState(ShooterState state);
+  units::degree_t GetTarget();
+
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.

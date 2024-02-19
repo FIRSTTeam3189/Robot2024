@@ -12,6 +12,7 @@
 #include "subsystems/PoseEstimatorHelper.h"
 #include "Constants.h"
 #include <iostream>
+#include <frc/PowerDistribution.h>
 
 // Pack struct tightly so the are no buffer bytes in between data members
 #pragma pack(push, 1)
