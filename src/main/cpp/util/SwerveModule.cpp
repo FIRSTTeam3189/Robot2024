@@ -38,10 +38,7 @@ void SwerveModule::ConfigDriveMotor() {
     m_driveConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kDrivePeakCurrentDuration;
     m_driveConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kDriveEnableCurrentLimit;
 
-    if (m_moduleNumber == 2)
-        m_driveConfigs.MotorOutput.Inverted = !SwerveModuleConstants::kDriveMotorInverted;
-    else 
-        m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
+    m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
 
     m_driveConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kDriveNeutralMode;
         
@@ -112,10 +109,7 @@ void SwerveModule::ConfigCANcoder() {
 
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
     const auto optimizedState = frc::SwerveModuleState::Optimize(state, m_position.angle);
-    // double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;
-    // auto targetAngle = optimizedState.angle.Degrees() / 360.0;
-    // auto optimizedState = OptimizeAngle(state, m_position.angle);
-    double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;
+    double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter * SwerveModuleConstants::kDriveGearRatio;
     auto targetAngle = optimizedState.angle.Degrees();
 
     std::string speedKey = std::to_string(m_moduleNumber) + " target speed";
@@ -210,13 +204,13 @@ void SwerveModule::UpdatePosition() {
     m_driveVelocity.Refresh();
     m_anglePosition.Refresh();
     m_angleVelocity.Refresh();
-
+    
     auto driveRotations = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(m_drivePosition, m_driveVelocity);
     auto angleRotations = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(m_anglePosition, m_angleVelocity);
 
     // Have to convert rotations to double then to meters with our own rotation coefficient
-    double distance = driveRotations.value() / SwerveModuleConstants::kRotationsPerMeter;
-    m_position.distance = units::meter_t{distance};
+    double distance = driveRotations.value() * SwerveModuleConstants::kRotationsPerMeter;
+    m_position.distance = -units::meter_t{distance};
     
     frc::Rotation2d angle{units::degree_t{angleRotations}};
     m_position.angle = angle;

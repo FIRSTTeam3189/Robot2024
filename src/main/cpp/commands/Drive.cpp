@@ -60,7 +60,7 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
 
   // Return next velocity in radians per second as calculated by PIDController and limited by rotLimiter
   units::angular_velocity::radians_per_second_t rot = 
-              units::angular_velocity::radians_per_second_t{
+              -units::angular_velocity::radians_per_second_t{
               m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), m_goalAngle))
               * SwerveDriveConstants::kMaxAngularVelocity};
 
@@ -82,11 +82,11 @@ void Drive::Execute() {
 
   double joystickX, joystickY;
   if (m_allianceSide == frc::DriverStation::Alliance::kRed) {
-    joystickX = m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickY);
-    joystickY = m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickX);
-  } else {
     joystickX = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickY);
     joystickY = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickX);
+  } else {
+    joystickX = m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickY);
+    joystickY = m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickX);
   }
 
   units::meters_per_second_t xSpeed, ySpeed;
@@ -136,7 +136,7 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
       tagPose = VisionConstants::kTagPoses.at(3);
     } else {
       tagPose = VisionConstants::kTagPoses.at(6);
-  }
+    }
 
   auto currentPose = m_swerveDrive->GetEstimatedPose();
   
@@ -144,12 +144,20 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
   // This is alliance-dependent 
   auto xDistance = tagPose.X() - currentPose.X();
   auto yDistance = tagPose.Y() - currentPose.Y();
+  frc::SmartDashboard::PutNumber("Swerve align x distance", xDistance.value());
+  frc::SmartDashboard::PutNumber("Swerve align y distance", yDistance.value());
   // x and y swapped when passed into atan function because our x is their y
   auto goalAngle = units::degree_t{units::radian_t{atan(xDistance.value() / yDistance.value())}};
 
+  if (m_allianceSide == frc::DriverStation::Alliance::kRed) {
+      goalAngle += 180.0_deg;
+      if (goalAngle > 180.0_deg)
+        goalAngle -= 360.0_deg;
+  }
+
   // Return next velocity in radians per second as calculated by PIDController and limited by rotLimiter
   units::angular_velocity::radians_per_second_t rot = 
-              units::angular_velocity::radians_per_second_t{
+              -units::angular_velocity::radians_per_second_t{
               m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), goalAngle.value()))
               * SwerveDriveConstants::kMaxAngularVelocity};
 

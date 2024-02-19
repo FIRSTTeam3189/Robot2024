@@ -19,6 +19,10 @@ void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePositi
 }
 
 frc::Pose2d PoseEstimatorHelper::GetEstimatedPose() {
+    // auto pose = m_poseEstimator->GetEstimatedPosition();
+    // frc::SmartDashboard::PutNumber("Estimated x", pose.X().value());
+    // frc::SmartDashboard::PutNumber("Estimated y", pose.Y().value());
+    // frc::SmartDashboard::PutNumber("Estimated rot", pose.Rotation().Degrees().value());
     return m_poseEstimator->GetEstimatedPosition();
 }
 

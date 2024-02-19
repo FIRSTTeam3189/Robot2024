@@ -56,10 +56,10 @@ namespace SwerveDriveConstants {
         frc::Translation2d{-SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter}
     };
 
-    constexpr auto kMaxSpeed {2.0_mps};
-    constexpr auto kMaxAcceleration {1.0_mps_sq};
-    constexpr units::radians_per_second_t kMaxAngularVelocity {2.0 * Pi};
-    constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {Pi};
+    constexpr auto kMaxSpeed {6.0_mps};
+    constexpr auto kMaxAcceleration {5.0_mps_sq};
+    constexpr units::radians_per_second_t kMaxAngularVelocity {4.0 * Pi};
+    constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {2.0 * Pi};
 
     // SysID robot characterization values -- **varies by robot**
     constexpr auto ks {0.408_V};
@@ -67,7 +67,7 @@ namespace SwerveDriveConstants {
     constexpr auto ka {3.409 * 1_V * 1_s * 1_s / 1_m};
 
     // These are for robot rotation, not wheel rotation
-    constexpr double kPRot {0.001};
+    constexpr double kPRot {0.01};
     constexpr double kIRot {0.0};
     constexpr double kDRot {0.0};
 
@@ -90,10 +90,10 @@ namespace SwerveModuleConstants {
     constexpr int kBackRightCANcoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
-    constexpr double kFrontLeftOffset {0.425781};
+    constexpr double kFrontLeftOffset {0.421143};
     constexpr double kFrontRightOffset {0.154785};
-    constexpr double kBackLeftOffset {0.105469};
-    constexpr double kBackRightOffset {-0.171143};
+    constexpr double kBackLeftOffset {-0.393799};
+    constexpr double kBackRightOffset {-0.167969};
 
     // Motor + sensor inversions
     constexpr bool kDriveMotorInverted = true;
@@ -148,7 +148,7 @@ namespace SwerveModuleConstants {
     constexpr double kWheelCircumferenceMeters {2.0 * Pi * kWheelRadiusMeters};
     constexpr double kDriveGearRatio {8.1};
     constexpr double kAngleGearRatio {15.43};
-    constexpr double kRotationsPerMeter {kDriveGearRatio / kWheelCircumferenceMeters};
+    constexpr double kRotationsPerMeter {kWheelCircumferenceMeters};
     constexpr int kFalconEncoderTicksPerRevolution {2048};
     constexpr int kCANcoderTicksPerRevolution {4096};
 }
@@ -375,5 +375,5 @@ namespace AutoConstants {
         "Test - Line Rotate"sv,
         "Test - S"sv
     };
-    auto ethanbucket = kAutonomousPaths.at(0);
+    // constexpr auto ethanbucket = kAutonomousPaths.at(0);
 }
