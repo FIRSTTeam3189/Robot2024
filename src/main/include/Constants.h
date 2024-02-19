@@ -228,6 +228,7 @@ namespace ShooterConstants {
 
     constexpr int kUltrasonicPort {0};
     constexpr double kUltrasonicValueRange {196.8504}; // 5 meters in inches -- max range of sensor; used so sensor reports in inches
+
 }
 
 namespace LedConstants{
