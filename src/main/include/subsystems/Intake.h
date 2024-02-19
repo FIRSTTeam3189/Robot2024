@@ -26,6 +26,8 @@ class Intake : public frc2::SubsystemBase {
   void SetRotationPower(double power);
   void SetRotation(units::degree_t target);
   units::degree_t GetRotation();
+  units::degree_t GetTarget();
+  void SetState(IntakeState state);
   bool NoteDetected();
   void UpdateUltrasonic();
   void UpdatePreferences();

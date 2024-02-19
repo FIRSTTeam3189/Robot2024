@@ -97,6 +97,29 @@ void Intake::Periodic() {
         UpdatePreferences();
 }
 
+units::degree_t Intake::GetTarget() {
+    return m_target;
+}
+
+void Intake::SetState(IntakeState state) {
+    auto target = 0.0_deg;
+
+    switch(state){
+        case (IntakeState::None) :
+            break;
+        case (IntakeState::Extended) :
+            target = IntakeConstants::kExtendTarget;
+            break;
+        case (IntakeState::Amp) :
+            target = IntakeConstants::kAmpTarget;
+            break;
+        case (IntakeState::Retracted) :
+            target = IntakeConstants::kRetractTarget;
+            break;
+    }
+    SetRotation(target);
+}
+
 void Intake::SetRotation(units::degree_t target) {
     // Calculates PID value in volts based on position and target
     units::volt_t PIDValue = units::volt_t{m_profiledPIDController.Calculate(GetRotation(), target)};
