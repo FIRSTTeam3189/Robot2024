@@ -63,7 +63,6 @@ void LED::Periodic() {
                 }
             } 
         }
-
     }    
 }
 
