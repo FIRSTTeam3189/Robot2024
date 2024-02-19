@@ -234,7 +234,8 @@ void SwerveDrive::UpdateEstimator() {
     m_modulePositions[3] = m_modules.m_backRight.GetPosition(true);
 
     LogModuleStates(m_modulePositions);
-    m_poseHelper->UpdatePoseEstimator(m_modulePositions, frc::Rotation2d{GetNormalizedYaw()});
+    // m_poseHelper->UpdatePoseEstimator(m_modulePositions, frc::Rotation2d{GetNormalizedYaw()});
+    m_poseHelper->UpdatePoseEstimator(m_modulePositions, m_pigeon.GetRotation2d());
 }
 
 void SwerveDrive::ResetDriveEncoders() {

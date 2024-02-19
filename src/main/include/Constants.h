@@ -31,6 +31,9 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <map>
+
+enum class IntakeState { None, Extended, Amp, Retracted };
 
 #define Pi 3.14159265358979323846
 
@@ -86,10 +89,10 @@ namespace SwerveModuleConstants {
     constexpr int kBackRightCANcoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
-    constexpr double kFrontLeftOffset {-0.171143};
-    constexpr double kFrontRightOffset {0.105469};
-    constexpr double kBackLeftOffset {0.154785};
-    constexpr double kBackRightOffset {0.425781};
+    constexpr double kFrontLeftOffset {0.425781};
+    constexpr double kFrontRightOffset {0.154785};
+    constexpr double kBackLeftOffset {0.105469};
+    constexpr double kBackRightOffset {-0.171143};
 
     // Motor + sensor inversions
     constexpr bool kDriveMotorInverted = true;
@@ -177,8 +180,8 @@ namespace ShooterConstants {
     constexpr double kPRotation {0.02};
     constexpr double kIRotation {0};
     constexpr double kDRotation {0.0};
-    constexpr auto kSRotation {0.0_V};
     constexpr auto kGRotation {0.0_V};
+    constexpr auto kSRotation {0.0_V};
     constexpr auto kVRotation {0.0_V * 0.0_s / 1.0_rad};
     constexpr auto kARotation {0.0_V * 0.0_s * 0.0_s / 1.0_rad};
 
@@ -242,7 +245,8 @@ namespace IntakeConstants{
     constexpr double kIntakePower {1.0};
     constexpr double kAmpScorePower {-1.0};
     constexpr double kLoadPower {0.5};
-    
+
+
     constexpr double kPRotation {0.005};
     constexpr double kIRotation {0.00000};
     constexpr double kDRotation {0.01};
@@ -340,9 +344,10 @@ namespace ClimberConstants{
     constexpr int kRightServoID {1}; 
     constexpr int kRightMotorID {19};
     constexpr int kLefttMotorID {20};
-    constexpr int kInvertMotor {false};
+    constexpr int kInvertLeftMotor {false};
+    constexpr int kInvertRightMotor {false};
     constexpr double kExtendMotorSpeed {0.5};
-    constexpr double kExtendServoAngle {0.0};
+    constexpr double kExtendServoAngle {90.0};
     constexpr double kRetractMotorSpeed {-0.5};
     constexpr double kRetractServoAngle {0.0};
 }

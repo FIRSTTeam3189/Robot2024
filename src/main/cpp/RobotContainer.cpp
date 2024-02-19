@@ -41,7 +41,6 @@ RobotContainer::RobotContainer() {
 
 void RobotContainer::ConfigureDriverBindings() {
   // Bill controls
-
   frc2::Trigger toggleATan2RotButton{m_bill.Button(OperatorConstants::kButtonIDRightStick)};
   toggleATan2RotButton.OnTrue(
     frc2::InstantCommand([this]{
@@ -58,15 +57,14 @@ void RobotContainer::ConfigureDriverBindings() {
     },{m_swerveDrive}).ToPtr()
   );
 
-  frc2::Trigger intakeButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
+  frc2::Trigger intakeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
   intakeButton.OnTrue(FullIntake(m_intake, IntakeConstants::kIntakePower, IntakeConstants::kExtendTarget).ToPtr());
   intakeButton.OnFalse(frc2::InstantCommand([this]{
     m_intake->SetRollerPower(0.0);
-    // m_intake->SetRotationPower(0.0);
     m_intake->SetRotation(IntakeConstants::kRetractTarget);
   },{m_intake}).ToPtr());
 
-  frc2::Trigger driverLoadButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
+  frc2::Trigger driverLoadButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
   driverLoadButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(1.25_s),
@@ -89,22 +87,21 @@ void RobotContainer::ConfigureDriverBindings() {
       SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
     )
   ).ToPtr());
-  // intakeButton.OnTrue(RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0).ToPtr());
 
   frc2::Trigger retractIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
   retractIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget).ToPtr());
 
-  frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDCircle)};
-    ampScoreIntakeButton.OnTrue(frc2::SequentialCommandGroup(
-      SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget)
-    ).ToPtr());
-    ampScoreIntakeButton.OnFalse(frc2::SequentialCommandGroup(
-      frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(2.0_s), 
-        RunIntake(m_intake, IntakeConstants::kAmpScorePower, 0)
-      ),
-      SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
-    ).ToPtr());
+  frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
+  ampScoreIntakeButton.OnTrue(frc2::SequentialCommandGroup(
+    SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget)
+  ).ToPtr());
+  ampScoreIntakeButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(2.0_s), 
+      RunIntake(m_intake, IntakeConstants::kAmpScorePower, 0)
+    ),
+    SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
+  ).ToPtr());
 
   frc2::Trigger extendIntakeButton{m_bill.Button(OperatorConstants::kButtonIDTriangle)};
   extendIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget).ToPtr());
@@ -117,10 +114,10 @@ void RobotContainer::ConfigureDriverBindings() {
 
   frc2::Trigger resetSpeakerPoseButton{m_bill.Button(OperatorConstants::kButtonIDMenu)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
-    m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{180.0_deg}}, false);
+    m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{0.0_deg}}, false);
   },{m_swerveDrive}).ToPtr());
 
-  frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
+  frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
   alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, false, true, true).ToPtr());
   
   // frc2::Trigger toggleSlowModeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
@@ -308,8 +305,6 @@ void RobotContainer::RegisterAutoCommands() {
   ).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("AlignToAmp", SwerveAutoAlign(m_swerveDrive, false, 90_deg).ToPtr());
-
-
 
   pathplanner::NamedCommands::registerCommand("ScoreAmp", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget),

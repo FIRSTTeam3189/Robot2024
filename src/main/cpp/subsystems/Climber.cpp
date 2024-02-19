@@ -12,7 +12,8 @@ m_rightServo(ClimberConstants::kRightServoID)
 {
     m_leftMotor.RestoreFactoryDefaults();
     m_rightMotor.RestoreFactoryDefaults();
-    m_leftMotor.SetInverted(ClimberConstants::kInvertMotor);
+    m_leftMotor.SetInverted(ClimberConstants::kInvertLeftMotor);
+    m_rightMotor.SetInverted(ClimberConstants::kInvertRightMotor);
     m_leftMotor.Follow(m_rightMotor);
     std::cout << "Climber constructing\n";
 }

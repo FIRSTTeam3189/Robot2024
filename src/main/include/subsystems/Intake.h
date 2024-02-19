@@ -36,14 +36,17 @@ class Intake : public frc2::SubsystemBase {
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
- 
+
+ protected:
+  void Config();
+
  private:
   rev::CANSparkMax m_rotationMotor;
   rev::CANSparkMax m_rollerMotor;
   frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
-  // frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
+  frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
   rev::SparkMaxPIDController m_rotationPIDController;
-  frc::ArmFeedforward m_ff;
+  frc::ArmFeedforward *m_ff;
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
   units::degree_t m_target;
   frc::AnalogPotentiometer m_ultrasonicSensor;
@@ -51,11 +54,23 @@ class Intake : public frc2::SubsystemBase {
   units::degrees_per_second_t m_lastSpeed;
   units::second_t m_lastTime;
   frc2::sysid::SysIdRoutine m_sysIdRoutine;
+  IntakeState m_currentState;
+  IntakeState m_prevState;
   
   // String keys for PID preferences
   std::string m_rotationPKey;
   std::string m_rotationIKey;
   std::string m_rotationDKey;
+  std::string m_rotationGKey;
+  std::string m_rotationSKey;
+  std::string m_rotationVKey;
+  std::string m_rotationAKey;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
+
+  std::map<IntakeState, std::array<double, 3>> kRotationTargetPID {
+        {{IntakeState::Extended}, {IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation}},
+        {{IntakeState::Amp}, {IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation}},
+        {{IntakeState::Retracted}, {IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation}}
+    };
 };
