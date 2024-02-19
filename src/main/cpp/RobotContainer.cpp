@@ -69,7 +69,7 @@ void RobotContainer::ConfigureDriverBindings() {
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(1.25_s),
       SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
-      SetShooterRotation(m_shooter, ShooterConstants::kLoadAngle)
+      SetShooterRotation(m_shooter, ShooterState::Load)
     ),
     frc2::ParallelCommandGroup(
       RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0),
@@ -83,7 +83,7 @@ void RobotContainer::ConfigureDriverBindings() {
       m_shooter->SetLoaderPower(0.0);
     },{m_intake, m_shooter}),
     frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
+      SetShooterRotation(m_shooter, ShooterState::Retracted),
       SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
     )
   ).ToPtr());
@@ -146,7 +146,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   // Ted controls
   frc2::Trigger shootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
   shootButton.OnTrue(frc2::SequentialCommandGroup(
-    SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kCloseTarget}),
+    SetShooterRotation(m_shooter, ShooterState::Close),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(1.0_s),
       RunShooter(m_shooter, ShooterConstants::kShootPower)
@@ -177,13 +177,13 @@ void RobotContainer::ConfigureCoDriverBindings() {
   },{m_shooter}).ToPtr());
 
   frc2::Trigger shooterCloseRangeButton{m_ted.Button(OperatorConstants::kButtonIDX)};
-  shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kCloseTarget}).ToPtr());
+  shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Close).ToPtr());
 
   frc2::Trigger shooterMidRangeButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
-  shooterMidRangeButton.OnTrue(SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kMidTarget}).ToPtr());
+  shooterMidRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Mid).ToPtr());
 
   // frc2::Trigger shooterFarRangeButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
-  // shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kFarTarget}).ToPtr());
+  // shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
 
   frc2::Trigger manualShootButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
   manualShootButton.OnTrue(frc2::SequentialCommandGroup(
@@ -201,12 +201,12 @@ void RobotContainer::ConfigureCoDriverBindings() {
   frc2::Trigger loadButton{m_ted.Button(OperatorConstants::kButtonIDLeftBumper)};
   // loadButton.OnTrue(frc2::SequentialCommandGroup(
   //   SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
-  //   SetShooterRotation(m_shooter, ShooterConstants::kLoadAngle),
+  //   SetShooterRotation(m_shooter, ShooterState::Load),
   //   frc2::ParallelDeadlineGroup(
   //     RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0),
   //     RunIntake(m_intake, IntakeConstants::kIntakePower / 2.0, 0.0)
   //   ),
-  //   SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
+  //   SetShooterRotation(m_shooter, ShooterState::Retracted),
   //   SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   // ).ToPtr());
 
@@ -214,7 +214,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(1.25_s),
       SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
-      SetShooterRotation(m_shooter, ShooterConstants::kLoadAngle)
+      SetShooterRotation(m_shooter, ShooterState::Load)
     ),
     frc2::ParallelCommandGroup(
       RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0),
@@ -228,7 +228,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
       m_shooter->SetLoaderPower(0.0);
     },{m_intake, m_shooter}),
     frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
+      SetShooterRotation(m_shooter, ShooterState::Retracted),
       SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
     )
   ).ToPtr());
@@ -245,9 +245,9 @@ void RobotContainer::ConfigureCoDriverBindings() {
   frc2::Trigger directShooterLoadButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
   directShooterLoadButton.OnTrue(frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kAmpTarget),
-    SetShooterRotation(m_shooter, ShooterConstants::kDirectLoadAngle),
+    SetShooterRotation(m_shooter, ShooterState::Load),
     RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower),
-    SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
+    SetShooterRotation(m_shooter, ShooterState::Retracted),
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   ).ToPtr());
   directShooterLoadButton.OnFalse(frc2::SequentialCommandGroup(
@@ -255,7 +255,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
       m_shooter->SetRollerPower(0.0);
       m_shooter->SetLoaderPower(0.0);
     },{m_shooter}),
-    SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
+    SetShooterRotation(m_shooter, ShooterState::Retracted),
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   ).ToPtr());
 }
@@ -283,14 +283,14 @@ void RobotContainer::RegisterAutoCommands() {
 
   pathplanner::NamedCommands::registerCommand("ImmediateShoot", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
-    SetShooterRotation(m_shooter, ShooterConstants::kImmediateShootAngle),
+    SetShooterRotation(m_shooter, ShooterState::Far),
     RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0),
     RunShooter(m_shooter, ShooterConstants::kShootPower)
   ).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("Load", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeConstants::kExtendTarget),
-    SetShooterRotation(m_shooter, ShooterConstants::kLoadAngle),
+    SetShooterRotation(m_shooter, ShooterState::Load),
     frc2::ParallelRaceGroup(
       frc2::WaitCommand(2.0_s),
       RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0),
@@ -300,7 +300,7 @@ void RobotContainer::RegisterAutoCommands() {
       m_intake->SetRollerPower(0.0);
       m_shooter->SetRollerPower(0.0);
     },{m_intake, m_shooter}),
-    SetShooterRotation(m_shooter, units::degree_t{ShooterConstants::kRetractTarget}),
+    SetShooterRotation(m_shooter, ShooterState::Retracted),
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   ).ToPtr());
 
@@ -323,7 +323,7 @@ void RobotContainer::RegisterAutoCommands() {
       frc2::WaitCommand(1.0_s),
       RunShooter(m_shooter, ShooterConstants::kShootPower)
     ),
-    SetShooterExtension(m_shooter, ShooterConstants::kRetractTarget),
+    SetShooterRotation(m_shooter, ShooterState::Retracted),
     SetIntakeRotation(m_intake, IntakeConstants::kRetractTarget)
   ).ToPtr());
 } 

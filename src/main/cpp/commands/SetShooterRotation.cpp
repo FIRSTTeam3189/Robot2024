@@ -4,14 +4,14 @@
 
 #include "commands/SetShooterRotation.h"
 
-SetShooterRotation::SetShooterRotation(Shooter *shooter, units::degree_t target) : m_shooter(shooter), m_target(target){
+SetShooterRotation::SetShooterRotation(Shooter *shooter, ShooterState state) : m_shooter(shooter), m_state(state){
   AddRequirements(shooter);
   // Use addRequirements() here to declare subsystem dependencies.
 }
 
 // Called when the command is initially scheduled.
 void SetShooterRotation::Initialize() {
-  m_shooter->SetRotation(m_target);
+  m_shooter->SetState(m_state);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -24,7 +24,8 @@ void SetShooterRotation::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool SetShooterRotation::IsFinished() {
-  if (abs(m_target.value() - m_shooter->GetRotation().value()) < ShooterConstants::kRotationStopDistance.value()) {
+  if (abs(m_shooter->GetTarget().value() - m_shooter->GetRotation().value()) < ShooterConstants::kRotationStopDistance.value()
+    && m_state != ShooterState::Retracted) {
     return true;
   }
   return false;

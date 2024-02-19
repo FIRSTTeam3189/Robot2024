@@ -18,7 +18,7 @@
 class SetShooterRotation
     : public frc2::CommandHelper<frc2::Command, SetShooterRotation> {
  public:
-  SetShooterRotation(Shooter *shooter, units::degree_t target);
+  SetShooterRotation(Shooter *shooter, ShooterState state);
 
   void Initialize() override;
 
@@ -30,5 +30,5 @@ class SetShooterRotation
 
  private:
   Shooter *m_shooter;
-  units::degree_t m_target;
+  ShooterState m_state;
 };

@@ -213,3 +213,33 @@ frc2::CommandPtr Shooter::SysIdDynamic(frc2::sysid::Direction direction) {
         std::cout << "Shooter Quasistatic\n";
   return m_sysIdRoutine.Dynamic(direction);
 }
+
+void Shooter::SetState(ShooterState state){
+    auto target = 0.0_deg;
+    switch(state){
+        case(ShooterState::None):
+            break;
+        case(ShooterState::Retracted):
+            target = ShooterConstants::kRetractTarget;
+            break;
+        case(ShooterState::Load):
+            target = ShooterConstants::kLoadTarget;
+            break;
+        case(ShooterState::Close):
+            target = ShooterConstants::kCloseTarget;
+            break;
+        case(ShooterState::Mid):
+            target = ShooterConstants::kMidTarget;
+            break;
+        case(ShooterState::Far):
+            target = ShooterConstants::kFarTarget;
+            break;
+        default: 
+            break;
+    }
+    SetRotation(target);
+}
+
+units::degree_t Shooter::GetTarget(){
+    return m_target;
+}
