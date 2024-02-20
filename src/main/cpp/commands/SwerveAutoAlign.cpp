@@ -54,7 +54,7 @@ units::angular_velocity::radians_per_second_t SwerveAutoAlign::GetDesiredRotatio
 
 units::degree_t SwerveAutoAlign::GetSpeakerGoalAngle() {
   frc::Pose3d tagPose;
-  auto allianceSide = frc::DriverStation::GetAlliance();
+  auto allianceSide = frc::DriverStation::GetAlliance().value();
     if (allianceSide == frc::DriverStation::Alliance::kRed) {
       tagPose = VisionConstants::kTagPoses.at(3);
     } else {
