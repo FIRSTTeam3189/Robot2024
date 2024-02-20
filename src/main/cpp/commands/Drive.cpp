@@ -33,8 +33,9 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
   // Left, up are -1.0; right, down are 1.0
   // Inverted so forward on joystick is down the field
   // If red alliance, flip 180
+  m_allianceSide = frc::DriverStation::GetAlliance();
   double joystickX, joystickY;
-  if (m_allianceSide == frc::DriverStation::Alliance::kRed) {
+  if (m_allianceSidex= frc::DriverStation::Alliance::kRed) {
     joystickX = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY);
     joystickY = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
   } else {
@@ -81,6 +82,7 @@ void Drive::Execute() {
   UpdatePreferences();
 
   double joystickX, joystickY;
+  m_allianceSide = frc::DriverStation::GetAlliance();
   if (m_allianceSide == frc::DriverStation::Alliance::kRed) {
     joystickX = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickY);
     joystickY = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickX);
@@ -131,6 +133,7 @@ bool Drive::IsFinished() {
 }
 
 units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
+  m_allianceSide = frc::DriverStation::GetAlliance();
   frc::Pose3d tagPose;
     if (m_allianceSide == frc::DriverStation::Alliance::kRed) {
       tagPose = VisionConstants::kTagPoses.at(3);
