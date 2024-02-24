@@ -10,8 +10,8 @@ m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBr
 m_extensionMotor(ShooterConstants::kExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_constraints(IntakeConstants::kMaxRotationVelocity, IntakeConstants::kMaxRotationAcceleration),
-m_rotationPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
-// m_rotationPIDController(m_rotationMotor.GetPIDController()),
+m_profiledPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
+m_rotationPIDController(m_rotationMotor.GetPIDController()),
 m_extensionPIDController(m_extensionMotor.GetPIDController()),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
 m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::Type::kQuadrature, ShooterConstants::kExtensionCountsPerRev)),
@@ -56,22 +56,22 @@ void Shooter::Periodic() {
 
 void Shooter::SetRotation(units::degree_t target) {
     // Calculates PID value in volts based on position and target
-    units::volt_t PIDValue = units::volt_t{m_rotationPIDController.Calculate(GetRotation(), target)};
+    units::volt_t PIDValue = units::volt_t{m_profiledPIDController.Calculate(GetRotation(), target)};
 
     // Calculates the change in velocity (acceleration) since last control loop
     // Uses the acceleration value and desired velocity to calculate feedforward gains
     // Feedforward gains are approximated based on the current state of the system and a known physics model
     // Gains calculated with SysID                                   
-    auto acceleration = (m_rotationPIDController.GetSetpoint().velocity - m_lastSpeed) /
+    auto acceleration = (m_profiledPIDController.GetSetpoint().velocity - m_lastSpeed) /
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
-    units::volt_t ffValue = m_ff->Calculate(units::radian_t{target}, units::radians_per_second_t{m_rotationPIDController.GetSetpoint().velocity},
+    units::volt_t ffValue = m_ff->Calculate(units::radian_t{target}, units::radians_per_second_t{m_profiledPIDController.GetSetpoint().velocity},
                                            units::radians_per_second_squared_t{acceleration});
 
     // Set motor to combined voltage
     m_rotationMotor.SetVoltage(PIDValue + ffValue);
     frc::SmartDashboard::PutNumber("Shooter rotation volts", PIDValue.value() + ffValue.value());
 
-    m_lastSpeed = m_rotationPIDController.GetSetpoint().velocity;
+    m_lastSpeed = m_profiledPIDController.GetSetpoint().velocity;
     m_lastTime = frc::Timer::GetFPGATimestamp();
 
     // double ff = 0.0;
@@ -91,8 +91,16 @@ void Shooter::SetRotation(units::degree_t target) {
         // }
         // m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 0, ff);
     }
-
 }
+    // if (m_currentState == ShooterState::Load) {
+    //         // m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 0, ff);
+    //     } else if (m_currentState == ShooterState::Retracted) {
+    //         // m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 1, ff);
+    //     } else {
+    //         m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 2, ff);
+    //     }
+    // }
+
 
 void Shooter::SetExtension(double target) {
     m_extensionPIDController.SetReference(target, rev::ControlType::kPosition);
@@ -148,10 +156,6 @@ void Shooter::ConfigRotationMotor() {
     m_rotationEncoder.SetPositionConversionFactor(ShooterConstants::kRotationConversion);
     m_rotationEncoder.SetVelocityConversionFactor(ShooterConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(ShooterConstants::kRotationOffset);
-    // m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
-    // m_rotationPIDController.SetP(ShooterConstants::kPRotation);
-    // m_rotationPIDController.SetI(ShooterConstants::kIRotation);
-    // m_rotationPIDController.SetD(ShooterConstants::kDRotation);
 }
 
 void Shooter::ConfigPID() {
@@ -177,12 +181,22 @@ void Shooter::ConfigPID() {
     frc::Preferences::InitDouble(m_rotationSKey, ShooterConstants::kSRotation.value());
     frc::Preferences::InitDouble(m_rotationVKey, ShooterConstants::kVRotation.value());
     frc::Preferences::InitDouble(m_rotationAKey, ShooterConstants::kARotation.value());
+
+    m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
+   
+    m_rotationPIDController.SetP(kRotationTargetPID[ShooterState::Retracted][0]);
+    m_rotationPIDController.SetI(kRotationTargetPID[ShooterState::Retracted][1]);
+    m_rotationPIDController.SetD(kRotationTargetPID[ShooterState::Retracted][2]);
+
+    m_rotationPIDController.SetP(kRotationTargetPID[ShooterState::Load][0], 1);
+    m_rotationPIDController.SetI(kRotationTargetPID[ShooterState::Load][1], 1);
+    m_rotationPIDController.SetD(kRotationTargetPID[ShooterState::Load][2], 1);
 }
 
 void Shooter::UpdatePreferences() {
-    m_rotationPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, ShooterConstants::kPRotation));
-    m_rotationPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, ShooterConstants::kIRotation));
-    m_rotationPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, ShooterConstants::kDRotation));
+    m_profiledPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, ShooterConstants::kPRotation));
+    m_profiledPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, ShooterConstants::kIRotation));
+    m_profiledPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, ShooterConstants::kDRotation));
     double s = frc::Preferences::GetDouble(m_rotationSKey, IntakeConstants::kSRotation.value());
     double g = frc::Preferences::GetDouble(m_rotationGKey, IntakeConstants::kGRotation.value());
     double v = frc::Preferences::GetDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
@@ -231,18 +245,23 @@ void Shooter::SetState(ShooterState state){
             break;
         case(ShooterState::Retracted):
             target = ShooterConstants::kRetractTarget;
+            m_currentState = ShooterState::Retracted;
             break;
         case(ShooterState::Load):
             target = ShooterConstants::kLoadTarget;
+            m_currentState = ShooterState::Load;
             break;
         case(ShooterState::Close):
             target = ShooterConstants::kCloseTarget;
+            m_currentState = ShooterState::Close;
             break;
         case(ShooterState::Mid):
             target = ShooterConstants::kMidTarget;
+            m_currentState = ShooterState::Mid;
             break;
         case(ShooterState::Far):
             target = ShooterConstants::kFarTarget;
+            m_currentState = ShooterState::Far;
             break;
         default: 
             break;

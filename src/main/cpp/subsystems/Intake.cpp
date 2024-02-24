@@ -118,12 +118,15 @@ void Intake::SetState(IntakeState state) {
             break;
         case (IntakeState::Extended) :
             target = IntakeConstants::kExtendTarget;
+            m_currentState = IntakeState::Extended;
             break;
         case (IntakeState::Amp) :
             target = IntakeConstants::kAmpTarget;
+            m_currentState = IntakeState::Amp;
             break;
         case (IntakeState::Retracted) :
             target = IntakeConstants::kRetractTarget;
+            m_currentState = IntakeState::Retracted;
             break;
     }
 
@@ -191,9 +194,9 @@ void Intake::SetRotation(units::degree_t target) {
         //     ff = IntakeConstants::kFeedforward;
         // }
 
-        // if (m_currentState == IntakeState::Extended) {
+        // if (m_currentState == IntakeState::Extended && m_prevstate == IntakeState::Retracted) {
         //     // m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 0, ff);
-        // } else if (m_currentState == IntakeState::Amp) {
+        // } else if (m_currentState == IntakeState::Retracted && m_prevstate == IntakeState::Extended) {
         //     // m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 1, ff);
         // } else {
         //     m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 2, ff);
