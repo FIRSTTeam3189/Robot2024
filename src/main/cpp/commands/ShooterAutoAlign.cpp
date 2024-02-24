@@ -9,6 +9,7 @@ m_shooter(shooter),
 m_estimator(estimator),
 m_vision(vision) {
   // Use addRequirements() here to declare subsystem dependencies.
+  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(shooter);
   AddRequirements(estimator);
   AddRequirements(vision);
@@ -33,7 +34,7 @@ bool ShooterAutoAlign::IsFinished() {
 
 units::degree_t ShooterAutoAlign::CalculateShooterAngle() {
   frc::Pose2d currentPose = m_estimator->GetEstimatedPose();
-  frc::Pose3d tagPose = frc::Pose3d{};
+  frc::Pose3d tagPose = VisionConstants::kTagPoses.at(6);
   // auto autoData = m_vision->GetVisionData();
   // Set to false instead of isDetected to use FMS for alliance deduction instead
   // bool isDetected = false;

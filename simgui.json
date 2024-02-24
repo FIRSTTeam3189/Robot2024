@@ -48,16 +48,17 @@
         }
       }
     },
-    "PathPlanner": {
-      "open": true
-    },
-    "Preferences": {
-      "open": true
-    },
-    "Shuffleboard": {
-      "open": true
-    },
     "SmartDashboard": {
+      "Auto Routines": {
+        "string[]##v_/SmartDashboard/Auto Routines/options": {
+          "open": true
+        }
+      },
+      "Field": {
+        "double[]##v_/SmartDashboard/Field/Robot": {
+          "open": true
+        }
+      },
       "double[]##v_/SmartDashboard/AdvantageScope Desired States": {
         "open": true
       },

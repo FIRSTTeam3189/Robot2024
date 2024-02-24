@@ -65,7 +65,7 @@ m_angleSysIdRoutine(
                 log->Motor(name)
                     .voltage(m_moduleArray[i]->GetAngleVoltage())
                     .position(units::turn_t{m_moduleArray[i]->GetPosition(true).angle.Degrees()})
-                    .velocity(m_moduleArray[i]->GetSignals()[3]->GetLatencyCompensatedValue());
+                    .velocity(units::turns_per_second_t{m_moduleArray[i]->GetSignals()[3]->GetValueAsDouble()});
             }
         },
         this)
@@ -128,7 +128,7 @@ void SwerveDrive::Periodic() {
 }
 
 void SwerveDrive::RefreshAllSignals() {
-    ctre::phoenix6::BaseStatusSignal::WaitForAll(0.02_s, m_allSignals);
+    frc::SmartDashboard::PutString("Swerve signal status", ctre::phoenix6::BaseStatusSignal::WaitForAll(0.02_s, m_allSignals).GetName());
 }
 
 void SwerveDrive::ConfigSignals() {
@@ -140,10 +140,10 @@ void SwerveDrive::ConfigSignals() {
         }
     }
 
-    frc::SmartDashboard::PutNumber("Signal refresh rate 0", m_allSignals[0]->GetAppliedUpdateFrequency());
-    frc::SmartDashboard::PutNumber("Signal refresh rate 1", m_allSignals[1]->GetAppliedUpdateFrequency());
-    frc::SmartDashboard::PutNumber("Signal refresh rate 2", m_allSignals[2]->GetAppliedUpdateFrequency());
-    frc::SmartDashboard::PutNumber("Signal refresh rate 3", m_allSignals[3]->GetAppliedUpdateFrequency());
+    frc::SmartDashboard::PutNumber("Signal refresh rate 0", m_allSignals[0]->GetAppliedUpdateFrequency().value());
+    frc::SmartDashboard::PutNumber("Signal refresh rate 1", m_allSignals[1]->GetAppliedUpdateFrequency().value());
+    frc::SmartDashboard::PutNumber("Signal refresh rate 2", m_allSignals[2]->GetAppliedUpdateFrequency().value());
+    frc::SmartDashboard::PutNumber("Signal refresh rate 3", m_allSignals[3]->GetAppliedUpdateFrequency().value());
 
     ctre::phoenix6::BaseStatusSignal::SetUpdateFrequencyForAll(SwerveDriveConstants::kRefreshRate, m_allSignals);
 }
@@ -243,10 +243,10 @@ frc::Pose2d SwerveDrive::GetEstimatedPose() {
 
 void SwerveDrive::LogModuleStates(wpi::array<frc::SwerveModulePosition, 4> modulePositions) {
     double AdvantageScopeMeasuredStates[] = 
-    {modulePositions[0].angle.Degrees().value(), modulePositions[0].distance.value(),
-     modulePositions[1].angle.Degrees().value(), modulePositions[1].distance.value(),
-     modulePositions[2].angle.Degrees().value(), modulePositions[2].distance.value(),
-     modulePositions[3].angle.Degrees().value(), modulePositions[3].distance.value()};
+    {modulePositions[0].angle.Degrees().value(), m_moduleArray[0]->GetDriveSpeed().value(),
+     modulePositions[1].angle.Degrees().value(), m_moduleArray[1]->GetDriveSpeed().value(),
+     modulePositions[2].angle.Degrees().value(), m_moduleArray[2]->GetDriveSpeed().value(),
+     modulePositions[3].angle.Degrees().value(), m_moduleArray[3]->GetDriveSpeed().value()};
   frc::SmartDashboard::PutNumberArray("AdvantageScope Measured States", AdvantageScopeMeasuredStates);
 }
 

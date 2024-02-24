@@ -14,6 +14,7 @@ m_isFieldRelative(isFieldRelative),
 m_shouldAlignSpeaker(shouldAlignSpeaker),
 m_allianceSide(frc::DriverStation::Alliance::kBlue) {
   // Use addRequirements() here to declare subsystem dependencies.
+  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(swerveDrive);
 
   if (frc::DriverStation::GetAlliance())
@@ -38,7 +39,7 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
   // Inverted so forward on joystick is down the field
   // If red alliance, flip 180
   m_allianceSide = frc::DriverStation::GetAlliance();
-  double joystickX, joystickY;
+  double joystickX = 0.0, joystickY = 0.0;
   if (m_allianceSide) {
     if (m_allianceSide.value() == frc::DriverStation::Alliance::kRed) {
       frc::SmartDashboard::PutString("Alliance", "red");
@@ -89,7 +90,7 @@ void Drive::Initialize() {}
 void Drive::Execute() {
   UpdatePreferences();
 
-  double joystickX, joystickY;
+  double joystickX = 0.0, joystickY = 0.0;
   m_allianceSide = frc::DriverStation::GetAlliance();
   if (m_allianceSide) {
     if (m_allianceSide.value() == frc::DriverStation::Alliance::kRed) {
@@ -144,7 +145,7 @@ bool Drive::IsFinished() {
 
 units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
   m_allianceSide = frc::DriverStation::GetAlliance();
-  frc::Pose3d tagPose;
+  frc::Pose3d tagPose = VisionConstants::kTagPoses.at(6);
   if (m_allianceSide) {
     if (m_allianceSide.value() == frc::DriverStation::Alliance::kRed) {
       tagPose = VisionConstants::kTagPoses.at(3);

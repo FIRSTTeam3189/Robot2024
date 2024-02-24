@@ -50,7 +50,7 @@ namespace SwerveDriveConstants {
 
     constexpr double kGyroMountPoseYaw {25.1};
 
-    constexpr auto kRefreshRate = units::frequency::hertz_t{50};
+    constexpr auto kRefreshRate = units::frequency::hertz_t{100};
 
     static frc::SwerveDriveKinematics<4> kKinematics {
         frc::Translation2d{+SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
@@ -151,7 +151,7 @@ namespace SwerveModuleConstants {
     constexpr double kWheelCircumferenceMeters {2.0 * Pi * kWheelRadiusMeters};
     constexpr double kDriveGearRatio {8.1};
     constexpr double kAngleGearRatio {15.43};
-    constexpr double kRotationsPerMeter {kWheelCircumferenceMeters};
+    constexpr double kRotationsPerMeter {1.0 / kWheelCircumferenceMeters};
     constexpr int kFalconEncoderTicksPerRevolution {2048};
     constexpr int kCANcoderTicksPerRevolution {4096};
 }
@@ -172,6 +172,30 @@ namespace AutoConstants {
         kMaxAutoSpeed, // Max module speed, in m/s
         kDriveBaseRadius, // Drive base radius in meters. Distance from robot center to furthest module.
         pathplanner::ReplanningConfig() // Defaults to replanning if robot is not at starting point, doesn't replan if robot strays too far
+    };
+
+    using namespace std::literals;
+    constexpr std::array kAutonomousPaths {
+        "Do Nothing - Mid"sv,
+        "Score 1 - Top"sv,
+        "Score 1 - Mid"sv,
+        "Score 1 - Bottom"sv,
+        "Score 2 - Top"sv,
+        "Score 2 - Skip First Top"sv,
+        "Score 2 - Mid"sv,
+        "Score 2 - Mid - Amp"sv,
+        "Score 2 - Bottom"sv,
+        "Score 3 - Top 1"sv,
+        "Score 3 - Top - Amp"sv,
+        "Score 3 - Top 1 - Amp x2"sv,
+        "Score 3 - Skip First Top"sv,
+        "Score 3 - Mid 2"sv,
+        "Score 3 - Mid 3 - Under"sv,
+        "Score 3 - Bottom 5"sv,
+        "Sweep Auto"sv,
+        "Test - Line"sv,
+        "Test - Line Rotate"sv,
+        "Test - S"sv
     };
 }
 
@@ -356,31 +380,4 @@ namespace ClimberConstants{
     constexpr double kExtendServoAngle {90.0};
     constexpr double kRetractMotorSpeed {-0.5};
     constexpr double kRetractServoAngle {0.0};
-}
-
-namespace AutoConstants {
-    using namespace std::literals;
-    constexpr std::array kAutonomousPaths {
-        "Do Nothing - Mid"sv,
-        "Score 1 - Top"sv,
-        "Score 1 - Mid"sv,
-        "Score 1 - Bottom"sv,
-        "Score 2 - Top"sv,
-        "Score 2 - Skip First Top"sv,
-        "Score 2 - Mid"sv,
-        "Score 2 - Mid - Amp"sv,
-        "Score 2 - Bottom"sv,
-        "Score 3 - Top 1"sv,
-        "Score 3 - Top - Amp"sv,
-        "Score 3 - Top 1 - Amp x2"sv,
-        "Score 3 - Skip First Top"sv,
-        "Score 3 - Mid 2"sv,
-        "Score 3 - Mid 3 - Under"sv,
-        "Score 3 - Bottom 5"sv,
-        "Sweep Auto"sv,
-        "Test - Line"sv,
-        "Test - Line Rotate"sv,
-        "Test - S"sv
-    };
-    // constexpr auto ethanbucket = kAutonomousPaths.at(0);
 }

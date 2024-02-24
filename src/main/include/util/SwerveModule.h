@@ -18,10 +18,6 @@
 #include <string>
 #include "Constants.h"
 
-
-
-
-
 struct PIDValues {
   double driveP;
   double driveI;

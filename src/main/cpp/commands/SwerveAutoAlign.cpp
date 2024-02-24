@@ -11,6 +11,7 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
 m_withinThresholdLoops(0),
 m_goal(0.0_deg) {
   // Use addRequirements() here to declare subsystem dependencies.
+  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(swerve);
   m_rotationPIDController.EnableContinuousInput(0_deg, 360_deg);
   if (shouldAlignSpeaker)
@@ -53,7 +54,7 @@ units::angular_velocity::radians_per_second_t SwerveAutoAlign::GetDesiredRotatio
 }
 
 units::degree_t SwerveAutoAlign::GetSpeakerGoalAngle() {
-  frc::Pose3d tagPose;
+  frc::Pose3d tagPose = VisionConstants::kTagPoses.at(6);
   auto allianceSide = frc::DriverStation::GetAlliance();
   if (allianceSide) {
     if (allianceSide.value() == frc::DriverStation::Alliance::kRed) {
