@@ -11,17 +11,15 @@ SetIntakeRotation::SetIntakeRotation(Intake *intake, IntakeState state) : m_inta
 
 // Called when the command is initially scheduled.
 void SetIntakeRotation::Initialize() {
-  
-}
-
-// Called repeatedly when this Command is scheduled to run
-void SetIntakeRotation::Execute() {
   m_intake->SetState(m_state);
 }
 
+// Called repeatedly when this Command is scheduled to run
+void SetIntakeRotation::Execute() {}
+
 // Called once the command ends or is interrupted.
 void SetIntakeRotation::End(bool interrupted) {
-  m_intake->SetRotationPower(0.0);
+  // m_intake->SetRotationPower(0.0);
 }
 
 // Returns true when the command should end.

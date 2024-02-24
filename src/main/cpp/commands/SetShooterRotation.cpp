@@ -19,7 +19,7 @@ void SetShooterRotation::Execute() {}
 
 // Called once the command ends or is interrupted.
 void SetShooterRotation::End(bool interrupted) {
-  m_shooter->SetRotationPower(0.0);
+  // m_shooter->SetRotationPower(0.0);
 }
 
 // Returns true when the command should end.

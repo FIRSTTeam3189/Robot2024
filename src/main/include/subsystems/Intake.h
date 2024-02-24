@@ -31,6 +31,8 @@ class Intake : public frc2::SubsystemBase {
   bool NoteDetected();
   void UpdateUltrasonic();
   void UpdatePreferences();
+  void ConfigRollerMotor();
+  void ConfigRotationMotor();
 
   frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
@@ -40,7 +42,7 @@ class Intake : public frc2::SubsystemBase {
   void Periodic() override;
 
  protected:
-  void Config();
+  void ConfigPID();
 
  private:
   rev::CANSparkMax m_rotationMotor;

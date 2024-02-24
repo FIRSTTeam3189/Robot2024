@@ -37,6 +37,7 @@ class Shooter : public frc2::SubsystemBase {
   void ConfigRollerMotor();
   void ConfigExtensionMotor();
   void ConfigRotationMotor();
+  void ConfigPID();
   bool NoteDetected();
   void UpdateUltrasonic();
   void UpdatePreferences();
@@ -44,7 +45,6 @@ class Shooter : public frc2::SubsystemBase {
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
   void SetState(ShooterState state);
   units::degree_t GetTarget();
-
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.

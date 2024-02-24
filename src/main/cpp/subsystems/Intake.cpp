@@ -33,15 +33,15 @@ Intake::Intake() :
 m_currentState(IntakeState::Retracted),
 m_prevState(IntakeState::None)
 {
-    m_ff = new frc::ArmFeedforward(
-        IntakeConstants::kSRotation,
-        IntakeConstants::kGRotation,
-        IntakeConstants::kVRotation,
-        IntakeConstants::kARotation
-    );
+    ConfigRotationMotor();
+    ConfigRollerMotor();
+    ConfigPID();
 
+    std::cout << "Intake constructed\n";
+}
+
+void Intake::ConfigRotationMotor() {
     m_rotationMotor.RestoreFactoryDefaults();
-    m_rollerMotor.RestoreFactoryDefaults();
     m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
     m_rotationMotor.SetInverted(IntakeConstants::kRotationMotorInverted);
@@ -49,8 +49,21 @@ m_prevState(IntakeState::None)
     m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
     m_rotationEncoder.SetVelocityConversionFactor(IntakeConstants::kRotationConversion);
     m_rotationEncoder.SetZeroOffset(IntakeConstants::kRotationOffset);
+}
 
+void Intake::ConfigRollerMotor() {
+    m_rollerMotor.RestoreFactoryDefaults();
+    m_rollerMotor.SetSmartCurrentLimit(IntakeConstants::kRollerCurrentLimit);
     m_rollerMotor.SetInverted(IntakeConstants::kRollerInverted);
+}
+
+void Intake::ConfigPID() {
+    m_ff = new frc::ArmFeedforward(
+        IntakeConstants::kSRotation,
+        IntakeConstants::kGRotation,
+        IntakeConstants::kVRotation,
+        IntakeConstants::kARotation
+    );
 
     m_rotationPKey = "Intake Rotation P";
     m_rotationIKey = "Intake Rotation I";
@@ -68,12 +81,6 @@ m_prevState(IntakeState::None)
     frc::Preferences::InitDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
     frc::Preferences::InitDouble(m_rotationAKey, IntakeConstants::kARotation.value());
 
-    std::cout << "Intake constructed\n";
-
-    // Config();
-}
-
-void Intake::Config() {
     m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
     m_rotationPIDController.SetP(kRotationTargetPID[IntakeState::Extended][0]);
     m_rotationPIDController.SetI(kRotationTargetPID[IntakeState::Extended][1]);
@@ -218,6 +225,7 @@ void Intake::UpdatePreferences() {
     double g = frc::Preferences::GetDouble(m_rotationGKey, IntakeConstants::kGRotation.value());
     double v = frc::Preferences::GetDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
     double a = frc::Preferences::GetDouble(m_rotationAKey, IntakeConstants::kARotation.value());
+    delete m_ff;
     m_ff = new frc::ArmFeedforward(
         units::volt_t{s},
         units::volt_t{g},

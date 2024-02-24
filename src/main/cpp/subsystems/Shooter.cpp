@@ -33,32 +33,11 @@ m_sysIdRoutine(
         },
         this)
 ) {
-    m_ff = new frc::ArmFeedforward(
-        IntakeConstants::kSRotation,
-        IntakeConstants::kGRotation,
-        IntakeConstants::kVRotation,
-        IntakeConstants::kARotation
-    );
-
+    
     ConfigRollerMotor();
     ConfigExtensionMotor();
     ConfigRotationMotor();
-
-    m_rotationPKey = "Shooter Rotation P";
-    m_rotationIKey = "Shooter Rotation I";
-    m_rotationDKey = "Shooter Rotation D";
-    m_rotationGKey = "Shooter Rotation G";
-    m_rotationSKey = "Shooter Rotation S";
-    m_rotationVKey = "Shooter Rotation V";
-    m_rotationAKey = "Shooter Rotation A";
-
-    frc::Preferences::InitDouble(m_rotationPKey, ShooterConstants::kPRotation);
-    frc::Preferences::InitDouble(m_rotationIKey, ShooterConstants::kIRotation);
-    frc::Preferences::InitDouble(m_rotationDKey, ShooterConstants::kDRotation);
-    frc::Preferences::InitDouble(m_rotationGKey, ShooterConstants::kGRotation.value());
-    frc::Preferences::InitDouble(m_rotationSKey, ShooterConstants::kSRotation.value());
-    frc::Preferences::InitDouble(m_rotationVKey, ShooterConstants::kVRotation.value());
-    frc::Preferences::InitDouble(m_rotationAKey, ShooterConstants::kARotation.value());
+    ConfigPID();
 
     std::cout << "Shooter constructing\n";
 }
@@ -145,11 +124,13 @@ double Shooter::GetExtension() {
 
 void Shooter::ConfigRollerMotor() {
     m_rollerMotor.RestoreFactoryDefaults();
+    m_rollerMotor.SetSmartCurrentLimit(ShooterConstants::kRollerCurrentLimit);
     m_rollerMotor.SetInverted(ShooterConstants::kRollerInverted);
 }
 
 void Shooter::ConfigExtensionMotor() {
     m_extensionMotor.RestoreFactoryDefaults();
+    m_extensionMotor.SetSmartCurrentLimit(ShooterConstants::kExtensionCurrentLimit);
     m_extensionPIDController.SetFeedbackDevice(m_extensionEncoder);
     m_extensionPIDController.SetP(ShooterConstants::kPExtension);
     m_extensionPIDController.SetI(ShooterConstants::kIExtension);
@@ -172,6 +153,31 @@ void Shooter::ConfigRotationMotor() {
     // m_rotationPIDController.SetD(ShooterConstants::kDRotation);
 }
 
+void Shooter::ConfigPID() {
+    m_ff = new frc::ArmFeedforward(
+        IntakeConstants::kSRotation,
+        IntakeConstants::kGRotation,
+        IntakeConstants::kVRotation,
+        IntakeConstants::kARotation
+    );
+
+    m_rotationPKey = "Shooter Rotation P";
+    m_rotationIKey = "Shooter Rotation I";
+    m_rotationDKey = "Shooter Rotation D";
+    m_rotationGKey = "Shooter Rotation G";
+    m_rotationSKey = "Shooter Rotation S";
+    m_rotationVKey = "Shooter Rotation V";
+    m_rotationAKey = "Shooter Rotation A";
+
+    frc::Preferences::InitDouble(m_rotationPKey, ShooterConstants::kPRotation);
+    frc::Preferences::InitDouble(m_rotationIKey, ShooterConstants::kIRotation);
+    frc::Preferences::InitDouble(m_rotationDKey, ShooterConstants::kDRotation);
+    frc::Preferences::InitDouble(m_rotationGKey, ShooterConstants::kGRotation.value());
+    frc::Preferences::InitDouble(m_rotationSKey, ShooterConstants::kSRotation.value());
+    frc::Preferences::InitDouble(m_rotationVKey, ShooterConstants::kVRotation.value());
+    frc::Preferences::InitDouble(m_rotationAKey, ShooterConstants::kARotation.value());
+}
+
 void Shooter::UpdatePreferences() {
     m_rotationPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, ShooterConstants::kPRotation));
     m_rotationPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, ShooterConstants::kIRotation));
@@ -180,6 +186,7 @@ void Shooter::UpdatePreferences() {
     double g = frc::Preferences::GetDouble(m_rotationGKey, IntakeConstants::kGRotation.value());
     double v = frc::Preferences::GetDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
     double a = frc::Preferences::GetDouble(m_rotationAKey, IntakeConstants::kARotation.value());
+    delete m_ff;
     m_ff = new frc::ArmFeedforward(
         units::volt_t{s},
         units::volt_t{g},

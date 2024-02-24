@@ -197,6 +197,7 @@ namespace ShooterConstants {
     constexpr double kDExtension {0.0};
 
     constexpr double kShootPower {1.0};
+    constexpr auto kRevUpTime {1.0_s};
 
     constexpr auto kAxleToCenterDistance {0.0741_m};
     constexpr auto kAxleToGroundDistance {0.2185_m};
@@ -216,7 +217,9 @@ namespace ShooterConstants {
     constexpr double kRotationOffset {46.67};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
-    constexpr unsigned int kRotationCurrentLimit {30};
+    constexpr unsigned int kRotationCurrentLimit {40};
+    constexpr unsigned int kRollerCurrentLimit {20};
+    constexpr unsigned int kExtensionCurrentLimit {40};
     constexpr auto kRotationStopDistance {5.0_deg};
 
     constexpr bool kRollerInverted {true};
@@ -245,6 +248,8 @@ namespace IntakeConstants{
     constexpr double kAmpScorePower {-1.0};
     constexpr double kLoadPower {0.5};
 
+    constexpr unsigned int kRotationCurrentLimit {40};
+    constexpr unsigned int kRollerCurrentLimit {20};
 
     constexpr double kPRotation {0.005};
     constexpr double kIRotation {0.00000};
@@ -268,7 +273,6 @@ namespace IntakeConstants{
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
     constexpr bool kRotationMotorInverted {true};
-    constexpr unsigned int kRotationCurrentLimit {30};
     constexpr auto kRotationStopDistance {5.0_deg};
     constexpr int kUltrasonicPort {1};
     // 5 meters in inches -- max range of sensor; used so sensor reports in inches
