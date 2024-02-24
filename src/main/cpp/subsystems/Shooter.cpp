@@ -17,6 +17,7 @@ m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncode
 m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::Type::kQuadrature, ShooterConstants::kExtensionCountsPerRev)),
 m_ultrasonicSensor(ShooterConstants::kUltrasonicPort, ShooterConstants::kUltrasonicValueRange),
 m_noteDetected(false),
+m_target(ShooterConstants::kRetractTarget),
 m_sysIdRoutine(
     // Might want to reduce voltage values later
     frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
@@ -71,6 +72,7 @@ void Shooter::Periodic() {
     UpdateUltrasonic();
     if (frc::Preferences::GetBoolean("Tuning Mode?", false))
         UpdatePreferences();
+    SetRotation(m_target);
 }
 
 void Shooter::SetRotation(units::degree_t target) {
@@ -111,7 +113,6 @@ void Shooter::SetRotation(units::degree_t target) {
         // m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 0, ff);
     }
 
-    m_target = target;
 }
 
 void Shooter::SetExtension(double target) {
@@ -216,6 +217,8 @@ frc2::CommandPtr Shooter::SysIdDynamic(frc2::sysid::Direction direction) {
 
 void Shooter::SetState(ShooterState state){
     auto target = 0.0_deg;
+    m_target = target;
+
     switch(state){
         case(ShooterState::None):
             break;
