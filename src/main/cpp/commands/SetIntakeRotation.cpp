@@ -20,6 +20,7 @@ void SetIntakeRotation::Execute() {}
 
 // Called once the command ends or is interrupted.
 void SetIntakeRotation::End(bool interrupted) {
+  m_intake->SetSlowMode(true);
   // m_intake->SetRotationPower(0.0);
 }
 

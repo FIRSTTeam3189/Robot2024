@@ -31,7 +31,8 @@ Intake::Intake() :
         this)
 ),
 m_currentState(IntakeState::Retracted),
-m_prevState(IntakeState::None)
+m_prevState(IntakeState::None),
+m_slow(false)
 {
     (void)AutoConstants::kAutonomousPaths[0];
     ConfigRotationMotor();
@@ -104,7 +105,7 @@ void Intake::Periodic() {
     if (frc::Preferences::GetBoolean("Full Diagnostics and Tuning", false)) {
         UpdatePreferences();
         frc::SmartDashboard::PutNumber("Intake rotational velocity", m_rotationEncoder.GetVelocity());
-        frc::SmartDashboard::PutNumber("Intake desired rotational velocity", m_rotationEncoder.GetVelocity());
+        frc::SmartDashboard::PutNumber("Intake desired rotational velocity", m_profiledPIDController.GetSetpoint().velocity.value());
         frc::SmartDashboard::PutNumber("Intake rotational acceleration", m_acceleration.value());
         frc::SmartDashboard::PutNumber("Intake desired rotational acceleration", m_targetAcceleration.value());
     }
@@ -124,12 +125,15 @@ void Intake::SetState(IntakeState state) {
             break;
         case (IntakeState::Extended) :
             target = IntakeConstants::kExtendTarget;
+            m_currentState = IntakeState::Extended;
             break;
         case (IntakeState::Amp) :
             target = IntakeConstants::kAmpTarget;
+            m_currentState = IntakeState::Amp;
             break;
         case (IntakeState::Retracted) :
             target = IntakeConstants::kRetractTarget;
+            m_currentState = IntakeState::Retracted;
             break;
     }
 
@@ -148,7 +152,7 @@ void Intake::SetRotation(units::degree_t target) {
     // Uses the acceleration value and desired velocity to calculate feedforward gains
     // Feedforward gains are approximated based on the current state of the system and a known physics model
     // Gains calculated with SysID   
-    m_acceleration = (m_profiledPIDController.GetSetpoint().velocity - m_lastSpeed) /
+    m_acceleration = (units::degrees_per_second_t{m_rotationEncoder.GetVelocity()} - m_lastSpeed) /
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
 
     m_targetAcceleration = (m_profiledPIDController.GetSetpoint().velocity - m_lastTargetSpeed) /
@@ -161,8 +165,13 @@ void Intake::SetRotation(units::degree_t target) {
         m_rotationMotor.SetVoltage(0.0_V);
     else if (GetRotation() >= 110.0_deg && (PIDValue + ffValue).value() >= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
-    else 
-        m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
+    else {
+        if (m_slow)
+            m_rotationMotor.SetVoltage((PIDValue + ffValue) / 2.0);
+        else
+            m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
+
+    }
 
     frc::SmartDashboard::PutNumber("Intake rotation volts", PIDValue.value() + ffValue.value());
 
@@ -206,9 +215,9 @@ void Intake::SetRotation(units::degree_t target) {
         //     ff = IntakeConstants::kFeedforward;
         // }
 
-        // if (m_currentState == IntakeState::Extended) {
+        // if (m_currentState == IntakeState::Extended && m_prevstate == IntakeState::Retracted) {
         //     // m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 0, ff);
-        // } else if (m_currentState == IntakeState::Amp) {
+        // } else if (m_currentState == IntakeState::Retracted && m_prevstate == IntakeState::Extended) {
         //     // m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 1, ff);
         // } else {
         //     m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 2, ff);
@@ -274,4 +283,8 @@ frc2::CommandPtr Intake::SysIdDynamic(frc2::sysid::Direction direction) {
     for (int i = 0; i < 10; i++) 
         std::cout << "Intake Dynamic\n";
     return m_sysIdRoutine.Dynamic(direction);
+}
+
+void Intake::SetSlowMode(bool slow){
+    m_slow = slow;
 }

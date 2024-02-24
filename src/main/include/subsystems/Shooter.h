@@ -45,6 +45,7 @@ class Shooter : public frc2::SubsystemBase {
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
   void SetState(ShooterState state);
   units::degree_t GetTarget();
+  void SetSlowMode(bool slow);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -59,8 +60,8 @@ class Shooter : public frc2::SubsystemBase {
    rev::CANSparkMax m_extensionMotor;
    rev::CANSparkMax m_rotationMotor;
    frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
-   frc::ProfiledPIDController<units::degrees> m_rotationPIDController;
-   // rev::SparkMaxPIDController m_rotationPIDController;
+   frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
+   rev::SparkMaxPIDController m_rotationPIDController;
    frc::ArmFeedforward *m_ff;
    rev::SparkMaxPIDController m_extensionPIDController;
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
@@ -74,6 +75,9 @@ class Shooter : public frc2::SubsystemBase {
    units::degrees_per_second_squared_t m_targetAcceleration;
    units::second_t m_lastTime;
    frc2::sysid::SysIdRoutine m_sysIdRoutine;
+   ShooterState m_currentState;
+   bool m_slow; 
+
    // String keys for PID preferences
    std::string m_rotationPKey;
    std::string m_rotationIKey;
@@ -82,4 +86,9 @@ class Shooter : public frc2::SubsystemBase {
    std::string m_rotationSKey;
    std::string m_rotationVKey;
    std::string m_rotationAKey;
+
+   std::map<ShooterState, std::array<double, 3>> kRotationTargetPID {
+        {{ShooterState::Retracted}, {ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation}},
+        {{ShooterState::Load}, {ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation}}
+    };
 };

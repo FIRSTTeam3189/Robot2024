@@ -33,6 +33,7 @@ class Intake : public frc2::SubsystemBase {
   void UpdatePreferences();
   void ConfigRollerMotor();
   void ConfigRotationMotor();
+  void SetSlowMode(bool slow);
 
   frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
@@ -63,6 +64,7 @@ class Intake : public frc2::SubsystemBase {
   frc2::sysid::SysIdRoutine m_sysIdRoutine;
   IntakeState m_currentState;
   IntakeState m_prevState;
+  bool m_slow;
   
   // String keys for PID preferences
   std::string m_rotationPKey;
