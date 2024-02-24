@@ -18,12 +18,9 @@
 #include <string>
 #include "Constants.h"
 
-struct Signals {
-  ctre::phoenix6::StatusSignal<units::angle::turn_t> drivePosition;
-  ctre::phoenix6::StatusSignal<units::angle::turn_t> anglePosition;
-  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> driveVelocity;
-  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> angleVelocity;
-};
+
+
+
 
 struct PIDValues {
   double driveP;
@@ -51,7 +48,7 @@ class SwerveModule {
   units::meters_per_second_t GetDriveSpeed();
   units::volt_t GetDriveVoltage();
   units::volt_t GetAngleVoltage();
-  Signals GetSignals();
+  std::vector<ctre::phoenix6::BaseStatusSignal*> GetSignals();
   void SetDriveVoltage(units::volt_t voltage);
   void SetAngleVoltage(units::volt_t voltage);
   void ResetDriveEncoder();
@@ -81,7 +78,6 @@ class SwerveModule {
   ctre::phoenix6::StatusSignal<units::angle::turn_t> m_anglePosition = m_angleMotor.GetPosition();
   ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_driveVelocity = m_driveMotor.GetVelocity();
   ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_angleVelocity = m_angleMotor.GetVelocity();
-  Signals m_signals;
 
   ctre::phoenix6::controls::VelocityVoltage m_driveSetter{0.0_rad / 1.0_s};
   ctre::phoenix6::controls::PositionVoltage m_angleSetter{0.0_rad};
@@ -93,4 +89,6 @@ class SwerveModule {
   std::string m_anglePKey;
   std::string m_angleIKey;
   std::string m_angleDKey;
+
+  std::vector<ctre::phoenix6::BaseStatusSignal*> m_signals;
 };

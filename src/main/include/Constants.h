@@ -17,6 +17,7 @@
 #include <ctre/phoenix6/signals/SpnEnums.hpp>
 #include <units/angular_velocity.h>
 #include <units/time.h>
+#include <units/frequency.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
 #include <units/acceleration.h>
@@ -48,6 +49,8 @@ namespace SwerveDriveConstants {
     constexpr auto kYDistanceFromCenter {0.282575_m};
 
     constexpr double kGyroMountPoseYaw {25.1};
+
+    constexpr auto kRefreshRate = units::frequency::hertz_t{50};
 
     static frc::SwerveDriveKinematics<4> kKinematics {
         frc::Translation2d{+SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
