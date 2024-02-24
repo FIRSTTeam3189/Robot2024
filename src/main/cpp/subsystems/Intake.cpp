@@ -31,7 +31,8 @@ Intake::Intake() :
         this)
 ),
 m_currentState(IntakeState::Retracted),
-m_prevState(IntakeState::None)
+m_prevState(IntakeState::None),
+m_slow(false)
 {
     ConfigRotationMotor();
     ConfigRollerMotor();
@@ -155,8 +156,12 @@ void Intake::SetRotation(units::degree_t target) {
         m_rotationMotor.SetVoltage(0.0_V);
     else if (GetRotation() >= 110.0_deg && (PIDValue + ffValue).value() >= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
-    else 
-        m_rotationMotor.SetVoltage(PIDValue + ffValue);
+    else {
+        if (m_slow)
+            m_rotationMotor.SetVoltage((PIDValue + ffValue) / 2.0);
+        else
+            m_rotationMotor.SetVoltage(PIDValue + ffValue);
+    }
 
     // switch (target) {
     // case IntakeConstants::kRetractTarget :
@@ -267,4 +272,8 @@ frc2::CommandPtr Intake::SysIdDynamic(frc2::sysid::Direction direction) {
     for (int i = 0; i < 10; i++) 
         std::cout << "Intake Dynamic\n";
     return m_sysIdRoutine.Dynamic(direction);
+}
+
+void Intake::SetSlowMode(bool slow){
+    m_slow = slow;
 }

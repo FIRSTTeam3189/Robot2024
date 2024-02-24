@@ -80,7 +80,10 @@ void Shooter::SetRotation(units::degree_t target) {
     else if (GetRotation() > 60.0_deg && (PIDValue + ffValue).value() >= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
     else {
-        m_rotationMotor.SetVoltage((PIDValue + ffValue));
+        if (m_slow)
+            m_rotationMotor.SetVoltage((PIDValue + ffValue) / 2.0);
+        else
+            m_rotationMotor.SetVoltage((PIDValue + ffValue));
         // if (target < GetRotation()) {
         //     m_rotationPIDController.SetP(ShooterConstants::kPRotation / 1.25);
         //     // ff = ShooterConstants::kFeedforward / 2.0;
@@ -271,4 +274,8 @@ void Shooter::SetState(ShooterState state){
 
 units::degree_t Shooter::GetTarget(){
     return m_target;
+}
+
+void Shooter::SetSlowMode(bool slow){
+    m_slow = slow;
 }

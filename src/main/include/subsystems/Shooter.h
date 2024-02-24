@@ -45,6 +45,7 @@ class Shooter : public frc2::SubsystemBase {
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
   void SetState(ShooterState state);
   units::degree_t GetTarget();
+  void SetSlowMode(bool slow);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -72,6 +73,7 @@ class Shooter : public frc2::SubsystemBase {
    units::second_t m_lastTime;
    frc2::sysid::SysIdRoutine m_sysIdRoutine;
    ShooterState m_currentState;
+   bool m_slow; 
 
    // String keys for PID preferences
    std::string m_rotationPKey;
