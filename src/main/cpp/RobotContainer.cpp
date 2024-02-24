@@ -109,12 +109,15 @@ void RobotContainer::ConfigureDriverBindings() {
   frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDCreate)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
     // m_swerveDrive->ResetGyroscope();
-    m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
+    m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, false);
   },{m_swerveDrive}).ToPtr());
 
   frc2::Trigger resetSpeakerPoseButton{m_bill.Button(OperatorConstants::kButtonIDMenu)};
-  resetPoseButton.OnTrue(frc2::InstantCommand([this]{
-    m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{0.0_deg}}, false);
+  resetSpeakerPoseButton.OnTrue(frc2::InstantCommand([this]{
+    if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
+      m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{0.0_deg}}, false);
+    else
+      m_swerveDrive->SetPose(frc::Pose2d{15.579_m, 5.50_m, frc::Rotation2d{180.0_deg}}, false);
   },{m_swerveDrive}).ToPtr());
 
   frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};

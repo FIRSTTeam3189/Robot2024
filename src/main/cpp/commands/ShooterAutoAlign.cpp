@@ -50,7 +50,7 @@ units::degree_t ShooterAutoAlign::CalculateShooterAngle() {
   //     tagPose = VisionConstants::kTagPoses.at(6);
   //   }
   // } else {
-  auto allianceSide = frc::DriverStation::GetAlliance();
+  auto allianceSide = frc::DriverStation::GetAlliance().value();
   if (allianceSide == frc::DriverStation::Alliance::kRed) {
     tagPose = VisionConstants::kTagPoses.at(3);
   } else {
