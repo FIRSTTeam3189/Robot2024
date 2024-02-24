@@ -65,12 +65,14 @@ m_angleSysIdRoutine(
                 log->Motor(name)
                     .voltage(m_moduleArray[i]->GetAngleVoltage())
                     .position(units::turn_t{m_moduleArray[i]->GetPosition(true).angle.Degrees()})
-                    .velocity(m_moduleArray[i]->GetSignals().angleVelocity.GetValue());
+                    .velocity(m_moduleArray[i]->GetSignals()[3]->GetLatencyCompensatedValue());
             }
         },
         this)
-) {   
+)
+  {   
     ConfigGyro();
+    ConfigSignals();
     auto poseEstimator = new frc::SwerveDrivePoseEstimator<4> (SwerveDriveConstants::kKinematics, m_pigeon.GetRotation2d(), 
     m_modulePositions, frc::Pose2d{}, VisionConstants::kEncoderTrustCoefficients, VisionConstants::kVisionTrustCoefficients);
     m_poseHelper->SetPoseEstimator(poseEstimator);
@@ -122,6 +124,28 @@ void SwerveDrive::Periodic() {
         m_modules.m_backRight.UpdatePreferences();
     }
     UpdateEstimator();
+    RefreshAllSignals();
+}
+
+void SwerveDrive::RefreshAllSignals() {
+    ctre::phoenix6::BaseStatusSignal::WaitForAll(0.02_s, m_allSignals);
+}
+
+void SwerveDrive::ConfigSignals() {
+    // Takes in robot frequency Talon FX using 
+    for(int i=0; i < 4; i++) {
+        auto signals = m_moduleArray[i]->GetSignals();
+        for(int j=0; j < 4; j++) {
+            m_allSignals.emplace_back(signals[j]);
+        }
+    }
+
+    frc::SmartDashboard::PutNumber("Signal refresh rate 0", m_allSignals[0]->GetAppliedUpdateFrequency());
+    frc::SmartDashboard::PutNumber("Signal refresh rate 1", m_allSignals[1]->GetAppliedUpdateFrequency());
+    frc::SmartDashboard::PutNumber("Signal refresh rate 2", m_allSignals[2]->GetAppliedUpdateFrequency());
+    frc::SmartDashboard::PutNumber("Signal refresh rate 3", m_allSignals[3]->GetAppliedUpdateFrequency());
+
+    ctre::phoenix6::BaseStatusSignal::SetUpdateFrequencyForAll(SwerveDriveConstants::kRefreshRate, m_allSignals);
 }
 
 void SwerveDrive::ConfigGyro() {

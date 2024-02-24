@@ -13,6 +13,7 @@
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/DriverStation.h>
 #include <ctre/phoenix6/Pigeon2.hpp>
+#include <ctre/phoenix6/StatusSignal.hpp>
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include "util/SwerveModule.h"
 #include "subsystems/PoseEstimatorHelper.h"
@@ -31,6 +32,8 @@ struct SwerveModules {
 
 class SwerveDrive : public frc2::SubsystemBase {
  public:
+  void RefreshAllSignals();
+  void ConfigSignals();
   void UpdatePreferences();
   SwerveDrive(PoseEstimatorHelper *helper);
   void SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates);
@@ -88,4 +91,6 @@ class SwerveDrive : public frc2::SubsystemBase {
   std::string m_anglePKey;
   std::string m_angleIKey;
   std::string m_angleDKey;
+
+  std::vector<ctre::phoenix6::BaseStatusSignal*> m_allSignals;
 };

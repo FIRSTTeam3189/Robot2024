@@ -190,7 +190,7 @@ double SwerveModule::NormalizeTo0To360(double currentAngle, double targetAngle) 
       return targetAngle;
 }
 
-Signals SwerveModule::GetSignals() {
+std::vector<ctre::phoenix6::BaseStatusSignal*> SwerveModule::GetSignals() {
     return m_signals;
 }
 
