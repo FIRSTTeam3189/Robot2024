@@ -5,11 +5,12 @@
 #include "commands/TransferLoader.h"
 
 TransferLoader::TransferLoader(Shooter *shooter, double loadPower, double shootPower) :
+m_shooter(shooter),
+m_loadPower(loadPower), 
+m_shootPower(shootPower),
+m_isFinished(false) {
   // Use addRequirements() here to declare subsystem dependencies.
-  m_shooter(shooter),
-  m_loadPower(loadPower), 
-  m_shootPower(shootPower),
-  m_isFinished(false) {
+  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(shooter);
 }
 

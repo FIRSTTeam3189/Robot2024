@@ -5,6 +5,7 @@
 #include "commands/SetIntakeRotation.h"
 
 SetIntakeRotation::SetIntakeRotation(Intake *intake, IntakeState state) : m_intake(intake), m_state(state) {
+  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(intake);
   // Use addRequirements() here to declare subsystem dependencies.
 }

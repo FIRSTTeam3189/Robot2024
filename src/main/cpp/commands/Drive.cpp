@@ -28,9 +28,9 @@ m_allianceSide(frc::DriverStation::Alliance::kBlue) {
   m_rotationIKey = "Robot Rotation I";
   m_rotationDKey = "Robot Rotation D";
 
-  frc::Preferences::InitDouble(m_rotationPKey, SwerveDriveConstants::kPRot);
-  frc::Preferences::InitDouble(m_rotationIKey, SwerveDriveConstants::kIRot);
-  frc::Preferences::InitDouble(m_rotationDKey, SwerveDriveConstants::kDRot);
+  frc::Preferences::SetDouble(m_rotationPKey, SwerveDriveConstants::kPRot);
+  frc::Preferences::SetDouble(m_rotationIKey, SwerveDriveConstants::kIRot);
+  frc::Preferences::SetDouble(m_rotationDKey, SwerveDriveConstants::kDRot);
 }
 
 units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocity() {
@@ -184,7 +184,7 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
 }
 
 void Drive::UpdatePreferences() {
-  if (frc::Preferences::GetBoolean("Tuning Mode?", false)) {
+  if (frc::Preferences::GetBoolean("Full Diagnostics and Tuning", false)) {
     m_rotationPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, SwerveDriveConstants::kPRot));
     m_rotationPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, SwerveDriveConstants::kIRot));
     m_rotationPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, SwerveDriveConstants::kDRot));

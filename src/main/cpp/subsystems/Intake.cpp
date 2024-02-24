@@ -33,6 +33,7 @@ Intake::Intake() :
 m_currentState(IntakeState::Retracted),
 m_prevState(IntakeState::None)
 {
+    (void)AutoConstants::kAutonomousPaths[0];
     ConfigRotationMotor();
     ConfigRollerMotor();
     ConfigPID();
@@ -73,13 +74,13 @@ void Intake::ConfigPID() {
     m_rotationVKey = "Intake Rotation V";
     m_rotationAKey = "Intake Rotation A";
 
-    frc::Preferences::InitDouble(m_rotationPKey, IntakeConstants::kPRotation);
-    frc::Preferences::InitDouble(m_rotationIKey, IntakeConstants::kIRotation);
-    frc::Preferences::InitDouble(m_rotationDKey, IntakeConstants::kDRotation);
-    frc::Preferences::InitDouble(m_rotationGKey, IntakeConstants::kGRotation.value());
-    frc::Preferences::InitDouble(m_rotationSKey, IntakeConstants::kSRotation.value());
-    frc::Preferences::InitDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
-    frc::Preferences::InitDouble(m_rotationAKey, IntakeConstants::kARotation.value());
+    frc::Preferences::SetDouble(m_rotationPKey, IntakeConstants::kPRotation);
+    frc::Preferences::SetDouble(m_rotationIKey, IntakeConstants::kIRotation);
+    frc::Preferences::SetDouble(m_rotationDKey, IntakeConstants::kDRotation);
+    frc::Preferences::SetDouble(m_rotationGKey, IntakeConstants::kGRotation.value());
+    frc::Preferences::SetDouble(m_rotationSKey, IntakeConstants::kSRotation.value());
+    frc::Preferences::SetDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
+    frc::Preferences::SetDouble(m_rotationAKey, IntakeConstants::kARotation.value());
 
     m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
     m_rotationPIDController.SetP(kRotationTargetPID[IntakeState::Extended][0]);
@@ -100,8 +101,13 @@ void Intake::Periodic() {
     frc::SmartDashboard::PutNumber("Intake PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Intake rotation", m_rotationEncoder.GetPosition());
     UpdateUltrasonic();
-    if (frc::Preferences::GetBoolean("Tuning Mode?", false))
+    if (frc::Preferences::GetBoolean("Full Diagnostics and Tuning", false)) {
         UpdatePreferences();
+        frc::SmartDashboard::PutNumber("Intake rotational velocity", m_rotationEncoder.GetVelocity());
+        frc::SmartDashboard::PutNumber("Intake desired rotational velocity", m_rotationEncoder.GetVelocity());
+        frc::SmartDashboard::PutNumber("Intake rotational acceleration", m_acceleration.value());
+        frc::SmartDashboard::PutNumber("Intake desired rotational acceleration", m_targetAcceleration.value());
+    }
     SetRotation(m_target);
 }
 
@@ -141,11 +147,14 @@ void Intake::SetRotation(units::degree_t target) {
     // Calculates the change in velocity (acceleration) since last control loop
     // Uses the acceleration value and desired velocity to calculate feedforward gains
     // Feedforward gains are approximated based on the current state of the system and a known physics model
-    // Gains calculated with SysID                                   
-    auto acceleration = (m_profiledPIDController.GetSetpoint().velocity - m_lastSpeed) /
+    // Gains calculated with SysID   
+    m_acceleration = (m_profiledPIDController.GetSetpoint().velocity - m_lastSpeed) /
+      (frc::Timer::GetFPGATimestamp() - m_lastTime);
+
+    m_targetAcceleration = (m_profiledPIDController.GetSetpoint().velocity - m_lastTargetSpeed) /
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
     units::volt_t ffValue = m_ff->Calculate(units::radian_t{target}, units::radians_per_second_t{m_profiledPIDController.GetSetpoint().velocity},
-                                           units::radians_per_second_squared_t{acceleration});
+                                           units::radians_per_second_squared_t{m_targetAcceleration});
 
     // Set motor to combined voltage
     if (GetRotation() <= 15.0_deg && (PIDValue + ffValue).value() <= 0.0)
@@ -153,7 +162,13 @@ void Intake::SetRotation(units::degree_t target) {
     else if (GetRotation() >= 110.0_deg && (PIDValue + ffValue).value() >= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
     else 
-        m_rotationMotor.SetVoltage(PIDValue + ffValue);
+        m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
+
+    frc::SmartDashboard::PutNumber("Intake rotation volts", PIDValue.value() + ffValue.value());
+
+    m_lastTargetSpeed = m_profiledPIDController.GetSetpoint().velocity;
+    m_lastSpeed = units::degrees_per_second_t{m_rotationEncoder.GetVelocity()};
+    m_lastTime = frc::Timer::GetFPGATimestamp();
 
     // switch (target) {
     // case IntakeConstants::kRetractTarget :
@@ -199,11 +214,6 @@ void Intake::SetRotation(units::degree_t target) {
         //     m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 2, ff);
         // }
     // }
-
-    frc::SmartDashboard::PutNumber("Intake rotation volts", PIDValue.value() + ffValue.value());
-
-    m_lastSpeed = m_profiledPIDController.GetSetpoint().velocity;
-    m_lastTime = frc::Timer::GetFPGATimestamp();
 }
 
 void Intake::SetRollerPower(double power) {

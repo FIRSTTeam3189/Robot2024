@@ -10,6 +10,7 @@ m_data(),
 m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCameraYOffset, VisionConstants::kCameraZOffset,
   frc::Rotation3d{0.0_rad, 0.0_rad, VisionConstants::kCameraYawOffset}),
 m_serialCam(VisionConstants::kBaudRate, frc::SerialPort::Port::kMXP) { 
+    (void)AutoConstants::kAutonomousPaths[0];
     // Number of bytes in one chunk of vision data
     m_serialCam.SetReadBufferSize(VisionConstants::kBufferSize);
     frc::PowerDistribution PDH{};

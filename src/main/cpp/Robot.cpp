@@ -7,6 +7,7 @@
 #include <frc2/command/CommandScheduler.h>
 
 void Robot::RobotInit() {
+  (void)AutoConstants::kAutonomousPaths[0];
   EnableLiveWindowInTest(true);
 }
 

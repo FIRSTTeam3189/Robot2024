@@ -71,6 +71,7 @@ m_angleSysIdRoutine(
         this)
 )
   {   
+    (void)AutoConstants::kAutonomousPaths[0];
     ConfigGyro();
     ConfigSignals();
     auto poseEstimator = new frc::SwerveDrivePoseEstimator<4> (SwerveDriveConstants::kKinematics, m_pigeon.GetRotation2d(), 
@@ -99,7 +100,8 @@ m_angleSysIdRoutine(
         this // Reference to this subsystem to set requirements
     );
 
-    frc::Preferences::InitBoolean(m_tuningModeKey, false);
+    frc::Preferences::SetBoolean(m_tuningModeKey, false);
+    
     m_drivePKey = "DriveP";
     m_driveIKey = "DriveI";
     m_driveDKey = "DriveD";
@@ -107,12 +109,12 @@ m_angleSysIdRoutine(
     m_angleIKey = "AngleI";
     m_angleDKey = "AngleD";
 
-    frc::Preferences::InitDouble(m_drivePKey, SwerveModuleConstants::kPDrive);
-    frc::Preferences::InitDouble(m_driveIKey, SwerveModuleConstants::kIDrive);
-    frc::Preferences::InitDouble(m_driveDKey, SwerveModuleConstants::kDDrive);
-    frc::Preferences::InitDouble(m_anglePKey, SwerveModuleConstants::kPAngle);
-    frc::Preferences::InitDouble(m_angleIKey, SwerveModuleConstants::kIAngle);
-    frc::Preferences::InitDouble(m_angleDKey, SwerveModuleConstants::kDAngle);
+    frc::Preferences::SetDouble(m_drivePKey, SwerveModuleConstants::kPDrive);
+    frc::Preferences::SetDouble(m_driveIKey, SwerveModuleConstants::kIDrive);
+    frc::Preferences::SetDouble(m_driveDKey, SwerveModuleConstants::kDDrive);
+    frc::Preferences::SetDouble(m_anglePKey, SwerveModuleConstants::kPAngle);
+    frc::Preferences::SetDouble(m_angleIKey, SwerveModuleConstants::kIAngle);
+    frc::Preferences::SetDouble(m_angleDKey, SwerveModuleConstants::kDAngle);
 }
 
 // This method will be called once per scheduler run
@@ -140,10 +142,10 @@ void SwerveDrive::ConfigSignals() {
         }
     }
 
-    frc::SmartDashboard::PutNumber("Signal refresh rate 0", m_allSignals[0]->GetAppliedUpdateFrequency().value());
-    frc::SmartDashboard::PutNumber("Signal refresh rate 1", m_allSignals[1]->GetAppliedUpdateFrequency().value());
-    frc::SmartDashboard::PutNumber("Signal refresh rate 2", m_allSignals[2]->GetAppliedUpdateFrequency().value());
-    frc::SmartDashboard::PutNumber("Signal refresh rate 3", m_allSignals[3]->GetAppliedUpdateFrequency().value());
+    // frc::SmartDashboard::PutNumber("Signal refresh rate 0", m_allSignals[0]->GetAppliedUpdateFrequency().value());
+    // frc::SmartDashboard::PutNumber("Signal refresh rate 1", m_allSignals[1]->GetAppliedUpdateFrequency().value());
+    // frc::SmartDashboard::PutNumber("Signal refresh rate 2", m_allSignals[2]->GetAppliedUpdateFrequency().value());
+    // frc::SmartDashboard::PutNumber("Signal refresh rate 3", m_allSignals[3]->GetAppliedUpdateFrequency().value());
 
     ctre::phoenix6::BaseStatusSignal::SetUpdateFrequencyForAll(SwerveDriveConstants::kRefreshRate, m_allSignals);
 }

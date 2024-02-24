@@ -56,6 +56,9 @@ class Intake : public frc2::SubsystemBase {
   frc::AnalogPotentiometer m_ultrasonicSensor;
   bool m_noteDetected;
   units::degrees_per_second_t m_lastSpeed;
+  units::degrees_per_second_t m_lastTargetSpeed;
+  units::degrees_per_second_squared_t m_acceleration;
+  units::degrees_per_second_squared_t m_targetAcceleration;
   units::second_t m_lastTime;
   frc2::sysid::SysIdRoutine m_sysIdRoutine;
   IntakeState m_currentState;

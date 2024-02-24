@@ -171,8 +171,8 @@ void RobotContainer::ConfigureCoDriverBindings() {
   // frc2::Trigger extendShooterButton{m_ted.Button(OperatorConstants::kButtonIDMicrophone)};
   // extendShooterButton.OnTrue(frc2::SequentialCommandGroup(
   //     SetIntakeRotation(m_intake, IntakeState::Retracted),
-  //     SetShooterExtension(m_shooter, ShooterConstants::kTrapExtension),
-  //     SetShooterRotation(m_shooter, ShooterConstants::kTrapExtensionAngle)
+  //     SetShooterRotation(m_shooter, ShooterConstants::kTrapExtensionAngle),
+  //     SetShooterExtension(m_shooter, ShooterConstants::kTrapExtension)
   //   ).ToPtr());
 
   frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDTouchpad)};

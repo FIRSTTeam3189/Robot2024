@@ -5,6 +5,7 @@
 #include "commands/SetShooterRotation.h"
 
 SetShooterRotation::SetShooterRotation(Shooter *shooter, ShooterState state) : m_shooter(shooter), m_state(state){
+  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(shooter);
   // Use addRequirements() here to declare subsystem dependencies.
 }

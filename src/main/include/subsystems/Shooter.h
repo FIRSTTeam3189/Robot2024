@@ -69,6 +69,9 @@ class Shooter : public frc2::SubsystemBase {
    bool m_noteDetected;
    units::degree_t m_target;
    units::degrees_per_second_t m_lastSpeed;
+   units::degrees_per_second_t m_lastTargetSpeed;
+   units::degrees_per_second_squared_t m_acceleration;
+   units::degrees_per_second_squared_t m_targetAcceleration;
    units::second_t m_lastTime;
    frc2::sysid::SysIdRoutine m_sysIdRoutine;
    // String keys for PID preferences

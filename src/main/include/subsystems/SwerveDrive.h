@@ -80,7 +80,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   ctre::phoenix6::configs::Pigeon2Configuration m_pigeonConfigs{};
 
   // Tuning mode preference -- when true, will constantly update module preferences
-  std::string_view m_tuningModeKey = "Tuning Mode?";
+  std::string_view m_tuningModeKey = "Full Diagnostics and Tuning";
   frc2::sysid::SysIdRoutine m_driveSysIdRoutine;
   frc2::sysid::SysIdRoutine m_angleSysIdRoutine;
   bool m_slowMode = false;

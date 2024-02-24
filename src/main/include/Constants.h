@@ -205,7 +205,15 @@ namespace ShooterConstants {
     constexpr int kLoaderMotorID {14};
     constexpr int kExtensionMotorID {15};
     constexpr int kRotationMotorID {16};
-    constexpr double kPRotation {0.02};
+    // constexpr double kPRotation {0.02};
+    // constexpr double kIRotation {0};
+    // constexpr double kDRotation {0.0};
+    // constexpr auto kGRotation {0.0_V};
+    // constexpr auto kSRotation {0.0_V};
+    // constexpr auto kVRotation {0.0_V * 0.0_s / 1.0_rad};
+    // constexpr auto kARotation {0.0_V * 0.0_s * 0.0_s / 1.0_rad};
+
+    constexpr double kPRotation {0.0};
     constexpr double kIRotation {0};
     constexpr double kDRotation {0.0};
     constexpr auto kGRotation {0.0_V};
@@ -278,13 +286,21 @@ namespace IntakeConstants{
     constexpr unsigned int kRotationCurrentLimit {40};
     constexpr unsigned int kRollerCurrentLimit {20};
 
-    constexpr double kPRotation {0.005};
-    constexpr double kIRotation {0.00000};
-    constexpr double kDRotation {0.01};
-    constexpr auto kSRotation {0.84149_V};
-    constexpr auto kGRotation {0.52939_V};
-    constexpr auto kVRotation {0.015044_V * 1.0_s / 1.0_rad};
-    constexpr auto kARotation {0.0006516_V * 1.0_s * 1.0_s / 1.0_rad};
+    // constexpr double kPRotation {0.005};
+    // constexpr double kIRotation {0.00000};
+    // constexpr double kDRotation {0.01};
+    // constexpr auto kSRotation {0.84149_V};
+    // constexpr auto kGRotation {0.52939_V};
+    // constexpr auto kVRotation {0.015044_V * 1.0_s / 1.0_rad};
+    // constexpr auto kARotation {0.0006516_V * 1.0_s * 1.0_s / 1.0_rad};
+
+    constexpr double kPRotation {0.0};
+    constexpr double kIRotation {0.0};
+    constexpr double kDRotation {0.0};
+    constexpr auto kSRotation {0.0_V};
+    constexpr auto kGRotation {0.0_V};
+    constexpr auto kVRotation {0.0_V * 1.0_s / 1.0_rad};
+    constexpr auto kARotation {0.0_V * 1.0_s * 1.0_s / 1.0_rad};
 
     constexpr double kFeedforward {1.0};
 

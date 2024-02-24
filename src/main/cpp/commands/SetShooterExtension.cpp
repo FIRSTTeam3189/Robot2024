@@ -5,6 +5,7 @@
 #include "commands/SetShooterExtension.h"
 
 SetShooterExtension::SetShooterExtension(Shooter *shooter, double target) : m_shooter(shooter), m_target(target) {
+  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(shooter);
   // Use addRequirements() here to declare subsystem dependencies.
 }

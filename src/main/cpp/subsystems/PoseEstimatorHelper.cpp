@@ -5,6 +5,7 @@
 #include "subsystems/PoseEstimatorHelper.h"
 
 PoseEstimatorHelper::PoseEstimatorHelper() {
+    (void)AutoConstants::kAutonomousPaths[0];
     std::cout << "Helper constructing\n";
 }
 
