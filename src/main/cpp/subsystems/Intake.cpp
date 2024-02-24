@@ -11,7 +11,7 @@ Intake::Intake() :
  m_profiledPIDController(IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation, m_constraints),
  m_rotationPIDController(m_rotationMotor.GetPIDController()),
  m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
- m_target(120.0_deg),
+ m_target(IntakeConstants::kRetractTarget),
  m_ultrasonicSensor(IntakeConstants::kUltrasonicPort, IntakeConstants::kUltrasonicValueRange),
  m_noteDetected(false),
  m_sysIdRoutine(
@@ -95,6 +95,7 @@ void Intake::Periodic() {
     UpdateUltrasonic();
     if (frc::Preferences::GetBoolean("Tuning Mode?", false))
         UpdatePreferences();
+    SetRotation(m_target);
 }
 
 units::degree_t Intake::GetTarget() {
@@ -103,6 +104,7 @@ units::degree_t Intake::GetTarget() {
 
 void Intake::SetState(IntakeState state) {
     auto target = 0.0_deg;
+    m_target = target;
 
     switch(state){
         case (IntakeState::None) :
@@ -117,6 +119,11 @@ void Intake::SetState(IntakeState state) {
             target = IntakeConstants::kRetractTarget;
             break;
     }
+
+    if (target >= 180.0_deg){
+        target -= 360.0_deg;
+    }
+
     SetRotation(target);
 }
 
@@ -190,7 +197,6 @@ void Intake::SetRotation(units::degree_t target) {
 
     m_lastSpeed = m_profiledPIDController.GetSetpoint().velocity;
     m_lastTime = frc::Timer::GetFPGATimestamp();
-    m_target = target;
 }
 
 void Intake::SetRollerPower(double power) {
