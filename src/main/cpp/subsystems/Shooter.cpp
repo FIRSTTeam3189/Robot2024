@@ -17,7 +17,7 @@ m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncode
 m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::Type::kQuadrature, ShooterConstants::kExtensionCountsPerRev)),
 m_ultrasonicSensor(ShooterConstants::kUltrasonicPort, ShooterConstants::kUltrasonicValueRange),
 m_noteDetected(false),
-m_target(ShooterConstants::kRetractTarget),
+m_target(),
 m_sysIdRoutine(
     // Might want to reduce voltage values later
     frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
@@ -33,7 +33,9 @@ m_sysIdRoutine(
               .velocity(units::turns_per_second_t{units::degrees_per_second_t{m_rotationEncoder.GetVelocity()}});
         },
         this)
-) {
+),
+m_slow(false),
+m_loopsSinceEnabled(0) {
     (void)AutoConstants::kAutonomousPaths[0];
     ConfigRollerMotor();
     ConfigExtensionMotor();
@@ -45,24 +47,37 @@ m_sysIdRoutine(
 
 // This method will be called once per scheduler run
 void Shooter::Periodic() {
-    frc::SmartDashboard::PutNumber("Shooter PID target", m_target.value());
+    if (m_target)
+        frc::SmartDashboard::PutNumber("Shooter PID target", m_target.value().value());
     frc::SmartDashboard::PutNumber("Shooter rotation", m_rotationEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("Shooter extension", m_extensionEncoder.GetPosition());
     UpdateUltrasonic();
-    if (frc::Preferences::GetBoolean("Full Diagnostics and Tuning", false)) {
-        UpdatePreferences();
+
+    if (frc::Preferences::GetBoolean("Full Diagnostics", false)) {
         frc::SmartDashboard::PutNumber("Shooter rotational velocity", m_rotationEncoder.GetVelocity());
         frc::SmartDashboard::PutNumber("Shooter desired rotational velocity", m_profiledPIDController.GetSetpoint().velocity.value());
         frc::SmartDashboard::PutNumber("Shooter rotational acceleration", m_acceleration.value());
         frc::SmartDashboard::PutNumber("Shooter desired rotational acceleration", m_targetAcceleration.value());
         frc::SmartDashboard::PutNumber("Shooter power", m_rollerMotor.Get());
     }
-    SetRotation(m_target);
+
+    if (frc::Preferences::GetBoolean("Tuning Mode", false)) {
+        UpdatePreferences();
+    }
+
+    if (frc::DriverStation::IsEnabled())
+        if (m_target)
+            SetRotation(m_target.value());
 }
 
 void Shooter::SetRotation(units::degree_t target) {
     // Calculates PID value in volts based on position and target
-    units::volt_t PIDValue = units::volt_t{m_profiledPIDController.Calculate(GetRotation(), target)};
+    units::volt_t PIDValue = 0_V;
+    if (m_loopsSinceEnabled > 20) {
+        PIDValue = units::volt_t{m_profiledPIDController.Calculate(GetRotation(), target)};
+    } else {
+        m_profiledPIDController.Calculate(GetRotation(), target);
+    }
 
     // Calculates the change in velocity (acceleration) since last control loop
     // Uses the acceleration value and desired velocity to calculate feedforward gains
@@ -71,7 +86,7 @@ void Shooter::SetRotation(units::degree_t target) {
     m_acceleration = (units::degrees_per_second_t{m_rotationEncoder.GetVelocity()} - m_lastSpeed) /
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
 
-    m_targetAcceleration = (m_profiledPIDController.GetSetpoint().velocity - m_lastSpeed) /
+    m_targetAcceleration = (m_profiledPIDController.GetSetpoint().velocity - m_lastTargetSpeed) /
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
     units::volt_t ffValue = m_ff->Calculate(units::radian_t{target}, units::radians_per_second_t{m_profiledPIDController.GetSetpoint().velocity},
                                            units::radians_per_second_squared_t{m_acceleration});
@@ -79,10 +94,13 @@ void Shooter::SetRotation(units::degree_t target) {
     // Set motor to combined voltage
     m_rotationMotor.SetVoltage(PIDValue + ffValue);
     frc::SmartDashboard::PutNumber("Shooter rotation volts", PIDValue.value() + ffValue.value());
+    frc::SmartDashboard::PutNumber("Intake rotation PID", PIDValue.value());
+    frc::SmartDashboard::PutNumber("Intake rotation FF", ffValue.value());
 
     m_lastTargetSpeed = m_profiledPIDController.GetSetpoint().velocity;
     m_lastSpeed = units::degrees_per_second_t{m_rotationEncoder.GetVelocity()};
     m_lastTime = frc::Timer::GetFPGATimestamp();
+    m_loopsSinceEnabled++;
 
     // double ff = 0.0;
      if (GetRotation() < 10.0_deg && (PIDValue + ffValue).value() <= 0.0)
@@ -165,6 +183,8 @@ void Shooter::ConfigRotationMotor() {
     m_rotationMotor.RestoreFactoryDefaults();
     m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_rotationMotor.SetSmartCurrentLimit(ShooterConstants::kRotationCurrentLimit);
+    m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus5, 20);
+    m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus6, 20);
     m_rotationEncoder.SetInverted(ShooterConstants::kRotationInverted);
     m_rotationEncoder.SetPositionConversionFactor(ShooterConstants::kRotationConversion);
     m_rotationEncoder.SetVelocityConversionFactor(ShooterConstants::kRotationConversion);
@@ -186,6 +206,7 @@ void Shooter::ConfigPID() {
     m_rotationSKey = "Shooter Rotation S";
     m_rotationVKey = "Shooter Rotation V";
     m_rotationAKey = "Shooter Rotation A";
+    m_rotationTargetKey = "Shooter Rotation Target";
 
     frc::Preferences::SetDouble(m_rotationPKey, ShooterConstants::kPRotation);
     frc::Preferences::SetDouble(m_rotationIKey, ShooterConstants::kIRotation);
@@ -194,6 +215,8 @@ void Shooter::ConfigPID() {
     frc::Preferences::SetDouble(m_rotationSKey, ShooterConstants::kSRotation.value());
     frc::Preferences::SetDouble(m_rotationVKey, ShooterConstants::kVRotation.value());
     frc::Preferences::SetDouble(m_rotationAKey, ShooterConstants::kARotation.value());
+    if (m_target)
+        frc::Preferences::SetDouble(m_rotationTargetKey, m_target.value().value());
 
     m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
    
@@ -214,6 +237,8 @@ void Shooter::UpdatePreferences() {
     double g = frc::Preferences::GetDouble(m_rotationGKey, IntakeConstants::kGRotation.value());
     double v = frc::Preferences::GetDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
     double a = frc::Preferences::GetDouble(m_rotationAKey, IntakeConstants::kARotation.value());
+    if (m_target)
+        m_target = units::degree_t{frc::Preferences::GetDouble(m_rotationTargetKey, m_target.value().value())};
     delete m_ff;
     m_ff = new frc::ArmFeedforward(
         units::volt_t{s},
@@ -221,6 +246,7 @@ void Shooter::UpdatePreferences() {
         units::unit_t<frc::ArmFeedforward::kv_unit>{v},
         units::unit_t<frc::ArmFeedforward::ka_unit>{a}
     );
+    m_loopsSinceEnabled = 0;
 }
 
 void Shooter::UpdateUltrasonic() {
@@ -251,7 +277,6 @@ frc2::CommandPtr Shooter::SysIdDynamic(frc2::sysid::Direction direction) {
 
 void Shooter::SetState(ShooterState state){
     auto target = 0.0_deg;
-    m_target = target;
 
     switch(state){
         case(ShooterState::None):
@@ -279,11 +304,22 @@ void Shooter::SetState(ShooterState state){
         default: 
             break;
     }
-    SetRotation(target);
+
+    m_target = target;
+    if (frc::DriverStation::IsEnabled()) {
+        if (m_target){
+            SetRotation(m_target.value());
+        } else {
+            m_profiledPIDController.Reset(GetRotation());
+        }
+    }
 }
 
 units::degree_t Shooter::GetTarget(){
-    return m_target;
+    if (m_target)
+        return m_target.value();
+    else
+        return 0.0_deg;
 }
 
 void Shooter::SetSlowMode(bool slow){

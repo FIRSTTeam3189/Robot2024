@@ -9,7 +9,7 @@
 RobotContainer::RobotContainer() {
   RegisterAutoCommands();
   
-  // Initialize all of your commands and subsystems here
+  // Initialize all of your commands and subsystems here 
   // Runs shooter and shooter angle motor continuously
   // m_shooter->SetDefaultCommand(frc2::RunCommand([this] { 
   //   m_shooter->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY)); 
@@ -171,8 +171,8 @@ void RobotContainer::ConfigureCoDriverBindings() {
   // frc2::Trigger extendShooterButton{m_ted.Button(OperatorConstants::kButtonIDMicrophone)};
   // extendShooterButton.OnTrue(frc2::SequentialCommandGroup(
   //     SetIntakeRotation(m_intake, IntakeState::Retracted),
-  //     SetShooterRotation(m_shooter, ShooterConstants::kTrapExtensionAngle),
-  //     SetShooterExtension(m_shooter, ShooterConstants::kTrapExtension)
+  //     SetShooterExtension(m_shooter, ShooterConstants::kTrapExtension),
+  //     SetShooterRotation(m_shooter, ShooterConstants::kTrapExtensionAngle)
   //   ).ToPtr());
 
   frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDTouchpad)};
@@ -418,6 +418,14 @@ void RobotContainer::ConfigureSysIDBindings() {
   frc2::Trigger Obama15Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDCircle)};
   Obama15Button.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
   
+}
+
+void RobotContainer::SetInitialIntakeState() {
+  m_intake->SetState(IntakeState::Retracted);
+}
+
+void RobotContainer::SetInitialShooterState() {
+  m_shooter->SetState(ShooterState::Retracted);
 }
 
 // no matter how nice ethan seems he will slap you with a piece of chicken and eat you in a bucket

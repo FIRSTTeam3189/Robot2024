@@ -12,6 +12,7 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/Timer.h>
+#include <frc/DriverStation.h>
 #include <frc/Preferences.h>
 #include <frc/RobotController.h>
 #include <rev/CANSparkMax.h>
@@ -68,7 +69,7 @@ class Shooter : public frc2::SubsystemBase {
    rev::SparkMaxAlternateEncoder m_extensionEncoder;
    frc::AnalogPotentiometer m_ultrasonicSensor;
    bool m_noteDetected;
-   units::degree_t m_target;
+   std::optional<units::degree_t> m_target;
    units::degrees_per_second_t m_lastSpeed;
    units::degrees_per_second_t m_lastTargetSpeed;
    units::degrees_per_second_squared_t m_acceleration;
@@ -77,6 +78,7 @@ class Shooter : public frc2::SubsystemBase {
    frc2::sysid::SysIdRoutine m_sysIdRoutine;
    ShooterState m_currentState;
    bool m_slow; 
+   int m_loopsSinceEnabled;
 
    // String keys for PID preferences
    std::string m_rotationPKey;
@@ -86,6 +88,7 @@ class Shooter : public frc2::SubsystemBase {
    std::string m_rotationSKey;
    std::string m_rotationVKey;
    std::string m_rotationAKey;
+   std::string m_rotationTargetKey;
 
    std::map<ShooterState, std::array<double, 3>> kRotationTargetPID {
         {{ShooterState::Retracted}, {ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation}},

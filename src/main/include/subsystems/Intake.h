@@ -9,6 +9,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/AnalogPotentiometer.h>
 #include <frc/Timer.h>
+#include <frc/DriverStation.h>
 #include <frc/Preferences.h>
 #include <frc/RobotController.h>
 #include <frc/controller/ArmFeedforward.h>
@@ -53,7 +54,7 @@ class Intake : public frc2::SubsystemBase {
   rev::SparkMaxPIDController m_rotationPIDController;
   frc::ArmFeedforward *m_ff;
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
-  units::degree_t m_target;
+  std::optional<units::degree_t> m_target;
   frc::AnalogPotentiometer m_ultrasonicSensor;
   bool m_noteDetected;
   units::degrees_per_second_t m_lastSpeed;
@@ -65,6 +66,7 @@ class Intake : public frc2::SubsystemBase {
   IntakeState m_currentState;
   IntakeState m_prevState;
   bool m_slow;
+  int m_loopsSinceEnabled;
   
   // String keys for PID preferences
   std::string m_rotationPKey;
@@ -74,6 +76,7 @@ class Intake : public frc2::SubsystemBase {
   std::string m_rotationSKey;
   std::string m_rotationVKey;
   std::string m_rotationAKey;
+  std::string m_rotationTargetKey;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 

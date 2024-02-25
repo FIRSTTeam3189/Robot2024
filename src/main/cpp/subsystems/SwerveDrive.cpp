@@ -101,6 +101,7 @@ m_angleSysIdRoutine(
     );
 
     frc::Preferences::SetBoolean(m_tuningModeKey, false);
+    frc::Preferences::SetBoolean(m_diagnosticsKey, false);
     
     m_drivePKey = "DriveP";
     m_driveIKey = "DriveI";

@@ -59,7 +59,7 @@ namespace SwerveDriveConstants {
         frc::Translation2d{-SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter}
     };
 
-    constexpr auto kMaxSpeed {6.0_mps};
+    constexpr auto kMaxSpeed {4.0_mps};
     constexpr auto kMaxAcceleration {5.0_mps_sq};
     constexpr units::radians_per_second_t kMaxAngularVelocity {4.0 * Pi};
     constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {2.0 * Pi};
@@ -294,12 +294,12 @@ namespace IntakeConstants{
     // constexpr auto kVRotation {0.015044_V * 1.0_s / 1.0_rad};
     // constexpr auto kARotation {0.0006516_V * 1.0_s * 1.0_s / 1.0_rad};
 
-    constexpr double kPRotation {0.0};
+    constexpr double kPRotation {0.1};
     constexpr double kIRotation {0.0};
     constexpr double kDRotation {0.0};
-    constexpr auto kSRotation {0.0_V};
-    constexpr auto kGRotation {0.0_V};
-    constexpr auto kVRotation {0.0_V * 1.0_s / 1.0_rad};
+    constexpr auto kSRotation {1.0_V};
+    constexpr auto kGRotation {0.5_V};
+    constexpr auto kVRotation {2.5_V * 1.0_s / 1.0_rad};
     constexpr auto kARotation {0.0_V * 1.0_s * 1.0_s / 1.0_rad};
 
     constexpr double kFeedforward {1.0};
@@ -309,17 +309,17 @@ namespace IntakeConstants{
     constexpr auto kMaxRotationAcceleration {90.0_deg / 1.0_s / 1.0_s};
 
     constexpr bool kRollerInverted {true};
-    constexpr auto kRetractTarget {120.0_deg};
-    constexpr auto kAmpTarget {105.0_deg};
-    constexpr auto kExtendTarget {10.0_deg};
-    constexpr double kRotationOffset {100.0};
+    constexpr auto kRetractTarget {80.0_deg};
+    constexpr auto kAmpTarget {70.0_deg};
+    constexpr auto kExtendTarget {-35.0_deg};
+    constexpr double kRotationOffset {260.0};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
     constexpr bool kRotationMotorInverted {true};
     constexpr auto kRotationStopDistance {5.0_deg};
     constexpr int kUltrasonicPort {1};
     // 5 meters in inches -- max range of sensor; used so sensor reports in inches
-    constexpr double kUltrasonicValueRange {196.8504};
+    constexpr double kUltrasonicValueRange {196.8504}; 
 }
 
 namespace OperatorConstants{

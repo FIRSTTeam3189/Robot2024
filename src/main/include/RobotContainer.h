@@ -52,6 +52,8 @@ class RobotContainer {
   RobotContainer();
 
   frc2::Command* GetAutonomousCommand();
+  void SetInitialIntakeState();
+  void SetInitialShooterState();
 
  private:
   // Replace with CommandPS4Controller or CommandJoystick if needed
