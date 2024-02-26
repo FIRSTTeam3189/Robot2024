@@ -9,7 +9,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/AnalogPotentiometer.h>
 #include <frc/Timer.h>
-#include <frc/DriverStation.h>
+#include <frc/DigitalInput.h>
 #include <frc/Preferences.h>
 #include <frc/RobotController.h>
 #include <frc/controller/ArmFeedforward.h>
@@ -19,6 +19,8 @@
 #include <rev/SparkAbsoluteEncoder.h> 
 #include <rev/CANSparkMax.h>
 #include "Constants.h"
+
+enum class IntakeState { None, Extended, Amp, Retracted };
 
 class Intake : public frc2::SubsystemBase {
  public:
@@ -30,11 +32,14 @@ class Intake : public frc2::SubsystemBase {
   units::degree_t GetTarget();
   void SetState(IntakeState state);
   bool NoteDetected();
+  NoteState GetNoteState();
   void UpdateUltrasonic();
+  void UpdateNoteState();
   void UpdatePreferences();
   void ConfigRollerMotor();
   void ConfigRotationMotor();
-  void SetSlowMode(bool slow);
+  void HoldPosition();
+  void SetActive(bool active);
 
   frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
@@ -49,12 +54,13 @@ class Intake : public frc2::SubsystemBase {
  private:
   rev::CANSparkMax m_rotationMotor;
   rev::CANSparkMax m_rollerMotor;
+  frc::DigitalInput m_limitSwitch;
   frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
   frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
   rev::SparkMaxPIDController m_rotationPIDController;
   frc::ArmFeedforward *m_ff;
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
-  std::optional<units::degree_t> m_target;
+  units::degree_t m_target;
   frc::AnalogPotentiometer m_ultrasonicSensor;
   bool m_noteDetected;
   units::degrees_per_second_t m_lastSpeed;
@@ -65,8 +71,9 @@ class Intake : public frc2::SubsystemBase {
   frc2::sysid::SysIdRoutine m_sysIdRoutine;
   IntakeState m_currentState;
   IntakeState m_prevState;
-  bool m_slow;
-  int m_loopsSinceEnabled;
+  bool m_isActive;
+  NoteState m_noteState;
+  NoteState m_lastNoteState;
   
   // String keys for PID preferences
   std::string m_rotationPKey;

@@ -4,11 +4,12 @@
 
 #include "commands/RunLoader.h"
 
-RunLoader::RunLoader(Shooter *shooter, double loadPower, double shootPower) : 
+RunLoader::RunLoader(Shooter *shooter, double loadPower, double shootPower, ShooterEndCondition endCondition) : 
 m_shooter(shooter),
 m_loadPower(loadPower), 
 m_shootPower(shootPower),
-m_isFinished(false) {
+m_isFinished(false),
+m_endCondition(endCondition) {
   (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(shooter);
   // Use addRequirements() here to declare subsystem dependencies.
@@ -22,10 +23,35 @@ void RunLoader::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void RunLoader::Execute() {
-  if (m_shooter->NoteDetected())
-    m_isFinished = true;
-  else 
-    m_isFinished = false;
+  // if (m_shooter->NoteDetected())
+  //   m_isFinished = true;
+  // else 
+  //   m_isFinished = false;
+
+  auto state = m_shooter->GetNoteState();
+  switch (m_endCondition) {
+    case (ShooterEndCondition::None) :
+      m_isFinished = false;
+      break;
+    case (ShooterEndCondition::EndOnFirstDetection) :
+      if (state == NoteState::FirstDetection) {
+        m_isFinished = true;
+      }
+      break;
+    case (ShooterEndCondition::EndOnMiddleOfNote) :
+      if (state == NoteState::MiddleOfNote) {
+        m_isFinished = true;
+      }
+      break;
+    case (ShooterEndCondition::EndOnSecondDetection) :
+      if (state == NoteState::SecondDetection) {
+        m_isFinished = true;
+      }
+      break;
+    default :
+      m_isFinished = false;
+      break;
+  }
 }
 
 // Called once the command ends or is interrupted.
