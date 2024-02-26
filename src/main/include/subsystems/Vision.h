@@ -8,11 +8,17 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/geometry/Transform3d.h>
 #include <frc/SerialPort.h>
+#include <frc/PowerDistribution.h>
+#include <frc/Preferences.h>
 
 #include "subsystems/PoseEstimatorHelper.h"
 #include "Constants.h"
+
 #include <iostream>
-#include <frc/PowerDistribution.h>
+#include <vector>
+#include <optional>
+#include <iomanip>
+#include <sstream>
 
 // Pack struct tightly so the are no buffer bytes in between data members
 #pragma pack(push, 1)
@@ -44,4 +50,8 @@ class Vision : public frc2::SubsystemBase {
   VisionData m_data;
   frc::Transform3d m_cameraToRobotTransform;
   frc::SerialPort m_serialCam;
+  std::vector<char> m_buffer;
+
+  // Private functions
+  std::optional<VisionData> ParseData();
 };
