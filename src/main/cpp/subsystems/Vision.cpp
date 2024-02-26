@@ -146,11 +146,14 @@ void Vision::UpdateData()
     auto readableBytes = m_serialCam.GetBytesReceived();
     frc::SmartDashboard::PutNumber("Readable bytes", readableBytes);
 
+    auto currentLength = m_buffer.size();
+
     // Resize vector to the proper size to take in the bytes.
     m_buffer.resize(m_buffer.size() + readableBytes);
 
     // Read the bytes from the serial port. account for the bytes already in the buffer.
-    m_serialCam.Read(m_buffer.data() + m_buffer.size(), readableBytes);
+    auto bytesRead = m_serialCam.Read(m_buffer.data() + currentLength, readableBytes);
+    m_buffer.resize(currentLength + bytesRead);
 
     // Keep parsing data until we get a std::nullopt.
     while (auto data = ParseData())
