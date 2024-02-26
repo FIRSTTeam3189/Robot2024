@@ -146,11 +146,8 @@ void Vision::UpdateData()
     auto readableBytes = m_serialCam.GetBytesReceived();
     frc::SmartDashboard::PutNumber("Readable bytes", readableBytes);
 
-    // Reserve extra bytes if we need to
-    if (readableBytes + m_buffer.size() > m_buffer.capacity())
-    {
-        m_buffer.reserve(m_buffer.capacity() + readableBytes);
-    }
+    // Resize vector to the proper size to take in the bytes.
+    m_buffer.resize(m_buffer.size() + readableBytes);
 
     // Read the bytes from the serial port. account for the bytes already in the buffer.
     m_serialCam.Read(m_buffer.data() + m_buffer.size(), readableBytes);
