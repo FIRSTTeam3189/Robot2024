@@ -16,6 +16,9 @@ m_serialCam(VisionConstants::kBaudRate, frc::SerialPort::Port::kMXP) {
     m_serialCam.SetReadBufferSize(VisionConstants::kBufferSize);
     frc::PowerDistribution PDH{};
     PDH.SetSwitchableChannel(true);
+
+    // Reserve the size of the kBufferSize for the buffer
+    m_buffer.reserve(VisionConstants::kBufferSize);
 }
 
 // This method will be called once per scheduler run
@@ -87,32 +90,46 @@ char* SubString(const char* input, int offset, int len, char* dest) {
 void Vision::UpdateData() {
     // std::cout << "Readable bytes: " << m_serialCam.GetBytesReceived() << "\n";
     
-    frc::SmartDashboard::PutNumber("Readable bytes", m_serialCam.GetBytesReceived());
-    if ((uint32_t)m_serialCam.GetBytesReceived() >= sizeof(VisionData)) {
-        char* buffer = 0;
-        char* syncedBuffer = 0;
-        int bytesRead = m_serialCam.Read(buffer, VisionConstants::kBufferSize);
+    auto readableBytes = m_serialCam.GetBytesReceived();
+    frc::SmartDashboard::PutNumber("Readable bytes", readableBytes);
 
-        std::cout << "Raw bytes read: " << bytesRead << "\n";
-        frc::SmartDashboard::PutNumber("Raw bytes read", bytesRead);
+    // Reserve extra bytes if we need to
+    if (readableBytes + m_buffer.size() > m_buffer.capacity()) {
+        m_buffer.reserve(m_buffer.capacity() + readableBytes);
+    }
 
-        // Search for sync bytes in raw buffer
-        for (int i = 0; i < bytesRead - 4; i++) {
-            if (buffer[i] == 0x1A && buffer[i+1] == 0xCF && buffer[i+2] == 0xFC && buffer[i+3] == 0x1D) {
-                syncedBuffer = SubString(buffer, i + 4, (int)sizeof(VisionData), syncedBuffer);
-                std::cout << "Synced bytes read: " << strlen(syncedBuffer) << "\n";
-                frc::SmartDashboard::PutNumber("Synced bytes read", strlen(syncedBuffer));
-                if (strlen(syncedBuffer) >= sizeof(VisionData)) {
-                    m_data = *reinterpret_cast<VisionData*>(syncedBuffer);
-                } else {
-                    // Implement based on notes and slack message -- set flag to wait for next message since sync bytes already found
-                    
-                }
-                UpdatePosition();
-                break;
+    // Read the bytes from the serial port. account for the bytes already in the buffer.
+    m_serialCam.Read(m_buffer.data() + m_buffer.size(), readableBytes);
+
+    // Check for sync bytes if we have enough bytes to read
+    auto bytesNeeded = sizeof(VisionData) + VisionConstants::kSyncBytes.size();
+
+    // If we have enough bytes to read, then we'll check for the sync bytes in the data.
+    if (m_buffer.size() >= bytesNeeded) {
+        // Search for the sync bytes in the data. 
+        // If we find them, check we have enough bytes to read the VisionData struct.
+        auto syncIter = std::search(m_buffer.begin(), m_buffer.end(), VisionConstants::kSyncBytes.begin(), VisionConstants::kSyncBytes.end());
+        // Check if we found the sync bytes, if we did, then we'll check if we have enough bytes to read the VisionData struct.
+        if (syncIter != m_buffer.end()) {
+            // If we have enough bytes to read the VisionData struct, then we'll read it and remove the bytes from the buffer.
+            if (m_buffer.size() >= std::distance(m_buffer.begin(), syncIter) + bytesNeeded) {
+                // Copy the VisionData struct from the buffer
+                std::memcpy(&m_data, &m_buffer[std::distance(m_buffer.begin(), syncIter) + VisionConstants::kSyncBytes.size()], sizeof(VisionData));
+                // Print the bytes used to read the VisionData struct
+                std::cout << "Bytes used: " << std::distance(m_buffer.begin(), syncIter) + bytesNeeded << "\n";
+                // Remove the bytes from the buffer
+                m_buffer.erase(m_buffer.begin(), m_buffer.begin() + std::distance(m_buffer.begin(), syncIter) + bytesNeeded);
             }
         }
     }
+
+    // Check that the m_buffer size is less than kBufferSize.
+    // If it is, then erase all the bytes from the buffer, and print a warning.
+    if (m_buffer.size() > VisionConstants::kBufferSize) {
+        m_buffer.clear();
+        std::cout << "Vision buffer overflow, cleared buffer\n";
+    }
+    
 
     frc::SmartDashboard::PutBoolean("Detected", m_data.isDetected);
     frc::SmartDashboard::PutNumber("Tag ID", m_data.ID);

@@ -384,6 +384,9 @@ namespace VisionConstants {
         frc::Pose3d{4.641_m, 4.498_m, 1.321_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120.0_deg}},
         frc::Pose3d{4.641_m, 3.713_m, 1.321_m, frc::Rotation3d{0.0_deg, 0.0_deg, 240.0_deg}}
     };
+
+    // Vision Sync bytes, in char format
+    constexpr std::array kSyncBytes {'\x1a', '\xcf', '\xfc', '\x1d'};
 }
 
 namespace ClimberConstants{
