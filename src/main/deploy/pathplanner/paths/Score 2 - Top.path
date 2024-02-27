@@ -85,16 +85,6 @@
       }
     },
     {
-      "name": "Load",
-      "waypointRelativePos": 2.1999999999999997,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
       "name": "AlignShooter",
       "waypointRelativePos": 2.25,
       "command": {
