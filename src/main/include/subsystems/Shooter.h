@@ -42,10 +42,9 @@ class Shooter : public frc2::SubsystemBase {
   void ConfigExtensionMotor();
   void ConfigRotationMotor();
   void ConfigPID();
-  bool NoteDetected();
   NoteState GetNoteState();
-  void UpdateUltrasonic();
   void UpdateNoteState();
+  void ResetNoteState();
   void UpdatePreferences();
   frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
@@ -74,8 +73,6 @@ class Shooter : public frc2::SubsystemBase {
    rev::SparkMaxPIDController m_extensionPIDController;
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
    rev::SparkMaxAlternateEncoder m_extensionEncoder;
-   frc::AnalogPotentiometer m_ultrasonicSensor;
-   bool m_noteDetected;
    units::degree_t m_target;
    units::degrees_per_second_t m_lastSpeed;
    units::degrees_per_second_t m_lastTargetSpeed;
@@ -86,7 +83,6 @@ class Shooter : public frc2::SubsystemBase {
    ShooterState m_currentState;
    bool m_isActive;
    NoteState m_noteState;
-   NoteState m_lastNoteState;
 
    // String keys for PID preferences
    std::string m_rotationPKey;

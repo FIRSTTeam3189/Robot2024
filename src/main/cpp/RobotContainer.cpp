@@ -58,8 +58,8 @@ void RobotContainer::ConfigureDriverBindings() {
     },{m_swerveDrive}).ToPtr()
   );
 
-  frc2::Trigger driverLoadButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
-  driverLoadButton.OnTrue(frc2::SequentialCommandGroup(
+  frc2::Trigger fullIntakeButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
+  fullIntakeButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::ParallelCommandGroup(
       frc2::ParallelRaceGroup(
         frc2::WaitCommand(1.0_s),
@@ -75,7 +75,7 @@ void RobotContainer::ConfigureDriverBindings() {
       RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
     )
   ).ToPtr());
-  driverLoadButton.OnFalse(frc2::SequentialCommandGroup(
+  fullIntakeButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
       m_intake->SetRollerPower(0.0);
       m_shooter->SetRollerPower(0.0);
@@ -388,54 +388,57 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::ConfigureSysIDBindings() {
-  // System ID Bindings
-  // frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  // ObamaButton.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  // System ID Bindings -- intake
+  // frc2::Trigger intakeQuasiForward{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // intakeQuasiForward.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  // frc2::Trigger Obama1Button{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
-  // Obama1Button.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger intakeQuasiReverse{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
+  // intakeQuasiReverse.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  // frc2::Trigger Obama2Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper)};
-  // Obama2Button.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger intakeDynamicForward{m_test.Button(OperatorConstants::kButtonIDLeftBumper)};
+  // intakeDynamicForward.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
 
-  // frc2::Trigger Obama3Button{m_test.Button(OperatorConstants::kButtonIDRightBumper)};
-  // Obama3Button.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger intakeDynamicReverse{m_test.Button(OperatorConstants::kButtonIDRightBumper)};
+  // intakeDynamicReverse.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  // frc2::Trigger Obama4Button{m_test.Button(OperatorConstants::kButtonIDX)};
-  // Obama4Button.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  // // Shooter
+  // frc2::Trigger shooterQuasiForward{m_test.Button(OperatorConstants::kButtonIDX)};
+  // shooterQuasiForward.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  // frc2::Trigger Obama5Button{m_test.Button(OperatorConstants::kButtonIDSquare)};
-  // Obama5Button.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger shooterQuasiReverse{m_test.Button(OperatorConstants::kButtonIDSquare)};
+  // shooterQuasiReverse.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  // frc2::Trigger Obama6Button{m_test.Button(OperatorConstants::kButtonIDCircle)};
-  // Obama6Button.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger shooterDynamicForward{m_test.Button(OperatorConstants::kButtonIDCircle)};
+  // shooterDynamicForward.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kForward));
 
-  // frc2::Trigger Obama7Button{m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  // Obama7Button.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger shooterDynamicReverse{m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  // shooterDynamicReverse.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  // frc2::Trigger Obama8Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
-  // Obama8Button.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kForward));
+  // // Swerve drive motors
+  // frc2::Trigger swerveDriveQuasiForward{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
+  // swerveDriveQuasiForward.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  // frc2::Trigger Obama9Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
-  // Obama9Button.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger swerveDriveQuasiReverse{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
+  // swerveDriveQuasiReverse.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  // frc2::Trigger Obama10Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  // Obama10Button.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger swerveDriveDynamicForward{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  // swerveDriveDynamicForward.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kForward));
 
-  // frc2::Trigger Obama11Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && };
-  // Obama11Button.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger swerveDriveDynamicReverse{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDCircle)};
+  // swerveDriveDynamicReverse.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  // frc2::Trigger Obama12Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
-  // Obama12Button.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kForward));
+  // // Swerve angle motors
+  // frc2::Trigger swerveAngleQuasiForward{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
+  // swerveAngleQuasiForward.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  // frc2::Trigger Obama13Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
-  // Obama13Button.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger swerveAngleQuasiReverse{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
+  // swerveAngleQuasiReverse.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  // frc2::Trigger Obama14Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  // Obama14Button.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger swerveAngleDynamicForward{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  // swerveAngleDynamicForward.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kForward));
 
-  // frc2::Trigger Obama15Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDCircle)};
-  // Obama15Button.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger swerveAngleDynamicReverse{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDCircle)};
+  // swerveAngleDynamicReverse.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
 }
 
 // no matter how nice ethan seems he will slap you with a piece of chicken and eat you in a bucket

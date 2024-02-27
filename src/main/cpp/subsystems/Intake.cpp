@@ -12,9 +12,7 @@ Intake::Intake() :
  m_profiledPIDController(IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation, m_constraints),
  m_rotationPIDController(m_rotationMotor.GetPIDController()),
  m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
- m_target(IntakeConstants::kRetractTarget - 0.1_deg),
- m_ultrasonicSensor(IntakeConstants::kUltrasonicPort, IntakeConstants::kUltrasonicValueRange),
- m_noteDetected(false),
+ m_target(IntakeConstants::kRetractTarget),
  m_sysIdRoutine(
     // Might want to reduce voltage values later
     frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
@@ -34,14 +32,13 @@ Intake::Intake() :
 m_currentState(IntakeState::Retracted),
 m_prevState(IntakeState::None),
 m_isActive(false),
-m_noteState(NoteState::None),
-m_lastNoteState(NoteState::None)
+m_noteState(NoteState::None)
 {
     ConfigRotationMotor();
     ConfigRollerMotor();
     ConfigPID();
 
-    std::cout << "Intake constructed\n";
+    // std::cout << "Intake constructed\n";
 }
 
 void Intake::ConfigRotationMotor() {
@@ -107,7 +104,6 @@ void Intake::ConfigPID() {
 void Intake::Periodic() {
     frc::SmartDashboard::PutNumber("Intake PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Intake rotation", GetRotation().value());
-    UpdateUltrasonic();
     UpdateNoteState();
 
     if (frc::Preferences::GetBoolean("Full Diagnostics", false)) {
@@ -290,18 +286,8 @@ void Intake::UpdatePreferences() {
     );
 }
 
-void Intake::UpdateUltrasonic() {
-    if (m_ultrasonicSensor.Get() < 12.0)
-        m_noteDetected = true;
-    else
-        m_noteDetected = false;
-
-    frc::SmartDashboard::PutNumber("Intake ultrasonic", m_ultrasonicSensor.Get());
-}
-
 void Intake::UpdateNoteState() {
     bool detected = !m_limitSwitch.Get();
-    m_lastNoteState = m_noteState;
     switch (m_noteState) {
         case (NoteState::None) :
             if (detected) {
@@ -333,23 +319,22 @@ void Intake::UpdateNoteState() {
     }
 }
 
+void Intake::ResetNoteState() {
+    m_noteState = NoteState::None;
+}
+
 NoteState Intake::GetNoteState() {
     return m_noteState;
 }
 
-bool Intake::NoteDetected() {
-    // return m_noteDetected;
-    return false;
-}
-
 frc2::CommandPtr Intake::SysIdQuasistatic(frc2::sysid::Direction direction) {
-    for (int i = 0; i < 10; i++) 
-        std::cout << "Intake Quasistatic\n";
+    // for (int i = 0; i < 10; i++) 
+    //     std::cout << "Intake Quasistatic\n";
     return m_sysIdRoutine.Quasistatic(direction);
 }
 
 frc2::CommandPtr Intake::SysIdDynamic(frc2::sysid::Direction direction) {
-    for (int i = 0; i < 10; i++) 
-        std::cout << "Intake Dynamic\n";
+    // for (int i = 0; i < 10; i++) 
+    //     std::cout << "Intake Dynamic\n";
     return m_sysIdRoutine.Dynamic(direction);
 }

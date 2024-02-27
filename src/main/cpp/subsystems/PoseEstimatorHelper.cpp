@@ -5,7 +5,7 @@
 #include "subsystems/PoseEstimatorHelper.h"
 
 PoseEstimatorHelper::PoseEstimatorHelper() {
-    std::cout << "Helper constructing\n";
+    // std::cout << "Helper constructing\n";
 }
 
 void PoseEstimatorHelper::SetPoseEstimator(frc::SwerveDrivePoseEstimator<4> *poseEstimator) {

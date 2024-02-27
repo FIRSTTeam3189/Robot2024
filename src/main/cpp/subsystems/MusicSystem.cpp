@@ -10,7 +10,7 @@ m_musicSystem(std::string{frc::filesystem::GetDeployDirectory() + "/music/funkyt
         // m_musicSystem.AddInstrument(*instrument);
     // }
     // m_musicSystem.Play();
-    std::cout << "Music constructing\n";
+    // std::cout << "Music constructing\n";
 }
 
 // This method will be called once per scheduler run

@@ -194,7 +194,7 @@
   {
     "name": "/Preferences/Shooter Rotation Target",
     "type": "double",
-    "value": 54.9,
+    "value": 55.0,
     "properties": {
       "persistent": true
     }
@@ -218,7 +218,7 @@
   {
     "name": "/Preferences/Intake Rotation Target",
     "type": "double",
-    "value": 79.9,
+    "value": 80.0,
     "properties": {
       "persistent": true
     }

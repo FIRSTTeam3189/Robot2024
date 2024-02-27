@@ -16,6 +16,7 @@ m_endCondition(endCondition) {
 
 // Called when the command is initially scheduled.
 void RunLoader::Initialize() {
+  m_shooter->ResetNoteState();
   m_shooter->SetLoaderPower(m_loadPower);
   m_shooter->SetRollerPower(m_shootPower);
 }

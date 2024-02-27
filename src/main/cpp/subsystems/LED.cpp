@@ -33,7 +33,7 @@ LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animati
     m_ledSections[LEDSection::Row13] = {424, 456};
     m_ledSections[LEDSection::Row14] = {456, 488};
     m_ledSections[LEDSection::Row15] = {488, 520};
-    std::cout << "LED constructing\n";
+    // std::cout << "LED constructing\n";
 }   
 
 // This method will be called once per scheduler run

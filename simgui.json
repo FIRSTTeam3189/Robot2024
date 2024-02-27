@@ -30,6 +30,8 @@
       "/LiveWindow/Ungrouped/CANcoder (v6) [11]": "Gyro",
       "/LiveWindow/Ungrouped/CANcoder (v6) [12]": "Gyro",
       "/LiveWindow/Ungrouped/CANcoder (v6) [9]": "Gyro",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[1]": "Digital Input",
       "/LiveWindow/Ungrouped/Pigeon 2 (v6) [13]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX (v6) [1]": "Motor Controller",

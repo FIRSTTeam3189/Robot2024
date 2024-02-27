@@ -45,7 +45,4 @@ namespace IntakeConstants{
     constexpr bool kRotationInverted {false};
     constexpr bool kRotationMotorInverted {true};
     constexpr auto kRotationStopDistance {5.0_deg};
-    constexpr int kUltrasonicPort {1};
-    // 5 meters in inches -- max range of sensor; used so sensor reports in inches
-    constexpr double kUltrasonicValueRange {196.8504}; 
 }

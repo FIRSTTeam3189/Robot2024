@@ -32,9 +32,8 @@ class Intake : public frc2::SubsystemBase {
   units::degree_t GetRotation();
   units::degree_t GetTarget();
   void SetState(IntakeState state);
-  bool NoteDetected();
   NoteState GetNoteState();
-  void UpdateUltrasonic();
+  void ResetNoteState();
   void UpdateNoteState();
   void UpdatePreferences();
   void ConfigRollerMotor();
@@ -62,8 +61,6 @@ class Intake : public frc2::SubsystemBase {
   frc::ArmFeedforward *m_ff;
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
   units::degree_t m_target;
-  frc::AnalogPotentiometer m_ultrasonicSensor;
-  bool m_noteDetected;
   units::degrees_per_second_t m_lastSpeed;
   units::degrees_per_second_t m_lastTargetSpeed;
   units::degrees_per_second_squared_t m_acceleration;
@@ -74,7 +71,6 @@ class Intake : public frc2::SubsystemBase {
   IntakeState m_prevState;
   bool m_isActive;
   NoteState m_noteState;
-  NoteState m_lastNoteState;
   
   // String keys for PID preferences
   std::string m_rotationPKey;

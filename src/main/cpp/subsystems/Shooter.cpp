@@ -16,9 +16,7 @@ m_rotationPIDController(m_rotationMotor.GetPIDController()),
 m_extensionPIDController(m_extensionMotor.GetPIDController()),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
 m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::Type::kQuadrature, ShooterConstants::kExtensionCountsPerRev)),
-m_ultrasonicSensor(ShooterConstants::kUltrasonicPort, ShooterConstants::kUltrasonicValueRange),
-m_noteDetected(false),
-m_target(ShooterConstants::kRetractTarget - 0.1_deg),
+m_target(ShooterConstants::kRetractTarget),
 m_sysIdRoutine(
     // Might want to reduce voltage values later
     frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
@@ -36,15 +34,14 @@ m_sysIdRoutine(
         this)
 ),
 m_isActive(false),
-m_noteState(NoteState::None),
-m_lastNoteState(NoteState::None) {
+m_noteState(NoteState::None) {
     ConfigRollerMotor();
     ConfigLoaderMotor();
     ConfigExtensionMotor();
     ConfigRotationMotor();
     ConfigPID();
 
-    std::cout << "Shooter constructing\n";
+    // std::cout << "Shooter constructing\n";
 }
 
 // This method will be called once per scheduler run
@@ -52,7 +49,6 @@ void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Shooter rotation", m_rotationEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("Shooter extension", m_extensionEncoder.GetPosition());
-    UpdateUltrasonic();
     UpdateNoteState();
 
     if (frc::Preferences::GetBoolean("Full Diagnostics", false)) {
@@ -260,7 +256,6 @@ void Shooter::UpdatePreferences() {
 
 void Shooter::UpdateNoteState() {
     bool detected = !m_limitSwitch.Get();
-    m_lastNoteState = m_noteState;
     switch (m_noteState) {
         case (NoteState::None) :
             if (detected) {
@@ -296,29 +291,19 @@ NoteState Shooter::GetNoteState() {
     return m_noteState;
 }
 
-void Shooter::UpdateUltrasonic() {
-    if (m_ultrasonicSensor.Get() < 12.0)
-        m_noteDetected = true;
-    else
-        m_noteDetected = false;
-
-    frc::SmartDashboard::PutNumber("Shooter ultrasonic", m_ultrasonicSensor.Get());
-}
-
-bool Shooter::NoteDetected() {
-    // return m_noteDetected;
-    return false;
+void Shooter::ResetNoteState() {
+    m_noteState = NoteState::None;
 }
 
 frc2::CommandPtr Shooter::SysIdQuasistatic(frc2::sysid::Direction direction) {
-    for (int i = 0; i < 10; i++) 
-        std::cout << "Shooter Quasistatic\n";
+    // for (int i = 0; i < 10; i++) 
+    //     std::cout << "Shooter Quasistatic\n";
   return m_sysIdRoutine.Quasistatic(direction);
 }
 
 frc2::CommandPtr Shooter::SysIdDynamic(frc2::sysid::Direction direction) {
-    for (int i = 0; i < 10; i++) 
-        std::cout << "Shooter Quasistatic\n";
+    // for (int i = 0; i < 10; i++) 
+    //     std::cout << "Shooter Quasistatic\n";
   return m_sysIdRoutine.Dynamic(direction);
 }
 

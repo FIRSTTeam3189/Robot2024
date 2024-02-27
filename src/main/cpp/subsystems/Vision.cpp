@@ -41,9 +41,9 @@ frc::Pose3d Vision::TagToCamera()
         units::meter_t{-m_data.translationMatrix[1]},
         units::meter_t{-m_data.translationMatrix[2]},
         frc::Rotation3d{
-            // Just using the yaw rotation only
             0.0_deg,
             units::degree_t{-m_data.rotationMatrix[1]},
+            // 0.0_deg,
             0.0_deg});
 
     return tagPose.TransformBy(tagToCamera);
@@ -159,6 +159,7 @@ void Vision::UpdateData()
     while (auto data = ParseData())
     {
         m_data = *data;
+        UpdatePosition();
     }
 
     // Check that the m_buffer size is less than kBufferSize.

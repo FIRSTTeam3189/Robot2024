@@ -12,6 +12,7 @@ m_intake(intake), m_speed(speed), m_shouldFinish(false) {
 
 // Called when the command is initially scheduled.
 void AmpIntake::Initialize() {
+  m_intake->ResetNoteState();
   m_intake->SetRollerPower(m_speed);
 }
 
