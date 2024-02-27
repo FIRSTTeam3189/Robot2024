@@ -15,10 +15,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class FullIntake
-    : public frc2::CommandHelper<frc2::Command, FullIntake> {
+class AmpIntake
+    : public frc2::CommandHelper<frc2::Command, AmpIntake> {
  public:
-  FullIntake(Intake *intake, double speed, units::degree_t target);
+  AmpIntake(Intake *intake, double speed);
 
   void Initialize() override;
 
@@ -31,6 +31,5 @@ class FullIntake
  private:
   Intake *m_intake;
   double m_speed;
-  units::degree_t m_target;
   bool m_shouldFinish = false;
 };

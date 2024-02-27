@@ -12,6 +12,7 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/Timer.h>
+#include <frc/DigitalInput.h>
 #include <frc/Preferences.h>
 #include <frc/RobotController.h>
 #include <rev/CANSparkMax.h>
@@ -20,7 +21,8 @@
 #include <rev/SparkRelativeEncoder.h> 
 #include "Constants.h"
 
-enum class ShooterState { None, Retracted, Load, Close, Mid, Far} ;
+enum class ShooterEndCondition { None, EndOnFirstDetection, EndOnMiddleOfNote, EndOnSecondDetection };
+enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero} ;
 
 class Shooter : public frc2::SubsystemBase {
  public:
@@ -35,17 +37,21 @@ class Shooter : public frc2::SubsystemBase {
   units::degree_t GetRotation();
   double GetExtension();
   void ConfigRollerMotor();
+  void ConfigLoaderMotor();
   void ConfigExtensionMotor();
   void ConfigRotationMotor();
   void ConfigPID();
   bool NoteDetected();
+  NoteState GetNoteState();
   void UpdateUltrasonic();
+  void UpdateNoteState();
   void UpdatePreferences();
   frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
   void SetState(ShooterState state);
   units::degree_t GetTarget();
-  void SetSlowMode(bool slow);
+  void HoldPosition();
+  void SetActive(bool active);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -59,6 +65,7 @@ class Shooter : public frc2::SubsystemBase {
    rev::CANSparkMax m_loaderMotor;
    rev::CANSparkMax m_extensionMotor;
    rev::CANSparkMax m_rotationMotor;
+   frc::DigitalInput m_limitSwitch;
    frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
    frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
    rev::SparkMaxPIDController m_rotationPIDController;
@@ -76,7 +83,9 @@ class Shooter : public frc2::SubsystemBase {
    units::second_t m_lastTime;
    frc2::sysid::SysIdRoutine m_sysIdRoutine;
    ShooterState m_currentState;
-   bool m_slow; 
+   bool m_isActive;
+   NoteState m_noteState;
+   NoteState m_lastNoteState;
 
    // String keys for PID preferences
    std::string m_rotationPKey;
@@ -86,6 +95,7 @@ class Shooter : public frc2::SubsystemBase {
    std::string m_rotationSKey;
    std::string m_rotationVKey;
    std::string m_rotationAKey;
+   std::string m_rotationTargetKey;
 
    std::map<ShooterState, std::array<double, 3>> kRotationTargetPID {
         {{ShooterState::Retracted}, {ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation}},

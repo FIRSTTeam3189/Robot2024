@@ -22,7 +22,7 @@ m_rightServo(ClimberConstants::kRightServoID)
 void Climber::Periodic() {}
 
 void Climber::SetPower(double power){
-    m_leftMotor.Set(power);
+    m_rightMotor.Set(power);
 }
 
 void Climber::SetServoRotation(double angle){

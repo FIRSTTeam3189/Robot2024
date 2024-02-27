@@ -20,7 +20,7 @@
 #include <frc2/command/WaitCommand.h>
 
 #include "Constants.h"
-#include "commands/FullIntake.h"
+#include "commands/AmpIntake.h"
 #include "commands/Drive.h"
 #include "commands/RunIntake.h"
 #include "commands/RunLoader.h"

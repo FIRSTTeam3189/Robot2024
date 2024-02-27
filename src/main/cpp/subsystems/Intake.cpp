@@ -7,11 +7,12 @@
 Intake::Intake() : 
  m_rotationMotor(IntakeConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
  m_rollerMotor(IntakeConstants::kRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
+ m_limitSwitch(IntakeConstants::kLimitSwitchPort),
  m_constraints(IntakeConstants::kMaxRotationVelocity, IntakeConstants::kMaxRotationAcceleration),
  m_profiledPIDController(IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation, m_constraints),
  m_rotationPIDController(m_rotationMotor.GetPIDController()),
  m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
- m_target(IntakeConstants::kRetractTarget),
+ m_target(IntakeConstants::kRetractTarget - 0.1_deg),
  m_ultrasonicSensor(IntakeConstants::kUltrasonicPort, IntakeConstants::kUltrasonicValueRange),
  m_noteDetected(false),
  m_sysIdRoutine(
@@ -32,7 +33,9 @@ Intake::Intake() :
 ),
 m_currentState(IntakeState::Retracted),
 m_prevState(IntakeState::None),
-m_slow(false)
+m_isActive(false),
+m_noteState(NoteState::None),
+m_lastNoteState(NoteState::None)
 {
     (void)AutoConstants::kAutonomousPaths[0];
     ConfigRotationMotor();
@@ -47,6 +50,8 @@ void Intake::ConfigRotationMotor() {
     m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
     m_rotationMotor.SetInverted(IntakeConstants::kRotationMotorInverted);
+    m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus5, 20);
+    m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus6, 20);
     m_rotationEncoder.SetInverted(IntakeConstants::kRotationInverted);
     m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
     m_rotationEncoder.SetVelocityConversionFactor(IntakeConstants::kRotationConversion);
@@ -74,6 +79,7 @@ void Intake::ConfigPID() {
     m_rotationSKey = "Intake Rotation S";
     m_rotationVKey = "Intake Rotation V";
     m_rotationAKey = "Intake Rotation A";
+    m_rotationTargetKey = "Intake Rotation Target";
 
     frc::Preferences::SetDouble(m_rotationPKey, IntakeConstants::kPRotation);
     frc::Preferences::SetDouble(m_rotationIKey, IntakeConstants::kIRotation);
@@ -82,6 +88,7 @@ void Intake::ConfigPID() {
     frc::Preferences::SetDouble(m_rotationSKey, IntakeConstants::kSRotation.value());
     frc::Preferences::SetDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
     frc::Preferences::SetDouble(m_rotationAKey, IntakeConstants::kARotation.value());
+    frc::Preferences::SetDouble(m_rotationTargetKey, m_target.value());
 
     m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
     m_rotationPIDController.SetP(kRotationTargetPID[IntakeState::Extended][0]);
@@ -100,16 +107,34 @@ void Intake::ConfigPID() {
 // This method will be called once per scheduler run
 void Intake::Periodic() {
     frc::SmartDashboard::PutNumber("Intake PID target", m_target.value());
-    frc::SmartDashboard::PutNumber("Intake rotation", m_rotationEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Intake rotation", GetRotation().value());
     UpdateUltrasonic();
-    if (frc::Preferences::GetBoolean("Full Diagnostics and Tuning", false)) {
-        UpdatePreferences();
+    UpdateNoteState();
+
+    if (frc::Preferences::GetBoolean("Full Diagnostics", false)) {
         frc::SmartDashboard::PutNumber("Intake rotational velocity", m_rotationEncoder.GetVelocity());
         frc::SmartDashboard::PutNumber("Intake desired rotational velocity", m_profiledPIDController.GetSetpoint().velocity.value());
         frc::SmartDashboard::PutNumber("Intake rotational acceleration", m_acceleration.value());
         frc::SmartDashboard::PutNumber("Intake desired rotational acceleration", m_targetAcceleration.value());
     }
-    SetRotation(m_target);
+
+    if (frc::Preferences::GetBoolean("Tuning Mode", false)) {
+        UpdatePreferences();
+    }
+
+    if (m_isActive) {
+        SetRotation(m_target);
+    } else {
+        HoldPosition();
+    }
+}
+
+void Intake::SetActive(bool active) {
+    if (active) {
+        m_lastTime = frc::Timer::GetFPGATimestamp();
+    }
+
+    m_isActive = active;
 }
 
 units::degree_t Intake::GetTarget() {
@@ -118,7 +143,6 @@ units::degree_t Intake::GetTarget() {
 
 void Intake::SetState(IntakeState state) {
     auto target = 0.0_deg;
-    m_target = target;
 
     switch(state){
         case (IntakeState::None) :
@@ -137,16 +161,21 @@ void Intake::SetState(IntakeState state) {
             break;
     }
 
-    if (target >= 180.0_deg){
-        target -= 360.0_deg;
-    }
+    m_target = target;
+}
 
-    SetRotation(target);
+void Intake::HoldPosition() {
+    auto ffValue = m_ff->Calculate(units::radian_t{GetRotation()}, units::radians_per_second_t{0.0});
+    m_rotationMotor.SetVoltage(std::clamp((ffValue), -12.0_V, 12.0_V));
+    // Just to advance the profile timestep
+    m_profiledPIDController.Calculate(GetRotation(), m_target);
 }
 
 void Intake::SetRotation(units::degree_t target) {
     // Calculates PID value in volts based on position and target
-    units::volt_t PIDValue = units::volt_t{m_profiledPIDController.Calculate(GetRotation(), target)};
+    // units::volt_t PIDValue = units::volt_t{m_profiledPIDController.Calculate(GetRotation(), target)};
+    units::volt_t PIDValue = units::volt_t{(target - GetRotation()).value() * m_profiledPIDController.GetP()};
+    m_profiledPIDController.Calculate(GetRotation(), m_target);
 
     // Calculates the change in velocity (acceleration) since last control loop
     // Uses the acceleration value and desired velocity to calculate feedforward gains
@@ -161,19 +190,17 @@ void Intake::SetRotation(units::degree_t target) {
                                            units::radians_per_second_squared_t{m_targetAcceleration});
 
     // Set motor to combined voltage
-    if (GetRotation() <= 15.0_deg && (PIDValue + ffValue).value() <= 0.0)
+    if (GetRotation() <= -35.0_deg && (PIDValue + ffValue).value() <= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
-    else if (GetRotation() >= 110.0_deg && (PIDValue + ffValue).value() >= 0.0)
+    else if (GetRotation() >= 85.0_deg && (PIDValue + ffValue).value() >= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
     else {
-        if (m_slow)
-            m_rotationMotor.SetVoltage((PIDValue + ffValue) / 2.0);
-        else
-            m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
-
+        m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
     }
 
     frc::SmartDashboard::PutNumber("Intake rotation volts", PIDValue.value() + ffValue.value());
+    frc::SmartDashboard::PutNumber("Intake rotation PID", PIDValue.value());
+    frc::SmartDashboard::PutNumber("Intake rotation FF", ffValue.value());
 
     m_lastTargetSpeed = m_profiledPIDController.GetSetpoint().velocity;
     m_lastSpeed = units::degrees_per_second_t{m_rotationEncoder.GetVelocity()};
@@ -239,7 +266,11 @@ void Intake::SetRotationPower(double power) {
 }
 
 units::degree_t Intake::GetRotation() {
-    return units::degree_t{m_rotationEncoder.GetPosition()};
+    auto rawRotation = m_rotationEncoder.GetPosition();
+    if (rawRotation > 180.0)
+        rawRotation -= 360.0;
+
+    return units::degree_t{rawRotation};
 }
 
 void Intake::UpdatePreferences() {
@@ -250,6 +281,7 @@ void Intake::UpdatePreferences() {
     double g = frc::Preferences::GetDouble(m_rotationGKey, IntakeConstants::kGRotation.value());
     double v = frc::Preferences::GetDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
     double a = frc::Preferences::GetDouble(m_rotationAKey, IntakeConstants::kARotation.value());
+    m_target = units::degree_t{frc::Preferences::GetDouble(m_rotationTargetKey, m_target.value())};
     delete m_ff;
     m_ff = new frc::ArmFeedforward(
         units::volt_t{s},
@@ -268,6 +300,44 @@ void Intake::UpdateUltrasonic() {
     frc::SmartDashboard::PutNumber("Intake ultrasonic", m_ultrasonicSensor.Get());
 }
 
+void Intake::UpdateNoteState() {
+    bool detected = !m_limitSwitch.Get();
+    m_lastNoteState = m_noteState;
+    switch (m_noteState) {
+        case (NoteState::None) :
+            if (detected) {
+                m_noteState = NoteState::FirstDetection;
+            }
+            frc::SmartDashboard::PutString("Intake note state", "None");
+            break;
+        case (NoteState::FirstDetection) :
+            if (!detected) {
+                m_noteState = NoteState::MiddleOfNote;
+            }
+            frc::SmartDashboard::PutString("Intake note state", "First detection");
+            break;
+        case (NoteState::MiddleOfNote) :
+            if (detected) {
+                m_noteState = NoteState::SecondDetection;
+            }
+            frc::SmartDashboard::PutString("Intake note state", "Middle of note");
+            break;
+        case (NoteState::SecondDetection) :
+            if (!detected) {
+                m_noteState = NoteState::None;
+            }
+            frc::SmartDashboard::PutString("Intake note state", "Second detection");
+            break;
+        default :
+            frc::SmartDashboard::PutString("Intake note state", "None");
+            break;
+    }
+}
+
+NoteState Intake::GetNoteState() {
+    return m_noteState;
+}
+
 bool Intake::NoteDetected() {
     // return m_noteDetected;
     return false;
@@ -283,8 +353,4 @@ frc2::CommandPtr Intake::SysIdDynamic(frc2::sysid::Direction direction) {
     for (int i = 0; i < 10; i++) 
         std::cout << "Intake Dynamic\n";
     return m_sysIdRoutine.Dynamic(direction);
-}
-
-void Intake::SetSlowMode(bool slow){
-    m_slow = slow;
 }

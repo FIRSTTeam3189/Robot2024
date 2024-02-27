@@ -184,7 +184,7 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
 }
 
 void Drive::UpdatePreferences() {
-  if (frc::Preferences::GetBoolean("Full Diagnostics and Tuning", false)) {
+  if (frc::Preferences::GetBoolean("Tuning Mode", false)) {
     m_rotationPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, SwerveDriveConstants::kPRot));
     m_rotationPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, SwerveDriveConstants::kIRot));
     m_rotationPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, SwerveDriveConstants::kDRot));

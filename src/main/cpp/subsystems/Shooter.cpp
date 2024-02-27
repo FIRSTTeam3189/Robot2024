@@ -9,7 +9,8 @@ m_rollerMotor(ShooterConstants::kRollerMotorID, rev::CANSparkMax::MotorType::kBr
 m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_extensionMotor(ShooterConstants::kExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_constraints(IntakeConstants::kMaxRotationVelocity, IntakeConstants::kMaxRotationAcceleration),
+m_limitSwitch(ShooterConstants::kLimitSwitchPort),
+m_constraints(ShooterConstants::kMaxRotationVelocity, ShooterConstants::kMaxRotationAcceleration),
 m_profiledPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
 m_rotationPIDController(m_rotationMotor.GetPIDController()),
 m_extensionPIDController(m_extensionMotor.GetPIDController()),
@@ -17,7 +18,7 @@ m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncode
 m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::Type::kQuadrature, ShooterConstants::kExtensionCountsPerRev)),
 m_ultrasonicSensor(ShooterConstants::kUltrasonicPort, ShooterConstants::kUltrasonicValueRange),
 m_noteDetected(false),
-m_target(ShooterConstants::kRetractTarget),
+m_target(ShooterConstants::kRetractTarget - 0.1_deg),
 m_sysIdRoutine(
     // Might want to reduce voltage values later
     frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
@@ -33,9 +34,13 @@ m_sysIdRoutine(
               .velocity(units::turns_per_second_t{units::degrees_per_second_t{m_rotationEncoder.GetVelocity()}});
         },
         this)
-) {
+),
+m_isActive(false),
+m_noteState(NoteState::None),
+m_lastNoteState(NoteState::None) {
     (void)AutoConstants::kAutonomousPaths[0];
     ConfigRollerMotor();
+    ConfigLoaderMotor();
     ConfigExtensionMotor();
     ConfigRotationMotor();
     ConfigPID();
@@ -49,20 +54,42 @@ void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter rotation", m_rotationEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("Shooter extension", m_extensionEncoder.GetPosition());
     UpdateUltrasonic();
-    if (frc::Preferences::GetBoolean("Full Diagnostics and Tuning", false)) {
-        UpdatePreferences();
+    UpdateNoteState();
+
+    if (frc::Preferences::GetBoolean("Full Diagnostics", false)) {
         frc::SmartDashboard::PutNumber("Shooter rotational velocity", m_rotationEncoder.GetVelocity());
         frc::SmartDashboard::PutNumber("Shooter desired rotational velocity", m_profiledPIDController.GetSetpoint().velocity.value());
         frc::SmartDashboard::PutNumber("Shooter rotational acceleration", m_acceleration.value());
         frc::SmartDashboard::PutNumber("Shooter desired rotational acceleration", m_targetAcceleration.value());
         frc::SmartDashboard::PutNumber("Shooter power", m_rollerMotor.Get());
     }
-    SetRotation(m_target);
+
+    if (frc::Preferences::GetBoolean("Tuning Mode", false)) {
+        UpdatePreferences();
+    }
+
+    if (m_isActive) {
+        SetRotation(m_target);
+    } else {
+        HoldPosition();
+    }
+}
+
+void Shooter::HoldPosition() {
+    units::volt_t PIDValue = units::volt_t{(m_target - GetRotation()).value() * m_profiledPIDController.GetP()};
+    auto ffValue = m_ff->Calculate(units::radian_t{GetRotation()}, units::radians_per_second_t{0.0});
+    frc::SmartDashboard::PutNumber("Shooter rotation FF", ffValue.value());
+    frc::SmartDashboard::PutNumber("Shooter rotation PID", PIDValue.value());
+    m_rotationMotor.SetVoltage(std::clamp((ffValue + PIDValue), -12.0_V, 12.0_V));
+    // Just to advance the profile timestep
+    m_profiledPIDController.Calculate(GetRotation(), m_target);
 }
 
 void Shooter::SetRotation(units::degree_t target) {
     // Calculates PID value in volts based on position and target
-    units::volt_t PIDValue = units::volt_t{m_profiledPIDController.Calculate(GetRotation(), target)};
+    // units::volt_t PIDValue = units::volt_t{m_profiledPIDController.Calculate(GetRotation(), target)};
+    units::volt_t PIDValue = units::volt_t{(target - GetRotation()).value() * m_profiledPIDController.GetP()};
+    m_profiledPIDController.Calculate(GetRotation(), m_target);
 
     // Calculates the change in velocity (acceleration) since last control loop
     // Uses the acceleration value and desired velocity to calculate feedforward gains
@@ -71,14 +98,16 @@ void Shooter::SetRotation(units::degree_t target) {
     m_acceleration = (units::degrees_per_second_t{m_rotationEncoder.GetVelocity()} - m_lastSpeed) /
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
 
-    m_targetAcceleration = (m_profiledPIDController.GetSetpoint().velocity - m_lastSpeed) /
+    m_targetAcceleration = (m_profiledPIDController.GetSetpoint().velocity - m_lastTargetSpeed) /
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
     units::volt_t ffValue = m_ff->Calculate(units::radian_t{target}, units::radians_per_second_t{m_profiledPIDController.GetSetpoint().velocity},
-                                           units::radians_per_second_squared_t{m_acceleration});
+                                           units::radians_per_second_squared_t{m_targetAcceleration});
 
     // Set motor to combined voltage
     m_rotationMotor.SetVoltage(PIDValue + ffValue);
     frc::SmartDashboard::PutNumber("Shooter rotation volts", PIDValue.value() + ffValue.value());
+    frc::SmartDashboard::PutNumber("Shooter rotation PID", PIDValue.value());
+    frc::SmartDashboard::PutNumber("Shooter rotation FF", ffValue.value());
 
     m_lastTargetSpeed = m_profiledPIDController.GetSetpoint().velocity;
     m_lastSpeed = units::degrees_per_second_t{m_rotationEncoder.GetVelocity()};
@@ -90,10 +119,7 @@ void Shooter::SetRotation(units::degree_t target) {
     else if (GetRotation() > 60.0_deg && (PIDValue + ffValue).value() >= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
     else {
-        if (m_slow)
-            m_rotationMotor.SetVoltage((PIDValue + ffValue) / 2.0);
-        else
-            m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
+        m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
         // if (target < GetRotation()) {
         //     m_rotationPIDController.SetP(ShooterConstants::kPRotation / 1.25);
         //     // ff = ShooterConstants::kFeedforward / 2.0;
@@ -150,6 +176,11 @@ void Shooter::ConfigRollerMotor() {
     m_rollerMotor.SetInverted(ShooterConstants::kRollerInverted);
 }
 
+void Shooter::ConfigLoaderMotor() {
+    m_loaderMotor.RestoreFactoryDefaults();
+    m_loaderMotor.SetSmartCurrentLimit(ShooterConstants::kLoaderCurrentLimit);
+}
+
 void Shooter::ConfigExtensionMotor() {
     m_extensionMotor.RestoreFactoryDefaults();
     m_extensionMotor.SetSmartCurrentLimit(ShooterConstants::kExtensionCurrentLimit);
@@ -165,6 +196,8 @@ void Shooter::ConfigRotationMotor() {
     m_rotationMotor.RestoreFactoryDefaults();
     m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_rotationMotor.SetSmartCurrentLimit(ShooterConstants::kRotationCurrentLimit);
+    m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus5, 20);
+    m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus6, 20);
     m_rotationEncoder.SetInverted(ShooterConstants::kRotationInverted);
     m_rotationEncoder.SetPositionConversionFactor(ShooterConstants::kRotationConversion);
     m_rotationEncoder.SetVelocityConversionFactor(ShooterConstants::kRotationConversion);
@@ -173,10 +206,10 @@ void Shooter::ConfigRotationMotor() {
 
 void Shooter::ConfigPID() {
     m_ff = new frc::ArmFeedforward(
-        IntakeConstants::kSRotation,
-        IntakeConstants::kGRotation,
-        IntakeConstants::kVRotation,
-        IntakeConstants::kARotation
+        ShooterConstants::kSRotation,
+        ShooterConstants::kGRotation,
+        ShooterConstants::kVRotation,
+        ShooterConstants::kARotation
     );
 
     m_rotationPKey = "Shooter Rotation P";
@@ -186,6 +219,7 @@ void Shooter::ConfigPID() {
     m_rotationSKey = "Shooter Rotation S";
     m_rotationVKey = "Shooter Rotation V";
     m_rotationAKey = "Shooter Rotation A";
+    m_rotationTargetKey = "Shooter Rotation Target";
 
     frc::Preferences::SetDouble(m_rotationPKey, ShooterConstants::kPRotation);
     frc::Preferences::SetDouble(m_rotationIKey, ShooterConstants::kIRotation);
@@ -194,6 +228,7 @@ void Shooter::ConfigPID() {
     frc::Preferences::SetDouble(m_rotationSKey, ShooterConstants::kSRotation.value());
     frc::Preferences::SetDouble(m_rotationVKey, ShooterConstants::kVRotation.value());
     frc::Preferences::SetDouble(m_rotationAKey, ShooterConstants::kARotation.value());
+    frc::Preferences::SetDouble(m_rotationTargetKey, m_target.value());
 
     m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
    
@@ -210,10 +245,11 @@ void Shooter::UpdatePreferences() {
     m_profiledPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, ShooterConstants::kPRotation));
     m_profiledPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, ShooterConstants::kIRotation));
     m_profiledPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, ShooterConstants::kDRotation));
-    double s = frc::Preferences::GetDouble(m_rotationSKey, IntakeConstants::kSRotation.value());
-    double g = frc::Preferences::GetDouble(m_rotationGKey, IntakeConstants::kGRotation.value());
-    double v = frc::Preferences::GetDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
-    double a = frc::Preferences::GetDouble(m_rotationAKey, IntakeConstants::kARotation.value());
+    double s = frc::Preferences::GetDouble(m_rotationSKey, ShooterConstants::kSRotation.value());
+    double g = frc::Preferences::GetDouble(m_rotationGKey, ShooterConstants::kGRotation.value());
+    double v = frc::Preferences::GetDouble(m_rotationVKey, ShooterConstants::kVRotation.value());
+    double a = frc::Preferences::GetDouble(m_rotationAKey, ShooterConstants::kARotation.value());
+    m_target = units::degree_t{frc::Preferences::GetDouble(m_rotationTargetKey, m_target.value())};
     delete m_ff;
     m_ff = new frc::ArmFeedforward(
         units::volt_t{s},
@@ -221,6 +257,44 @@ void Shooter::UpdatePreferences() {
         units::unit_t<frc::ArmFeedforward::kv_unit>{v},
         units::unit_t<frc::ArmFeedforward::ka_unit>{a}
     );
+}
+
+void Shooter::UpdateNoteState() {
+    bool detected = !m_limitSwitch.Get();
+    m_lastNoteState = m_noteState;
+    switch (m_noteState) {
+        case (NoteState::None) :
+            if (detected) {
+                m_noteState = NoteState::FirstDetection;
+            }
+            frc::SmartDashboard::PutString("Shooter note state", "None");
+            break;
+        case (NoteState::FirstDetection) :
+            if (!detected) {
+                m_noteState = NoteState::MiddleOfNote;
+            }
+            frc::SmartDashboard::PutString("Shooter note state", "First detection");
+            break;
+        case (NoteState::MiddleOfNote) :
+            if (detected) {
+                m_noteState = NoteState::SecondDetection;
+            }
+            frc::SmartDashboard::PutString("Shooter note state", "Middle of note");
+            break;
+        case (NoteState::SecondDetection) :
+            if (!detected) {
+                m_noteState = NoteState::None;
+            }
+            frc::SmartDashboard::PutString("Shooter note state", "Second detection");
+            break;
+        default :
+            frc::SmartDashboard::PutString("Shooter note state", "None");
+            break;
+    }
+}
+
+NoteState Shooter::GetNoteState() {
+    return m_noteState;
 }
 
 void Shooter::UpdateUltrasonic() {
@@ -251,7 +325,6 @@ frc2::CommandPtr Shooter::SysIdDynamic(frc2::sysid::Direction direction) {
 
 void Shooter::SetState(ShooterState state){
     auto target = 0.0_deg;
-    m_target = target;
 
     switch(state){
         case(ShooterState::None):
@@ -263,6 +336,10 @@ void Shooter::SetState(ShooterState state){
         case(ShooterState::Load):
             target = ShooterConstants::kLoadTarget;
             m_currentState = ShooterState::Load;
+            break;
+        case(ShooterState::DirectLoad):
+            target = ShooterConstants::kDirectLoadAngle;
+            m_currentState = ShooterState::DirectLoad;
             break;
         case(ShooterState::Close):
             target = ShooterConstants::kCloseTarget;
@@ -276,16 +353,25 @@ void Shooter::SetState(ShooterState state){
             target = ShooterConstants::kFarTarget;
             m_currentState = ShooterState::Far;
             break;
+        case(ShooterState::Zero):
+            target = 0_deg;
+            m_currentState = ShooterState::Zero;
+            break;
         default: 
             break;
     }
-    SetRotation(target);
+
+    m_target = target;
 }
 
-units::degree_t Shooter::GetTarget(){
-    return m_target;
+units::degree_t Shooter::GetTarget() {
+    return m_target; 
 }
 
-void Shooter::SetSlowMode(bool slow){
-    m_slow = slow;
+void Shooter::SetActive(bool active) {
+    if (active) {
+        m_lastTime = frc::Timer::GetFPGATimestamp();
+    }
+
+    m_isActive = active;
 }

@@ -34,8 +34,7 @@
 #include <string>
 #include <map>
 
-enum class IntakeState { None, Extended, Amp, Retracted };
-
+enum class NoteState {None, FirstDetection, MiddleOfNote, SecondDetection};
 
 #define Pi 3.14159265358979323846
 
@@ -59,7 +58,7 @@ namespace SwerveDriveConstants {
         frc::Translation2d{-SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter}
     };
 
-    constexpr auto kMaxSpeed {6.0_mps};
+    constexpr auto kMaxSpeed {4.0_mps};
     constexpr auto kMaxAcceleration {5.0_mps_sq};
     constexpr units::radians_per_second_t kMaxAngularVelocity {4.0 * Pi};
     constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {2.0 * Pi};
@@ -205,6 +204,7 @@ namespace ShooterConstants {
     constexpr int kLoaderMotorID {14};
     constexpr int kExtensionMotorID {15};
     constexpr int kRotationMotorID {16};
+    constexpr int kLimitSwitchPort {1};
     // constexpr double kPRotation {0.02};
     // constexpr double kIRotation {0};
     // constexpr double kDRotation {0.0};
@@ -213,32 +213,32 @@ namespace ShooterConstants {
     // constexpr auto kVRotation {0.0_V * 0.0_s / 1.0_rad};
     // constexpr auto kARotation {0.0_V * 0.0_s * 0.0_s / 1.0_rad};
 
-    constexpr double kPRotation {0.0};
+    constexpr double kPRotation {0.1};
     constexpr double kIRotation {0};
     constexpr double kDRotation {0.0};
-    constexpr auto kGRotation {0.0_V};
-    constexpr auto kSRotation {0.0_V};
-    constexpr auto kVRotation {0.0_V * 0.0_s / 1.0_rad};
-    constexpr auto kARotation {0.0_V * 0.0_s * 0.0_s / 1.0_rad};
+    constexpr auto kGRotation {0.3_V};
+    constexpr auto kSRotation {1.0_V};
+    constexpr auto kVRotation {2.5_V * 1.0_s / 1.0_rad};
+    constexpr auto kARotation {0.0_V * 1.0_s * 1.0_s / 1.0_rad};
 
     constexpr double kFeedforward {1.0};
     
     // In degrees
-    constexpr auto kMaxRotationVelocity {120.0_deg / 1.0_s};
-    constexpr auto kMaxRotationAcceleration {90.0_deg / 1.0_s / 1.0_s};
+    constexpr auto kMaxRotationVelocity {180.0_deg / 1.0_s};
+    constexpr auto kMaxRotationAcceleration {180.0_deg / 1.0_s / 1.0_s};
 
     constexpr double kPExtension {0.0};
     constexpr double kIExtension {0.0};
     constexpr double kDExtension {0.0};
 
     constexpr double kShootPower {1.0};
-    constexpr auto kRevUpTime {1.0_s};
+    constexpr auto kRevUpTime {1.5_s};
 
     constexpr auto kAxleToCenterDistance {0.0741_m};
     constexpr auto kAxleToGroundDistance {0.2185_m};
     constexpr auto kSpeakerHeightTarget {2.0574_m};
     // Intake load
-    constexpr auto kLoadTarget {10.0_deg};
+    constexpr auto kLoadTarget {30.0_deg};
     constexpr double kLoadPower {0.5};
     constexpr double kUnloadPower {-0.25};
     // Direct shooter load
@@ -253,8 +253,9 @@ namespace ShooterConstants {
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {40};
-    constexpr unsigned int kRollerCurrentLimit {20};
+    constexpr unsigned int kRollerCurrentLimit {50};
     constexpr unsigned int kExtensionCurrentLimit {40};
+    constexpr unsigned int kLoaderCurrentLimit {30};
     constexpr auto kRotationStopDistance {5.0_deg};
 
     constexpr bool kRollerInverted {true};
@@ -278,13 +279,14 @@ namespace LedConstants{
 namespace IntakeConstants{
     constexpr int kRotationMotorID {17};
     constexpr int kRollerMotorID {18};
+    constexpr int kLimitSwitchPort {0};
     
     constexpr double kIntakePower {1.0};
     constexpr double kAmpScorePower {-1.0};
     constexpr double kLoadPower {0.5};
 
     constexpr unsigned int kRotationCurrentLimit {40};
-    constexpr unsigned int kRollerCurrentLimit {20};
+    constexpr unsigned int kRollerCurrentLimit {30};
 
     // constexpr double kPRotation {0.005};
     // constexpr double kIRotation {0.00000};
@@ -294,32 +296,32 @@ namespace IntakeConstants{
     // constexpr auto kVRotation {0.015044_V * 1.0_s / 1.0_rad};
     // constexpr auto kARotation {0.0006516_V * 1.0_s * 1.0_s / 1.0_rad};
 
-    constexpr double kPRotation {0.0};
+    constexpr double kPRotation {0.02};
     constexpr double kIRotation {0.0};
     constexpr double kDRotation {0.0};
-    constexpr auto kSRotation {0.0_V};
-    constexpr auto kGRotation {0.0_V};
-    constexpr auto kVRotation {0.0_V * 1.0_s / 1.0_rad};
+    constexpr auto kSRotation {1.0_V};
+    constexpr auto kGRotation {0.5_V};
+    constexpr auto kVRotation {1.0_V * 1.0_s / 1.0_rad};
     constexpr auto kARotation {0.0_V * 1.0_s * 1.0_s / 1.0_rad};
 
     constexpr double kFeedforward {1.0};
 
     // In degrees
-    constexpr auto kMaxRotationVelocity {120.0_deg / 1.0_s};
-    constexpr auto kMaxRotationAcceleration {90.0_deg / 1.0_s / 1.0_s};
+    constexpr auto kMaxRotationVelocity {180.0_deg / 1.0_s};
+    constexpr auto kMaxRotationAcceleration {480.0_deg / 1.0_s / 1.0_s};
 
     constexpr bool kRollerInverted {true};
-    constexpr auto kRetractTarget {120.0_deg};
-    constexpr auto kAmpTarget {105.0_deg};
-    constexpr auto kExtendTarget {10.0_deg};
-    constexpr double kRotationOffset {100.0};
+    constexpr auto kRetractTarget {80.0_deg};
+    constexpr auto kAmpTarget {70.0_deg};
+    constexpr auto kExtendTarget {-35.0_deg};
+    constexpr double kRotationOffset {260.0};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
     constexpr bool kRotationMotorInverted {true};
     constexpr auto kRotationStopDistance {5.0_deg};
     constexpr int kUltrasonicPort {1};
     // 5 meters in inches -- max range of sensor; used so sensor reports in inches
-    constexpr double kUltrasonicValueRange {196.8504};
+    constexpr double kUltrasonicValueRange {196.8504}; 
 }
 
 namespace OperatorConstants{
@@ -382,6 +384,9 @@ namespace VisionConstants {
         frc::Pose3d{4.641_m, 4.498_m, 1.321_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120.0_deg}},
         frc::Pose3d{4.641_m, 3.713_m, 1.321_m, frc::Rotation3d{0.0_deg, 0.0_deg, 240.0_deg}}
     };
+
+    // Vision Sync bytes, in char format
+    constexpr std::array kSyncBytes {'\x1a', '\xcf', '\xfc', '\x1d'};
 }
 
 namespace ClimberConstants{
@@ -390,8 +395,8 @@ namespace ClimberConstants{
     constexpr int kRightServoID {1}; 
     constexpr int kRightMotorID {19};
     constexpr int kLefttMotorID {20};
-    constexpr int kInvertLeftMotor {false};
-    constexpr int kInvertRightMotor {false};
+    constexpr bool kInvertLeftMotor {false};
+    constexpr bool kInvertRightMotor {false};
     constexpr double kExtendMotorSpeed {0.5};
     constexpr double kExtendServoAngle {90.0};
     constexpr double kRetractMotorSpeed {-0.5};
