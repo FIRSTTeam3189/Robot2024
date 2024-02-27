@@ -64,16 +64,6 @@
       }
     },
     {
-      "name": "Load",
-      "waypointRelativePos": 1.1,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
       "name": "AlignShooter",
       "waypointRelativePos": 1.2,
       "command": {
