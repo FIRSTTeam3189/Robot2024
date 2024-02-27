@@ -10,7 +10,6 @@ m_rightMotor(ClimberConstants::kRightMotorID,rev::CANSparkMaxLowLevel::MotorType
 m_leftServo(ClimberConstants::kLeftServoID),
 m_rightServo(ClimberConstants::kRightServoID)
 {
-    (void)AutoConstants::kAutonomousPaths[0];
     m_leftMotor.RestoreFactoryDefaults();
     m_rightMotor.RestoreFactoryDefaults();
     m_leftMotor.SetInverted(ClimberConstants::kInvertLeftMotor);

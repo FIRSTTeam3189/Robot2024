@@ -10,7 +10,7 @@ Vision::Vision(PoseEstimatorHelper *helper) : m_helper(helper),
                                                                        frc::Rotation3d{0.0_rad, 0.0_rad, VisionConstants::kCameraYawOffset}),
                                               m_serialCam(VisionConstants::kBaudRate, frc::SerialPort::Port::kMXP)
 {
-    (void)AutoConstants::kAutonomousPaths[0];
+    
     // Number of bytes in one chunk of vision data
     // m_serialCam.SetReadBufferSize(VisionConstants::kBufferSize);
     m_serialCam.SetReadBufferSize(VisionConstants::kBufferSize);
@@ -113,7 +113,7 @@ std::optional<VisionData> Vision::ParseData()
                 // Print the sync bytes in m_buffer and position of the VisionData struct in buffer
                 std::cout << "Sync bytes position: " << std::distance(m_buffer.begin(), syncIter) << "\n";
                 std::cout << "Sync bytes: ";
-                for (auto i = 0; i < VisionConstants::kSyncBytes.size(); i++)
+                for (auto i = 0; i < (int)VisionConstants::kSyncBytes.size(); i++)
                 {
                     std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)m_buffer[std::distance(m_buffer.begin(), syncIter) + i] << " ";
                 }
@@ -122,7 +122,7 @@ std::optional<VisionData> Vision::ParseData()
 
                 // Print the bytes used to construct the VisionData struct
                 std::cout << "VisionData bytes: ";
-                for (auto i = 0; i < sizeof(VisionData); i++)
+                for (auto i = 0; i < (int)sizeof(VisionData); i++)
                 {
                     std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)m_buffer[std::distance(m_buffer.begin(), syncIter) + VisionConstants::kSyncBytes.size() + i] << " ";
                 }

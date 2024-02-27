@@ -19,10 +19,11 @@
 #include <rev/SparkAbsoluteEncoder.h> 
 #include <rev/SparkMaxPIDController.h>
 #include <rev/SparkRelativeEncoder.h> 
-#include "Constants.h"
+#include "Constants/ShooterConstants.h"
+#include "Constants/GlobalConstants.h"
 
-enum class ShooterEndCondition { None, EndOnFirstDetection, EndOnMiddleOfNote, EndOnSecondDetection };
 enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero} ;
+enum class ShooterEndCondition { None, EndOnFirstDetection, EndOnMiddleOfNote, EndOnSecondDetection };
 
 class Shooter : public frc2::SubsystemBase {
  public:

@@ -8,6 +8,7 @@
 
 void Robot::RobotInit() {
   (void)AutoConstants::kAutonomousPaths[0];
+  (void)VisionConstants::kSyncBytes[0];
   EnableLiveWindowInTest(true);
 }
 

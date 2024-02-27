@@ -15,6 +15,7 @@ m_shouldAlignSpeaker(shouldAlignSpeaker),
 m_allianceSide(frc::DriverStation::Alliance::kBlue) {
   // Use addRequirements() here to declare subsystem dependencies.
   (void)AutoConstants::kAutonomousPaths[0];
+  (void)VisionConstants::kSyncBytes[0];
   AddRequirements(swerveDrive);
 
   if (frc::DriverStation::GetAlliance())

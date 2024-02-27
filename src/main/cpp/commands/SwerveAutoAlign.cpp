@@ -10,8 +10,9 @@ m_constraints(SwerveDriveConstants::kMaxAngularVelocity, SwerveDriveConstants::k
 m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot, SwerveDriveConstants::kDRot, m_constraints),
 m_withinThresholdLoops(0),
 m_goal(0.0_deg) {
-  // Use addRequirements() here to declare subsystem dependencies.
   (void)AutoConstants::kAutonomousPaths[0];
+  (void)VisionConstants::kSyncBytes[0];
+  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(swerve);
   m_rotationPIDController.EnableContinuousInput(0_deg, 360_deg);
   if (shouldAlignSpeaker)

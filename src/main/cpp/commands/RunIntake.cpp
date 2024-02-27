@@ -6,7 +6,6 @@
 
 RunIntake::RunIntake(Intake *intake, double rollerPower, double rotationPower) :
 m_intake(intake), m_rollerPower(rollerPower), m_rotationPower(rotationPower) {
-  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(intake);
   // Use addRequirements() here to declare subsystem dependencies.
 }

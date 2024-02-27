@@ -9,7 +9,7 @@ m_shooter(shooter),
 m_estimator(estimator),
 m_vision(vision) {
   // Use addRequirements() here to declare subsystem dependencies.
-  (void)AutoConstants::kAutonomousPaths[0];
+  (void)VisionConstants::kSyncBytes[0];
   AddRequirements(shooter);
   AddRequirements(estimator);
   AddRequirements(vision);

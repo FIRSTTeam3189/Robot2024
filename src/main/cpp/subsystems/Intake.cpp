@@ -37,7 +37,6 @@ m_isActive(false),
 m_noteState(NoteState::None),
 m_lastNoteState(NoteState::None)
 {
-    (void)AutoConstants::kAutonomousPaths[0];
     ConfigRotationMotor();
     ConfigRollerMotor();
     ConfigPID();

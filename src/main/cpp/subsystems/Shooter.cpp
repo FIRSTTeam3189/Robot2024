@@ -38,7 +38,6 @@ m_sysIdRoutine(
 m_isActive(false),
 m_noteState(NoteState::None),
 m_lastNoteState(NoteState::None) {
-    (void)AutoConstants::kAutonomousPaths[0];
     ConfigRollerMotor();
     ConfigLoaderMotor();
     ConfigExtensionMotor();
@@ -338,7 +337,7 @@ void Shooter::SetState(ShooterState state){
             m_currentState = ShooterState::Load;
             break;
         case(ShooterState::DirectLoad):
-            target = ShooterConstants::kDirectLoadAngle;
+            target = ShooterConstants::kDirectLoadTarget;
             m_currentState = ShooterState::DirectLoad;
             break;
         case(ShooterState::Close):

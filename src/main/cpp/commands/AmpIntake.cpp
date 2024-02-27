@@ -7,7 +7,6 @@
 AmpIntake::AmpIntake(Intake *intake, double speed) : 
 m_intake(intake), m_speed(speed), m_shouldFinish(false) {
   // Use addRequirements() here to declare subsystem dependencies.
-  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(intake);
 }
 

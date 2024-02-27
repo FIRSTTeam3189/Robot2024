@@ -138,7 +138,7 @@
   {
     "name": "/Preferences/Intake Rotation G",
     "type": "double",
-    "value": 0.01,
+    "value": 0.0,
     "properties": {
       "persistent": true
     }

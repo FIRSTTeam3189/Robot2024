@@ -18,10 +18,11 @@
 #include <ctre/phoenix/led/StrobeAnimation.h>
 #include <ctre/phoenix/led/TwinkleAnimation.h>
 #include <ctre/phoenix/led/TwinkleOffAnimation.h>
-#include "Constants.h"
+#include "Constants/LEDConstants.h"
 
 enum class LEDAnimationType { Clear, ColorFlow, Fire, Larson, Rainbow, RGBFade, SingleFade, Strobe, Twinkle, TwinkleOff }; 
 enum class LEDSection { All, Candle, AllLEDMatrix, LEDMatrix1, LEDMatrix2, Row0, Row1, Row2, Row3, Row4, Row5, Row6, Row7, Row8, Row9, Row10, Row11, Row12, Row13, Row14, Row15};
+
 class LED : public frc2::SubsystemBase {
  public:
   LED();

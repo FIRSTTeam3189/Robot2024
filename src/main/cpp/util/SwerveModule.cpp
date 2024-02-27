@@ -14,7 +14,6 @@ m_PIDValues{SwerveModuleConstants::kPDrive, SwerveModuleConstants::kIDrive, Swer
 m_moduleNumber(moduleNumber),
 m_CANcoderOffset(CANcoderOffset)
  {
-    (void)AutoConstants::kAutonomousPaths[0];
     ConfigDriveMotor();
     ConfigAngleMotor(CANcoderID);
     ConfigCANcoder();

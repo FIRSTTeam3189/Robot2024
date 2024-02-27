@@ -6,7 +6,6 @@
 
 MusicSystem::MusicSystem(std::array<ctre::phoenix6::hardware::TalonFX*, 8> motors) :
 m_musicSystem(std::string{frc::filesystem::GetDeployDirectory() + "/music/funkytown.chrp"}.c_str()) {
-    (void)AutoConstants::kAutonomousPaths[0];
     // for (auto instrument: motors) {
         // m_musicSystem.AddInstrument(*instrument);
     // }

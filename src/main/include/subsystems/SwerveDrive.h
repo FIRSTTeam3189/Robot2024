@@ -17,6 +17,9 @@
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include "util/SwerveModule.h"
 #include "subsystems/PoseEstimatorHelper.h"
+#include "Constants/SwerveDriveConstants.h"
+#include "Constants/VisionConstants.h"
+#include "Constants/AutoConstants.h"
 
 struct SwerveModules {
   frc::Translation2d m_frontLeftLocation;

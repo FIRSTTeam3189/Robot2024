@@ -10,7 +10,6 @@ m_loadPower(loadPower),
 m_shootPower(shootPower),
 m_isFinished(false),
 m_endCondition(endCondition) {
-  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(shooter);
   // Use addRequirements() here to declare subsystem dependencies.
 }

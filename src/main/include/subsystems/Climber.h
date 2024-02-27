@@ -7,7 +7,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 #include <rev/SparkAbsoluteEncoder.h> 
-#include "Constants.h" 
+#include "Constants/ClimberConstants.h" 
 #include "frc/Servo.h" 
 
 class Climber : public frc2::SubsystemBase {

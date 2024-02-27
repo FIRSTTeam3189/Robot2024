@@ -7,7 +7,6 @@
 RunShooter::RunShooter(Shooter *shooter, double power) : 
 m_shooter(shooter), m_power(power) {
   // Use addRequirements() here to declare subsystem dependencies.
-  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(shooter);
 }
 

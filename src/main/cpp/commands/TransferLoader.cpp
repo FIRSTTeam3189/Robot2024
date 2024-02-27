@@ -10,7 +10,6 @@ m_loadPower(loadPower),
 m_shootPower(shootPower),
 m_isFinished(false) {
   // Use addRequirements() here to declare subsystem dependencies.
-  (void)AutoConstants::kAutonomousPaths[0];
   AddRequirements(shooter);
 }
 
@@ -32,7 +31,6 @@ void TransferLoader::Execute() {
 void TransferLoader::End(bool interrupted) {
    m_shooter->SetLoaderPower(0.0);
    m_shooter->SetRollerPower(0.0);
-   
 }
 
 // Returns true when the command should end.

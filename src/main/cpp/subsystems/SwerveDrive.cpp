@@ -72,6 +72,7 @@ m_angleSysIdRoutine(
 )
   {   
     (void)AutoConstants::kAutonomousPaths[0];
+    (void)VisionConstants::kSyncBytes[0];
     ConfigGyro();
     ConfigSignals();
     auto poseEstimator = new frc::SwerveDrivePoseEstimator<4> (SwerveDriveConstants::kKinematics, m_pigeon.GetRotation2d(), 

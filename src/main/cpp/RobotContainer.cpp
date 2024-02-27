@@ -7,6 +7,7 @@
 #include <frc2/command/button/Trigger.h>
 
 RobotContainer::RobotContainer() {
+  (void)VisionConstants::kSyncBytes[0];
   RegisterAutoCommands();
   
   // Initialize all of your commands and subsystems here 
@@ -57,18 +58,6 @@ void RobotContainer::ConfigureDriverBindings() {
     },{m_swerveDrive}).ToPtr()
   );
 
-  frc2::Trigger ampIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
-  ampIntakeButton.OnTrue(frc2::SequentialCommandGroup(
-    SetIntakeRotation(m_intake, IntakeState::Extended),
-    AmpIntake(m_intake, IntakeConstants::kIntakePower)
-  ).ToPtr());
-  ampIntakeButton.OnFalse(frc2::SequentialCommandGroup(
-    frc2::InstantCommand([this]{
-      m_intake->SetRollerPower(0.0);
-    },{m_intake}),
-    SetIntakeRotation(m_intake, IntakeState::Retracted)
-  ).ToPtr());
-
   frc2::Trigger driverLoadButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
   driverLoadButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::ParallelCommandGroup(
@@ -98,16 +87,20 @@ void RobotContainer::ConfigureDriverBindings() {
     )
   ).ToPtr());
 
-  frc2::Trigger retractIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
-  retractIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeState::Retracted).ToPtr());
-
-  frc2::Trigger runIntake{m_bill.Button(OperatorConstants::kButtonIDCircle)};
-  runIntake.OnTrue(frc2::InstantCommand([this]{
-      m_intake->SetRollerPower(1.0);
-  },{m_intake}).ToPtr());
-  runIntake.OnFalse(frc2::InstantCommand([this]{
+  frc2::Trigger ampIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
+  ampIntakeButton.OnTrue(frc2::SequentialCommandGroup(
+    SetIntakeRotation(m_intake, IntakeState::Extended),
+    AmpIntake(m_intake, IntakeConstants::kIntakePower)
+  ).ToPtr());
+  ampIntakeButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::InstantCommand([this]{
       m_intake->SetRollerPower(0.0);
-  },{m_intake}).ToPtr());
+    },{m_intake}),
+    SetIntakeRotation(m_intake, IntakeState::Retracted)
+  ).ToPtr());
+
+  frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, false, true, true).ToPtr());
 
   frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
   ampScoreIntakeButton.OnTrue(frc2::SequentialCommandGroup(
@@ -121,13 +114,10 @@ void RobotContainer::ConfigureDriverBindings() {
     SetIntakeRotation(m_intake, IntakeState::Retracted)
   ).ToPtr());
 
-  frc2::Trigger extendIntakeButton{m_bill.Button(OperatorConstants::kButtonIDTriangle)};
-  extendIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeState::Extended).ToPtr());
-
-  frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDCreate)};
+  frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
     // m_swerveDrive->ResetGyroscope();
-    m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, false);
+    m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
   },{m_swerveDrive}).ToPtr());
 
   frc2::Trigger resetSpeakerPoseButton{m_bill.Button(OperatorConstants::kButtonIDMenu)};
@@ -139,138 +129,28 @@ void RobotContainer::ConfigureDriverBindings() {
         m_swerveDrive->SetPose(frc::Pose2d{15.579_m, 5.50_m, frc::Rotation2d{180.0_deg}}, false);
     }
   },{m_swerveDrive}).ToPtr());
-
-  frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, false, true, true).ToPtr());
   
+  // frc2::Trigger extendIntakeButton{m_bill.Button(OperatorConstants::kButtonIDTriangle)};
+  // extendIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeState::Extended).ToPtr());
+
+  // frc2::Trigger retractIntakeButton{m_bill.Button(OperatorConstants::kButtonIDX)};
+  // retractIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeState::Retracted).ToPtr());
+
+  // frc2::Trigger runIntake{m_bill.Button(OperatorConstants::kButtonIDCircle)};
+  // runIntake.OnTrue(frc2::InstantCommand([this]{
+  //     m_intake->SetRollerPower(1.0);
+  // },{m_intake}).ToPtr());
+  // runIntake.OnFalse(frc2::InstantCommand([this]{
+  //     m_intake->SetRollerPower(0.0);
+  // },{m_intake}).ToPtr());
+
   // frc2::Trigger toggleSlowModeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
   // toggleSlowModeButton.OnTrue(frc2::InstantCommand([this]{ m_swerveDrive->ToggleSlowMode(); },{m_swerveDrive}).ToPtr());
-
-  // frc2::Trigger extendClimbButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  // extendClimbButton.OnTrue(frc2::InstantCommand([this]{ 
-  //   m_climber->SetPower(ClimberConstants::kExtendMotorSpeed);
-  //   m_climber->SetServoRotation(ClimberConstants::kExtendServoAngle);
-  // },{m_climber}).ToPtr());
-  // extendClimbButton.OnFalse(frc2::InstantCommand([this]{
-  //   m_climber->SetPower(0.0);
-  //   m_climber->SetServoRotation(ClimberConstants::kRetractServoAngle);
-  // },{m_climber}).ToPtr());
-
-  // frc2::Trigger retractClimbButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
-  // retractClimbButton.OnTrue(frc2::InstantCommand([this]{
-  //   m_climber->SetPower(ClimberConstants::kRetractMotorSpeed);
-  // },{m_climber}).ToPtr());
-  // retractClimbButton.OnFalse(frc2::InstantCommand([this]{
-  //   m_climber->SetPower(0.0);
-  // },{m_climber}).ToPtr());
 }
 
 void RobotContainer::ConfigureCoDriverBindings() {
   // Ted controls
-  frc2::Trigger shootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
-  shootButton.OnTrue(frc2::SequentialCommandGroup(
-    SetShooterRotation(m_shooter, ShooterState::Close),
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(ShooterConstants::kRevUpTime),
-      RunShooter(m_shooter, ShooterConstants::kShootPower)
-    ),
-    RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
-  ).ToPtr());
-  shootButton.OnFalse(frc2::InstantCommand([this]{
-    m_shooter->SetRollerPower(0.0);
-    m_shooter->SetLoaderPower(0.0);
-  },{m_shooter}).ToPtr());
-
-  // frc2::Trigger manualSpinButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
-  // manualSpinButton.OnTrue(frc2::InstantCommand([this]{
-  //     m_shooter->SetRotationPower(0.3);
-  // },{m_shooter}).ToPtr());
-  // manualSpinButton.OnFalse(frc2::InstantCommand([this]{
-  //     m_shooter->SetRotationPower(0.0);
-  // },{m_shooter}).ToPtr());
-
-  // frc2::Trigger loadClimbPieceButton{m_ted.Button(OperatorConstants::kButtonIDMenu)};
-  // loadClimbPieceButton.OnTrue(frc2::SequentialCommandGroup(
-  //   TransferLoader(m_shooter, ShooterConstants::kLoadPower, 0.0)
-  // ).ToPtr());
-
-  // frc2::Trigger extendShooterButton{m_ted.Button(OperatorConstants::kButtonIDMicrophone)};
-  // extendShooterButton.OnTrue(frc2::SequentialCommandGroup(
-  //     SetIntakeRotation(m_intake, IntakeState::Retracted),
-  //     SetShooterExtension(m_shooter, ShooterConstants::kTrapExtension),
-  //     SetShooterRotation(m_shooter, ShooterConstants::kTrapExtensionAngle)
-  //   ).ToPtr());
-
-  frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
-  shooterAlignButton.OnFalse(frc2::InstantCommand([this]{
-    m_shooter->SetRotationPower(0.0);
-  },{m_shooter}).ToPtr());
-
-  frc2::Trigger shooterZeroButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
-  shooterZeroButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
-
-  frc2::Trigger shooterCloseRangeButton{m_ted.Button(OperatorConstants::kButtonIDX)};
-  shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Close).ToPtr());
-
-  frc2::Trigger shooterMidRangeButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
-  shooterMidRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Mid).ToPtr());
-
-  // frc2::Trigger shooterFarRangeButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
-  // shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
-
-  frc2::Trigger manualShootButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
-  manualShootButton.OnTrue(frc2::SequentialCommandGroup(
-  frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(ShooterConstants::kRevUpTime),
-      RunShooter(m_shooter, ShooterConstants::kShootPower)
-    ),
-    RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
-  ).ToPtr());
-  manualShootButton.OnFalse(frc2::InstantCommand([this]{
-    m_shooter->SetRollerPower(0.0);
-    m_shooter->SetLoaderPower(0.0);
-  },{m_shooter}).ToPtr());
-
-  frc2::Trigger loadButton{m_ted.Button(OperatorConstants::kButtonIDLeftBumper)};
-  loadButton.OnTrue(frc2::SequentialCommandGroup(
-    frc2::ParallelCommandGroup(
-      frc2::ParallelRaceGroup(
-        frc2::WaitCommand(1.0_s),
-        SetIntakeRotation(m_intake, IntakeState::Extended)
-      ),
-      frc2::ParallelRaceGroup(
-        frc2::WaitCommand(1.0_s),
-        SetShooterRotation(m_shooter, ShooterState::Load)
-      )
-    ),
-    frc2::ParallelCommandGroup(
-      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
-      RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
-    )
-  ).ToPtr());
-  loadButton.OnFalse(frc2::SequentialCommandGroup(
-    frc2::InstantCommand([this]{
-      m_intake->SetRollerPower(0.0);
-      m_shooter->SetRollerPower(0.0);
-      m_shooter->SetLoaderPower(0.0);
-    },{m_intake, m_shooter}),
-    frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Retracted),
-      SetIntakeRotation(m_intake, IntakeState::Retracted)
-    )
-  ).ToPtr());
-
-  frc2::Trigger unloadButton{m_ted.Button(OperatorConstants::kButtonIDRightBumper)};
-  unloadButton.OnTrue(RunLoader(m_shooter, ShooterConstants::kUnloadPower, 0.0).ToPtr());
-  unloadButton.OnFalse(
-    frc2::InstantCommand([this]{
-      m_shooter->SetRollerPower(0.0);
-      m_shooter->SetLoaderPower(0.0);
-    },{m_shooter}).ToPtr()
-  );
-
-  frc2::Trigger directShooterLoadButton{m_ted.Button(OperatorConstants::kButtonIDTouchpad)};
+  frc2::Trigger directShooterLoadButton{m_ted.Button(OperatorConstants::kButtonIDLeftBumper)};
   directShooterLoadButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::DirectLoad),
     RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::EndOnFirstDetection),
@@ -289,6 +169,132 @@ void RobotContainer::ConfigureCoDriverBindings() {
       SetIntakeRotation(m_intake, IntakeState::Retracted)
     )
   ).ToPtr());
+
+  frc2::Trigger unloadButton{m_ted.Button(OperatorConstants::kButtonIDRightBumper)};
+  unloadButton.OnTrue(RunLoader(m_shooter, ShooterConstants::kUnloadPower, 0.0).ToPtr());
+  unloadButton.OnFalse(
+    frc2::InstantCommand([this]{
+      m_shooter->SetRollerPower(0.0);
+      m_shooter->SetLoaderPower(0.0);
+    },{m_shooter}).ToPtr()
+  );
+
+  frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
+  shooterAlignButton.OnFalse(frc2::InstantCommand([this]{
+    m_shooter->SetRotationPower(0.0);
+  },{m_shooter}).ToPtr());
+
+  frc2::Trigger shootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
+  shootButton.OnTrue(frc2::SequentialCommandGroup(
+    SetShooterRotation(m_shooter, ShooterState::Close),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kRevUpTime),
+      RunShooter(m_shooter, ShooterConstants::kShootPower)
+    ),
+    RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+  ).ToPtr());
+  shootButton.OnFalse(frc2::InstantCommand([this]{
+    m_shooter->SetRollerPower(0.0);
+    m_shooter->SetLoaderPower(0.0);
+  },{m_shooter}).ToPtr());
+
+  frc2::Trigger manualShootButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
+  manualShootButton.OnTrue(frc2::SequentialCommandGroup(
+  frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kRevUpTime),
+      RunShooter(m_shooter, ShooterConstants::kShootPower)
+    ),
+    RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+  ).ToPtr());
+  manualShootButton.OnFalse(frc2::InstantCommand([this]{
+    m_shooter->SetRollerPower(0.0);
+    m_shooter->SetLoaderPower(0.0);
+  },{m_shooter}).ToPtr());
+
+  frc2::Trigger loadTrapNoteButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
+  loadTrapNoteButton.OnTrue(frc2::InstantCommand([this]{
+    m_shooter->SetLoaderPower(ShooterConstants::kTrapLoadLoaderPower);
+    m_shooter->SetRollerPower(ShooterConstants::kTrapLoadRollerPower);
+  },{m_intake, m_shooter}).ToPtr());
+  loadTrapNoteButton.OnTrue(frc2::InstantCommand([this]{
+    m_shooter->SetLoaderPower(0.0);
+    m_shooter->SetRollerPower(0.0);
+  },{m_intake, m_shooter}).ToPtr());
+
+  frc2::Trigger scoreTrapNoteButton{m_ted.Button(OperatorConstants::kButtonIDTouchpad)};
+  scoreTrapNoteButton.OnTrue(frc2::InstantCommand([this]{
+    m_shooter->SetLoaderPower(ShooterConstants::kTrapScoreLoaderPower);
+    m_shooter->SetRollerPower(ShooterConstants::kTrapScoreRollerPower);
+  },{m_intake, m_shooter}).ToPtr());
+  scoreTrapNoteButton.OnTrue(frc2::InstantCommand([this]{
+    m_shooter->SetLoaderPower(0.0);
+    m_shooter->SetRollerPower(0.0);
+  },{m_intake, m_shooter}).ToPtr());
+
+  // frc2::Trigger extendShooterButton{m_ted.Button(OperatorConstants::kButtonIDCreate)};
+  // extendShooterButton.OnTrue(frc2::SequentialCommandGroup(
+  //     SetIntakeRotation(m_intake, IntakeState::Retracted),
+  //     SetShooterExtension(m_shooter, ShooterConstants::kTrapExtension),
+  //     SetShooterRotation(m_shooter, ShooterConstants::kTrapExtensionAngle)
+  // ).ToPtr());
+
+  // frc2::Trigger retractShooterButton{m_ted.Button(OperatorConstants::kButtonIDMenu)};
+  // retractShooterButton.OnTrue(frc2::SequentialCommandGroup(
+  //     SetIntakeRotation(m_intake, IntakeState::Retracted),
+  //     SetShooterExtension(m_shooter, ShooterConstants::kTrapExtension),
+  //     SetShooterRotation(m_shooter, ShooterConstants::kTrapExtensionAngle)
+  // ).ToPtr());
+
+  // frc2::Trigger loadButton{m_ted.Button(OperatorConstants::kButtonIDLeftBumper)};
+  // loadButton.OnTrue(frc2::SequentialCommandGroup(
+  //   frc2::ParallelCommandGroup(
+  //     frc2::ParallelRaceGroup(
+  //       frc2::WaitCommand(1.0_s),
+  //       SetIntakeRotation(m_intake, IntakeState::Extended)
+  //     ),
+  //     frc2::ParallelRaceGroup(
+  //       frc2::WaitCommand(1.0_s),
+  //       SetShooterRotation(m_shooter, ShooterState::Load)
+  //     )
+  //   ),
+  //   frc2::ParallelCommandGroup(
+  //     RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
+  //     RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
+  //   )
+  // ).ToPtr());
+  // loadButton.OnFalse(frc2::SequentialCommandGroup(
+  //   frc2::InstantCommand([this]{
+  //     m_intake->SetRollerPower(0.0);
+  //     m_shooter->SetRollerPower(0.0);
+  //     m_shooter->SetLoaderPower(0.0);
+  //   },{m_intake, m_shooter}),
+  //   frc2::ParallelCommandGroup(
+  //     SetShooterRotation(m_shooter, ShooterState::Retracted),
+  //     SetIntakeRotation(m_intake, IntakeState::Retracted)
+  //   )
+  // ).ToPtr());
+
+  // frc2::Trigger manualSpinButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
+  // manualSpinButton.OnTrue(frc2::InstantCommand([this]{
+  //     m_shooter->SetRotationPower(0.3);
+  // },{m_shooter}).ToPtr());
+  // manualSpinButton.OnFalse(frc2::InstantCommand([this]{
+  //     m_shooter->SetRotationPower(0.0);
+  // },{m_shooter}).ToPtr());
+
+
+  // frc2::Trigger shooterZeroButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
+  // shooterZeroButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
+
+  // frc2::Trigger shooterCloseRangeButton{m_ted.Button(OperatorConstants::kButtonIDX)};
+  // shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Close).ToPtr());
+
+  // frc2::Trigger shooterMidRangeButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
+  // shooterMidRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Mid).ToPtr());
+
+  // frc2::Trigger shooterFarRangeButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
+  // shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
 }
 
 void RobotContainer::RegisterAutoCommands() {
@@ -383,56 +389,53 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
 void RobotContainer::ConfigureSysIDBindings() {
   // System ID Bindings
-  // m_test.Button(OperatorConstants::kButtonIDLeftTrigger).WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // ObamaButton.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger ObamaButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  ObamaButton.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger Obama1Button{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
+  // Obama1Button.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger Obama1Button{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
-  Obama1Button.WhileTrue(m_intake->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger Obama2Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper)};
+  // Obama2Button.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger Obama2Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper)};
-  Obama2Button.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger Obama3Button{m_test.Button(OperatorConstants::kButtonIDRightBumper)};
+  // Obama3Button.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger Obama3Button{m_test.Button(OperatorConstants::kButtonIDRightBumper)};
-  Obama3Button.WhileTrue(m_intake->SysIdDynamic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger Obama4Button{m_test.Button(OperatorConstants::kButtonIDX)};
+  // Obama4Button.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger Obama4Button{m_test.Button(OperatorConstants::kButtonIDX)};
-  Obama4Button.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger Obama5Button{m_test.Button(OperatorConstants::kButtonIDSquare)};
+  // Obama5Button.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger Obama5Button{m_test.Button(OperatorConstants::kButtonIDSquare)};
-  Obama5Button.WhileTrue(m_shooter->SysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger Obama6Button{m_test.Button(OperatorConstants::kButtonIDCircle)};
+  // Obama6Button.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger Obama6Button{m_test.Button(OperatorConstants::kButtonIDCircle)};
-  Obama6Button.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger Obama7Button{m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  // Obama7Button.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger Obama7Button{m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  Obama7Button.WhileTrue(m_shooter->SysIdDynamic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger Obama8Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
+  // Obama8Button.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger Obama8Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
-  Obama8Button.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger Obama9Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
+  // Obama9Button.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger Obama9Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
-  Obama9Button.WhileTrue(m_swerveDrive->DriveSysIdQuasistatic(frc2::sysid::Direction::kReverse));
-
-  frc2::Trigger Obama10Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  Obama10Button.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger Obama10Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  // Obama10Button.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kForward));
 
   // frc2::Trigger Obama11Button{m_test.Button(OperatorConstants::kButtonIDLeftBumper) && };
   // Obama11Button.WhileTrue(m_swerveDrive->DriveSysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger Obama12Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
-  Obama12Button.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kForward));
+  // frc2::Trigger Obama12Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDX)};
+  // Obama12Button.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kForward));
 
-  frc2::Trigger Obama13Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
-  Obama13Button.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger Obama13Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDSquare)};
+  // Obama13Button.WhileTrue(m_swerveDrive->AngleSysIdQuasistatic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger Obama14Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  Obama14Button.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
+  // frc2::Trigger Obama14Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  // Obama14Button.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
 
-  frc2::Trigger Obama15Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDCircle)};
-  Obama15Button.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
-  
+  // frc2::Trigger Obama15Button{m_test.Button(OperatorConstants::kButtonIDRightBumper) && m_test.Button(OperatorConstants::kButtonIDCircle)};
+  // Obama15Button.WhileTrue(m_swerveDrive->AngleSysIdDynamic(frc2::sysid::Direction::kReverse));
 }
 
 // no matter how nice ethan seems he will slap you with a piece of chicken and eat you in a bucket

@@ -5,7 +5,6 @@
 #include "subsystems/LED.h"
 
 LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animation(NULL), m_shouldStartup(true), m_startupRunning(false), m_runString(false), m_shouldRunString(false), m_lastEnableState(false){
-    (void)AutoConstants::kAutonomousPaths[0];
     m_candleControl.ConfigAllSettings(m_candleConfig);
 
     m_ledSections[LEDSection::All] = {0, 520};

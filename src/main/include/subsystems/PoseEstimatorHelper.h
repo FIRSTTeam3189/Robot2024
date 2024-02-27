@@ -9,7 +9,8 @@
 #include <frc/geometry/Pose2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
-#include "Constants.h"
+#include "Constants/SwerveModuleConstants.h"
+#include "Constants/SwerveDriveConstants.h"
 
 class PoseEstimatorHelper : public frc2::SubsystemBase {
  public:

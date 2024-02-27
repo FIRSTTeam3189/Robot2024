@@ -18,7 +18,8 @@
 #include <rev/SparkMaxPIDController.h>
 #include <rev/SparkAbsoluteEncoder.h> 
 #include <rev/CANSparkMax.h>
-#include "Constants.h"
+#include "Constants/IntakeConstants.h"
+#include "Constants/GlobalConstants.h"
 
 enum class IntakeState { None, Extended, Amp, Retracted };
 
