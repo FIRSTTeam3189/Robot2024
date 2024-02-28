@@ -30,6 +30,7 @@ namespace ShooterConstants {
 
     constexpr double kShootPower {1.0};
     constexpr auto kRevUpTime {1.5_s};
+    constexpr auto kShootTime {2.0_s};
 
     constexpr auto kAxleToCenterDistance {0.0741_m};
     constexpr auto kAxleToGroundDistance {0.2185_m};
@@ -58,6 +59,7 @@ namespace ShooterConstants {
     constexpr unsigned int kExtensionCurrentLimit {40};
     constexpr unsigned int kLoaderCurrentLimit {30};
     constexpr auto kRotationStopDistance {5.0_deg};
+    constexpr auto kRotationIdleTolerance {1.5_deg};
 
     constexpr bool kRollerInverted {true};
 

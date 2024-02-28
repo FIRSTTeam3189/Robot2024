@@ -22,7 +22,7 @@
 #include "Constants/ShooterConstants.h"
 #include "Constants/GlobalConstants.h"
 
-enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero} ;
+enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero, AutoAlign} ;
 enum class ShooterEndCondition { None, EndOnFirstDetection, EndOnMiddleOfNote, EndOnSecondDetection };
 
 class Shooter : public frc2::SubsystemBase {
@@ -48,9 +48,9 @@ class Shooter : public frc2::SubsystemBase {
   void UpdatePreferences();
   frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
-  void SetState(ShooterState state);
+  void SetState(ShooterState state, units::degree_t autoAlignAngle = ShooterConstants::kRetractTarget);
   units::degree_t GetTarget();
-  void HoldPosition();
+  void HoldPosition(units::degree_t target);
   void SetActive(bool active);
 
   /**

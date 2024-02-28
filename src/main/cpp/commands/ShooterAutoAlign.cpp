@@ -16,12 +16,14 @@ m_vision(vision) {
 }
 
 // Called when the command is initially scheduled.
-void ShooterAutoAlign::Initialize() {}
+void ShooterAutoAlign::Initialize() {
+  m_shooter->SetActive(false);
+}
 
 // Called repeatedly when this Command is scheduled to run
 void ShooterAutoAlign::Execute() {
   auto angle = CalculateShooterAngle();
-  m_shooter->SetRotation(angle);
+  m_shooter->SetState(ShooterState::AutoAlign, angle);
 }
 
 // Called once the command ends or is interrupted.

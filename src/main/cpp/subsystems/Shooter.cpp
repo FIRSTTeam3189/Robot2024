@@ -66,12 +66,16 @@ void Shooter::Periodic() {
     if (m_isActive) {
         SetRotation(m_target);
     } else {
-        HoldPosition();
+        HoldPosition(m_target);
     }
 }
 
-void Shooter::HoldPosition() {
-    units::volt_t PIDValue = units::volt_t{(m_target - GetRotation()).value() * m_profiledPIDController.GetP()};
+void Shooter::HoldPosition(units::degree_t target) {
+    units::volt_t PIDValue = 0.0_V;
+    if (fabs(m_target.value() - GetRotation().value()) > ShooterConstants::kRotationIdleTolerance) {
+        PIDValue = units::volt_t{(m_target - GetRotation()).value() * m_profiledPIDController.GetP()};
+    }
+
     auto ffValue = m_ff->Calculate(units::radian_t{GetRotation()}, units::radians_per_second_t{0.0});
     frc::SmartDashboard::PutNumber("Shooter rotation FF", ffValue.value());
     frc::SmartDashboard::PutNumber("Shooter rotation PID", PIDValue.value());
@@ -307,7 +311,7 @@ frc2::CommandPtr Shooter::SysIdDynamic(frc2::sysid::Direction direction) {
   return m_sysIdRoutine.Dynamic(direction);
 }
 
-void Shooter::SetState(ShooterState state){
+void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
     auto target = 0.0_deg;
 
     switch(state){
@@ -340,6 +344,10 @@ void Shooter::SetState(ShooterState state){
         case(ShooterState::Zero):
             target = 0_deg;
             m_currentState = ShooterState::Zero;
+            break;
+        case(ShooterState::AutoAlign):
+            target = autoAlignAngle;
+            m_currentState = ShooterState::AutoAlign;
             break;
         default: 
             break;

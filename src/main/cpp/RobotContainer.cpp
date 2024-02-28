@@ -108,7 +108,7 @@ void RobotContainer::ConfigureDriverBindings() {
   ).ToPtr());
   ampScoreIntakeButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(2.0_s), 
+      frc2::WaitCommand(IntakeConstants::kAmpShootTime), 
       RunIntake(m_intake, IntakeConstants::kAmpScorePower, 0)
     ),
     SetIntakeRotation(m_intake, IntakeState::Retracted)
@@ -188,29 +188,31 @@ void RobotContainer::ConfigureCoDriverBindings() {
   frc2::Trigger shootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
   shootButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::Close),
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(ShooterConstants::kRevUpTime),
-      RunShooter(m_shooter, ShooterConstants::kShootPower)
-    ),
-    RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+    RunShooter(m_shooter, ShooterConstants::kShootPower)
   ).ToPtr());
-  shootButton.OnFalse(frc2::InstantCommand([this]{
-    m_shooter->SetRollerPower(0.0);
-    m_shooter->SetLoaderPower(0.0);
-  },{m_shooter}).ToPtr());
+  shootButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kShootTime),
+      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShooterPower)
+    ),
+    frc2::InstantCommand([this]{
+      m_shooter->SetRollerPower(0.0);
+      m_shooter->SetLoaderPower(0.0);
+    },{m_shooter})
+  ).ToPtr());
 
   frc2::Trigger manualShootButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
-  manualShootButton.OnTrue(frc2::SequentialCommandGroup(
-  frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(ShooterConstants::kRevUpTime),
-      RunShooter(m_shooter, ShooterConstants::kShootPower)
+  manualShootButton.OnTrue(RunShooter(m_shooter, ShooterConstants::kShootPower).ToPtr());
+  manualShootButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kShootTime),
+      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShooterPower)
     ),
-    RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+    frc2::InstantCommand([this]{
+      m_shooter->SetRollerPower(0.0);
+      m_shooter->SetLoaderPower(0.0);
+    },{m_shooter})
   ).ToPtr());
-  manualShootButton.OnFalse(frc2::InstantCommand([this]{
-    m_shooter->SetRollerPower(0.0);
-    m_shooter->SetLoaderPower(0.0);
-  },{m_shooter}).ToPtr());
 
   frc2::Trigger loadTrapNoteButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
   loadTrapNoteButton.OnTrue(frc2::InstantCommand([this]{
@@ -283,7 +285,6 @@ void RobotContainer::ConfigureCoDriverBindings() {
   //     m_shooter->SetRotationPower(0.0);
   // },{m_shooter}).ToPtr());
 
-
   // frc2::Trigger shooterZeroButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
   // shooterZeroButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
 
@@ -301,7 +302,7 @@ void RobotContainer::RegisterAutoCommands() {
   // Start of Auto Events
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.emplace_back(ShooterAutoAlign(m_shooter, m_estimator, m_vision)
-        .Until([this]{ return (m_swerveDrive->GetTotalVelocity() < 0.25_mps); }).Unwrap());
+        .Until([this]{ return (m_swerveDrive->GetTotalVelocity() < AutoConstants::kAlignAllowableDriveSpeed); }).Unwrap());
   pathplanner::NamedCommands::registerCommand("AlignShooter", frc2::SequentialCommandGroup(std::move(commands)).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("AlignSwerve", SwerveAutoAlign(m_swerveDrive, true).ToPtr());
@@ -333,10 +334,15 @@ void RobotContainer::RegisterAutoCommands() {
   ).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("ImmediateShoot", frc2::SequentialCommandGroup(
-    frc2::ParallelRaceGroup(
-      frc2::WaitCommand(1.25_s),
-      SetIntakeRotation(m_intake, IntakeState::Extended),
-      SetShooterRotation(m_shooter, ShooterState::Far)
+    frc2::ParallelCommandGroup(
+      frc2::ParallelRaceGroup(
+        frc2::WaitCommand(1.0_s),
+        SetIntakeRotation(m_intake, IntakeState::Extended)
+      ),
+      frc2::ParallelRaceGroup(
+        frc2::WaitCommand(1.0_s),
+        SetShooterRotation(m_shooter, ShooterState::Far)
+      )
     ),
     frc2::ParallelCommandGroup(
       RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0),
@@ -344,12 +350,12 @@ void RobotContainer::RegisterAutoCommands() {
     )
   ).ToPtr());
 
-  pathplanner::NamedCommands::registerCommand("AlignToAmp", SwerveAutoAlign(m_swerveDrive, false, 90_deg).ToPtr());
+  pathplanner::NamedCommands::registerCommand("AlignToAmp", SwerveAutoAlign(m_swerveDrive, false, 90.0_deg).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("ScoreAmp", frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeState::Amp),
     frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(2.0_s), 
+      frc2::WaitCommand(IntakeConstants::kAmpShootTime), 
       RunIntake(m_intake, IntakeConstants::kAmpScorePower, 0)
     ),
     SetIntakeRotation(m_intake, IntakeState::Retracted),
@@ -360,11 +366,11 @@ void RobotContainer::RegisterAutoCommands() {
   
   pathplanner::NamedCommands::registerCommand("ScoreSpeaker", frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(ShooterConstants::kRevUpTime),
+      frc2::WaitCommand(AutoConstants::kAutoRevUpTime),
       RunShooter(m_shooter, ShooterConstants::kShootPower)
     ),
     frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(1.0_s),
+      frc2::WaitCommand(ShooterConstants::kShootTime),
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
     ),
     frc2::ParallelCommandGroup(
