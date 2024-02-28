@@ -175,6 +175,11 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 
     auto [fl, fr, bl, br] = states;
 
+    if (m_slowMode)
+        SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveModuleConstants::kMaxSpeed * SwerveDriveConstants::kExtendDriveSpeed);
+    else
+        SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveModuleConstants::kMaxSpeed);
+
     double AdvantageScopeDesiredStates[] = 
     {(double)fl.angle.Degrees(), (double)fl.speed,
      (double)fr.angle.Degrees(), (double)fr.speed,
@@ -182,11 +187,6 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
      (double)br.angle.Degrees(), (double)br.speed};
 
     frc::SmartDashboard::PutNumberArray("AdvantageScope Desired States", AdvantageScopeDesiredStates);
-
-    if (m_slowMode)
-        SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed * SwerveDriveConstants::kExtendDriveSpeed);
-    else
-        SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
 
     SetModuleStates(states);
 }

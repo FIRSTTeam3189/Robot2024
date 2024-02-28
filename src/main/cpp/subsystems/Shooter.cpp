@@ -349,6 +349,10 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
             target = autoAlignAngle;
             m_currentState = ShooterState::AutoAlign;
             break;
+        case(ShooterState::StartingConfig):
+            target = ShooterConstants::kStartingConfigTarget;
+            m_currentState = ShooterState::StartingConfig;
+            break;
         default: 
             break;
     }

@@ -44,6 +44,7 @@
       "/LiveWindow/Ungrouped/Talon FX (v6) [8]": "Motor Controller",
       "/LiveWindow/Ungrouped/class frc2::SubsystemBase": "Subsystem",
       "/SmartDashboard/Auto Routines": "String Chooser",
+      "/SmartDashboard/Estimated pose": "Field2d",
       "/SmartDashboard/Field": "Field2d"
     }
   },

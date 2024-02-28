@@ -115,8 +115,6 @@ void Drive::Execute() {
 
   frc::SmartDashboard::PutNumber("X speed", xSpeed.value());
   frc::SmartDashboard::PutNumber("Y speed", ySpeed.value());
-  // units::meters_per_second_t xSpeed = (fabs(joystickX) < .05) ? 0.0_mps : (m_xSpeedLimiter.Calculate(joystickX) * SwerveDriveConstants::kMaxSpeed);
-  // units::meters_per_second_t ySpeed = (fabs(joystickY) < .05) ? 0.0_mps : (m_ySpeedLimiter.Calculate(joystickY) * SwerveDriveConstants::kMaxSpeed);
   units::radians_per_second_t rot;
 
   // If using atan2 control, where right joystick angle == robot heading angle

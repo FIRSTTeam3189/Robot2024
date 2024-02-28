@@ -29,7 +29,8 @@ class PoseEstimatorHelper : public frc2::SubsystemBase {
 
   private:
   frc::SwerveDrivePoseEstimator<4> *m_poseEstimator;
-  frc::Field2d m_field;
+  frc::Field2d m_estimatedPose;
+  frc::Field2d m_visionPose;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

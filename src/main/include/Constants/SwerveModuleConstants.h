@@ -79,6 +79,7 @@ namespace SwerveModuleConstants {
     constexpr bool kDriveEnableCurrentLimit = true;
 
     // PID, sensor IDs passed in via structs in namespace
+    constexpr auto kMaxSpeed {4.0_mps};
     constexpr double kMPSToRPM {600.0};
     constexpr double kDEGToRAD {57.2957795131};
     constexpr double kWheelRadiusInches {2.0};

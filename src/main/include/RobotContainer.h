@@ -21,6 +21,7 @@
 
 #include "commands/AmpIntake.h"
 #include "commands/Drive.h"
+#include "commands/RunClimber.h"
 #include "commands/RunIntake.h"
 #include "commands/RunLoader.h"
 #include "commands/RunShooter.h"
@@ -38,6 +39,7 @@
 #include <pathplanner/lib/auto/NamedCommands.h>
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
 
+enum class SuperstructureState { Default, Climb };
 /**
  * This class is where the bulk of the robot should be declared.  Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -50,6 +52,8 @@ class RobotContainer {
   RobotContainer();
 
   frc2::Command* GetAutonomousCommand();
+  SuperstructureState GetSuperstructureState();
+  bool IsClimbState();
 
  private:
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -72,6 +76,7 @@ class RobotContainer {
 
   bool m_isSpecialHeadingMode = true;
   bool m_isFieldRelative = true;
+  SuperstructureState m_superstructureState = SuperstructureState::Default;
 
   void ConfigureDriverBindings();
   void ConfigureCoDriverBindings();

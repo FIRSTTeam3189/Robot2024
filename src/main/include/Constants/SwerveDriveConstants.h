@@ -25,7 +25,7 @@ namespace SwerveDriveConstants {
         frc::Translation2d{-SwerveDriveConstants::kXDistanceFromCenter, +SwerveDriveConstants::kYDistanceFromCenter},
         frc::Translation2d{-SwerveDriveConstants::kXDistanceFromCenter, -SwerveDriveConstants::kYDistanceFromCenter}
     };
-     constexpr auto kMaxSpeed {4.0_mps};
+    constexpr auto kMaxSpeed {4.0_mps};
     constexpr auto kMaxAcceleration {5.0_mps_sq};
     constexpr units::radians_per_second_t kMaxAngularVelocity {4.0 * Pi};
     constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {2.0 * Pi};

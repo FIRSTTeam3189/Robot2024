@@ -170,13 +170,13 @@ void Vision::UpdateData()
         std::cout << "Vision buffer overflow, cleared buffer\n";
     }
 
-    frc::SmartDashboard::PutBoolean("Detected", m_data.isDetected);
-    frc::SmartDashboard::PutNumber("Tag ID", m_data.ID);
-    frc::SmartDashboard::PutNumber("Last timestamp", m_data.lastTimestamp);
+    frc::SmartDashboard::PutBoolean("Vision Detected", m_data.isDetected);
+    frc::SmartDashboard::PutNumber("Vision Tag ID", m_data.ID);
+    frc::SmartDashboard::PutNumber("Vision Last timestamp", m_data.lastTimestamp);
     frc::SmartDashboard::PutNumber("Vision X distance", m_data.translationMatrix[0]);
     frc::SmartDashboard::PutNumber("Vision Y distance", m_data.translationMatrix[1]);
     frc::SmartDashboard::PutNumber("Vision Z distance", m_data.translationMatrix[2]);
-    frc::SmartDashboard::PutNumber("Rotation X", m_data.rotationMatrix[0]);
-    frc::SmartDashboard::PutNumber("Rotation Y", m_data.rotationMatrix[1]);
-    frc::SmartDashboard::PutNumber("Rotation Z", m_data.rotationMatrix[2]);
+    frc::SmartDashboard::PutNumber("Vision Rotation X", m_data.rotationMatrix[0]);
+    frc::SmartDashboard::PutNumber("Vision Rotation Y", m_data.rotationMatrix[1]);
+    frc::SmartDashboard::PutNumber("Vision Rotation Z", m_data.rotationMatrix[2]);
 }

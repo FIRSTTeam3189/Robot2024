@@ -14,15 +14,11 @@ void PoseEstimatorHelper::SetPoseEstimator(frc::SwerveDrivePoseEstimator<4> *pos
 
 void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePosition, 4U> modulePositions, frc::Rotation2d rotation) {
     m_poseEstimator->Update(rotation, modulePositions);
-    m_field.SetRobotPose(GetEstimatedPose());
-    frc::SmartDashboard::PutData("Field", &m_field);
+    m_estimatedPose.SetRobotPose(GetEstimatedPose());
+    frc::SmartDashboard::PutData("Estimated pose", &m_estimatedPose);
 }
 
 frc::Pose2d PoseEstimatorHelper::GetEstimatedPose() {
-    // auto pose = m_poseEstimator->GetEstimatedPosition();
-    // frc::SmartDashboard::PutNumber("Estimated x", pose.X().value());
-    // frc::SmartDashboard::PutNumber("Estimated y", pose.Y().value());
-    // frc::SmartDashboard::PutNumber("Estimated rot", pose.Rotation().Degrees().value());
     return m_poseEstimator->GetEstimatedPosition();
 }
 
@@ -33,10 +29,16 @@ void PoseEstimatorHelper::ResetPose(frc::Rotation2d rotation, wpi::array<frc::Sw
 void PoseEstimatorHelper::AddVisionMeasurement(frc::Pose2d pose, units::second_t timestamp, wpi::array<double, 3> visionMeasurementStdDevs) {
     m_poseEstimator->SetVisionMeasurementStdDevs(visionMeasurementStdDevs);
 
-    frc::SmartDashboard::PutNumber("Vision robot x", pose.X().value());
-    frc::SmartDashboard::PutNumber("Vision robot y", pose.Y().value());
-    frc::SmartDashboard::PutNumber("Vision robot angle", pose.Rotation().Degrees().value());
+    // Currently setting pose rotation to estimated rotation rather than vision-deduced one
+    // Gyro is already fairly accurate and prevents noisy rotation data for driving/auto
+    // Sets pose angle to 0
+    pose.RotateBy(-pose.Rotation());
+    // Then sets pose angle to estimated pose angle
+    pose.RotateBy(GetEstimatedPose().Rotation());
     
+    m_visionPose.SetRobotPose(pose);
+    frc::SmartDashboard::PutData("Vision pose", &m_visionPose);
+
     // Don't add vision measurement if distance to current one is >1m
     // frc::Pose2d currentPose = GetEstimatedPose();
     // units::meter_t distanceFromCurrentPose = units::meter_t{sqrt(pow(pose.X().value() - currentPose.X().value(), 2.0) 
