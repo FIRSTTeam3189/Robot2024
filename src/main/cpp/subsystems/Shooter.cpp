@@ -72,7 +72,7 @@ void Shooter::Periodic() {
 
 void Shooter::HoldPosition(units::degree_t target) {
     units::volt_t PIDValue = 0.0_V;
-    if (fabs(m_target.value() - GetRotation().value()) > ShooterConstants::kRotationIdleTolerance) {
+    if (fabs(m_target.value() - GetRotation().value()) > ShooterConstants::kRotationIdleTolerance.value()) {
         PIDValue = units::volt_t{(m_target - GetRotation()).value() * m_profiledPIDController.GetP()};
     }
 

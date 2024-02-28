@@ -9,6 +9,7 @@
 #include <frc/geometry/Pose2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
+#include <frc/Timer.h>
 #include "Constants/SwerveModuleConstants.h"
 #include "Constants/SwerveDriveConstants.h"
 

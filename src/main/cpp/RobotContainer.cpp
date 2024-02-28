@@ -54,6 +54,7 @@ void RobotContainer::ConfigureDriverBindings() {
   toggleFieldRelativeButton.OnTrue(
     frc2::InstantCommand([this]{
       m_isFieldRelative = !m_isFieldRelative;
+
       m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode, m_isFieldRelative));
     },{m_swerveDrive}).ToPtr()
   );
@@ -193,7 +194,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   shootButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
-      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShooterPower)
+      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
     ),
     frc2::InstantCommand([this]{
       m_shooter->SetRollerPower(0.0);
@@ -206,7 +207,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   manualShootButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
-      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShooterPower)
+      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
     ),
     frc2::InstantCommand([this]{
       m_shooter->SetRollerPower(0.0);

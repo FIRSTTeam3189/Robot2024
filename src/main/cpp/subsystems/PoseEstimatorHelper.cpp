@@ -42,8 +42,8 @@ void PoseEstimatorHelper::AddVisionMeasurement(frc::Pose2d pose, units::second_t
     // units::meter_t distanceFromCurrentPose = units::meter_t{sqrt(pow(pose.X().value() - currentPose.X().value(), 2.0) 
     //                              + pow(pose.Y().value() - currentPose.Y().value(), 2.0))};
     // if (distanceFromCurrentPose < 1.0_m)
-        frc::SmartDashboard::PutNumber("Last vision timestamp", timestamp.value());
-        m_poseEstimator->AddVisionMeasurement(pose, timestamp);
+        // frc::SmartDashboard::PutNumber("Last vision timestamp", timestamp.value());
+        m_poseEstimator->AddVisionMeasurement(pose, frc::Timer::GetFPGATimestamp());
 }
 
 void PoseEstimatorHelper::Periodic() {}

@@ -13,7 +13,7 @@ Vision::Vision(PoseEstimatorHelper *helper) : m_helper(helper),
     
     // Number of bytes in one chunk of vision data
     // m_serialCam.SetReadBufferSize(VisionConstants::kBufferSize);
-    m_serialCam.SetReadBufferSize(VisionConstants::kBufferSize);
+    m_serialCam.SetReadBufferSize(1);
     frc::PowerDistribution PDH{};
     PDH.SetSwitchableChannel(true);
 
@@ -129,7 +129,7 @@ std::optional<VisionData> Vision::ParseData()
                 std::cout << "\n";
 
                 // Print out the members of the VisionData Struct
-                std::cout << "VisionData: " << data.isDetected << " " << data.ID << " " << data.lastTimestamp << " " << data.translationMatrix[0] << " " << data.translationMatrix[1] << " " << data.translationMatrix[2] << " " << data.rotationMatrix[0] << " " << data.rotationMatrix[1] << " " << data.rotationMatrix[2] << "\n";
+                std::cout << std::setprecision(15) << "VisionData: " << data.isDetected << " " << data.ID << " " << data.lastTimestamp << " " << data.translationMatrix[0] << " " << data.translationMatrix[1] << " " << data.translationMatrix[2] << " " << data.rotationMatrix[0] << " " << data.rotationMatrix[1] << " " << data.rotationMatrix[2] << "\n";
             }
 
             // Remove the bytes from the buffer
