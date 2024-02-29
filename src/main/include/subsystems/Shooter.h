@@ -42,6 +42,7 @@ class Shooter : public frc2::SubsystemBase {
   void ConfigExtensionMotor();
   void ConfigRotationMotor();
   void ConfigPID();
+  void SetBrakeMode(BrakeMode mode);
   NoteState GetNoteState();
   void UpdateNoteState();
   void ResetNoteState();

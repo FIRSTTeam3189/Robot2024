@@ -16,10 +16,15 @@ void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePositi
     m_poseEstimator->Update(rotation, modulePositions);
     m_estimatedPose.SetRobotPose(GetEstimatedPose());
     frc::SmartDashboard::PutData("Estimated pose", &m_estimatedPose);
+    UpdateRotation(rotation);
 }
 
 frc::Pose2d PoseEstimatorHelper::GetEstimatedPose() {
     return m_poseEstimator->GetEstimatedPosition();
+}
+
+void PoseEstimatorHelper::UpdateRotation(frc::Rotation2d rotation) {
+    m_rotation = rotation;
 }
 
 void PoseEstimatorHelper::ResetPose(frc::Rotation2d rotation, wpi::array<frc::SwerveModulePosition, 4> modulePositions, frc::Pose2d pose) {
@@ -32,9 +37,9 @@ void PoseEstimatorHelper::AddVisionMeasurement(frc::Pose2d pose, units::second_t
     // Currently setting pose rotation to estimated rotation rather than vision-deduced one
     // Gyro is already fairly accurate and prevents noisy rotation data for driving/auto
     // Sets pose angle to 0
-    pose.RotateBy(-pose.Rotation());
+    pose = pose.TransformBy(frc::Transform2d(0.0_m, 0.0_m, -pose.Rotation()));
     // Then sets pose angle to estimated pose angle
-    pose.RotateBy(GetEstimatedPose().Rotation());
+    pose = pose.TransformBy(frc::Transform2d(0.0_m, 0.0_m, m_rotation));
     
     m_visionPose.SetRobotPose(pose);
     frc::SmartDashboard::PutData("Vision pose", &m_visionPose);

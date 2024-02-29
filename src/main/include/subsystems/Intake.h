@@ -38,6 +38,7 @@ class Intake : public frc2::SubsystemBase {
   void UpdatePreferences();
   void ConfigRollerMotor();
   void ConfigRotationMotor();
+  void SetBrakeMode(BrakeMode mode);
   void HoldPosition();
   void SetActive(bool active);
 

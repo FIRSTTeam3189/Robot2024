@@ -54,6 +54,9 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
   SuperstructureState GetSuperstructureState();
   bool IsClimbState();
+  BrakeMode GetBrakeMode();
+  void SetAllCoast();
+  void SetAllNormalBrakeMode();
 
  private:
   // Replace with CommandPS4Controller or CommandJoystick if needed

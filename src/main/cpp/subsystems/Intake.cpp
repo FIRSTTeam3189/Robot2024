@@ -43,7 +43,7 @@ m_noteState(NoteState::None)
 
 void Intake::ConfigRotationMotor() {
     m_rotationMotor.RestoreFactoryDefaults();
-    m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_rotationMotor.SetIdleMode(IntakeConstants::kIdleMode);
     m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
     m_rotationMotor.SetInverted(IntakeConstants::kRotationMotorInverted);
     m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus5, 20);
@@ -104,6 +104,7 @@ void Intake::ConfigPID() {
 void Intake::Periodic() {
     frc::SmartDashboard::PutNumber("Intake PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Intake rotation", GetRotation().value());
+    frc::SmartDashboard::PutNumber("Intake power", m_rollerMotor.Get());
     UpdateNoteState();
 
     if (frc::Preferences::GetBoolean("Full Diagnostics", false)) {
@@ -337,4 +338,23 @@ frc2::CommandPtr Intake::SysIdDynamic(frc2::sysid::Direction direction) {
     // for (int i = 0; i < 10; i++) 
     //     std::cout << "Intake Dynamic\n";
     return m_sysIdRoutine.Dynamic(direction);
+}
+
+void Intake::SetBrakeMode(BrakeMode mode) {
+    switch (mode) {
+        case(BrakeMode::Brake) :
+            m_rollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+            m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+            break;
+        case(BrakeMode::Coast) :
+            m_rollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            break;
+        case(BrakeMode::Default) :
+            m_rollerMotor.SetIdleMode(IntakeConstants::kIdleMode);
+            m_rotationMotor.SetIdleMode(IntakeConstants::kIdleMode);
+            break;
+        default :
+            break;
+    }
 }

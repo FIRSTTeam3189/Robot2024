@@ -49,6 +49,8 @@ void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Shooter rotation", m_rotationEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("Shooter extension", m_extensionEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Shooter power", m_rollerMotor.Get());
+    frc::SmartDashboard::PutNumber("Shooter load power", m_loaderMotor.Get());
     UpdateNoteState();
 
     if (frc::Preferences::GetBoolean("Full Diagnostics", false)) {
@@ -56,7 +58,6 @@ void Shooter::Periodic() {
         frc::SmartDashboard::PutNumber("Shooter desired rotational velocity", m_profiledPIDController.GetSetpoint().velocity.value());
         frc::SmartDashboard::PutNumber("Shooter rotational acceleration", m_acceleration.value());
         frc::SmartDashboard::PutNumber("Shooter desired rotational acceleration", m_targetAcceleration.value());
-        frc::SmartDashboard::PutNumber("Shooter power", m_rollerMotor.Get());
     }
 
     if (frc::Preferences::GetBoolean("Tuning Mode", false)) {
@@ -193,7 +194,7 @@ void Shooter::ConfigExtensionMotor() {
 
 void Shooter::ConfigRotationMotor() {
     m_rotationMotor.RestoreFactoryDefaults();
-    m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_rotationMotor.SetIdleMode(ShooterConstants::kIdleMode);
     m_rotationMotor.SetSmartCurrentLimit(ShooterConstants::kRotationCurrentLimit);
     m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus5, 20);
     m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus6, 20);
@@ -370,4 +371,29 @@ void Shooter::SetActive(bool active) {
     }
 
     m_isActive = active;
+}
+
+void Shooter::SetBrakeMode(BrakeMode mode) {
+    switch (mode) {
+        case(BrakeMode::Brake) :
+            m_rollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+            m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+            m_extensionMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+            m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+            break;
+        case(BrakeMode::Coast) :
+            m_rollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            m_extensionMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            break;
+        case(BrakeMode::Default) :
+            m_rollerMotor.SetIdleMode(ShooterConstants::kIdleMode);
+            m_rotationMotor.SetIdleMode(ShooterConstants::kIdleMode);
+            m_extensionMotor.SetIdleMode(ShooterConstants::kIdleMode);
+            m_loaderMotor.SetIdleMode(ShooterConstants::kIdleMode);
+            break;
+        default :
+            break;
+    }
 }

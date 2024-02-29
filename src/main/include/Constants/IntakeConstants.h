@@ -46,4 +46,6 @@ namespace IntakeConstants{
     constexpr bool kRotationInverted {false};
     constexpr bool kRotationMotorInverted {true};
     constexpr auto kRotationStopDistance {5.0_deg};
+
+    constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
 }

@@ -328,6 +328,12 @@ units::meters_per_second_t SwerveDrive::GetTotalVelocity() {
     return units::meters_per_second_t{velocity};
 }
 
+void SwerveDrive::SetBrakeMode(BrakeMode mode) {
+    for (auto mod: m_moduleArray) {
+        mod->SetBrakeMode(mode);
+    }
+}
+
 frc2::CommandPtr SwerveDrive::DriveSysIdQuasistatic(frc2::sysid::Direction direction) {
   return m_driveSysIdRoutine.Quasistatic(direction);
 }

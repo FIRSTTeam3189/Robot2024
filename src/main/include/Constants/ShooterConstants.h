@@ -75,4 +75,6 @@ namespace ShooterConstants {
     constexpr int kExtensionCountsPerRev {8192};
     constexpr auto kTrapExtensionAngle {0.0_deg};
     constexpr double kTrapExtension {0.0};
+
+    constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
 }

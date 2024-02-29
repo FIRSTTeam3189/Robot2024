@@ -111,6 +111,28 @@ void SwerveModule::ConfigCANcoder() {
     m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
 }
 
+void SwerveModule::SetBrakeMode(BrakeMode mode) {
+    switch (mode) {
+        case(BrakeMode::Brake) :
+            m_driveConfigs.MotorOutput.NeutralMode = ctre::phoenix6::signals::NeutralModeValue::Brake;
+            m_angleConfigs.MotorOutput.NeutralMode = ctre::phoenix6::signals::NeutralModeValue::Brake;
+            break;
+        case(BrakeMode::Coast) :
+            m_driveConfigs.MotorOutput.NeutralMode = ctre::phoenix6::signals::NeutralModeValue::Coast;
+            m_angleConfigs.MotorOutput.NeutralMode = ctre::phoenix6::signals::NeutralModeValue::Coast;
+            break;
+        case(BrakeMode::Default) :
+            m_driveConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kDriveNeutralMode;
+            m_angleConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kAngleNeutralMode;
+            break;
+        default :
+            break;
+    }
+
+    m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
+    m_angleMotor.GetConfigurator().Apply(m_angleConfigs);
+}
+
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
     const auto optimizedState = frc::SwerveModuleState::Optimize(state, m_position.angle);
     double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;

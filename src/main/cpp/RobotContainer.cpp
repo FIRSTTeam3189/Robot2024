@@ -472,6 +472,24 @@ bool RobotContainer::IsClimbState() {
   return m_superstructureState == SuperstructureState::Climb;
 }
 
+void RobotContainer::SetAllCoast() {
+  m_climber->SetBrakeMode(BrakeMode::Coast);
+  m_intake->SetBrakeMode(BrakeMode::Coast);
+  m_shooter->SetBrakeMode(BrakeMode::Coast);
+  m_swerveDrive->SetBrakeMode(BrakeMode::Coast);
+}
+
+void RobotContainer::SetAllNormalBrakeMode() {
+  m_climber->SetBrakeMode(BrakeMode::Default);
+  m_intake->SetBrakeMode(BrakeMode::Default);
+  m_shooter->SetBrakeMode(BrakeMode::Default);
+  m_swerveDrive->SetBrakeMode(BrakeMode::Default);
+}
+
+BrakeMode RobotContainer::GetBrakeMode() {
+  return m_climber->GetBrakeMode();
+}
+
 void RobotContainer::ConfigureSysIDBindings() {
   // System ID Bindings -- intake
   // frc2::Trigger intakeQuasiForward{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};

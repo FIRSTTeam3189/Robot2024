@@ -56,6 +56,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   frc::Pose2d GetEstimatedPose();
   void SetPose(frc::Pose2d pose, bool justRotation);
   void ConfigGyro();
+  void SetBrakeMode(BrakeMode mode);
   void ResetGyroscope();
   void ResetDriveEncoders();
   void ToggleTuningMode();
