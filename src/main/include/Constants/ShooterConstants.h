@@ -24,7 +24,7 @@ namespace ShooterConstants {
     constexpr auto kMaxRotationVelocity {180.0_deg / 1.0_s};
     constexpr auto kMaxRotationAcceleration {180.0_deg / 1.0_s / 1.0_s};
 
-    constexpr double kPExtension {0.0};
+    constexpr double kPExtension {0.0001};
     constexpr double kIExtension {0.0};
     constexpr double kDExtension {0.0};
 
@@ -40,7 +40,7 @@ namespace ShooterConstants {
     constexpr double kLoadPower {0.5};
     constexpr double kUnloadPower {-0.25};
     // Direct shooter load
-    constexpr auto kDirectLoadTarget {30.0_deg};
+    constexpr auto kDirectLoadTarget {50.0_deg};
     constexpr double kDirectLoadPower {-0.5};
 
     // Trap scoring
@@ -73,8 +73,8 @@ namespace ShooterConstants {
     constexpr bool kExtensionInverted {false};
     constexpr double kExtensionStopDistance {100.0};
     constexpr int kExtensionCountsPerRev {8192};
-    constexpr auto kTrapExtensionAngle {0.0_deg};
-    constexpr double kTrapExtension {0.0};
+    constexpr auto kTrapScoreTarget {0.0_deg};
+    constexpr double kShootExtendTarget {0.0};
 
     constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
 }

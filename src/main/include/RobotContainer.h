@@ -64,8 +64,6 @@ class RobotContainer {
   frc2::CommandJoystick m_ted{OperatorConstants::kCoDriverControllerPort};
   frc2::CommandJoystick m_test{OperatorConstants::kTestControllerPort};
 
-  //3 is port number
-
   // The robot's subsystems are defined here...
   Climber *m_climber = new Climber();
   PoseEstimatorHelper *m_estimator = new PoseEstimatorHelper();

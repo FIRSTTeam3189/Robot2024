@@ -163,13 +163,9 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
                         bool fieldRelative,
                         frc::Translation2d centerOfRotation) {
 
-    frc::SmartDashboard::PutNumber("X speed 2", xSpeed.value());
-    frc::SmartDashboard::PutNumber("Y speed 2", ySpeed.value());
-    frc::SmartDashboard::PutNumber("Rot 2", rot.value());
-
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                                    xSpeed, ySpeed, rot,  m_pigeon.GetRotation2d())
+                                    xSpeed, ySpeed, rot, m_pigeon.GetRotation2d())
                                     : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
                   centerOfRotation);
 
@@ -279,12 +275,17 @@ void SwerveDrive::SetPose(frc::Pose2d pose, bool justRotation) {
     // ResetDriveEncoders();
     if (justRotation) {
         auto currentPose = GetEstimatedPose();
-        m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, frc::Pose2d{currentPose.X(), currentPose.Y(), pose.Rotation()});
+        // m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, frc::Pose2d{currentPose.X(), currentPose.Y(), pose.Rotation()});
+        m_poseHelper->ResetPose(pose.Rotation(), m_modulePositions, frc::Pose2d{currentPose.X(), currentPose.Y(), pose.Rotation()});
     }
     else {
-        m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, pose);
+        // m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, pose);
+        m_poseHelper->ResetPose(pose.Rotation(), m_modulePositions, pose);
     }
-
+    
+    frc::SmartDashboard::PutNumber("Auto starting pose x", pose.X().value());
+    frc::SmartDashboard::PutNumber("Auto starting pose y", pose.Y().value());
+    frc::SmartDashboard::PutNumber("Auto starting pose rot", pose.Rotation().Degrees().value());
     m_pigeon.SetYaw(pose.Rotation().Degrees());
 }
 

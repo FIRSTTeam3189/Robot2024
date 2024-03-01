@@ -32,6 +32,7 @@
       "/LiveWindow/Ungrouped/CANcoder (v6) [9]": "Gyro",
       "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalInput[1]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[2]": "Digital Input",
       "/LiveWindow/Ungrouped/Pigeon 2 (v6) [13]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX (v6) [1]": "Motor Controller",
@@ -46,6 +47,24 @@
       "/SmartDashboard/Auto Routines": "String Chooser",
       "/SmartDashboard/Estimated pose": "Field2d",
       "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Auto Routines": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Estimated pose": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
@@ -61,9 +80,16 @@
     },
     "SmartDashboard": {
       "Auto Routines": {
+        "open": true,
         "string[]##v_/SmartDashboard/Auto Routines/options": {
           "open": true
         }
+      },
+      "Estimated pose": {
+        "double[]##v_/SmartDashboard/Estimated pose/Robot": {
+          "open": true
+        },
+        "open": true
       },
       "Field": {
         "double[]##v_/SmartDashboard/Field/Robot": {

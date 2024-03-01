@@ -11,11 +11,6 @@ RobotContainer::RobotContainer() {
   RegisterAutoCommands();
   
   // Initialize all of your commands and subsystems here 
-  // Runs shooter and shooter angle motor continuously
-  // m_shooter->SetDefaultCommand(frc2::RunCommand([this] { 
-  //   m_shooter->SetRollerPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY)); 
-  //   m_shooter->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisRightStickY));
-  // },{m_shooter}).ToPtr());
 
   m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
     frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
@@ -72,7 +67,8 @@ void RobotContainer::ConfigureDriverBindings() {
       )
     ),
     frc2::ParallelCommandGroup(
-      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
+      // RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
+      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::None),
       RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
     )
   ).ToPtr());
@@ -175,7 +171,8 @@ void RobotContainer::ConfigureCoDriverBindings() {
   frc2::Trigger directShooterLoadButton{m_ted.Button(OperatorConstants::kButtonIDLeftBumper)};
   directShooterLoadButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::DirectLoad),
-    RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::EndOnFirstDetection),
+    // RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::EndOnFirstDetection),
+    RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::None),
     frc2::ParallelCommandGroup(
       SetShooterRotation(m_shooter, ShooterState::Retracted),
       SetIntakeRotation(m_intake, IntakeState::Retracted)
@@ -210,7 +207,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   frc2::Trigger shootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
   shootButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::Close),
-    RunShooter(m_shooter, ShooterConstants::kShootPower)
+    RunShooter(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootExtendTarget)
   ).ToPtr());
   shootButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
@@ -218,19 +215,21 @@ void RobotContainer::ConfigureCoDriverBindings() {
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
     ),
     frc2::InstantCommand([this]{
+      m_shooter->SetExtension(0.0);
       m_shooter->SetRollerPower(0.0);
       m_shooter->SetLoaderPower(0.0);
     },{m_shooter})
   ).ToPtr());
 
   frc2::Trigger manualShootButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
-  manualShootButton.OnTrue(RunShooter(m_shooter, ShooterConstants::kShootPower).ToPtr());
+  manualShootButton.OnTrue(RunShooter(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootExtendTarget).ToPtr());
   manualShootButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
     ),
     frc2::InstantCommand([this]{
+      m_shooter->SetExtension(0.0);
       m_shooter->SetRollerPower(0.0);
       m_shooter->SetLoaderPower(0.0);
     },{m_shooter})
@@ -276,7 +275,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
 
   frc2::Trigger scoreTrapNoteButton{m_ted.Button(OperatorConstants::kButtonIDTouchpad)};
   scoreTrapNoteButton.OnTrue(frc2::SequentialCommandGroup(
-    SetShooterRotation(m_shooter, ShooterState::Zero),
+    SetShooterRotation(m_shooter, ShooterState::TrapScore),
     frc2::InstantCommand([this]{
       m_shooter->SetLoaderPower(ShooterConstants::kTrapScoreLoaderPower);
       m_shooter->SetRollerPower(ShooterConstants::kTrapScoreRollerPower);
@@ -317,43 +316,6 @@ void RobotContainer::ConfigureCoDriverBindings() {
   )
     .OnlyIf([this](){ return IsClimbState(); }));
 
-  // frc2::Trigger loadButton{m_ted.Button(OperatorConstants::kButtonIDLeftBumper)};
-  // loadButton.OnTrue(frc2::SequentialCommandGroup(
-  //   frc2::ParallelCommandGroup(
-  //     frc2::ParallelRaceGroup(
-  //       frc2::WaitCommand(1.0_s),
-  //       SetIntakeRotation(m_intake, IntakeState::Extended)
-  //     ),
-  //     frc2::ParallelRaceGroup(
-  //       frc2::WaitCommand(1.0_s),
-  //       SetShooterRotation(m_shooter, ShooterState::Load)
-  //     )
-  //   ),
-  //   frc2::ParallelCommandGroup(
-  //     RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
-  //     RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
-  //   )
-  // ).ToPtr());
-  // loadButton.OnFalse(frc2::SequentialCommandGroup(
-  //   frc2::InstantCommand([this]{
-  //     m_intake->SetRollerPower(0.0);
-  //     m_shooter->SetRollerPower(0.0);
-  //     m_shooter->SetLoaderPower(0.0);
-  //   },{m_intake, m_shooter}),
-  //   frc2::ParallelCommandGroup(
-  //     SetShooterRotation(m_shooter, ShooterState::Retracted),
-  //     SetIntakeRotation(m_intake, IntakeState::Retracted)
-  //   )
-  // ).ToPtr());
-
-  // frc2::Trigger manualSpinButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
-  // manualSpinButton.OnTrue(frc2::InstantCommand([this]{
-  //     m_shooter->SetRotationPower(0.3);
-  // },{m_shooter}).ToPtr());
-  // manualSpinButton.OnFalse(frc2::InstantCommand([this]{
-  //     m_shooter->SetRotationPower(0.0);
-  // },{m_shooter}).ToPtr());
-
   // frc2::Trigger shooterZeroButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
   // shooterZeroButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
 
@@ -387,7 +349,8 @@ void RobotContainer::RegisterAutoCommands() {
     ),
     frc2::ParallelRaceGroup(
       frc2::WaitCommand(2.0_s),
-      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
+      // RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
+      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::None),
       RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
     ),
     frc2::InstantCommand([this]{

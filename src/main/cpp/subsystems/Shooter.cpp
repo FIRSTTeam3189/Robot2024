@@ -212,6 +212,9 @@ void Shooter::ConfigPID() {
         ShooterConstants::kARotation
     );
 
+    m_extensionPKey = "Shooter Extension P";
+    m_extensionIKey = "Shooter Extension I";
+    m_extensionDKey = "Shooter Extension D";
     m_rotationPKey = "Shooter Rotation P";
     m_rotationIKey = "Shooter Rotation I";
     m_rotationDKey = "Shooter Rotation D";
@@ -221,6 +224,9 @@ void Shooter::ConfigPID() {
     m_rotationAKey = "Shooter Rotation A";
     m_rotationTargetKey = "Shooter Rotation Target";
 
+    frc::Preferences::SetDouble(m_extensionPKey, ShooterConstants::kPExtension);
+    frc::Preferences::SetDouble(m_extensionIKey, ShooterConstants::kIExtension);
+    frc::Preferences::SetDouble(m_extensionDKey, ShooterConstants::kDExtension);
     frc::Preferences::SetDouble(m_rotationPKey, ShooterConstants::kPRotation);
     frc::Preferences::SetDouble(m_rotationIKey, ShooterConstants::kIRotation);
     frc::Preferences::SetDouble(m_rotationDKey, ShooterConstants::kDRotation);
@@ -245,6 +251,9 @@ void Shooter::UpdatePreferences() {
     m_profiledPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, ShooterConstants::kPRotation));
     m_profiledPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, ShooterConstants::kIRotation));
     m_profiledPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, ShooterConstants::kDRotation));
+    m_extensionPIDController.SetP(frc::Preferences::GetDouble(m_extensionPKey, ShooterConstants::kPExtension));
+    m_extensionPIDController.SetI(frc::Preferences::GetDouble(m_extensionIKey, ShooterConstants::kIExtension));
+    m_extensionPIDController.SetD(frc::Preferences::GetDouble(m_extensionDKey, ShooterConstants::kDExtension));
     double s = frc::Preferences::GetDouble(m_rotationSKey, ShooterConstants::kSRotation.value());
     double g = frc::Preferences::GetDouble(m_rotationGKey, ShooterConstants::kGRotation.value());
     double v = frc::Preferences::GetDouble(m_rotationVKey, ShooterConstants::kVRotation.value());
@@ -354,6 +363,9 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
             target = ShooterConstants::kStartingConfigTarget;
             m_currentState = ShooterState::StartingConfig;
             break;
+        case(ShooterState::TrapScore):
+            target = ShooterConstants::kTrapScoreTarget;
+            m_currentState = ShooterState::TrapScore;
         default: 
             break;
     }

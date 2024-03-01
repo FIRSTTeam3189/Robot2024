@@ -22,7 +22,7 @@
 #include "Constants/ShooterConstants.h"
 #include "Constants/GlobalConstants.h"
 
-enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero, AutoAlign, StartingConfig} ;
+enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero, AutoAlign, StartingConfig, TrapScore} ;
 enum class ShooterEndCondition { None, EndOnFirstDetection, EndOnMiddleOfNote, EndOnSecondDetection };
 
 class Shooter : public frc2::SubsystemBase {
@@ -86,6 +86,9 @@ class Shooter : public frc2::SubsystemBase {
    NoteState m_noteState;
 
    // String keys for PID preferences
+   std::string m_extensionPKey;
+   std::string m_extensionIKey;
+   std::string m_extensionDKey;
    std::string m_rotationPKey;
    std::string m_rotationIKey;
    std::string m_rotationDKey;

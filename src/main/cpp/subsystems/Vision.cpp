@@ -35,16 +35,16 @@ frc::Pose3d Vision::TagToCamera()
     frc::Pose3d tagPose = VisionConstants::kTagPoses.at(m_data.ID - 1);
     // Invert the data for x on tags to the right since vision reports positive differences and
     // TransformBy adds so we need to subtract
-    auto xDistance = (tagPose.X() - m_helper->GetEstimatedPose().X() > 0.0_m) ? -m_data.translationMatrix[0] : m_data.translationMatrix[0];
+    auto xDistance = (tagPose.X() - m_helper->GetEstimatedPose().X() > 0.0_m) ? m_data.translationMatrix[2] : -m_data.translationMatrix[2];
     frc::Transform3d tagToCamera = frc::Transform3d(
         units::meter_t{xDistance},
+        units::meter_t{-m_data.translationMatrix[0]},
         units::meter_t{-m_data.translationMatrix[1]},
-        units::meter_t{-m_data.translationMatrix[2]},
         frc::Rotation3d{
             0.0_deg,
-            units::degree_t{-m_data.rotationMatrix[1]},
             // 0.0_deg,
-            0.0_deg});
+            0.0_deg,
+            units::degree_t{-m_data.rotationMatrix[1]}});
 
     return tagPose.TransformBy(tagToCamera);
 }
@@ -61,7 +61,7 @@ void Vision::UpdatePosition()
         // Turn distances into robot pose
         frc::Pose3d cameraPose = TagToCamera();
         frc::Pose3d robotPose = CameraToRobot(cameraPose);
-        units::meter_t tagDistance = units::meter_t{sqrt(pow(m_data.translationMatrix[0], 2.0) + pow(m_data.translationMatrix[1], 2.0))};
+        auto tagDistance = units::meter_t{sqrt(pow(m_data.translationMatrix[0], 2.0) + pow(m_data.translationMatrix[1], 2.0))};
         // Calculate vision std devs based on tag distance
         double stdDevDistanceCompensation = tagDistance.value() * VisionConstants::kVisionStdDevPerMeter;
         auto baseVisionStdDevs = VisionConstants::kVisionTrustCoefficients;
@@ -70,7 +70,7 @@ void Vision::UpdatePosition()
             baseVisionStdDevs[1] + stdDevDistanceCompensation,
             baseVisionStdDevs[2] + stdDevDistanceCompensation};
 
-        units::second_t timestamp = units::second_t{m_data.lastTimestamp};
+        auto timestamp = units::second_t{m_data.lastTimestamp};
         m_helper->AddVisionMeasurement(robotPose.ToPose2d(), timestamp, distanceCompensatedStdDevs);
     }
 }
