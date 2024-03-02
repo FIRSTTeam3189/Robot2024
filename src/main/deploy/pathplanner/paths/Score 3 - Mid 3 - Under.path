@@ -57,9 +57,16 @@
       "name": "Intake",
       "waypointRelativePos": 1.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
         }
       }
     },
@@ -67,9 +74,16 @@
       "name": "AlignShooter",
       "waypointRelativePos": 1.0999999999999996,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AlignShooter"
+              }
+            }
+          ]
         }
       }
     }

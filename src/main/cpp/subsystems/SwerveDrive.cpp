@@ -84,8 +84,8 @@ m_angleSysIdRoutine(
         [this](){ return GetEstimatedPose(); }, // Robot pose supplier
         [this](frc::Pose2d pose){ SetPose(pose, false); }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        // [this](frc::ChassisSpeeds speeds){ DriveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        [this](frc::ChassisSpeeds speeds){},
+        [this](frc::ChassisSpeeds speeds){ DriveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        // [this](frc::ChassisSpeeds speeds){},
         AutoConstants::autoConfig,
         []() {
             // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -275,12 +275,12 @@ void SwerveDrive::SetPose(frc::Pose2d pose, bool justRotation) {
     // ResetDriveEncoders();
     if (justRotation) {
         auto currentPose = GetEstimatedPose();
-        // m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, frc::Pose2d{currentPose.X(), currentPose.Y(), pose.Rotation()});
-        m_poseHelper->ResetPose(pose.Rotation(), m_modulePositions, frc::Pose2d{currentPose.X(), currentPose.Y(), pose.Rotation()});
+        m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, frc::Pose2d{currentPose.X(), currentPose.Y(), pose.Rotation()});
+        // m_poseHelper->ResetPose(pose.Rotation(), m_modulePositions, frc::Pose2d{currentPose.X(), currentPose.Y(), pose.Rotation()});
     }
     else {
-        // m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, pose);
-        m_poseHelper->ResetPose(pose.Rotation(), m_modulePositions, pose);
+        m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, pose);
+        // m_poseHelper->ResetPose(pose.Rotation(), m_modulePositions, pose);
     }
     
     frc::SmartDashboard::PutNumber("Auto starting pose x", pose.X().value());

@@ -32,12 +32,19 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "AlignSpeaker",
+      "name": "AlignShooter",
       "waypointRelativePos": 0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AlignShooter"
+              }
+            }
+          ]
         }
       }
     }

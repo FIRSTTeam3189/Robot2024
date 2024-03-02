@@ -161,8 +161,15 @@ void Intake::SetState(IntakeState state) {
 }
 
 void Intake::HoldPosition() {
+    units::volt_t PIDValue = 0.0_V;
+    if (fabs(m_target.value() - GetRotation().value()) > IntakeConstants::kRotationIdleTolerance.value()) {
+        PIDValue = units::volt_t{(m_target - GetRotation()).value() * m_profiledPIDController.GetP()};
+    }
+
     auto ffValue = m_ff->Calculate(units::radian_t{GetRotation()}, units::radians_per_second_t{0.0});
-    m_rotationMotor.SetVoltage(std::clamp((ffValue), -12.0_V, 12.0_V));
+    frc::SmartDashboard::PutNumber("Intake rotation FF", ffValue.value());
+    frc::SmartDashboard::PutNumber("Intake rotation PID", PIDValue.value());
+    m_rotationMotor.SetVoltage(std::clamp((ffValue + PIDValue), -12.0_V, 12.0_V));
     // Just to advance the profile timestep
     m_profiledPIDController.Calculate(GetRotation(), m_target);
 }

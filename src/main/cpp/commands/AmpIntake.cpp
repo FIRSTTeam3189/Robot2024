@@ -19,7 +19,8 @@ void AmpIntake::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void AmpIntake::Execute() {
   if (m_intake->GetNoteState() == NoteState::FirstDetection) 
-    m_shouldFinish = true;
+    // m_shouldFinish = true;
+    m_shouldFinish = false;
   else
     m_shouldFinish = false;
 }

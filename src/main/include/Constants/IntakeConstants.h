@@ -23,7 +23,7 @@ namespace IntakeConstants{
     // constexpr auto kVRotation {0.015044_V * 1.0_s / 1.0_rad};
     // constexpr auto kARotation {0.0006516_V * 1.0_s * 1.0_s / 1.0_rad};
 
-    constexpr double kPRotation {0.02};
+    constexpr double kPRotation {0.05};
     constexpr double kIRotation {0.0};
     constexpr double kDRotation {0.0};
     constexpr auto kSRotation {1.0_V};
@@ -40,12 +40,13 @@ namespace IntakeConstants{
     constexpr bool kRollerInverted {true};
     constexpr auto kRetractTarget {80.0_deg};
     constexpr auto kAmpTarget {70.0_deg};
-    constexpr auto kExtendTarget {-35.0_deg};
+    constexpr auto kExtendTarget {-40.0_deg};
     constexpr double kRotationOffset {260.0};
-    constexpr double kRotationConversion {360.0};
+    constexpr double kRotationConversion {360.0}; 
     constexpr bool kRotationInverted {false};
     constexpr bool kRotationMotorInverted {true};
     constexpr auto kRotationStopDistance {5.0_deg};
+    constexpr auto kRotationIdleTolerance {1.5_deg};
 
     constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
 }

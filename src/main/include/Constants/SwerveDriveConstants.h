@@ -15,7 +15,7 @@ namespace SwerveDriveConstants {
     constexpr auto kXDistanceFromCenter {0.282575_m};
     constexpr auto kYDistanceFromCenter {0.282575_m};
 
-    constexpr double kGyroMountPoseYaw {25.1};
+    constexpr double kGyroMountPoseYaw {0.0};
 
     constexpr auto kRefreshRate = units::frequency::hertz_t{100};
 

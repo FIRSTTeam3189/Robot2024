@@ -35,17 +35,20 @@ void RunLoader::Execute() {
       break;
     case (ShooterEndCondition::EndOnFirstDetection) :
       if (state == NoteState::FirstDetection) {
-        m_isFinished = true;
+        // m_isFinished = true;
+        m_isFinished = false;
       }
       break;
     case (ShooterEndCondition::EndOnMiddleOfNote) :
       if (state == NoteState::MiddleOfNote) {
-        m_isFinished = true;
+        // m_isFinished = true;
+        m_isFinished = false;
       }
       break;
     case (ShooterEndCondition::EndOnSecondDetection) :
       if (state == NoteState::SecondDetection) {
-        m_isFinished = true;
+        // m_isFinished = true;
+        m_isFinished = false;
       }
       break;
     default :

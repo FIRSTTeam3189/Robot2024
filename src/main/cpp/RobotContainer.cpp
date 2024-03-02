@@ -69,7 +69,7 @@ void RobotContainer::ConfigureDriverBindings() {
     frc2::ParallelCommandGroup(
       // RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
       RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::None),
-      RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
+      RunIntake(m_intake, IntakeConstants::kIntakePower)
     )
   ).ToPtr());
   fullIntakeButton.OnFalse(frc2::SequentialCommandGroup(
@@ -106,7 +106,7 @@ void RobotContainer::ConfigureDriverBindings() {
   ampScoreIntakeButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(IntakeConstants::kAmpShootTime), 
-      RunIntake(m_intake, IntakeConstants::kAmpScorePower, 0)
+      RunIntake(m_intake, IntakeConstants::kAmpScorePower)
     ),
     SetIntakeRotation(m_intake, IntakeState::Retracted)
   ).ToPtr());
@@ -235,17 +235,17 @@ void RobotContainer::ConfigureCoDriverBindings() {
     },{m_shooter})
   ).ToPtr());
 
-  frc2::Trigger loadTrapNoteButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
-  loadTrapNoteButton.OnTrue(frc2::InstantCommand([this]{
-    m_shooter->SetLoaderPower(ShooterConstants::kTrapLoadLoaderPower);
-    m_shooter->SetRollerPower(ShooterConstants::kTrapLoadRollerPower);
-  },{m_intake, m_shooter})
-    .OnlyIf([this](){ return IsClimbState(); }));
-  loadTrapNoteButton.OnFalse(frc2::InstantCommand([this]{
-    m_shooter->SetLoaderPower(0.0);
-    m_shooter->SetRollerPower(0.0);
-  },{m_intake, m_shooter})
-    .OnlyIf([this](){ return IsClimbState(); }));
+  // frc2::Trigger loadTrapNoteButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
+  // loadTrapNoteButton.OnTrue(frc2::InstantCommand([this]{
+  //   m_shooter->SetLoaderPower(ShooterConstants::kTrapLoadLoaderPower);
+  //   m_shooter->SetRollerPower(ShooterConstants::kTrapLoadRollerPower);
+  // },{m_intake, m_shooter})
+  //   .OnlyIf([this](){ return IsClimbState(); }));
+  // loadTrapNoteButton.OnFalse(frc2::InstantCommand([this]{
+  //   m_shooter->SetLoaderPower(0.0);
+  //   m_shooter->SetRollerPower(0.0);
+  // },{m_intake, m_shooter})
+  //   .OnlyIf([this](){ return IsClimbState(); }));
 
   frc2::Trigger extendClimberButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
   extendClimberButton.OnTrue(frc2::SequentialCommandGroup(
@@ -265,13 +265,13 @@ void RobotContainer::ConfigureCoDriverBindings() {
   },{m_climber})
     .OnlyIf([this](){ return IsClimbState(); }));
 
-  frc2::Trigger retractClimberButton{m_ted.Button(OperatorConstants::kButtonIDX)};
-  retractClimberButton.OnTrue(RunClimber(m_climber, ClimberConstants::kRetractPower)
-    .OnlyIf([this](){ return IsClimbState(); }));
-  retractClimberButton.OnFalse(frc2::InstantCommand([this]{
-      m_climber->SetPower(0.0);
-  },{m_climber})
-    .OnlyIf([this](){ return IsClimbState(); }));
+  // frc2::Trigger retractClimberButton{m_ted.Button(OperatorConstants::kButtonIDX)};
+  // retractClimberButton.OnTrue(RunClimber(m_climber, ClimberConstants::kRetractPower)
+  //   .OnlyIf([this](){ return IsClimbState(); }));
+  // retractClimberButton.OnFalse(frc2::InstantCommand([this]{
+  //     m_climber->SetPower(0.0);
+  // },{m_climber})
+  //   .OnlyIf([this](){ return IsClimbState(); }));
 
   frc2::Trigger scoreTrapNoteButton{m_ted.Button(OperatorConstants::kButtonIDTouchpad)};
   scoreTrapNoteButton.OnTrue(frc2::SequentialCommandGroup(
@@ -316,11 +316,11 @@ void RobotContainer::ConfigureCoDriverBindings() {
   )
     .OnlyIf([this](){ return IsClimbState(); }));
 
-  // frc2::Trigger shooterZeroButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
-  // shooterZeroButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
+  frc2::Trigger shooterZeroButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
+  shooterZeroButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
 
-  // frc2::Trigger shooterCloseRangeButton{m_ted.Button(OperatorConstants::kButtonIDX)};
-  // shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Close).ToPtr());
+  frc2::Trigger shooterCloseRangeButton{m_ted.Button(OperatorConstants::kButtonIDX)};
+  shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Close).ToPtr());
 
   // frc2::Trigger shooterMidRangeButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
   // shooterMidRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Mid).ToPtr());
@@ -351,7 +351,7 @@ void RobotContainer::RegisterAutoCommands() {
       frc2::WaitCommand(2.0_s),
       // RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
       RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::None),
-      RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0)
+      RunIntake(m_intake, IntakeConstants::kIntakePower)
     ),
     frc2::InstantCommand([this]{
       m_intake->SetRollerPower(0.0);
@@ -379,7 +379,7 @@ void RobotContainer::RegisterAutoCommands() {
       )
     ),
     frc2::ParallelCommandGroup(
-      RunIntake(m_intake, IntakeConstants::kIntakePower, 0.0),
+      RunIntake(m_intake, IntakeConstants::kIntakePower),
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
     )
   ).ToPtr());
@@ -390,7 +390,7 @@ void RobotContainer::RegisterAutoCommands() {
     SetIntakeRotation(m_intake, IntakeState::Amp),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(IntakeConstants::kAmpShootTime), 
-      RunIntake(m_intake, IntakeConstants::kAmpScorePower, 0)
+      RunIntake(m_intake, IntakeConstants::kAmpScorePower)
     ),
     SetIntakeRotation(m_intake, IntakeState::Retracted),
     frc2::InstantCommand([this]{

@@ -59,27 +59,31 @@
       "command": {
         "type": "sequential",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
         }
       }
     },
     {
-      "name": "AlignSpeaker",
+      "name": "AlignShooter",
       "waypointRelativePos": 1.2,
       "command": {
         "type": "sequential",
         "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "ScoreSpeaker",
-      "waypointRelativePos": 1.45,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AlignShooter"
+              }
+            }
+          ]
         }
       }
     }

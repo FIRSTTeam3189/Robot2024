@@ -39,19 +39,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 3 -  Mid"
+            "pathName": "Score 2 -  Mid"
           }
         },
         {
           "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AlignSwerve"
-                }
-              },
               {
                 "type": "named",
                 "data": {

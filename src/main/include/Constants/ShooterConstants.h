@@ -41,7 +41,7 @@ namespace ShooterConstants {
     constexpr double kUnloadPower {-0.25};
     // Direct shooter load
     constexpr auto kDirectLoadTarget {50.0_deg};
-    constexpr double kDirectLoadPower {-0.5};
+    constexpr double kDirectLoadPower {-0.25};
 
     // Trap scoring
     constexpr double kLinearActuatorExtendPower {0.5};

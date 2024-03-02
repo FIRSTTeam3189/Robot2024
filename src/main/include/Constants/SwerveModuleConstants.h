@@ -54,7 +54,7 @@ namespace SwerveModuleConstants {
     constexpr int kFusedCANcoder{5};
     constexpr int kSyncCANcoder{6};
 
-    constexpr double kPDrive {2.0};
+    constexpr double kPDrive {3.0};
     constexpr double kIDrive {0.0};
     constexpr double kDDrive {0.0};
     constexpr double kVDrive {0.0};

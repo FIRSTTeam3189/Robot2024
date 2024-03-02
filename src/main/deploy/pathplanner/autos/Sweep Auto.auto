@@ -5,12 +5,30 @@
       "x": 1.5001569895790596,
       "y": 6.961013421135058
     },
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 1 - Top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignSwerve"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSpeaker"
+          }
+        },
         {
           "type": "path",
           "data": {

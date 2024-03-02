@@ -41,6 +41,25 @@
           "data": {
             "pathName": "Score 2 - Top Skip First"
           }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignSwerve"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ScoreSpeaker"
+                }
+              }
+            ]
+          }
         }
       ]
     }

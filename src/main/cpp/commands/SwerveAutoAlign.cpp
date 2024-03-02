@@ -28,7 +28,7 @@ void SwerveAutoAlign::Initialize() {}
 void SwerveAutoAlign::Execute() {
   // Every loop, check if we're at ur goal (within 1 degree) and set to 0 if we aren't
   // After it reaches a certain amount of loops, end the command
-  if (abs(m_swerve->GetNormalizedYaw().value() - m_goal.value()) < 1.0)
+  if (fabs(m_swerve->GetNormalizedYaw().value() - m_goal.value()) < AutoConstants::kAutoAlignTolerance)
     m_withinThresholdLoops++;
   else
     m_withinThresholdLoops = 0;
