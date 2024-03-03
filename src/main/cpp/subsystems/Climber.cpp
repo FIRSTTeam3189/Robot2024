@@ -27,6 +27,8 @@ void Climber::Periodic() {
         ToggleGlobalBrakeMode();
     }
     m_lastLimitSwitchDetectionState = limitSwitchTripped;
+    frc::SmartDashboard::PutNumber("Left servo rotation", m_leftServo.Get());
+    frc::SmartDashboard::PutNumber("Right servo rotation", m_rightServo.Get());
 }
 
 void Climber::SetPower(double power){
@@ -34,8 +36,8 @@ void Climber::SetPower(double power){
 }
 
 void Climber::SetServoRotation(double angle){
-    m_leftServo.SetAngle(angle);
-    m_rightServo.SetAngle(angle);
+    m_leftServo.Set(angle);
+    m_rightServo.Set(angle);
 }
 
 void Climber::SetBrakeMode(BrakeMode mode) {

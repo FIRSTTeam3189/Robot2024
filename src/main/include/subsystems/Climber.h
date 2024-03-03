@@ -6,6 +6,7 @@
 
 #include <frc2/command/SubsystemBase.h>
 #include <frc/DigitalInput.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/CANSparkMax.h>
 #include <rev/SparkAbsoluteEncoder.h> 
 #include "Constants/ClimberConstants.h" 

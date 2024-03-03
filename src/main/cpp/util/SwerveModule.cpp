@@ -236,7 +236,7 @@ void SwerveModule::UpdatePosition() {
 
     // Have to convert rotations to double then to meters with our own rotation coefficient
     double distance = driveRotations.value() / SwerveModuleConstants::kRotationsPerMeter;
-    m_position.distance = -units::meter_t{distance};
+    m_position.distance = units::meter_t{distance};
     
     frc::Rotation2d angle{units::degree_t{angleRotations}};
     m_position.angle = angle;

@@ -52,8 +52,9 @@ namespace ShooterConstants {
     constexpr double kTrapScoreRollerPower {1.0};
     
     constexpr auto kStartingConfigTarget {65.0_deg};
-    constexpr auto kRetractTarget {55.0_deg};
-    constexpr auto kCloseTarget {55.0_deg};
+    constexpr auto kRetractTarget {60.0_deg};
+    constexpr auto kCloseTarget {60.0_deg};
+    constexpr auto kAutoScoreTarget {60.0_deg};
     constexpr auto kMidTarget {30.0_deg};
     constexpr auto kFarTarget {15.0_deg};
     constexpr double kRotationOffset {46.67};

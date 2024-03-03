@@ -13,7 +13,7 @@ RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here 
 
   m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_isSpecialHeadingMode));
-    frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
+  frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   
   // m_intake->SetDefaultCommand(frc2::RunCommand([this] {
   //   m_intake->SetRotationPower(m_ted.GetRawAxis(OperatorConstants::kAxisLeftStickY));
@@ -96,8 +96,12 @@ void RobotContainer::ConfigureDriverBindings() {
     SetIntakeRotation(m_intake, IntakeState::Retracted)
   ).ToPtr());
 
-  frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, false, true, true).ToPtr());
+  // frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, false, true, true).ToPtr());
+
+  frc2::Trigger driveUnderStageButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  driveUnderStageButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Load).ToPtr());
+  driveUnderStageButton.OnFalse(SetShooterRotation(m_shooter, ShooterState::Retracted).ToPtr());
 
   frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
   ampScoreIntakeButton.OnTrue(frc2::SequentialCommandGroup(
@@ -198,11 +202,29 @@ void RobotContainer::ConfigureCoDriverBindings() {
     },{m_shooter}).ToPtr()
   );
 
-  frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
-  shooterAlignButton.OnFalse(frc2::InstantCommand([this]{
-    m_shooter->SetRotationPower(0.0);
-  },{m_shooter}).ToPtr());
+  // frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
+  // shooterAlignButton.OnFalse(frc2::InstantCommand([this]{
+  //   m_shooter->SetRotationPower(0.0);
+  // },{m_shooter}).ToPtr());
+
+  frc2::Trigger shootLowButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  shootLowButton.OnTrue(frc2::SequentialCommandGroup(
+    SetShooterRotation(m_shooter, ShooterState::Far),
+    RunShooter(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootExtendTarget)
+  ).ToPtr());
+  shootLowButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kShootTime),
+      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+    ),
+    frc2::InstantCommand([this]{
+      m_shooter->SetExtension(0.0);
+      m_shooter->SetRollerPower(0.0);
+      m_shooter->SetLoaderPower(0.0);
+    },{m_shooter})
+  ).ToPtr());
+  
 
   frc2::Trigger shootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
   shootButton.OnTrue(frc2::SequentialCommandGroup(
@@ -316,16 +338,16 @@ void RobotContainer::ConfigureCoDriverBindings() {
   )
     .OnlyIf([this](){ return IsClimbState(); }));
 
-  frc2::Trigger shooterZeroButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
-  shooterZeroButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
+  // frc2::Trigger shooterZeroButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
+  // shooterZeroButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
 
-  frc2::Trigger shooterCloseRangeButton{m_ted.Button(OperatorConstants::kButtonIDX)};
-  shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Close).ToPtr());
+  // frc2::Trigger shooterCloseRangeButton{m_ted.Button(OperatorConstants::kButtonIDX)};
+  // shooterCloseRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Close).ToPtr());
 
   // frc2::Trigger shooterMidRangeButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
   // shooterMidRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Mid).ToPtr());
 
-  // frc2::Trigger shooterFarRangeButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
+  // frc2::Trigger shooterFarRangeButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
   // shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
 }
 
@@ -419,6 +441,8 @@ void RobotContainer::CreateAutoPaths() {
   for (auto autoPath : AutoConstants::kAutonomousPaths) {
     m_chooser.AddOption(autoPath, new pathplanner::PathPlannerAuto(std::string{autoPath}));
   }
+  m_chooser.AddOption("Dumb Two Score Mid", new TwoNoteAuto(m_swerveDrive, m_intake, m_shooter));
+  m_chooser.AddOption("Mobility", new MobilityAuto(m_swerveDrive));
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
 }
 

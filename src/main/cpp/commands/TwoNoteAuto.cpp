@@ -11,13 +11,24 @@ TwoNoteAuto::TwoNoteAuto(SwerveDrive *swerve, Intake *intake, Shooter *shooter) 
 m_swerve(swerve),
 m_intake(intake),
 m_shooter(shooter) {
+  (void)AutoConstants::kAutonomousPaths[0];
+  (void)VisionConstants::kSyncBytes[0];
+
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   AddCommands(
-    SetShooterRotation(m_shooter, ShooterState::Close),
+    frc2::InstantCommand([this]{
+      // if (frc::DriverStation::GetAlliance()) {
+      //   if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
+      //     m_swerve->SetPose(frc::Pose2d{1.30_m, 5.52_m, frc::Rotation2d{-60.0_deg}}, false);
+      //   else
+          m_swerve->SetPose(frc::Pose2d{15.25_m, 5.52_m, frc::Rotation2d{180.0_deg}}, false);
+      // }
+    },{m_swerve}),
+    SetShooterRotation(m_shooter, ShooterState::AutoScore),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(1.5_s),
-      RunShooter(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootExtendTarget),
+      RunShooter(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootExtendTarget)
     ),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
@@ -38,13 +49,11 @@ m_shooter(shooter) {
         SetShooterRotation(m_shooter, ShooterState::Load)
       )
     ),
-    frc2::ParallelCommandGroup(
-      frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(2.0_s),
-        frc2::RunCommand([this]{
-          m_swerve->Drive(1.5_mps, 0.0_mps, units::radians_per_second_t{0.0}, false, frc::Translation2d{0.0_m, frc::Rotation2d{}});
-        },{m_swerve})
-      ),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(1.5_s),
+      frc2::RunCommand([this]{
+        m_swerve->Drive(-1.0_mps, 0.0_mps, units::radians_per_second_t{0.0}, false, frc::Translation2d{0.0_m, frc::Rotation2d{}});
+      },{m_swerve}),
       RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::None),
       RunIntake(m_intake, IntakeConstants::kIntakePower)
     ),
@@ -57,25 +66,17 @@ m_shooter(shooter) {
       SetShooterRotation(m_shooter, ShooterState::Retracted),
       SetIntakeRotation(m_intake, IntakeState::Retracted)
     ),
-
-    SetShooterRotation(m_shooter, ShooterState::DirectLoad),
-    // RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::EndOnFirstDetection),
-    RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::None),
-    frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Retracted),
-      SetIntakeRotation(m_intake, IntakeState::Retracted)
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(1.5_s),
+      frc2::RunCommand([this]{
+        m_swerve->Drive(1.1_mps, 0.0_mps, units::radians_per_second_t{0.0}, false, frc::Translation2d{0.0_m, frc::Rotation2d{}});
+      },{m_swerve})
     ),
-    frc2::InstantCommand([this]{
-      m_shooter->SetRollerPower(0.0);
-      m_shooter->SetLoaderPower(0.0);
-    },{m_shooter}),
-    frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Retracted),
-      SetIntakeRotation(m_intake, IntakeState::Retracted)
+    SetShooterRotation(m_shooter, ShooterState::AutoScore),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(1.5_s),
+      RunShooter(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootExtendTarget)
     ),
-
-    SetShooterRotation(m_shooter, ShooterState::Close),
-    RunShooter(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootExtendTarget),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
@@ -84,6 +85,6 @@ m_shooter(shooter) {
       m_shooter->SetExtension(0.0);
       m_shooter->SetRollerPower(0.0);
       m_shooter->SetLoaderPower(0.0);
-    })
-    ));
+    },{m_shooter})
+  );
 }

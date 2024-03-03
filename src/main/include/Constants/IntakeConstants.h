@@ -13,7 +13,7 @@ namespace IntakeConstants{
     constexpr double kLoadPower {0.5};
 
     constexpr unsigned int kRotationCurrentLimit {40};
-    constexpr unsigned int kRollerCurrentLimit {30};
+    constexpr unsigned int kRollerCurrentLimit {35};
 
     // constexpr double kPRotation {0.005};
     // constexpr double kIRotation {0.00000};
@@ -41,7 +41,7 @@ namespace IntakeConstants{
     constexpr auto kRetractTarget {80.0_deg};
     constexpr auto kAmpTarget {70.0_deg};
     constexpr auto kExtendTarget {-40.0_deg};
-    constexpr double kRotationOffset {260.0};
+    constexpr double kRotationOffset {265.0};
     constexpr double kRotationConversion {360.0}; 
     constexpr bool kRotationInverted {false};
     constexpr bool kRotationMotorInverted {true};

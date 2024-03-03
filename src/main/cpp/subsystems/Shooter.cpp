@@ -366,6 +366,9 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
         case(ShooterState::TrapScore):
             target = ShooterConstants::kTrapScoreTarget;
             m_currentState = ShooterState::TrapScore;
+        case(ShooterState::AutoScore):
+            target = ShooterConstants::kAutoScoreTarget;
+            m_currentState = ShooterState::AutoScore;
         default: 
             break;
     }

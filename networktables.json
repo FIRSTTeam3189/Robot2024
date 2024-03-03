@@ -2,7 +2,7 @@
   {
     "name": "/Preferences/DriveP",
     "type": "double",
-    "value": 2.0,
+    "value": 3.0,
     "properties": {
       "persistent": true
     }
@@ -58,7 +58,7 @@
   {
     "name": "/Preferences/Intake Rotation P",
     "type": "double",
-    "value": 0.02,
+    "value": 0.05,
     "properties": {
       "persistent": true
     }
@@ -98,7 +98,7 @@
   {
     "name": "/Preferences/Robot Rotation D",
     "type": "double",
-    "value": 0.0,
+    "value": 0.0001,
     "properties": {
       "persistent": true
     }

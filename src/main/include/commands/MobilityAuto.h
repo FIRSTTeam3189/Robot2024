@@ -21,14 +21,12 @@
 #include "commands/SetIntakeRotation.h"
 #include "commands/SetShooterRotation.h"
 
-class TwoNoteAuto
+class MobilityAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 TwoNoteAuto> {
+                                 MobilityAuto> {
  public:
-  TwoNoteAuto(SwerveDrive *swerve, Intake *intake, Shooter *shooter);
+  MobilityAuto(SwerveDrive *swerve);
 
  private:
   SwerveDrive *m_swerve;
-  Intake *m_intake;
-  Shooter *m_shooter;
 };

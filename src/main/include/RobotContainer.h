@@ -21,6 +21,7 @@
 
 #include "commands/AmpIntake.h"
 #include "commands/Drive.h"
+#include "commands/MobilityAuto.h"
 #include "commands/RunClimber.h"
 #include "commands/RunIntake.h"
 #include "commands/RunLoader.h"
@@ -30,6 +31,7 @@
 #include "commands/SetShooterRotation.h"
 #include "commands/ShooterAutoAlign.h"
 #include "commands/SwerveAutoAlign.h"
+#include "commands/TwoNoteAuto.h"
 #include "subsystems/LED.h"
 #include "subsystems/MusicSystem.h"
 #include "subsystems/Climber.h"

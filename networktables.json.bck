@@ -2,7 +2,7 @@
   {
     "name": "/Preferences/DriveP",
     "type": "double",
-    "value": 2.0,
+    "value": 3.0,
     "properties": {
       "persistent": true
     }
@@ -58,7 +58,7 @@
   {
     "name": "/Preferences/Intake Rotation P",
     "type": "double",
-    "value": 0.02,
+    "value": 0.05,
     "properties": {
       "persistent": true
     }
@@ -218,7 +218,31 @@
   {
     "name": "/Preferences/Intake Rotation Target",
     "type": "double",
-    "value": 79.9,
+    "value": 80.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter Extension P",
+    "type": "double",
+    "value": 0.0001,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter Extension I",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter Extension D",
+    "type": "double",
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
