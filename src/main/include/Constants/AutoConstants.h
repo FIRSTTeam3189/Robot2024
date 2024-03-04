@@ -4,8 +4,11 @@
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 
 #define Pi 3.14159265358979323846
- 
+
+enum class StartingPosition { RedAmp, RedMid, RedSource, BlueAmp, BlueMid, BlueSource };
+
 namespace AutoConstants {
+    constexpr StartingPosition kStartingPosition {StartingPosition::RedMid};
     constexpr double kPTranslationAuto {0.0};
     constexpr double kITranslationAuto {0.0};
     constexpr double kDTranslationAuto {0.0};

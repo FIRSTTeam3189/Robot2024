@@ -103,6 +103,9 @@ void Drive::Execute() {
     }
   }
 
+  joystickX = pow(joystickX, 3.0);
+  joystickY = pow(joystickY, 3.0);
+
   units::meters_per_second_t xSpeed, ySpeed;
 
   xSpeed = (m_xSpeedLimiter.Calculate(joystickX) * SwerveDriveConstants::kMaxSpeed);

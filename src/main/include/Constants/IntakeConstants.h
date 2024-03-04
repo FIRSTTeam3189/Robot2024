@@ -40,7 +40,7 @@ namespace IntakeConstants{
     constexpr bool kRollerInverted {true};
     constexpr auto kRetractTarget {80.0_deg};
     constexpr auto kAmpTarget {70.0_deg};
-    constexpr auto kExtendTarget {-40.0_deg};
+    constexpr auto kExtendTarget {-45.0_deg};
     constexpr double kRotationOffset {265.0};
     constexpr double kRotationConversion {360.0}; 
     constexpr bool kRotationInverted {false};

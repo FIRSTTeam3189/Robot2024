@@ -100,7 +100,7 @@ void RobotContainer::ConfigureDriverBindings() {
   // alignSpeakerButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, false, true, true).ToPtr());
 
   frc2::Trigger driveUnderStageButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  driveUnderStageButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Load).ToPtr());
+  driveUnderStageButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
   driveUnderStageButton.OnFalse(SetShooterRotation(m_shooter, ShooterState::Retracted).ToPtr());
 
   frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
@@ -441,7 +441,7 @@ void RobotContainer::CreateAutoPaths() {
   for (auto autoPath : AutoConstants::kAutonomousPaths) {
     m_chooser.AddOption(autoPath, new pathplanner::PathPlannerAuto(std::string{autoPath}));
   }
-  m_chooser.AddOption("Dumb Two Score Mid", new TwoNoteAuto(m_swerveDrive, m_intake, m_shooter));
+  m_chooser.AddOption("Dumb Two Score Mid", new TwoNoteAuto(m_swerveDrive, m_intake, m_shooter, AutoConstants::kStartingPosition));
   m_chooser.AddOption("Mobility", new MobilityAuto(m_swerveDrive));
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
 }

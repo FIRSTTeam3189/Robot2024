@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/controller/PIDController.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelCommandGroup.h>
@@ -20,15 +21,19 @@
 #include "commands/RunLoader.h"
 #include "commands/SetIntakeRotation.h"
 #include "commands/SetShooterRotation.h"
+#include "Constants/AutoConstants.h"
+#include "Constants/SwerveDriveConstants.h"
 
 class TwoNoteAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  TwoNoteAuto> {
  public:
-  TwoNoteAuto(SwerveDrive *swerve, Intake *intake, Shooter *shooter);
+  TwoNoteAuto(SwerveDrive *swerve, Intake *intake, Shooter *shooter, StartingPosition position);
 
  private:
   SwerveDrive *m_swerve;
   Intake *m_intake;
   Shooter *m_shooter;
+  StartingPosition m_position;
+  frc::PIDController m_rotationPIDController;
 };

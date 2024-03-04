@@ -45,9 +45,9 @@ class Drive
   bool m_isSpecialHeadingMode;
   bool m_isFieldRelative;
   bool m_shouldAlignSpeaker;
-  frc::SlewRateLimiter<units::scalar> m_xSpeedLimiter{3 / 1_s};
-  frc::SlewRateLimiter<units::scalar> m_ySpeedLimiter{3 / 1_s};
-  frc::SlewRateLimiter<units::scalar> m_rotLimiter{3 / 1_s};
+  frc::SlewRateLimiter<units::scalar> m_xSpeedLimiter{2 / 1_s};
+  frc::SlewRateLimiter<units::scalar> m_ySpeedLimiter{2 / 1_s};
+  frc::SlewRateLimiter<units::scalar> m_rotLimiter{2 / 1_s};
   double m_goalAngle;
   double m_lastAngle;
   std::optional<frc::DriverStation::Alliance> m_allianceSide;

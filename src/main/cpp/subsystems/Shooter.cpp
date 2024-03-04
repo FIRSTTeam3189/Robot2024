@@ -6,6 +6,7 @@
 
 Shooter::Shooter() : 
 m_rollerMotor(ShooterConstants::kRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_encoder(m_rollerMotor.GetEncoder()),
 m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_extensionMotor(ShooterConstants::kExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
@@ -50,6 +51,7 @@ void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter rotation", m_rotationEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("Shooter extension", m_extensionEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("Shooter power", m_rollerMotor.Get());
+    frc::SmartDashboard::PutNumber("Shooter RPM", m_encoder.GetVelocity());
     frc::SmartDashboard::PutNumber("Shooter load power", m_loaderMotor.Get());
     UpdateNoteState();
 
