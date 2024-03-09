@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3612083659381726,
-        "y": 4.234402634328386
+        "x": 2.45,
+        "y": 4.13
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.361208365938173,
-        "y": 4.234402634328386
+        "x": 2.4500000000000006,
+        "y": 4.13
       },
       "isLocked": false,
       "linkedName": "Real Score 2 - Bottom"

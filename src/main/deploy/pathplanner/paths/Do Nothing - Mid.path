@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5110352727827958,
+        "x": 1.5110352727827951,
         "y": 5.5430292057165325
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 15.436869514168368,
-        "y": 0.8811409393838475
+        "x": 1.52,
+        "y": 5.5
       },
       "prevControl": {
-        "x": 15.439598941393603,
-        "y": 0.8890876817730594
+        "x": 1.5227294272252347,
+        "y": 5.507946742389212
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Mid Start Point"
     }
   ],
   "rotationTargets": [],
@@ -51,7 +51,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
