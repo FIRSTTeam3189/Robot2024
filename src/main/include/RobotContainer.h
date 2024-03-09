@@ -81,7 +81,7 @@ class RobotContainer {
 
   void ConfigureDriverBindings();
   void ConfigureCoDriverBindings();
-  void ConfigureSysIDBindings();
+  void ConfigureTestBindings();
   void CreateAutoPaths();
   void RegisterAutoCommands();
 };
