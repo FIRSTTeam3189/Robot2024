@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "PrintAutoMessage"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Score 1 - Top"
@@ -39,6 +45,12 @@
           "type": "path",
           "data": {
             "pathName": "Sweep Mechanism 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrintAutoMessage"
           }
         }
       ]

@@ -12,9 +12,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "PrintAutoMessage"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Do Nothing - Mid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrintAutoMessage"
           }
         }
       ]

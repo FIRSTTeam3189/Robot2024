@@ -7,7 +7,8 @@ namespace ShooterConstants {
     constexpr int kRollerMotorID {13};
     constexpr int kLoaderMotorID {14};
     constexpr int kRotationMotorID {16};
-    constexpr int kLimitSwitchPort {1};
+    constexpr int kLeftLimitSwitchPort {2};
+    constexpr int kRightLimitSwitchPort {3};
 
     constexpr double kPRotation {0.1};
     constexpr double kIRotation {0};

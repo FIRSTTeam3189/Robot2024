@@ -16,46 +16,12 @@ m_endCondition(endCondition) {
 
 // Called when the command is initially scheduled.
 void RunLoader::Initialize() {
-  m_shooter->ResetNoteState();
   m_shooter->SetLoaderPower(m_loadPower);
   m_shooter->SetRollerPower(m_shootPower);
 }
 
 // Called repeatedly when this Command is scheduled to run
-void RunLoader::Execute() {
-  // if (m_shooter->NoteDetected())
-  //   m_isFinished = true;
-  // else 
-  //   m_isFinished = false;
-
-  auto state = m_shooter->GetNoteState();
-  switch (m_endCondition) {
-    case (ShooterEndCondition::None) :
-      m_isFinished = false;
-      break;
-    case (ShooterEndCondition::EndOnFirstDetection) :
-      if (state == NoteState::FirstDetection) {
-        // m_isFinished = true;
-        m_isFinished = false;
-      }
-      break;
-    case (ShooterEndCondition::EndOnMiddleOfNote) :
-      if (state == NoteState::MiddleOfNote) {
-        // m_isFinished = true;
-        m_isFinished = false;
-      }
-      break;
-    case (ShooterEndCondition::EndOnSecondDetection) :
-      if (state == NoteState::SecondDetection) {
-        // m_isFinished = true;
-        m_isFinished = false;
-      }
-      break;
-    default :
-      m_isFinished = false;
-      break;
-  }
-}
+void RunLoader::Execute() {}
 
 // Called once the command ends or is interrupted.
 void RunLoader::End(bool interrupted) {
@@ -65,5 +31,6 @@ void RunLoader::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RunLoader::IsFinished() {
-  return m_isFinished;
+  // return m_isFinished;
+  return false;
 }

@@ -39,9 +39,6 @@ class Shooter : public frc2::SubsystemBase {
   void ConfigRotationMotor();
   void ConfigPID();
   void SetBrakeMode(BrakeMode mode);
-  NoteState GetNoteState();
-  void UpdateNoteState();
-  void ResetNoteState();
   void UpdatePreferences();
   frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
@@ -49,6 +46,7 @@ class Shooter : public frc2::SubsystemBase {
   units::degree_t GetTarget();
   void HoldPosition(units::degree_t target);
   void SetActive(bool active);
+  bool NoteDetected();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -62,7 +60,8 @@ class Shooter : public frc2::SubsystemBase {
    rev::SparkRelativeEncoder m_encoder;
    rev::CANSparkMax m_loaderMotor;
    rev::CANSparkMax m_rotationMotor;
-   frc::DigitalInput m_limitSwitch;
+   frc::DigitalInput m_limitSwitchLeft;
+   frc::DigitalInput m_limitSwitchRight;
    frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
    frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
    rev::SparkMaxPIDController m_rotationPIDController;
@@ -77,8 +76,6 @@ class Shooter : public frc2::SubsystemBase {
    frc2::sysid::SysIdRoutine m_sysIdRoutine;
    ShooterState m_currentState;
    bool m_isActive;
-   NoteState m_noteState;
-
    // String keys for PID preferences
    std::string m_rotationPKey;
    std::string m_rotationIKey;

@@ -9,7 +9,8 @@ m_rollerMotor(ShooterConstants::kRollerMotorID, rev::CANSparkMax::MotorType::kBr
 m_encoder(m_rollerMotor.GetEncoder()),
 m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_limitSwitch(ShooterConstants::kLimitSwitchPort),
+m_limitSwitchLeft(ShooterConstants::kLeftLimitSwitchPort),
+m_limitSwitchRight(ShooterConstants::kRightLimitSwitchPort),
 m_constraints(ShooterConstants::kMaxRotationVelocity, ShooterConstants::kMaxRotationAcceleration),
 m_profiledPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
 m_rotationPIDController(m_rotationMotor.GetPIDController()),
@@ -31,8 +32,7 @@ m_sysIdRoutine(
         },
         this)
 ),
-m_isActive(false),
-m_noteState(NoteState::None) {
+m_isActive(false) {
     ConfigRollerMotor();
     ConfigLoaderMotor();
     ConfigRotationMotor();
@@ -48,7 +48,6 @@ void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter power", m_rollerMotor.Get());
     frc::SmartDashboard::PutNumber("Shooter RPM", m_encoder.GetVelocity());
     frc::SmartDashboard::PutNumber("Shooter load power", m_loaderMotor.Get());
-    UpdateNoteState();
 
     if (frc::Preferences::GetBoolean("Full Diagnostics", false)) {
         frc::SmartDashboard::PutNumber("Shooter rotational velocity", m_rotationEncoder.GetVelocity());
@@ -231,47 +230,6 @@ void Shooter::UpdatePreferences() {
     );
 }
 
-void Shooter::UpdateNoteState() {
-    bool detected = !m_limitSwitch.Get();
-    switch (m_noteState) {
-        case (NoteState::None) :
-            if (detected) {
-                m_noteState = NoteState::FirstDetection;
-            }
-            frc::SmartDashboard::PutString("Shooter note state", "None");
-            break;
-        case (NoteState::FirstDetection) :
-            if (!detected) {
-                m_noteState = NoteState::MiddleOfNote;
-            }
-            frc::SmartDashboard::PutString("Shooter note state", "First detection");
-            break;
-        case (NoteState::MiddleOfNote) :
-            if (detected) {
-                m_noteState = NoteState::SecondDetection;
-            }
-            frc::SmartDashboard::PutString("Shooter note state", "Middle of note");
-            break;
-        case (NoteState::SecondDetection) :
-            if (!detected) {
-                m_noteState = NoteState::None;
-            }
-            frc::SmartDashboard::PutString("Shooter note state", "Second detection");
-            break;
-        default :
-            frc::SmartDashboard::PutString("Shooter note state", "None");
-            break;
-    }
-}
-
-NoteState Shooter::GetNoteState() {
-    return m_noteState;
-}
-
-void Shooter::ResetNoteState() {
-    m_noteState = NoteState::None;
-}
-
 frc2::CommandPtr Shooter::SysIdQuasistatic(frc2::sysid::Direction direction) {
     // for (int i = 0; i < 10; i++) 
     //     std::cout << "Shooter Quasistatic\n";
@@ -346,6 +304,13 @@ void Shooter::SetActive(bool active) {
     }
 
     m_isActive = active;
+}
+
+bool Shooter::NoteDetected(){
+    if (m_limitSwitchRight.Get() || m_limitSwitchLeft.Get()){
+        return true;
+    }
+    return false;
 }
 
 void Shooter::SetBrakeMode(BrakeMode mode) {

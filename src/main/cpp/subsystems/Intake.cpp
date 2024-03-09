@@ -7,7 +7,8 @@
 Intake::Intake() : 
  m_rotationMotor(IntakeConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
  m_rollerMotor(IntakeConstants::kRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
- m_limitSwitch(IntakeConstants::kLimitSwitchPort),
+ m_limitSwitchLeft(IntakeConstants::kLeftLimitSwitchPort),
+ m_limitSwitchRight(IntakeConstants::kRightLimitSwitchPort),
  m_constraints(IntakeConstants::kMaxRotationVelocity, IntakeConstants::kMaxRotationAcceleration),
  m_profiledPIDController(IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation, m_constraints),
  m_rotationPIDController(m_rotationMotor.GetPIDController()),
@@ -31,8 +32,7 @@ Intake::Intake() :
 ),
 m_currentState(IntakeState::Retracted),
 m_prevState(IntakeState::None),
-m_isActive(false),
-m_noteState(NoteState::None)
+m_isActive(false)
 {
     ConfigRotationMotor();
     ConfigRollerMotor();
@@ -105,7 +105,6 @@ void Intake::Periodic() {
     frc::SmartDashboard::PutNumber("Intake PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Intake rotation", GetRotation().value());
     frc::SmartDashboard::PutNumber("Intake power", m_rollerMotor.Get());
-    UpdateNoteState();
 
     if (frc::Preferences::GetBoolean("Full Diagnostics", false)) {
         frc::SmartDashboard::PutNumber("Intake rotational velocity", m_rotationEncoder.GetVelocity());
@@ -131,6 +130,14 @@ void Intake::SetActive(bool active) {
     }
 
     m_isActive = active;
+}
+
+bool Intake::NoteDetected(){
+    if (m_limitSwitchLeft.Get() || m_limitSwitchRight.Get()){
+        return true;
+    } 
+
+    return false;
 }
 
 units::degree_t Intake::GetTarget() {
@@ -292,47 +299,6 @@ void Intake::UpdatePreferences() {
         units::unit_t<frc::ArmFeedforward::kv_unit>{v},
         units::unit_t<frc::ArmFeedforward::ka_unit>{a}
     );
-}
-
-void Intake::UpdateNoteState() {
-    bool detected = !m_limitSwitch.Get();
-    switch (m_noteState) {
-        case (NoteState::None) :
-            if (detected) {
-                m_noteState = NoteState::FirstDetection;
-            }
-            frc::SmartDashboard::PutString("Intake note state", "None");
-            break;
-        case (NoteState::FirstDetection) :
-            if (!detected) {
-                m_noteState = NoteState::MiddleOfNote;
-            }
-            frc::SmartDashboard::PutString("Intake note state", "First detection");
-            break;
-        case (NoteState::MiddleOfNote) :
-            if (detected) {
-                m_noteState = NoteState::SecondDetection;
-            }
-            frc::SmartDashboard::PutString("Intake note state", "Middle of note");
-            break;
-        case (NoteState::SecondDetection) :
-            if (!detected) {
-                m_noteState = NoteState::None;
-            }
-            frc::SmartDashboard::PutString("Intake note state", "Second detection");
-            break;
-        default :
-            frc::SmartDashboard::PutString("Intake note state", "None");
-            break;
-    }
-}
-
-void Intake::ResetNoteState() {
-    m_noteState = NoteState::None;
-}
-
-NoteState Intake::GetNoteState() {
-    return m_noteState;
 }
 
 frc2::CommandPtr Intake::SysIdQuasistatic(frc2::sysid::Direction direction) {

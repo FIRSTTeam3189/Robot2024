@@ -5,7 +5,8 @@
 namespace IntakeConstants{
     constexpr int kRotationMotorID {17};
     constexpr int kRollerMotorID {18};
-    constexpr int kLimitSwitchPort {0};
+    constexpr int kLeftLimitSwitchPort {0};
+    constexpr int kRightLimitSwitchPort {1};
     
     constexpr double kIntakePower {1.0};
     constexpr double kAmpScorePower {-1.0};
