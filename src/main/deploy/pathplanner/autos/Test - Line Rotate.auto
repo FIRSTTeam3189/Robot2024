@@ -12,9 +12,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "PrintAutoMessage"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Test - Line"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrintAutoMessage"
           }
         }
       ]
