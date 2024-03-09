@@ -12,17 +12,12 @@ m_intake(intake), m_speed(speed), m_shouldFinish(false) {
 
 // Called when the command is initially scheduled.
 void AmpIntake::Initialize() {
-  m_intake->ResetNoteState();
   m_intake->SetRollerPower(m_speed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void AmpIntake::Execute() {
-  if (m_intake->GetNoteState() == NoteState::FirstDetection) 
-    // m_shouldFinish = true;
-    m_shouldFinish = false;
-  else
-    m_shouldFinish = false;
+  m_shouldFinish = false;
 }
 
 // Called once the command ends or is interrupted.

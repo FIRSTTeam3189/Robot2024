@@ -171,9 +171,9 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 
     auto [fl, fr, bl, br] = states;
 
-    if (m_slowMode)
-        SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveModuleConstants::kMaxSpeed * SwerveDriveConstants::kExtendDriveSpeed);
-    else
+    // if (m_slowMode)
+    //     SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveModuleConstants::kMaxSpeed * SwerveDriveConstants::kExtendDriveSpeed);
+    // else
         SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveModuleConstants::kMaxSpeed);
 
     double AdvantageScopeDesiredStates[] = 

@@ -32,15 +32,13 @@ class Intake : public frc2::SubsystemBase {
   units::degree_t GetRotation();
   units::degree_t GetTarget();
   void SetState(IntakeState state);
-  NoteState GetNoteState();
-  void ResetNoteState();
-  void UpdateNoteState();
   void UpdatePreferences();
   void ConfigRollerMotor();
   void ConfigRotationMotor();
   void SetBrakeMode(BrakeMode mode);
   void HoldPosition();
   void SetActive(bool active);
+  bool NoteDetected();
 
   frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
@@ -55,7 +53,8 @@ class Intake : public frc2::SubsystemBase {
  private:
   rev::CANSparkMax m_rotationMotor;
   rev::CANSparkMax m_rollerMotor;
-  frc::DigitalInput m_limitSwitch;
+  frc::DigitalInput m_limitSwitchLeft;
+  frc::DigitalInput m_limitSwitchRight;
   frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
   frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
   rev::SparkMaxPIDController m_rotationPIDController;
@@ -71,7 +70,6 @@ class Intake : public frc2::SubsystemBase {
   IntakeState m_currentState;
   IntakeState m_prevState;
   bool m_isActive;
-  NoteState m_noteState;
   
   // String keys for PID preferences
   std::string m_rotationPKey;
