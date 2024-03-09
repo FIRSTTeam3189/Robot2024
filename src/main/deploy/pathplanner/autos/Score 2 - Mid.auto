@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "PrintAutoMessage"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Score 1 - Mid"
@@ -53,6 +59,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrintAutoMessage"
           }
         }
       ]

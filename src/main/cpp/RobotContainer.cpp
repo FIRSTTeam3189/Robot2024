@@ -358,6 +358,8 @@ void RobotContainer::RegisterAutoCommands() {
 
   pathplanner::NamedCommands::registerCommand("AlignSwerve", SwerveAutoAlign(m_swerveDrive, true).ToPtr());
 
+  pathplanner::NamedCommands::registerCommand("PrintAutoMessage", frc2::PrintCommand("Auto Started/Ended").ToPtr());
+
   pathplanner::NamedCommands::registerCommand("Intake", frc2::SequentialCommandGroup(
     frc2::ParallelCommandGroup(
       frc2::ParallelRaceGroup(
