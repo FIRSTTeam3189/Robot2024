@@ -40,8 +40,6 @@ class Intake : public frc2::SubsystemBase {
   void SetActive(bool active);
   bool NoteDetected();
 
-  frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
-  frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -57,7 +55,6 @@ class Intake : public frc2::SubsystemBase {
   frc::DigitalInput m_limitSwitchRight;
   frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
   frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
-  rev::SparkMaxPIDController m_rotationPIDController;
   frc::ArmFeedforward *m_ff;
   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
   units::degree_t m_target;
@@ -66,9 +63,6 @@ class Intake : public frc2::SubsystemBase {
   units::degrees_per_second_squared_t m_acceleration;
   units::degrees_per_second_squared_t m_targetAcceleration;
   units::second_t m_lastTime;
-  frc2::sysid::SysIdRoutine m_sysIdRoutine;
-  IntakeState m_currentState;
-  IntakeState m_prevState;
   bool m_isActive;
   
   // String keys for PID preferences
@@ -82,10 +76,4 @@ class Intake : public frc2::SubsystemBase {
   std::string m_rotationTargetKey;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-
-  std::map<IntakeState, std::array<double, 3>> kRotationTargetPID {
-        {{IntakeState::Extended}, {IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation}},
-        {{IntakeState::Amp}, {IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation}},
-        {{IntakeState::Retracted}, {IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation}}
-    };
 };

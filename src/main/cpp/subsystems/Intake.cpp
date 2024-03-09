@@ -11,27 +11,8 @@ Intake::Intake() :
  m_limitSwitchRight(IntakeConstants::kRightLimitSwitchPort),
  m_constraints(IntakeConstants::kMaxRotationVelocity, IntakeConstants::kMaxRotationAcceleration),
  m_profiledPIDController(IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation, m_constraints),
- m_rotationPIDController(m_rotationMotor.GetPIDController()),
  m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
  m_target(IntakeConstants::kRetractTarget),
- m_sysIdRoutine(
-    // Might want to reduce voltage values later
-    frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
-    frc2::sysid::Mechanism(
-        [this](units::volt_t driveVoltage) {
-          m_rotationMotor.SetVoltage(driveVoltage);
-        },
-        [this](frc::sysid::SysIdRoutineLog* log) {
-          log->Motor("rotation")
-              .voltage(m_rotationMotor.Get() *
-                       frc::RobotController::GetBatteryVoltage())
-              .position(units::turn_t{GetRotation()})
-              .velocity(units::turns_per_second_t{units::degrees_per_second_t{m_rotationEncoder.GetVelocity()}});
-        },
-        this)
-),
-m_currentState(IntakeState::Retracted),
-m_prevState(IntakeState::None),
 m_isActive(false)
 {
     ConfigRotationMotor();
@@ -85,19 +66,6 @@ void Intake::ConfigPID() {
     frc::Preferences::SetDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
     frc::Preferences::SetDouble(m_rotationAKey, IntakeConstants::kARotation.value());
     frc::Preferences::SetDouble(m_rotationTargetKey, m_target.value());
-
-    m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
-    m_rotationPIDController.SetP(kRotationTargetPID[IntakeState::Extended][0]);
-    m_rotationPIDController.SetI(kRotationTargetPID[IntakeState::Extended][1]);
-    m_rotationPIDController.SetD(kRotationTargetPID[IntakeState::Extended][2]);
-
-    m_rotationPIDController.SetP(kRotationTargetPID[IntakeState::Amp][0], 1);
-    m_rotationPIDController.SetI(kRotationTargetPID[IntakeState::Amp][1], 1);
-    m_rotationPIDController.SetD(kRotationTargetPID[IntakeState::Amp][2], 1);
-
-    m_rotationPIDController.SetP(kRotationTargetPID[IntakeState::Retracted][0], 2);
-    m_rotationPIDController.SetI(kRotationTargetPID[IntakeState::Retracted][1], 2);
-    m_rotationPIDController.SetD(kRotationTargetPID[IntakeState::Retracted][2], 2);
 }
 
 // This method will be called once per scheduler run
@@ -152,15 +120,12 @@ void Intake::SetState(IntakeState state) {
             break;
         case (IntakeState::Extended) :
             target = IntakeConstants::kExtendTarget;
-            m_currentState = IntakeState::Extended;
             break;
         case (IntakeState::Amp) :
             target = IntakeConstants::kAmpTarget;
-            m_currentState = IntakeState::Amp;
             break;
         case (IntakeState::Retracted) :
             target = IntakeConstants::kRetractTarget;
-            m_currentState = IntakeState::Retracted;
             break;
     }
 
@@ -215,51 +180,6 @@ void Intake::SetRotation(units::degree_t target) {
     m_lastTargetSpeed = m_profiledPIDController.GetSetpoint().velocity;
     m_lastSpeed = units::degrees_per_second_t{m_rotationEncoder.GetVelocity()};
     m_lastTime = frc::Timer::GetFPGATimestamp();
-
-    // switch (target) {
-    // case IntakeConstants::kRetractTarget :
-    //     m_prevState = m_currentState;
-    //     m_currentState = IntakeState::Retracted;
-    //     break;
-
-    // case IntakeConstants::kExtendTarget :
-    //     m_prevState = m_currentState;
-    //     m_currentState = IntakeState::Extended;
-    //     break;
-
-    // case IntakeConstants::kAmpTarget :
-    //     m_prevState = m_currentState;
-    //     m_currentState = IntakeState::Amp;
-    //     break;
-    
-    // default:
-    //     break;
-    // }
-
-    // double ff = 0.0;
-    // if (GetRotation() < 15.0_deg && target < GetRotation())
-    //     m_rotationMotor.SetVoltage(0.0_V);
-    // else if (GetRotation() > 110.0_deg && target > GetRotation()){
-    //     m_rotationMotor.SetVoltage(0.0_V);
-    // }
-    // else {
-        // if (target < GetRotation()) {
-        //     m_rotationPIDController.SetP(IntakeConstants::kPRotation / 1.25);
-        //     // ff = -IntakeConstants::kFeedforward / 2.0;
-        // }
-        // else {
-        //     m_rotationPIDController.SetP(IntakeConstants::kPRotation);
-        //     ff = IntakeConstants::kFeedforward;
-        // }
-
-        // if (m_currentState == IntakeState::Extended && m_prevstate == IntakeState::Retracted) {
-        //     // m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 0, ff);
-        // } else if (m_currentState == IntakeState::Retracted && m_prevstate == IntakeState::Extended) {
-        //     // m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 1, ff);
-        // } else {
-        //     m_rotationPIDController.SetReference(target.value(), rev::ControlType::kPosition, 2, ff);
-        // }
-    // }
 }
 
 void Intake::SetRollerPower(double power) {
@@ -267,9 +187,9 @@ void Intake::SetRollerPower(double power) {
 }
 
 void Intake::SetRotationPower(double power) {
-    if (GetRotation() <= 15.0_deg && power >= 0.0)
+    if (GetRotation() <= -35.0_deg && power <= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
-    else if (GetRotation() >= 120.0_deg && power <= 0.0)
+    else if (GetRotation() >= 85.0_deg && power >= 0.0)
         m_rotationMotor.SetVoltage(0.0_V);
     else
         m_rotationMotor.Set(power);
@@ -299,18 +219,6 @@ void Intake::UpdatePreferences() {
         units::unit_t<frc::ArmFeedforward::kv_unit>{v},
         units::unit_t<frc::ArmFeedforward::ka_unit>{a}
     );
-}
-
-frc2::CommandPtr Intake::SysIdQuasistatic(frc2::sysid::Direction direction) {
-    // for (int i = 0; i < 10; i++) 
-    //     std::cout << "Intake Quasistatic\n";
-    return m_sysIdRoutine.Quasistatic(direction);
-}
-
-frc2::CommandPtr Intake::SysIdDynamic(frc2::sysid::Direction direction) {
-    // for (int i = 0; i < 10; i++) 
-    //     std::cout << "Intake Dynamic\n";
-    return m_sysIdRoutine.Dynamic(direction);
 }
 
 void Intake::SetBrakeMode(BrakeMode mode) {

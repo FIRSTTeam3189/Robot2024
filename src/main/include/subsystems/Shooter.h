@@ -40,8 +40,6 @@ class Shooter : public frc2::SubsystemBase {
   void ConfigPID();
   void SetBrakeMode(BrakeMode mode);
   void UpdatePreferences();
-  frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
-  frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
   void SetState(ShooterState state, units::degree_t autoAlignAngle = ShooterConstants::kRetractTarget);
   units::degree_t GetTarget();
   void HoldPosition(units::degree_t target);
@@ -56,15 +54,15 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-   rev::CANSparkMax m_rollerMotor;
-   rev::SparkRelativeEncoder m_encoder;
+   rev::CANSparkMax m_leaderRollerMotor;
+   rev::CANSparkMax m_followerRollerMotor;
+   rev::SparkRelativeEncoder m_rollerEncoder;
    rev::CANSparkMax m_loaderMotor;
    rev::CANSparkMax m_rotationMotor;
    frc::DigitalInput m_limitSwitchLeft;
    frc::DigitalInput m_limitSwitchRight;
    frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
    frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
-   rev::SparkMaxPIDController m_rotationPIDController;
    frc::ArmFeedforward *m_ff;
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
    units::degree_t m_target;
@@ -73,8 +71,6 @@ class Shooter : public frc2::SubsystemBase {
    units::degrees_per_second_squared_t m_acceleration;
    units::degrees_per_second_squared_t m_targetAcceleration;
    units::second_t m_lastTime;
-   frc2::sysid::SysIdRoutine m_sysIdRoutine;
-   ShooterState m_currentState;
    bool m_isActive;
    // String keys for PID preferences
    std::string m_rotationPKey;
@@ -85,9 +81,4 @@ class Shooter : public frc2::SubsystemBase {
    std::string m_rotationVKey;
    std::string m_rotationAKey;
    std::string m_rotationTargetKey;
-
-   std::map<ShooterState, std::array<double, 3>> kRotationTargetPID {
-        {{ShooterState::Retracted}, {ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation}},
-        {{ShooterState::Load}, {ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation}}
-    };
 };
