@@ -27,7 +27,6 @@
 #include "commands/RunLoader.h"
 #include "commands/RunShooter.h"
 #include "commands/SetIntakeRotation.h"
-#include "commands/SetShooterExtension.h"
 #include "commands/SetShooterRotation.h"
 #include "commands/ShooterAutoAlign.h"
 #include "commands/SwerveAutoAlign.h"
@@ -77,9 +76,8 @@ class RobotContainer {
 
   frc::SendableChooser<frc2::Command*> m_chooser;
 
-  bool m_isSpecialHeadingMode = true;
-  bool m_isFieldRelative = true;
   SuperstructureState m_superstructureState = SuperstructureState::Default;
+  DriveState m_driveState = DriveState::HeadingControl;
 
   void ConfigureDriverBindings();
   void ConfigureCoDriverBindings();

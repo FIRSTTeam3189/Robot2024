@@ -9,6 +9,8 @@
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 MobilityAuto::MobilityAuto(SwerveDrive *swerve) 
 : m_swerve(swerve) {
+  (void)AutoConstants::kAutonomousPaths[0];
+  (void)VisionConstants::kSyncBytes[0];
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   AddCommands(

@@ -21,11 +21,12 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
+enum class DriveState {HeadingControl, RotationVelocityControl, SpeakerAlign, ArbitraryAngleAlign} ;
+
 class Drive
     : public frc2::CommandHelper<frc2::Command, Drive> {
  public:
-  Drive(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, 
-                bool isSpecialHeadingMode, bool isFieldRelative = true, bool shouldAlignSpeaker = false);
+  Drive(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle = 0.0_deg);
   units::angular_velocity::radians_per_second_t GetDesiredRotationalVelocity();
   units::angular_velocity::radians_per_second_t GetRotVelSpeakerAlign();
   void UpdatePreferences();
@@ -42,9 +43,8 @@ class Drive
   frc2::CommandJoystick *m_bill;
   SwerveDrive *m_swerveDrive;
   frc::PIDController m_rotationPIDController;
-  bool m_isSpecialHeadingMode;
-  bool m_isFieldRelative;
-  bool m_shouldAlignSpeaker;
+  DriveState m_driveState;
+  units::degree_t m_arbitraryAngle;
   frc::SlewRateLimiter<units::scalar> m_xSpeedLimiter{2 / 1_s};
   frc::SlewRateLimiter<units::scalar> m_ySpeedLimiter{2 / 1_s};
   frc::SlewRateLimiter<units::scalar> m_rotLimiter{2 / 1_s};

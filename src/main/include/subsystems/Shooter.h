@@ -22,7 +22,7 @@
 #include "Constants/ShooterConstants.h"
 #include "Constants/GlobalConstants.h"
 
-enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero, AutoAlign, StartingConfig, TrapScore, AutoScore } ;
+enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero, AutoAlign, StartingConfig, AutoScore } ;
 enum class ShooterEndCondition { None, EndOnFirstDetection, EndOnMiddleOfNote, EndOnSecondDetection };
 
 class Shooter : public frc2::SubsystemBase {
@@ -31,15 +31,11 @@ class Shooter : public frc2::SubsystemBase {
   Shooter();
   void SetRollerPower(double power);
   void SetRotationPower(double power);
-  void SetExtensionPower(double power);
   void SetLoaderPower(double power);
   void SetRotation(units::degree_t target);
-  void SetExtension(double target);
   units::degree_t GetRotation();
-  double GetExtension();
   void ConfigRollerMotor();
   void ConfigLoaderMotor();
-  void ConfigExtensionMotor();
   void ConfigRotationMotor();
   void ConfigPID();
   void SetBrakeMode(BrakeMode mode);
@@ -65,16 +61,13 @@ class Shooter : public frc2::SubsystemBase {
    rev::CANSparkMax m_rollerMotor;
    rev::SparkRelativeEncoder m_encoder;
    rev::CANSparkMax m_loaderMotor;
-   rev::CANSparkMax m_extensionMotor;
    rev::CANSparkMax m_rotationMotor;
    frc::DigitalInput m_limitSwitch;
    frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
    frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
    rev::SparkMaxPIDController m_rotationPIDController;
    frc::ArmFeedforward *m_ff;
-   rev::SparkMaxPIDController m_extensionPIDController;
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
-   rev::SparkMaxAlternateEncoder m_extensionEncoder;
    units::degree_t m_target;
    units::degrees_per_second_t m_lastSpeed;
    units::degrees_per_second_t m_lastTargetSpeed;
@@ -87,9 +80,6 @@ class Shooter : public frc2::SubsystemBase {
    NoteState m_noteState;
 
    // String keys for PID preferences
-   std::string m_extensionPKey;
-   std::string m_extensionIKey;
-   std::string m_extensionDKey;
    std::string m_rotationPKey;
    std::string m_rotationIKey;
    std::string m_rotationDKey;

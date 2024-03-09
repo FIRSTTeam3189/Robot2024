@@ -4,14 +4,12 @@
 
 #include "commands/Drive.h"
 
-Drive::Drive(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, 
-                             bool isSpecialHeadingMode, bool isFieldRelative, bool shouldAlignSpeaker) :
+Drive::Drive(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle) :
 m_bill(joystick),
 m_swerveDrive(swerveDrive),
 m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot, SwerveDriveConstants::kDRot),
-m_isSpecialHeadingMode(isSpecialHeadingMode),
-m_isFieldRelative(isFieldRelative),
-m_shouldAlignSpeaker(shouldAlignSpeaker),
+m_driveState(driveState),
+m_arbitraryAngle(arbitraryAngle),
 m_allianceSide(frc::DriverStation::Alliance::kBlue) {
   // Use addRequirements() here to declare subsystem dependencies.
   (void)AutoConstants::kAutonomousPaths[0];
@@ -122,17 +120,30 @@ void Drive::Execute() {
 
   // If using atan2 control, where right joystick angle == robot heading angle
   // Also, if trying to align to speaker, angle is calculated by pose estimator
-  if (m_isSpecialHeadingMode) {
-    rot = GetDesiredRotationalVelocity();
-  } else if (m_shouldAlignSpeaker) {
-    rot = GetRotVelSpeakerAlign();
-  } else {
-    double joystickRotX = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
-    rot = (fabs(joystickRotX) < .05) ? 0.0_rad / 1.0_s : (m_xSpeedLimiter.Calculate(joystickRotX) * 
-                                                          SwerveDriveConstants::kMaxAngularVelocity);
+  switch (m_driveState) {
+    case(DriveState::HeadingControl) :
+      rot = GetDesiredRotationalVelocity();
+      break;
+    case(DriveState::SpeakerAlign) :
+      rot = GetRotVelSpeakerAlign();
+      break;
+    case(DriveState::RotationVelocityControl) :
+    {
+      double joystickRotX = -m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
+      rot = (fabs(joystickRotX) < .05) ? 0.0_rad / 1.0_s : (m_xSpeedLimiter.Calculate(joystickRotX) * SwerveDriveConstants::kMaxAngularVelocity);
+      break;
+    }
+    case(DriveState::ArbitraryAngleAlign) :
+      rot = -units::angular_velocity::radians_per_second_t{
+              m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), m_arbitraryAngle.value()))
+              * SwerveDriveConstants::kMaxAngularVelocity};
+      break;
+    default:
+      rot = units::angular_velocity::radians_per_second_t{0.0};
+      break;
   }
 
-  m_swerveDrive->Drive(xSpeed, ySpeed, rot, m_isFieldRelative, frc::Translation2d{});
+  m_swerveDrive->Drive(xSpeed, ySpeed, rot, true, frc::Translation2d{});
 }
 
 // Called once the command ends or is interrupted.

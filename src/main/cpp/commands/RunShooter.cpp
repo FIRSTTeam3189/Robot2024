@@ -4,8 +4,8 @@
 
 #include "commands/RunShooter.h"
 
-RunShooter::RunShooter(Shooter *shooter, double power, std::optional<double> extensionTarget) : 
-m_shooter(shooter), m_power(power), m_extensionTarget(extensionTarget) {
+RunShooter::RunShooter(Shooter *shooter, double power) : 
+m_shooter(shooter), m_power(power) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(shooter);
 }
@@ -13,9 +13,6 @@ m_shooter(shooter), m_power(power), m_extensionTarget(extensionTarget) {
 // Called when the command is initially scheduled.
 void RunShooter::Initialize() {
   m_shooter->SetRollerPower(m_power);
-  if (m_extensionTarget) {
-    m_shooter->SetExtension(m_extensionTarget.value());
-  }
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -25,7 +22,6 @@ void RunShooter::Execute() {}
 void RunShooter::End(bool interrupted) {
   m_shooter->SetRollerPower(0.0);
   m_shooter->SetLoaderPower(0.0);
-  m_shooter->SetExtensionPower(0.0);
 }
 
 // Returns true when the command should end.

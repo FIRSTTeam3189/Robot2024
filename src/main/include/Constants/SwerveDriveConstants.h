@@ -17,6 +17,10 @@ namespace SwerveDriveConstants {
 
     constexpr double kGyroMountPoseYaw {0.0};
 
+    constexpr auto kAmpAlignTarget = 90.0_deg;
+    constexpr auto kBlueSourceAlignTarget = 120.0_deg;
+    constexpr auto kRedSourceAlignTarget = 60.0_deg;
+
     constexpr auto kRefreshRate = units::frequency::hertz_t{100};
 
     static frc::SwerveDriveKinematics<4> kKinematics {

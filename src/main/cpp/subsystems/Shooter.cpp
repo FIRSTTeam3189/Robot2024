@@ -8,15 +8,12 @@ Shooter::Shooter() :
 m_rollerMotor(ShooterConstants::kRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_encoder(m_rollerMotor.GetEncoder()),
 m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_extensionMotor(ShooterConstants::kExtensionMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_limitSwitch(ShooterConstants::kLimitSwitchPort),
 m_constraints(ShooterConstants::kMaxRotationVelocity, ShooterConstants::kMaxRotationAcceleration),
 m_profiledPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
 m_rotationPIDController(m_rotationMotor.GetPIDController()),
-m_extensionPIDController(m_extensionMotor.GetPIDController()),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
-m_extensionEncoder(m_extensionMotor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::Type::kQuadrature, ShooterConstants::kExtensionCountsPerRev)),
 m_target(ShooterConstants::kRetractTarget),
 m_sysIdRoutine(
     // Might want to reduce voltage values later
@@ -38,7 +35,6 @@ m_isActive(false),
 m_noteState(NoteState::None) {
     ConfigRollerMotor();
     ConfigLoaderMotor();
-    ConfigExtensionMotor();
     ConfigRotationMotor();
     ConfigPID();
 
@@ -49,7 +45,6 @@ m_noteState(NoteState::None) {
 void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Shooter rotation", m_rotationEncoder.GetPosition());
-    frc::SmartDashboard::PutNumber("Shooter extension", m_extensionEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("Shooter power", m_rollerMotor.Get());
     frc::SmartDashboard::PutNumber("Shooter RPM", m_encoder.GetVelocity());
     frc::SmartDashboard::PutNumber("Shooter load power", m_loaderMotor.Get());
@@ -143,11 +138,6 @@ void Shooter::SetRotation(units::degree_t target) {
     // }
 
 
-void Shooter::SetExtension(double target) {
-    m_extensionPIDController.SetReference(target, rev::ControlType::kPosition);
-    frc::SmartDashboard::PutNumber("Shooter extension target", target);
-}
-
 void Shooter::SetRollerPower(double power) {
     m_rollerMotor.Set(power);
 }
@@ -156,20 +146,12 @@ void Shooter::SetRotationPower(double power) {
     m_rotationMotor.Set(power);
 }
 
-void Shooter::SetExtensionPower(double power) {
-    m_extensionMotor.Set(power);
-}
-
 void Shooter::SetLoaderPower(double power) {
     m_loaderMotor.Set(power);
 }
 
 units::degree_t Shooter::GetRotation() {
     return units::degree_t{m_rotationEncoder.GetPosition()};
-}
-
-double Shooter::GetExtension() {
-    return m_extensionEncoder.GetPosition();
 }
 
 void Shooter::ConfigRollerMotor() {
@@ -181,17 +163,6 @@ void Shooter::ConfigRollerMotor() {
 void Shooter::ConfigLoaderMotor() {
     m_loaderMotor.RestoreFactoryDefaults();
     m_loaderMotor.SetSmartCurrentLimit(ShooterConstants::kLoaderCurrentLimit);
-}
-
-void Shooter::ConfigExtensionMotor() {
-    m_extensionMotor.RestoreFactoryDefaults();
-    m_extensionMotor.SetSmartCurrentLimit(ShooterConstants::kExtensionCurrentLimit);
-    m_extensionPIDController.SetFeedbackDevice(m_extensionEncoder);
-    m_extensionPIDController.SetP(ShooterConstants::kPExtension);
-    m_extensionPIDController.SetI(ShooterConstants::kIExtension);
-    m_extensionPIDController.SetD(ShooterConstants::kDExtension);
-    m_extensionEncoder.SetInverted(ShooterConstants::kExtensionInverted);
-    m_extensionEncoder.SetPositionConversionFactor(ShooterConstants::kExtensionConversion);
 }
 
 void Shooter::ConfigRotationMotor() {
@@ -213,10 +184,6 @@ void Shooter::ConfigPID() {
         ShooterConstants::kVRotation,
         ShooterConstants::kARotation
     );
-
-    m_extensionPKey = "Shooter Extension P";
-    m_extensionIKey = "Shooter Extension I";
-    m_extensionDKey = "Shooter Extension D";
     m_rotationPKey = "Shooter Rotation P";
     m_rotationIKey = "Shooter Rotation I";
     m_rotationDKey = "Shooter Rotation D";
@@ -226,9 +193,6 @@ void Shooter::ConfigPID() {
     m_rotationAKey = "Shooter Rotation A";
     m_rotationTargetKey = "Shooter Rotation Target";
 
-    frc::Preferences::SetDouble(m_extensionPKey, ShooterConstants::kPExtension);
-    frc::Preferences::SetDouble(m_extensionIKey, ShooterConstants::kIExtension);
-    frc::Preferences::SetDouble(m_extensionDKey, ShooterConstants::kDExtension);
     frc::Preferences::SetDouble(m_rotationPKey, ShooterConstants::kPRotation);
     frc::Preferences::SetDouble(m_rotationIKey, ShooterConstants::kIRotation);
     frc::Preferences::SetDouble(m_rotationDKey, ShooterConstants::kDRotation);
@@ -239,7 +203,7 @@ void Shooter::ConfigPID() {
     frc::Preferences::SetDouble(m_rotationTargetKey, m_target.value());
 
     m_rotationPIDController.SetFeedbackDevice(m_rotationEncoder);
-   
+
     m_rotationPIDController.SetP(kRotationTargetPID[ShooterState::Retracted][0]);
     m_rotationPIDController.SetI(kRotationTargetPID[ShooterState::Retracted][1]);
     m_rotationPIDController.SetD(kRotationTargetPID[ShooterState::Retracted][2]);
@@ -253,9 +217,6 @@ void Shooter::UpdatePreferences() {
     m_profiledPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, ShooterConstants::kPRotation));
     m_profiledPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, ShooterConstants::kIRotation));
     m_profiledPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, ShooterConstants::kDRotation));
-    m_extensionPIDController.SetP(frc::Preferences::GetDouble(m_extensionPKey, ShooterConstants::kPExtension));
-    m_extensionPIDController.SetI(frc::Preferences::GetDouble(m_extensionIKey, ShooterConstants::kIExtension));
-    m_extensionPIDController.SetD(frc::Preferences::GetDouble(m_extensionDKey, ShooterConstants::kDExtension));
     double s = frc::Preferences::GetDouble(m_rotationSKey, ShooterConstants::kSRotation.value());
     double g = frc::Preferences::GetDouble(m_rotationGKey, ShooterConstants::kGRotation.value());
     double v = frc::Preferences::GetDouble(m_rotationVKey, ShooterConstants::kVRotation.value());
@@ -365,9 +326,6 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
             target = ShooterConstants::kStartingConfigTarget;
             m_currentState = ShooterState::StartingConfig;
             break;
-        case(ShooterState::TrapScore):
-            target = ShooterConstants::kTrapScoreTarget;
-            m_currentState = ShooterState::TrapScore;
         case(ShooterState::AutoScore):
             target = ShooterConstants::kAutoScoreTarget;
             m_currentState = ShooterState::AutoScore;
@@ -394,20 +352,16 @@ void Shooter::SetBrakeMode(BrakeMode mode) {
     switch (mode) {
         case(BrakeMode::Brake) :
             m_rollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-            m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-            m_extensionMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
             m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
             break;
         case(BrakeMode::Coast) :
             m_rollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
             m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-            m_extensionMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
             m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
             break;
         case(BrakeMode::Default) :
             m_rollerMotor.SetIdleMode(ShooterConstants::kIdleMode);
             m_rotationMotor.SetIdleMode(ShooterConstants::kIdleMode);
-            m_extensionMotor.SetIdleMode(ShooterConstants::kIdleMode);
             m_loaderMotor.SetIdleMode(ShooterConstants::kIdleMode);
             break;
         default :

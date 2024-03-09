@@ -6,7 +6,6 @@
 namespace ShooterConstants {
     constexpr int kRollerMotorID {13};
     constexpr int kLoaderMotorID {14};
-    constexpr int kExtensionMotorID {15};
     constexpr int kRotationMotorID {16};
     constexpr int kLimitSwitchPort {1};
 
@@ -23,10 +22,6 @@ namespace ShooterConstants {
     // In degrees
     constexpr auto kMaxRotationVelocity {180.0_deg / 1.0_s};
     constexpr auto kMaxRotationAcceleration {180.0_deg / 1.0_s / 1.0_s};
-
-    constexpr double kPExtension {0.0001};
-    constexpr double kIExtension {0.0};
-    constexpr double kDExtension {0.0};
 
     constexpr double kShootPower {1.0};
     constexpr auto kRevUpTime {1.5_s};
@@ -62,20 +57,11 @@ namespace ShooterConstants {
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {40};
     constexpr unsigned int kRollerCurrentLimit {50};
-    constexpr unsigned int kExtensionCurrentLimit {40};
     constexpr unsigned int kLoaderCurrentLimit {30};
     constexpr auto kRotationStopDistance {5.0_deg};
     constexpr auto kRotationIdleTolerance {1.5_deg};
 
     constexpr bool kRollerInverted {true};
-
-    constexpr double kExtensionOffset {0.0};
-    constexpr double kExtensionConversion {1.0};
-    constexpr bool kExtensionInverted {false};
-    constexpr double kExtensionStopDistance {100.0};
-    constexpr int kExtensionCountsPerRev {8192};
-    constexpr auto kTrapScoreTarget {0.0_deg};
-    constexpr double kShootExtendTarget {0.0};
 
     constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
 }

@@ -18,7 +18,7 @@
 class RunShooter
     : public frc2::CommandHelper<frc2::Command, RunShooter> {
  public:
-  RunShooter(Shooter *shooter, double power, std::optional<double> extensionTarget = std::nullopt);
+  RunShooter(Shooter *shooter, double power);
 
   void Initialize() override;
 
@@ -31,5 +31,5 @@ class RunShooter
  private:
   Shooter *m_shooter;
   double m_power;
-  std::optional<double> m_extensionTarget;
+
 };
