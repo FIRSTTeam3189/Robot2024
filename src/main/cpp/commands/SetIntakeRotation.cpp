@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// Sets the intake rotation to desired state
+
 #include "commands/SetIntakeRotation.h"
 
 SetIntakeRotation::SetIntakeRotation(Intake *intake, IntakeState state) : m_intake(intake), m_state(state) {
@@ -31,3 +33,5 @@ bool SetIntakeRotation::IsFinished() {
   }
   return false;
 }
+
+// based on target desired and actual rotation, if the difference is less than the constant stop distance value, then the intake is done 

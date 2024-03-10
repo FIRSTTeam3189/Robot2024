@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// sets climber to desoredd power based on it climbing or not
+
 #include "commands/RunClimber.h"
 
 RunClimber::RunClimber(Climber *climber, double power) : m_climber(climber),
