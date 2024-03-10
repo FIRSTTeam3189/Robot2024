@@ -40,9 +40,9 @@ namespace SwerveDriveConstants {
     constexpr auto ka {3.409 * 1_V * 1_s * 1_s / 1_m};
 
     // These are for robot rotation, not wheel rotation
-    constexpr double kPRot {0.0025};
+    constexpr double kPRot {0.004};
     constexpr double kIRot {0.0};
-    constexpr double kDRot {0.0001};
+    constexpr double kDRot {0.0};
 
     constexpr double kExtendDriveSpeed {0.3};
 }

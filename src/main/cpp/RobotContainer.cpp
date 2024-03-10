@@ -98,9 +98,9 @@ void RobotContainer::ConfigureDriverBindings() {
     },{m_swerveDrive}).ToPtr()
   );
 
-  frc2::Trigger driveUnderStageButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  driveUnderStageButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
-  driveUnderStageButton.OnFalse(SetShooterRotation(m_shooter, ShooterState::Retracted).ToPtr());
+  // frc2::Trigger driveUnderStageButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // driveUnderStageButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
+  // driveUnderStageButton.OnFalse(SetShooterRotation(m_shooter, ShooterState::Retracted).ToPtr());
 
   frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
   ampScoreIntakeButton.OnTrue(frc2::SequentialCommandGroup(
@@ -326,7 +326,9 @@ void RobotContainer::RegisterAutoCommands() {
 
   pathplanner::NamedCommands::registerCommand("AlignSwerve", SwerveAutoAlign(m_swerveDrive, true).ToPtr());
 
-  pathplanner::NamedCommands::registerCommand("PrintAutoMessage", frc2::PrintCommand("Auto Started/Ended").ToPtr());
+  pathplanner::NamedCommands::registerCommand("PrintAutoMessage", frc2::InstantCommand([this]{
+    for (int i = 0; i < 10; i++) {
+      std::cout << "Auto started/ended\n"; }},{}).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("Intake", frc2::SequentialCommandGroup(
     frc2::ParallelCommandGroup(

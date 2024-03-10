@@ -14,13 +14,13 @@ void PoseEstimatorHelper::SetPoseEstimator(frc::SwerveDrivePoseEstimator<4> *pos
 
 void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePosition, 4U> modulePositions, frc::Rotation2d rotation) {
     m_poseEstimator->Update(rotation, modulePositions);
-    m_estimatedPose.SetRobotPose(GetEstimatedPose());
-    frc::SmartDashboard::PutData("Estimated pose", &m_estimatedPose);
     UpdateRotation(rotation);
 }
 
 frc::Pose2d PoseEstimatorHelper::GetEstimatedPose() {
-    return m_poseEstimator->GetEstimatedPosition();
+    frc::Pose2d pigeonTrustingPose = frc::Pose2d{
+        m_poseEstimator->GetEstimatedPosition().Translation(), m_rotation};
+    return pigeonTrustingPose;
 }
 
 void PoseEstimatorHelper::UpdateRotation(frc::Rotation2d rotation) {
@@ -53,4 +53,7 @@ void PoseEstimatorHelper::AddVisionMeasurement(frc::Pose2d pose, units::second_t
         m_poseEstimator->AddVisionMeasurement(pose, frc::Timer::GetFPGATimestamp());
 }
 
-void PoseEstimatorHelper::Periodic() {}
+void PoseEstimatorHelper::Periodic() {
+    m_estimatedPose.SetRobotPose(GetEstimatedPose());
+    frc::SmartDashboard::PutData("Estimated pose", &m_estimatedPose);
+}

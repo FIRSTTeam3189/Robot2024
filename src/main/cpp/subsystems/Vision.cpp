@@ -6,9 +6,10 @@
 
 Vision::Vision(PoseEstimatorHelper *helper) : m_helper(helper),
                                               m_data(),
-                                              m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCameraYOffset,
-                                                                       frc::Rotation2d{0.0_deg}),
-                                              m_serialCam(VisionConstants::kBaudRate, frc::SerialPort::Port::kMXP)
+                                              m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCameraYOffset, 0.0_m,
+                                                                       frc::Rotation3d{0.0_deg, VisionConstants::kCameraPitchOffset, VisionConstants::kCameraYawOffset}),
+                                              m_serialCam(VisionConstants::kBaudRate, frc::SerialPort::Port::kMXP),
+                                              m_visionEnabled(VisionConstants::kShouldUseVision)
 {
     
     // Number of bytes in one chunk of vision data
@@ -19,64 +20,71 @@ Vision::Vision(PoseEstimatorHelper *helper) : m_helper(helper),
 
     // Reserve the size of the kBufferSize for the buffer
     m_buffer.reserve(VisionConstants::kBufferSize);
+
+    m_visionEnabledKey = "Vision Enabled";
+    frc::Preferences::SetBoolean(m_visionEnabledKey, VisionConstants::kShouldUseVision);
 }
 
 // This method will be called once per scheduler run
 void Vision::Periodic()
-{
-    if (VisionConstants::kShouldUseVision)
+{   
+    // m_visionEnabled = frc::Preferences::GetBoolean(m_visionEnabledKey);
+    if (m_visionEnabled)
     {
         UpdateData();
     }
 }
 
-frc::Pose2d Vision::TagToCamera()
+frc::Pose3d Vision::TagToCamera()
 {
     frc::Pose3d tagPose = VisionConstants::kTagPoses.at(m_data.ID - 1);
-
-    // double tagAngle = tagPose.Rotation().ToRotation2d().Degrees().value();
-    // auto perpenDistance = atan(m_data.translationMatrix[0] / m_data.translationMatrix[2]);
-    // auto xDistance = cos(tagAngle)*perpenDistance;
-    // auto yDistance = sin(tagAngle)*perpenDistance;
-    // frc::SmartDashboard::PutNumber("Tag angle", tagAngle);
-    // frc::SmartDashboard::PutNumber("Field relative vision x distance", xDistance);
-    // frc::SmartDashboard::PutNumber("Field relative vision y distance", yDistance);
-    // frc::Transform2d tagToCamera = frc::Transform2d(
-    //     units::meter_t{xDistance},
-    //     units::meter_t{yDistance},
-    //     frc::Rotation2d{0.0_deg});
-
-    double tagAngle = tagPose.Rotation().ToRotation2d().Degrees().value();
 
     // Don't touch this you nice person
     // The frame of reference is right don't get confused
     // Invert the data for x on tags to the right since vision reports positive differences and
     // TransformBy adds so we need to subtract
-    // auto xDistance = (tagAngle < 90.0 || tagAngle > 270.0 ) ? -m_data.translationMatrix[2] : m_data.translationMatrix[2];
-    auto xDistance = m_data.translationMatrix[2];
+    // Scuffed version of this code: https://www.chiefdelphi.com/t/how-to-properly-perform-3d-transformations-using-wpilibmath-libraries/425357/3
+    // Rotate by inverse of z axis rotation reported by camera, then convert EDN axes to NWU
     frc::Transform3d tagToCamera = frc::Transform3d(
-        units::meter_t{xDistance},
+        units::meter_t{m_data.translationMatrix[2]},
         units::meter_t{-m_data.translationMatrix[0]},
-        units::meter_t{-m_data.translationMatrix[1]},
+        // units::meter_t{-m_data.translationMatrix[1]},
+        0.0_m,
         frc::Rotation3d{
             0.0_deg,
-            // 0.0_deg,
             0.0_deg,
-            units::degree_t{-m_data.rotationMatrix[1]}});
-
-    auto cameraPose = tagPose.TransformBy(tagToCamera).ToPose2d();
+            // units::degree_t{-m_data.rotationMatrix[1]}});
+            0.0_deg});
+    
+    auto cameraPose = tagPose.TransformBy(tagToCamera);
     frc::SmartDashboard::PutNumber("Camera pose x", cameraPose.X().value());
     frc::SmartDashboard::PutNumber("Camera pose y", cameraPose.Y().value());
-    frc::SmartDashboard::PutNumber("Camera rotation", cameraPose.Rotation().Degrees().value());
-
+    frc::SmartDashboard::PutNumber("Camera rotation", cameraPose.Rotation().ToRotation2d().Degrees().value());
+    
     return cameraPose;
 }
 
-frc::Pose2d Vision::CameraToRobot(frc::Pose2d cameraPose)
+frc::Pose3d Vision::CameraToRobot(frc::Pose3d cameraPose)
 {
-    auto x = cameraPose.X() + VisionConstants::kCameraXOffset;
-    auto y = cameraPose.Y() + VisionConstants::kCameraYOffset;
-    return frc::Pose2d{x, y, cameraPose.Rotation()};
+    // 1. Scuffed, potentially wrong field relative way
+    // auto x = cameraPose.X() + VisionConstants::kCameraXOffset;
+    // auto y = cameraPose.Y() + VisionConstants::kCameraYOffset;
+    // return frc::Pose2d{x, y, cameraPose.Rotation()};
+    
+    // 2. Probably more correct but maybe not working
+    frc::Transform3d rotationCompensatedCameraToRobotTransform{m_cameraToRobotTransform.Translation(), 
+        m_cameraToRobotTransform.Rotation().RotateBy(frc::Rotation3d(0.0_deg, 0.0_deg, units::degree_t{-m_data.rotationMatrix[1]}))};
+    return cameraPose.TransformBy(rotationCompensatedCameraToRobotTransform);
+
+    // frc::Transform3d pitchCompensatedCameraToRobotTransform{frc::Translation3d(), frc::Rotation3d{
+    //     0.0_deg,
+    //     VisionConstants::kCameraPitchOffset,
+    //     0.0_deg,
+    // }};
+    // return cameraPose.TransformBy(pitchCompensatedCameraToRobotTransform);
+    
+    // 3. Don't do anything -- definitely not right but useful for test
+    // return cameraPose;
 }
 
 void Vision::UpdatePosition()
@@ -84,8 +92,8 @@ void Vision::UpdatePosition()
     if (m_data.isDetected)
     {
         // Turn distances into robot pose
-        frc::Pose2d cameraPose = TagToCamera();
-        frc::Pose2d robotPose = CameraToRobot(cameraPose);
+        frc::Pose3d cameraPose = TagToCamera();
+        frc::Pose3d robotPose = CameraToRobot(cameraPose);
         auto tagDistance = units::meter_t{sqrt(pow(m_data.translationMatrix[0], 2.0) + pow(m_data.translationMatrix[1], 2.0))};
         // Calculate vision std devs based on tag distance
         double stdDevDistanceCompensation = tagDistance.value() * VisionConstants::kVisionStdDevPerMeter;
@@ -96,7 +104,7 @@ void Vision::UpdatePosition()
             baseVisionStdDevs[2] + stdDevDistanceCompensation};
 
         auto timestamp = units::second_t{m_data.lastTimestamp};
-        m_helper->AddVisionMeasurement(robotPose, timestamp, distanceCompensatedStdDevs);
+        m_helper->AddVisionMeasurement(robotPose.ToPose2d(), timestamp, distanceCompensatedStdDevs);
     }
 }
 
@@ -133,28 +141,28 @@ std::optional<VisionData> Vision::ParseData()
             if (frc::Preferences::GetBoolean("Full Diagnostics", false))
             {
                 // Print the buffer size
-                std::cout << "Buffer size: " << m_buffer.size() << "\n";
+                // std::cout << "Buffer size: " << m_buffer.size() << "\n";
 
-                // Print the sync bytes in m_buffer and position of the VisionData struct in buffer
-                std::cout << "Sync bytes position: " << std::distance(m_buffer.begin(), syncIter) << "\n";
-                std::cout << "Sync bytes: ";
-                for (auto i = 0; i < (int)VisionConstants::kSyncBytes.size(); i++)
-                {
-                    std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)m_buffer[std::distance(m_buffer.begin(), syncIter) + i] << " ";
-                }
-                std::cout << "\n";
-                std::cout << "VisionData position: " << std::distance(m_buffer.begin(), syncIter) + VisionConstants::kSyncBytes.size() << "\n";
+                // // Print the sync bytes in m_buffer and position of the VisionData struct in buffer
+                // std::cout << "Sync bytes position: " << std::distance(m_buffer.begin(), syncIter) << "\n";
+                // std::cout << "Sync bytes: ";
+                // for (auto i = 0; i < (int)VisionConstants::kSyncBytes.size(); i++)
+                // {
+                //     std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)m_buffer[std::distance(m_buffer.begin(), syncIter) + i] << " ";
+                // }
+                // std::cout << "\n";
+                // std::cout << "VisionData position: " << std::distance(m_buffer.begin(), syncIter) + VisionConstants::kSyncBytes.size() << "\n";
 
-                // Print the bytes used to construct the VisionData struct
-                std::cout << "VisionData bytes: ";
-                for (auto i = 0; i < (int)sizeof(VisionData); i++)
-                {
-                    std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)m_buffer[std::distance(m_buffer.begin(), syncIter) + VisionConstants::kSyncBytes.size() + i] << " ";
-                }
-                std::cout << "\n";
+                // // Print the bytes used to construct the VisionData struct
+                // std::cout << "VisionData bytes: ";
+                // for (auto i = 0; i < (int)sizeof(VisionData); i++)
+                // {
+                //     std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)m_buffer[std::distance(m_buffer.begin(), syncIter) + VisionConstants::kSyncBytes.size() + i] << " ";
+                // }
+                // std::cout << "\n";
 
-                // Print out the members of the VisionData Struct
-                std::cout << std::setprecision(15) << "VisionData: " << data.isDetected << " " << data.ID << " " << data.lastTimestamp << " " << data.translationMatrix[0] << " " << data.translationMatrix[1] << " " << data.translationMatrix[2] << " " << data.rotationMatrix[0] << " " << data.rotationMatrix[1] << " " << data.rotationMatrix[2] << "\n";
+                // // Print out the members of the VisionData Struct
+                // std::cout << std::setprecision(15) << "VisionData: " << data.isDetected << " " << data.ID << " " << data.lastTimestamp << " " << data.translationMatrix[0] << " " << data.translationMatrix[1] << " " << data.translationMatrix[2] << " " << data.rotationMatrix[0] << " " << data.rotationMatrix[1] << " " << data.rotationMatrix[2] << "\n";
             }
 
             // Remove the bytes from the buffer

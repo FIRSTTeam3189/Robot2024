@@ -171,10 +171,7 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 
     auto [fl, fr, bl, br] = states;
 
-    // if (m_slowMode)
-    //     SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveModuleConstants::kMaxSpeed * SwerveDriveConstants::kExtendDriveSpeed);
-    // else
-        SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveModuleConstants::kMaxSpeed);
+    SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveModuleConstants::kMaxSpeed);
 
     double AdvantageScopeDesiredStates[] = 
     {(double)fl.angle.Degrees(), (double)fl.speed,
@@ -188,12 +185,19 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 }
 
 void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
-    auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(speeds);
+    auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(-speeds);
+    auto [fl, fr, bl, br] = states;
     SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
-    m_modules.m_frontLeft.SetDesiredState(states[0]);
-    m_modules.m_frontRight.SetDesiredState(states[1]);
-    m_modules.m_backLeft.SetDesiredState(states[2]);
-    m_modules.m_backRight.SetDesiredState(states[3]);
+
+    double AutoDesiredStates[] = 
+    {(double)fl.angle.Degrees(), (double)fl.speed,
+     (double)fr.angle.Degrees(), (double)fr.speed,
+     (double)bl.angle.Degrees(), (double)bl.speed,
+     (double)br.angle.Degrees(), (double)br.speed};
+
+    frc::SmartDashboard::PutNumberArray("Auto Desired States", AutoDesiredStates);
+
+    SetModuleStates(states);
 }
 
 void SwerveDrive::ToggleSlowMode() {
@@ -232,8 +236,12 @@ frc::ChassisSpeeds SwerveDrive::GetRobotRelativeSpeeds() {
     frc::SwerveModuleState backLeftModuleState = m_modules.m_backLeft.GetState(true);
     frc::SwerveModuleState backRightModuleState = m_modules.m_backRight.GetState(true);
 
-    return SwerveDriveConstants::kKinematics.ToChassisSpeeds(
+    auto speeds = SwerveDriveConstants::kKinematics.ToChassisSpeeds(
         frontLeftModuleState, frontRightModuleState, backLeftModuleState, backRightModuleState);
+
+    frc::SmartDashboard::PutNumber("Robot relative x vel", speeds.vx());
+    frc::SmartDashboard::PutNumber("Robot relative y vel", speeds.vy());
+    return speeds;
 }
 
 frc::Pose2d SwerveDrive::GetEstimatedPose() {

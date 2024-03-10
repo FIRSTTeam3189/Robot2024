@@ -35,8 +35,8 @@ class Vision : public frc2::SubsystemBase {
  public:
   Vision(PoseEstimatorHelper *helper); 
   VisionData GetVisionData();
-  frc::Pose2d TagToCamera();
-  frc::Pose2d CameraToRobot(frc::Pose2d cameraPose);
+  frc::Pose3d TagToCamera();
+  frc::Pose3d CameraToRobot(frc::Pose3d cameraPose);
   void UpdatePosition();
   void UpdateData();
 
@@ -48,9 +48,11 @@ class Vision : public frc2::SubsystemBase {
  private:
   PoseEstimatorHelper *m_helper;
   VisionData m_data;
-  frc::Transform2d m_cameraToRobotTransform;
+  frc::Transform3d m_cameraToRobotTransform;
   frc::SerialPort m_serialCam;
   std::vector<char> m_buffer;
+  std::string m_visionEnabledKey;
+  bool m_visionEnabled;
 
   // Private functions
   std::optional<VisionData> ParseData();

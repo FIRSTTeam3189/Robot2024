@@ -45,9 +45,9 @@ class Drive
   frc::PIDController m_rotationPIDController;
   DriveState m_driveState;
   units::degree_t m_arbitraryAngle;
-  frc::SlewRateLimiter<units::scalar> m_xSpeedLimiter{2 / 1_s};
-  frc::SlewRateLimiter<units::scalar> m_ySpeedLimiter{2 / 1_s};
-  frc::SlewRateLimiter<units::scalar> m_rotLimiter{2 / 1_s};
+  frc::SlewRateLimiter<units::scalar> m_xSpeedLimiter{1 / 1_s};
+  frc::SlewRateLimiter<units::scalar> m_ySpeedLimiter{1 / 1_s};
+  frc::SlewRateLimiter<units::scalar> m_rotLimiter{1 / 1_s};
   double m_goalAngle;
   double m_lastAngle;
   std::optional<frc::DriverStation::Alliance> m_allianceSide;

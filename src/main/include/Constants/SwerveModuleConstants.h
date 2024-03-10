@@ -44,6 +44,7 @@ namespace SwerveModuleConstants {
     // Motor neutral modes -- what they do when no power is applied
     constexpr auto kDriveNeutralMode = ctre::phoenix6::signals::NeutralModeValue::Coast;
     constexpr auto kAngleNeutralMode = ctre::phoenix6::signals::NeutralModeValue::Brake;
+    constexpr double kDriveNeutralDeadband = 0.02;
 
     // TalonFX Remote Sensor Type Settings
     constexpr int kRotorSensor{0};
