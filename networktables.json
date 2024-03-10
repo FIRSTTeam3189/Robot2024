@@ -82,7 +82,7 @@
   {
     "name": "/Preferences/Robot Rotation P",
     "type": "double",
-    "value": 0.01,
+    "value": 0.0025,
     "properties": {
       "persistent": true
     }
@@ -194,7 +194,7 @@
   {
     "name": "/Preferences/Shooter Rotation Target",
     "type": "double",
-    "value": 55.0,
+    "value": 60.0,
     "properties": {
       "persistent": true
     }
