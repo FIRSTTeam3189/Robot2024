@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2932270014807754,
-        "y": 5.503960098829289
+        "x": 2.548832630784662,
+        "y": 6.829189955390914
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2932270014807754,
-        "y": 5.503960098829289
+        "x": 1.4960236160757234,
+        "y": 7.1429267646827155
       },
       "isLocked": false,
-      "linkedName": "Mid Start Point"
+      "linkedName": "Score 3 Mid 2-1"
     },
     {
       "anchor": {
-        "x": 3.52,
-        "y": 5.5
+        "x": 2.548832630784662,
+        "y": 4.317590602980848
       },
       "prevControl": {
-        "x": 2.52,
-        "y": 5.5
+        "x": 1.5488326307846618,
+        "y": 4.317590602980848
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.15,
+      "name": "Intake",
+      "waypointRelativePos": 0.8,
       "command": {
         "type": "sequential",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "PrintAutoMessage"
+                "name": "Intake"
               }
             }
           ]
@@ -50,21 +50,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": -25.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 26.88713959926473,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.36,
-      "y": 7.0
+      "x": 0.6940511627057834,
+      "y": 6.5850599536619505
     },
-    "rotation": 0.0
+    "rotation": 58.23351261962916
   },
   "command": {
     "type": "sequential",
@@ -30,7 +30,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "ShooterRotateToAutoTarget"
                 }
               },
               {
@@ -53,9 +53,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AlignSwerve"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignSwerve"
+                      }
+                    }
+                  ]
                 }
               },
               {

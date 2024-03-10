@@ -31,6 +31,9 @@ void ShooterAutoAlign::End(bool interrupted) {}
 
 // Returns true when the command should end.
 bool ShooterAutoAlign::IsFinished() {
+  if (abs(m_shooter->GetTarget().value() - m_shooter->GetRotation().value()) < (ShooterConstants::kRotationStopDistance.value() / 2.0)) {
+    return true;
+  }
   return false;
 }
 

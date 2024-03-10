@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5001569895790596,
-      "y": 6.961013421135058
+      "x": 0.6529312522000481,
+      "y": 6.6514815537544765
     },
-    "rotation": 0.0
+    "rotation": 59.537043112701255
   },
   "command": {
     "type": "sequential",
@@ -24,9 +24,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "AlignSwerve"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignSwerve"
+                }
+              }
+            ]
           }
         },
         {

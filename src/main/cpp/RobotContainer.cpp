@@ -334,8 +334,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
 
 void RobotContainer::RegisterAutoCommands() {
   // Start of Auto Events
-  pathplanner::NamedCommands::registerCommand("AlignShooter", ShooterAutoAlign(m_shooter, m_estimator, m_vision)
-        .Until([this]{ return (m_swerveDrive->GetTotalVelocity() < AutoConstants::kAlignAllowableDriveSpeed); }));
+  pathplanner::NamedCommands::registerCommand("AlignShooter", ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("AlignSwerve", SwerveAutoAlign(m_swerveDrive, true).ToPtr());
 
@@ -418,6 +417,7 @@ void RobotContainer::RegisterAutoCommands() {
     )
   ).ToPtr());
 
+  pathplanner::NamedCommands::registerCommand("ShooterRotateToAutoTarget", SetShooterRotation(m_shooter, ShooterState::AutoScore).ToPtr());
 } 
 
 void RobotContainer::CreateAutoPaths() {

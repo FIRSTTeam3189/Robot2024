@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3109089349230185,
-        "y": 5.503960098829289
+        "x": 2.5,
+        "y": 5.52
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.35650140860161,
-        "y": 7.277392919864331
+        "x": 4.007019650402937,
+        "y": 7.780174105802757
       },
       "isLocked": false,
       "linkedName": "Score 2 Mid Ends"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 6.348534878887939,
-        "y": 6.6140808645253655
+        "x": 2.5,
+        "y": 5.52
       },
       "prevControl": {
-        "x": 6.391947035994162,
-        "y": 6.589273917607524
+        "x": 4.147209815904514,
+        "y": 7.523362173655112
       },
       "nextControl": null,
       "isLocked": false,
@@ -96,7 +96,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 9.44,
+    "rotation": 6.0,
     "rotateFast": false
   },
   "reversed": false,

@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5162444870344285,
+      "x": 1.2932270014807754,
       "y": 5.503960098829289
     },
     "rotation": 0.0
@@ -30,7 +30,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "ShooterRotateToAutoTarget"
                 }
               },
               {
@@ -45,13 +45,32 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 2 -  Mid"
+            "pathName": "Score 2 - Mid"
           }
         },
         {
           "type": "sequential",
           "data": {
             "commands": [
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignSwerve"
+                      }
+                    }
+                  ]
+                }
+              },
               {
                 "type": "named",
                 "data": {
@@ -72,9 +91,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AlignSwerve"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "ScoreSpeaker"
+                      }
+                    }
+                  ]
                 }
               },
               {

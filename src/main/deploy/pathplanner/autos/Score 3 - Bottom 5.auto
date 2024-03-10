@@ -30,7 +30,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "ShooterRotateToAutoTarget"
                 }
               },
               {
@@ -53,9 +53,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AlignSwerve"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignSwerve"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -78,9 +91,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AlignSwerve"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignSwerve"
+                      }
+                    }
+                  ]
                 }
               },
               {

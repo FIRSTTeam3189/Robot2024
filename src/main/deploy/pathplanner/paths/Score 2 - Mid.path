@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3109089349230185,
-        "y": 5.503960098829289
+        "x": 1.2932270014807754,
+        "y": 5.52
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.740236875946508,
-        "y": 5.504021021698531
+        "x": 1.6934902372101037,
+        "y": 5.517296251653325
       },
       "isLocked": false,
       "linkedName": "Score 1 Mid Ends"
     },
     {
       "anchor": {
-        "x": 2.3109089349230185,
-        "y": 5.503960098829289
+        "x": 2.5,
+        "y": 5.52
       },
       "prevControl": {
-        "x": 2.274723270857144,
-        "y": 5.538465137825234
+        "x": 2.4993438386401987,
+        "y": 5.520141451229674
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,23 +47,6 @@
           ]
         }
       }
-    },
-    {
-      "name": "AlignShooter",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "AlignShooter"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "globalConstraints": {
@@ -80,7 +63,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -1.1000000000000227,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

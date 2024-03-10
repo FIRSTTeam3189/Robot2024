@@ -2,25 +2,19 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5162444870344285,
-      "y": 5.503960098829289
+      "x": 0.6529312522000481,
+      "y": 6.6514815537544765
     },
-    "rotation": 0.0
+    "rotation": 60.83664226137013
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "PrintAutoMessage"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Score 1 - Mid"
+            "pathName": "Score 1 - Top"
           }
         },
         {
@@ -30,7 +24,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "ShooterRotateToAutoTarget"
                 }
               },
               {
@@ -45,23 +39,23 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 2 - Mid - Amp"
+            "pathName": "Score 2 - Top"
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignToAmp"
+                  "name": "AlignSwerve"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ScoreAmp"
+                  "name": "AlignShooter"
                 }
               }
             ]
@@ -70,7 +64,38 @@
         {
           "type": "named",
           "data": {
-            "name": "PrintAutoMessage"
+            "name": "ScoreSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 3 - Top 1-2"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignSwerve"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignShooter"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSpeaker"
           }
         }
       ]
