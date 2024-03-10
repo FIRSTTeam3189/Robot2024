@@ -434,36 +434,34 @@ BrakeMode RobotContainer::GetBrakeMode() {
 }
 
 void RobotContainer::ConfigureTestBindings() {
-  frc2::Trigger extendClimbButton{m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  extendClimbButton.OnTrue(frc2::SequentialCommandGroup(
-    frc2::InstantCommand([this]{
-      m_climber->SetServoRotation(ClimberConstants::kExtendServoAngle);
-    },{m_climber}),
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(0.25_s),
-      RunClimber(m_climber, ClimberConstants::kRetractPower)
-    ),
-    RunClimber(m_climber, ClimberConstants::kExtendPower)
-  ).ToPtr());
-    
-  extendClimbButton.OnFalse(frc2::InstantCommand([this]{
-      m_climber->SetServoRotation(ClimberConstants::kRetractServoAngle);
-      m_climber->SetPower(ClimberConstants::kRetractPower);
-  },{m_climber}).ToPtr());
+  // frc2::Trigger extendClimbButton{m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  // extendClimbButton.OnTrue(frc2::SequentialCommandGroup(
+  //   frc2::InstantCommand([this]{
+  //     m_climber->SetServoRotation(ClimberConstants::kExtendServoAngle);
+  //   },{m_climber}),
+  //   frc2::ParallelDeadlineGroup(
+  //     frc2::WaitCommand(0.25_s),
+  //     RunClimber(m_climber, ClimberConstants::kRetractPower)
+  //   ),
+  //   RunClimber(m_climber, ClimberConstants::kExtendPower)
+  // ).ToPtr());
+  // extendClimbButton.OnFalse(frc2::InstantCommand([this]{
+  //     m_climber->SetServoRotation(ClimberConstants::kRetractServoAngle);
+  //     m_climber->SetPower(ClimberConstants::kRetractPower);
+  // },{m_climber}).ToPtr());
 
-  frc2::Trigger intakeRollerButton{m_test.Button(OperatorConstants::kButtonIDRightBumper)};
-  intakeRollerButton.OnTrue(frc2::InstantCommand([this]{
-      m_intake->SetRollerPower(0.5);
-  },{m_intake}).ToPtr());
+  // frc2::Trigger intakeRollerButton{m_test.Button(OperatorConstants::kButtonIDRightBumper)};
+  // intakeRollerButton.OnTrue(frc2::InstantCommand([this]{
+  //     m_intake->SetRollerPower(0.5);
+  // },{m_intake}).ToPtr());
   
-  frc2::Trigger shooterRollerButton{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
-  shooterRollerButton.OnTrue(frc2::InstantCommand([this]{
-      m_shooter->SetRollerPower(0.5);
-  },{m_shooter}).ToPtr());
+  // frc2::Trigger shooterRollerButton{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
+  // shooterRollerButton.OnTrue(frc2::InstantCommand([this]{
+  //     m_shooter->SetRollerPower(0.5);
+  // },{m_shooter}).ToPtr());
 
-  frc2::Trigger shooterLoaderButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  shooterLoaderButton.OnTrue(frc2::InstantCommand([this]{
-      m_shooter->SetLoaderPower(0.5);
-  },{m_shooter}).ToPtr());
- 
+  // frc2::Trigger shooterLoaderButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // shooterLoaderButton.OnTrue(frc2::InstantCommand([this]{
+  //     m_shooter->SetLoaderPower(0.5);
+  // },{m_shooter}).ToPtr());
 }

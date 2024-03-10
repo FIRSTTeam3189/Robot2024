@@ -6,8 +6,8 @@
 
 Vision::Vision(PoseEstimatorHelper *helper) : m_helper(helper),
                                               m_data(),
-                                              m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCameraYOffset, VisionConstants::kCameraZOffset,
-                                                                       frc::Rotation3d{0.0_rad, 0.0_rad, VisionConstants::kCameraYawOffset}),
+                                              m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCameraYOffset,
+                                                                       frc::Rotation2d{0.0_deg}),
                                               m_serialCam(VisionConstants::kBaudRate, frc::SerialPort::Port::kMXP)
 {
     
@@ -30,12 +30,30 @@ void Vision::Periodic()
     }
 }
 
-frc::Pose3d Vision::TagToCamera()
+frc::Pose2d Vision::TagToCamera()
 {
     frc::Pose3d tagPose = VisionConstants::kTagPoses.at(m_data.ID - 1);
+
+    // double tagAngle = tagPose.Rotation().ToRotation2d().Degrees().value();
+    // auto perpenDistance = atan(m_data.translationMatrix[0] / m_data.translationMatrix[2]);
+    // auto xDistance = cos(tagAngle)*perpenDistance;
+    // auto yDistance = sin(tagAngle)*perpenDistance;
+    // frc::SmartDashboard::PutNumber("Tag angle", tagAngle);
+    // frc::SmartDashboard::PutNumber("Field relative vision x distance", xDistance);
+    // frc::SmartDashboard::PutNumber("Field relative vision y distance", yDistance);
+    // frc::Transform2d tagToCamera = frc::Transform2d(
+    //     units::meter_t{xDistance},
+    //     units::meter_t{yDistance},
+    //     frc::Rotation2d{0.0_deg});
+
+    double tagAngle = tagPose.Rotation().ToRotation2d().Degrees().value();
+
+    // Don't touch this you nice person
+    // The frame of reference is right don't get confused
     // Invert the data for x on tags to the right since vision reports positive differences and
     // TransformBy adds so we need to subtract
-    auto xDistance = (tagPose.X() - m_helper->GetEstimatedPose().X() > 0.0_m) ? m_data.translationMatrix[2] : -m_data.translationMatrix[2];
+    // auto xDistance = (tagAngle < 90.0 || tagAngle > 270.0 ) ? -m_data.translationMatrix[2] : m_data.translationMatrix[2];
+    auto xDistance = m_data.translationMatrix[2];
     frc::Transform3d tagToCamera = frc::Transform3d(
         units::meter_t{xDistance},
         units::meter_t{-m_data.translationMatrix[0]},
@@ -46,12 +64,19 @@ frc::Pose3d Vision::TagToCamera()
             0.0_deg,
             units::degree_t{-m_data.rotationMatrix[1]}});
 
-    return tagPose.TransformBy(tagToCamera);
+    auto cameraPose = tagPose.TransformBy(tagToCamera).ToPose2d();
+    frc::SmartDashboard::PutNumber("Camera pose x", cameraPose.X().value());
+    frc::SmartDashboard::PutNumber("Camera pose y", cameraPose.Y().value());
+    frc::SmartDashboard::PutNumber("Camera rotation", cameraPose.Rotation().Degrees().value());
+
+    return cameraPose;
 }
 
-frc::Pose3d Vision::CameraToRobot(frc::Pose3d cameraPose)
+frc::Pose2d Vision::CameraToRobot(frc::Pose2d cameraPose)
 {
-    return cameraPose.TransformBy(m_cameraToRobotTransform);
+    auto x = cameraPose.X() + VisionConstants::kCameraXOffset;
+    auto y = cameraPose.Y() + VisionConstants::kCameraYOffset;
+    return frc::Pose2d{x, y, cameraPose.Rotation()};
 }
 
 void Vision::UpdatePosition()
@@ -59,8 +84,8 @@ void Vision::UpdatePosition()
     if (m_data.isDetected)
     {
         // Turn distances into robot pose
-        frc::Pose3d cameraPose = TagToCamera();
-        frc::Pose3d robotPose = CameraToRobot(cameraPose);
+        frc::Pose2d cameraPose = TagToCamera();
+        frc::Pose2d robotPose = CameraToRobot(cameraPose);
         auto tagDistance = units::meter_t{sqrt(pow(m_data.translationMatrix[0], 2.0) + pow(m_data.translationMatrix[1], 2.0))};
         // Calculate vision std devs based on tag distance
         double stdDevDistanceCompensation = tagDistance.value() * VisionConstants::kVisionStdDevPerMeter;
@@ -71,7 +96,7 @@ void Vision::UpdatePosition()
             baseVisionStdDevs[2] + stdDevDistanceCompensation};
 
         auto timestamp = units::second_t{m_data.lastTimestamp};
-        m_helper->AddVisionMeasurement(robotPose.ToPose2d(), timestamp, distanceCompensatedStdDevs);
+        m_helper->AddVisionMeasurement(robotPose, timestamp, distanceCompensatedStdDevs);
     }
 }
 
@@ -173,9 +198,9 @@ void Vision::UpdateData()
     frc::SmartDashboard::PutBoolean("Vision Detected", m_data.isDetected);
     frc::SmartDashboard::PutNumber("Vision Tag ID", m_data.ID);
     frc::SmartDashboard::PutNumber("Vision Last timestamp", m_data.lastTimestamp);
-    frc::SmartDashboard::PutNumber("Vision X distance", m_data.translationMatrix[0]);
-    frc::SmartDashboard::PutNumber("Vision Y distance", m_data.translationMatrix[1]);
-    frc::SmartDashboard::PutNumber("Vision Z distance", m_data.translationMatrix[2]);
+    frc::SmartDashboard::PutNumber("Vision X distance", m_data.translationMatrix[2]);
+    frc::SmartDashboard::PutNumber("Vision Y distance", m_data.translationMatrix[0]);
+    frc::SmartDashboard::PutNumber("Vision Z distance", m_data.translationMatrix[1]);
     frc::SmartDashboard::PutNumber("Vision Rotation X", m_data.rotationMatrix[0]);
     frc::SmartDashboard::PutNumber("Vision Rotation Y", m_data.rotationMatrix[1]);
     frc::SmartDashboard::PutNumber("Vision Rotation Z", m_data.rotationMatrix[2]);

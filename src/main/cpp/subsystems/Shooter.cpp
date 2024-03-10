@@ -93,13 +93,13 @@ void Shooter::SetRotation(units::degree_t target) {
     m_lastSpeed = units::degrees_per_second_t{m_rotationEncoder.GetVelocity()};
     m_lastTime = frc::Timer::GetFPGATimestamp();
 
-     if (GetRotation() < 10.0_deg && (PIDValue + ffValue).value() <= 0.0)
-        m_rotationMotor.SetVoltage(0.0_V);
-    else if (GetRotation() > 60.0_deg && (PIDValue + ffValue).value() >= 0.0)
-        m_rotationMotor.SetVoltage(0.0_V);
-    else {
+    //  if (GetRotation() < 10.0_deg && (PIDValue + ffValue).value() <= 0.0)
+    //     m_rotationMotor.SetVoltage(0.0_V);
+    // else if (GetRotation() > 60.0_deg && (PIDValue + ffValue).value() >= 0.0)
+    //     m_rotationMotor.SetVoltage(0.0_V);
+    // else {
         m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
-    }
+    // }
 }
 
 void Shooter::SetRollerPower(double power) {

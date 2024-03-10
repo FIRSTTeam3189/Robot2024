@@ -51,7 +51,7 @@ void Intake::ConfigPID() {
 
     m_rotationPKey = "Intake Rotation P";
     m_rotationIKey = "Intake Rotation I";
-    m_rotationDKey = "Intake Rotation D";
+    m_rotationDKey = "IntakeSetState Rotation D";
     m_rotationGKey = "Intake Rotation G";
     m_rotationSKey = "Intake Rotation S";
     m_rotationVKey = "Intake Rotation V";
@@ -165,14 +165,15 @@ void Intake::SetRotation(units::degree_t target) {
                                            units::radians_per_second_squared_t{m_targetAcceleration});
 
     // Set motor to combined voltage
-    if (GetRotation() <= -35.0_deg && (PIDValue + ffValue).value() <= 0.0)
-        m_rotationMotor.SetVoltage(0.0_V);
-    else if (GetRotation() >= 85.0_deg && (PIDValue + ffValue).value() >= 0.0)
-        m_rotationMotor.SetVoltage(0.0_V);
-    else {
+    // if (GetRotation() <= -35.0_deg && (PIDValue + ffValue).value() <= 0.0)
+    //     m_rotationMotor.SetVoltage(0.0_V);
+    // else if (GetRotation() >= 85.0_deg && (PIDValue + ffValue).value() >= 0.0)
+    //     m_rotationMotor.SetVoltage(0.0_V);
+    // else {
         m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
-    }
+    // }
 
+    frc::SmartDashboard::PutNumber("Intake power", m_rotationMotor.Get());
     frc::SmartDashboard::PutNumber("Intake rotation volts", PIDValue.value() + ffValue.value());
     frc::SmartDashboard::PutNumber("Intake rotation PID", PIDValue.value());
     frc::SmartDashboard::PutNumber("Intake rotation FF", ffValue.value());
