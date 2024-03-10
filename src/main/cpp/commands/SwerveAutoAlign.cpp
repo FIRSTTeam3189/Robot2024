@@ -22,6 +22,8 @@ m_goal(0.0_deg) {
     m_goal = goal;
 }
 
+//initialize all objects needed including the PID Controller enabling and variables to determien needed drive state of robot
+
 // Called when the command is initially scheduled.
 void SwerveAutoAlign::Initialize() {}
 
@@ -37,6 +39,8 @@ void SwerveAutoAlign::Execute() {
   auto rot = GetDesiredRotationalVelocity();
   m_swerve->Drive(0.0_mps, 0.0_mps, rot, true, frc::Translation2d{});
 }
+
+//If the yaw (angle) of swerve compared to the desired target is less than the tolerance, than the threshold will increase
 
 // Called once the command ends or is interrupted.
 void SwerveAutoAlign::End(bool interrupted) {}
@@ -54,6 +58,8 @@ units::angular_velocity::radians_per_second_t SwerveAutoAlign::GetDesiredRotatio
 
   return rot;
 }
+
+// returns radians per second of the PID Controller calculating the desired velocity with the RotVel control
 
 units::degree_t SwerveAutoAlign::GetSpeakerGoalAngle() {
   frc::Pose3d tagPose = VisionConstants::kTagPoses.at(6);
@@ -88,3 +94,6 @@ units::degree_t SwerveAutoAlign::GetSpeakerGoalAngle() {
   frc::SmartDashboard::PutNumber("Swerve auto align angle", goalAngle.value());
   return goalAngle;
 }
+
+// based on the alliance and using data from the current estimated pose, the robot will align using the same principles as shooter auto align
+// it will calculate distance and the height of the speaker and use those to get an angle to constantly align to.

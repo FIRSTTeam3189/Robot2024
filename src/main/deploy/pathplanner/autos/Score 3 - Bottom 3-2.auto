@@ -2,25 +2,19 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.29,
-      "y": 5.5
+      "x": 0.65,
+      "y": 4.45
     },
-    "rotation": 0.0
+    "rotation": -63.70561481261949
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "PrintAutoMessage"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Score 1 - Mid"
+            "pathName": "Score 1 - Bottom"
           }
         },
         {
@@ -40,12 +34,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PrintAutoMessage"
           }
         }
       ]

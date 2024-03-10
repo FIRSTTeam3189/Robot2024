@@ -26,3 +26,5 @@ MobilityAuto::MobilityAuto(SwerveDrive *swerve)
     )
   );
 }
+
+// stuff was no worky so we had to add auto commands here

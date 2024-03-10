@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+//it sets the motors to climb as well as servos to latch onto it. It also uses limit switch data to climb oir not
+
 #include "subsystems/Climber.h"
 
 Climber::Climber() : 

@@ -3,59 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.704382940078635,
-        "y": 6.329529081235094
+        "x": 2.5444471354022675,
+        "y": 6.819984087056014
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.744319180946055,
-        "y": 7.6365548079933365
+        "x": 2.052960737565267,
+        "y": 6.6928834142500175
       },
       "isLocked": false,
-      "linkedName": "Score 3 Top 1 Ends"
+      "linkedName": "Score 2 Top Ends"
     },
     {
       "anchor": {
-        "x": 7.859057435467287,
-        "y": 5.815530199933388
+        "x": 2.4987833875488867,
+        "y": 5.53650223579517
       },
       "prevControl": {
-        "x": 7.907806226551568,
-        "y": 5.776531167065964
-      },
-      "nextControl": {
-        "x": 7.8316073565130635,
-        "y": 5.837490263096766
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.249126788056797,
-        "y": 6.006444070133222
-      },
-      "prevControl": {
-        "x": 3.614895244101759,
-        "y": 7.328155479208991
+        "x": 1.1183292491808605,
+        "y": 5.7567874706411315
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score 4 - Top 1-2 Ends"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 0.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 0.7,
+      "waypointRelativePos": 0.95,
       "command": {
         "type": "sequential",
         "data": {
@@ -79,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 11.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

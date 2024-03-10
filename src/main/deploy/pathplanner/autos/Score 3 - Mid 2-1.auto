@@ -2,91 +2,35 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5148426719035912,
-      "y": 7.0050704681015805
+      "x": 1.2932270014807754,
+      "y": 5.503960098829289
     },
-    "rotation": 0.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "PrintAutoMessage"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Score 1 - Top"
+            "pathName": "Score 1 - Mid"
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "AlignShooter"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ScoreSpeaker"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score 2 - Top Skip First"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
                   "name": "AlignSwerve"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ScoreSpeaker"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score 3 - Top Skip First"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AlignSwerve"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ScoreSpeaker"
                 }
               }
             ]
@@ -95,7 +39,69 @@
         {
           "type": "named",
           "data": {
-            "name": "PrintAutoMessage"
+            "name": "ScoreSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 2 - Mid"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignSwerve"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 3 - Mid 2-1"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignSwerve"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignShooter"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSpeaker"
           }
         }
       ]

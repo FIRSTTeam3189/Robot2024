@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.52,
-      "y": 5.5
+      "x": 1.29,
+      "y": 5.52
     },
     "rotation": 0.0
   },
@@ -30,7 +30,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "ShooterRotateToAutoTarget"
                 }
               },
               {
@@ -45,13 +45,32 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 2 -  Mid"
+            "pathName": "Score 2 - Mid"
           }
         },
         {
           "type": "sequential",
           "data": {
             "commands": [
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignSwerve"
+                      }
+                    }
+                  ]
+                }
+              },
               {
                 "type": "named",
                 "data": {

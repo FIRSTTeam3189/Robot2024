@@ -18,6 +18,8 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
 
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
+
+  //different cases of starting positions
   AddCommands(
     frc2::InstantCommand([this]{
       switch(m_position) {
@@ -53,6 +55,9 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
             * SwerveDriveConstants::kMaxAngularVelocity};
       m_swerve->Drive(1.0_mps, 0.225_mps, rot, true, frc::Translation2d{0.0_m, frc::Rotation2d{}});
     },{m_swerve}))
+
+    // calculate PID stuff and then use it to drive at the desired velocity based on target
+  
   //   SetShooterRotation(m_shooter, ShooterState::AutoScore),
   //   frc2::ParallelDeadlineGroup(
   //     frc2::WaitCommand(1.5_s),

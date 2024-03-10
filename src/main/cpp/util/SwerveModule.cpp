@@ -22,6 +22,8 @@ m_CANcoderOffset(CANcoderOffset)
     m_signals.emplace_back(&m_anglePosition);
     m_signals.emplace_back(&m_driveVelocity);
     m_signals.emplace_back(&m_angleVelocity);
+
+    // adds the drive and angle positions and velocities to the m_signals vector that contains swerve signals from robot
     
     // Setup preferences class, which allows editing values while robot is enabled
     // Very useful for PID tuning
@@ -138,6 +140,8 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
     const auto optimizedState = frc::SwerveModuleState::Optimize(state, m_position.angle);
     double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;
     auto targetAngle = optimizedState.angle.Degrees();
+
+    // best state based on the target
 
     std::string speedKey = std::to_string(m_moduleNumber) + " target speed";
     std::string angleKey = std::to_string(m_moduleNumber) + " target angle";

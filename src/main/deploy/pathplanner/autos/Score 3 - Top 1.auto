@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.36,
-      "y": 7.0
+      "x": 0.6529312522000481,
+      "y": 6.6514815537544765
     },
-    "rotation": 0.0
+    "rotation": 58.773564034388066
   },
   "command": {
     "type": "sequential",
@@ -24,22 +24,28 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "AlignShooter"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ScoreSpeaker"
+                  "name": "AlignSwerve"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSpeaker"
           }
         },
         {
@@ -49,7 +55,7 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -61,10 +67,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ScoreSpeaker"
+                  "name": "AlignShooter"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSpeaker"
           }
         },
         {
@@ -74,22 +86,28 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "AlignShooter"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ScoreSpeaker"
+                  "name": "AlignSwerve"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSpeaker"
           }
         },
         {

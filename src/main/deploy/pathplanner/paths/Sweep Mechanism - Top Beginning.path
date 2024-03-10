@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5001569895790596,
-        "y": 6.961013421135058
+        "x": 0.6940511627057834,
+        "y": 6.5850599536619505
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5499446343973204,
-        "y": 6.96561672684408
+        "x": 0.7438388075240442,
+        "y": 6.5896632593709725
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Score 1 Top Ends"
     },
     {
       "anchor": {
@@ -50,7 +50,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
@@ -63,7 +63,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 59.309647346988584,
     "velocity": 0
   },
   "useDefaultConstraints": true

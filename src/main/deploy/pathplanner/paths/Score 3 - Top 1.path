@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.197242939940425,
-        "y": 7.0
+        "x": 2.5444471354022675,
+        "y": 6.819984087056014
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2222332983617408,
-        "y": 6.903172927411935
+        "x": 2.569437493823583,
+        "y": 6.723157014467949
       },
       "isLocked": true,
       "linkedName": "Score 2 Top Ends"
@@ -32,22 +32,22 @@
     },
     {
       "anchor": {
-        "x": 6.33920613295772,
-        "y": 7.267093079640705
+        "x": 2.704382940078635,
+        "y": 6.329529081235094
       },
       "prevControl": {
-        "x": 6.368153450388905,
-        "y": 7.272777076460201
+        "x": 2.7333302575098197,
+        "y": 6.335213078054591
       },
       "nextControl": null,
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": "Score 3 Top 1 Ends"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.4,
-      "rotationDegrees": 20.98,
+      "waypointRelativePos": 1.05,
+      "rotationDegrees": 1.609556175878851,
       "rotateFast": false
     }
   ],
@@ -55,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 1.25,
+      "waypointRelativePos": 0.85,
       "command": {
         "type": "sequential",
         "data": {
@@ -96,7 +96,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 15.11,
+    "rotation": 15.0,
     "rotateFast": false
   },
   "reversed": false,

@@ -16,39 +16,21 @@
     },
     {
       "anchor": {
-        "x": 2.3109089349230185,
-        "y": 5.503960098829289
+        "x": 1.2932270014807754,
+        "y": 5.52
       },
       "prevControl": {
-        "x": 2.3146823245455383,
-        "y": 5.500186709206769
+        "x": 1.2930934952732986,
+        "y": 5.520365537191296
       },
       "nextControl": null,
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": "Score 1 Mid Ends"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "AlignShooter",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "AlignShooter"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 4.0,
