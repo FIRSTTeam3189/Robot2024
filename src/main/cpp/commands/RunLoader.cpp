@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// runs the loader and roller motors to desired power
+
 #include "commands/RunLoader.h"
 
 RunLoader::RunLoader(Shooter *shooter, double loadPower, double shootPower, ShooterEndCondition endCondition) : 

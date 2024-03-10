@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// runs the shooter to desired power (m_power) and then stops when it ends
+
 #include "commands/RunShooter.h"
 
 RunShooter::RunShooter(Shooter *shooter, double power) : 

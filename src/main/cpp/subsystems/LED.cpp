@@ -2,6 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// doesn't really work since we dont have led's on the robot
+// if working, it will take input string and convert it to LED pixels
+
 #include "subsystems/LED.h"
 
 LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animation(NULL), m_shouldStartup(true), m_startupRunning(false), m_runString(false), m_shouldRunString(false), m_lastEnableState(false){

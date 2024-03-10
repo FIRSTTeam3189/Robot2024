@@ -49,6 +49,9 @@ void Shooter::Periodic() {
     } else {
         HoldPosition(m_target);
     }
+
+    //constructed all instances of variables needed as well as keys for PID and diagnostic values
+    // by default holds position but if it is active then it goes to target
 }
 
 void Shooter::HoldPosition(units::degree_t target) {
@@ -63,6 +66,8 @@ void Shooter::HoldPosition(units::degree_t target) {
     m_rotationMotor.SetVoltage(std::clamp((ffValue + PIDValue), -12.0_V, 12.0_V));
     // Just to advance the profile timestep
     m_profiledPIDController.Calculate(GetRotation(), m_target);
+
+    //same logic as intake
 }
 
 void Shooter::SetRotation(units::degree_t target) {
@@ -93,13 +98,13 @@ void Shooter::SetRotation(units::degree_t target) {
     m_lastSpeed = units::degrees_per_second_t{m_rotationEncoder.GetVelocity()};
     m_lastTime = frc::Timer::GetFPGATimestamp();
 
-     if (GetRotation() < 10.0_deg && (PIDValue + ffValue).value() <= 0.0)
-        m_rotationMotor.SetVoltage(0.0_V);
-    else if (GetRotation() > 60.0_deg && (PIDValue + ffValue).value() >= 0.0)
-        m_rotationMotor.SetVoltage(0.0_V);
-    else {
+    //  if (GetRotation() < 10.0_deg && (PIDValue + ffValue).value() <= 0.0)
+    //     m_rotationMotor.SetVoltage(0.0_V);
+    // else if (GetRotation() > 60.0_deg && (PIDValue + ffValue).value() >= 0.0)
+    //     m_rotationMotor.SetVoltage(0.0_V);
+    // else {
         m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
-    }
+    // }
 }
 
 void Shooter::SetRollerPower(double power) {
@@ -169,6 +174,8 @@ void Shooter::ConfigPID() {
     frc::Preferences::SetDouble(m_rotationVKey, ShooterConstants::kVRotation.value());
     frc::Preferences::SetDouble(m_rotationAKey, ShooterConstants::kARotation.value());
     frc::Preferences::SetDouble(m_rotationTargetKey, m_target.value());
+
+    //constructs PID and FF objects using the keys and values needed to be set.
 }
 
 void Shooter::UpdatePreferences() {
@@ -187,6 +194,8 @@ void Shooter::UpdatePreferences() {
         units::unit_t<frc::ArmFeedforward::kv_unit>{v},
         units::unit_t<frc::ArmFeedforward::ka_unit>{a}
     );
+
+    //updates PID and FF values with newest ones constructed
 }
 
 void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
@@ -228,6 +237,8 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
         default: 
             break;
     }
+
+    //states for different scenarios on the shooter and sets target to the needed one for the possibilities
 
     m_target = target;
 }

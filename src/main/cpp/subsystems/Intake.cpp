@@ -19,6 +19,8 @@ m_isActive(false)
     ConfigRollerMotor();
     ConfigPID();
 
+    //configure motors and PID
+
     // std::cout << "Intake constructed\n";
 }
 
@@ -49,14 +51,17 @@ void Intake::ConfigPID() {
         IntakeConstants::kARotation
     );
 
+    //takes speed, gravity, velocity and acceleration to construct feed forward object
+
     m_rotationPKey = "Intake Rotation P";
     m_rotationIKey = "Intake Rotation I";
-    m_rotationDKey = "Intake Rotation D";
+    m_rotationDKey = "IntakeSetState Rotation D";
     m_rotationGKey = "Intake Rotation G";
     m_rotationSKey = "Intake Rotation S";
     m_rotationVKey = "Intake Rotation V";
     m_rotationAKey = "Intake Rotation A";
     m_rotationTargetKey = "Intake Rotation Target";
+    //keys for PID and FF 
 
     frc::Preferences::SetDouble(m_rotationPKey, IntakeConstants::kPRotation);
     frc::Preferences::SetDouble(m_rotationIKey, IntakeConstants::kIRotation);
@@ -67,6 +72,8 @@ void Intake::ConfigPID() {
     frc::Preferences::SetDouble(m_rotationAKey, IntakeConstants::kARotation.value());
     frc::Preferences::SetDouble(m_rotationTargetKey, m_target.value());
 }
+
+//initializing PID and SGVA values
 
 // This method will be called once per scheduler run
 void Intake::Periodic() {
@@ -108,9 +115,12 @@ bool Intake::NoteDetected(){
     return false;
 }
 
+// Limit switches to detect of the note is there
+
 units::degree_t Intake::GetTarget() {
     return m_target;
 }
+//Allows the desired target to be accessed by other commands
 
 void Intake::SetState(IntakeState state) {
     auto target = 0.0_deg;
@@ -129,13 +139,17 @@ void Intake::SetState(IntakeState state) {
             break;
     }
 
+    //states of the amp
+
     m_target = target;
+    //update the m_target variable with the target value changed from the state
 }
 
 void Intake::HoldPosition() {
     units::volt_t PIDValue = 0.0_V;
     if (fabs(m_target.value() - GetRotation().value()) > IntakeConstants::kRotationIdleTolerance.value()) {
         PIDValue = units::volt_t{(m_target - GetRotation()).value() * m_profiledPIDController.GetP()};
+        //uses proportional in PID to account for changes of positioning based on desired position to hold
     }
 
     auto ffValue = m_ff->Calculate(units::radian_t{GetRotation()}, units::radians_per_second_t{0.0});
@@ -145,6 +159,8 @@ void Intake::HoldPosition() {
     // Just to advance the profile timestep
     m_profiledPIDController.Calculate(GetRotation(), m_target);
 }
+
+//uses PID and FF value to hold the given position. Accounts for gravity and desired position as well as start position to the same rotation
 
 void Intake::SetRotation(units::degree_t target) {
     // Calculates PID value in volts based on position and target
@@ -165,14 +181,15 @@ void Intake::SetRotation(units::degree_t target) {
                                            units::radians_per_second_squared_t{m_targetAcceleration});
 
     // Set motor to combined voltage
-    if (GetRotation() <= -35.0_deg && (PIDValue + ffValue).value() <= 0.0)
-        m_rotationMotor.SetVoltage(0.0_V);
-    else if (GetRotation() >= 85.0_deg && (PIDValue + ffValue).value() >= 0.0)
-        m_rotationMotor.SetVoltage(0.0_V);
-    else {
+    // if (GetRotation() <= -35.0_deg && (PIDValue + ffValue).value() <= 0.0)
+    //     m_rotationMotor.SetVoltage(0.0_V);
+    // else if (GetRotation() >= 85.0_deg && (PIDValue + ffValue).value() >= 0.0)
+    //     m_rotationMotor.SetVoltage(0.0_V);
+    // else {
         m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
-    }
+    // }
 
+    frc::SmartDashboard::PutNumber("Intake power", m_rotationMotor.Get());
     frc::SmartDashboard::PutNumber("Intake rotation volts", PIDValue.value() + ffValue.value());
     frc::SmartDashboard::PutNumber("Intake rotation PID", PIDValue.value());
     frc::SmartDashboard::PutNumber("Intake rotation FF", ffValue.value());
@@ -195,6 +212,8 @@ void Intake::SetRotationPower(double power) {
         m_rotationMotor.Set(power);
 }
 
+//Sets voltage of the rotation motors to 0.0 if in the case the motors go to far so it protects from further damages
+
 units::degree_t Intake::GetRotation() {
     auto rawRotation = m_rotationEncoder.GetPosition();
     if (rawRotation > 180.0)
@@ -207,10 +226,12 @@ void Intake::UpdatePreferences() {
     m_profiledPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, IntakeConstants::kPRotation));
     m_profiledPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, IntakeConstants::kIRotation));
     m_profiledPIDController.SetD(frc::Preferences::GetDouble(m_rotationDKey, IntakeConstants::kDRotation));
+    // set the PID values based on the inputted key
     double s = frc::Preferences::GetDouble(m_rotationSKey, IntakeConstants::kSRotation.value());
     double g = frc::Preferences::GetDouble(m_rotationGKey, IntakeConstants::kGRotation.value());
     double v = frc::Preferences::GetDouble(m_rotationVKey, IntakeConstants::kVRotation.value());
     double a = frc::Preferences::GetDouble(m_rotationAKey, IntakeConstants::kARotation.value());
+    //get the speed, gravity, velocity and acceleration values
     m_target = units::degree_t{frc::Preferences::GetDouble(m_rotationTargetKey, m_target.value())};
     delete m_ff;
     m_ff = new frc::ArmFeedforward(
@@ -218,6 +239,7 @@ void Intake::UpdatePreferences() {
         units::volt_t{g},
         units::unit_t<frc::ArmFeedforward::kv_unit>{v},
         units::unit_t<frc::ArmFeedforward::ka_unit>{a}
+        //constructs the updated feed forward object
     );
 }
 

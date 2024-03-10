@@ -73,6 +73,8 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
               m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), m_goalAngle))
               * SwerveDriveConstants::kMaxAngularVelocity};
 
+  // converts a given or desired coordinate to a degree on the unit circle
+
   frc::SmartDashboard::PutNumber("Rotation PID Output", rot.value());
     
   if (abs(m_swerveDrive->GetNormalizedYaw().value() - m_goalAngle) < 2.5) {
@@ -101,18 +103,26 @@ void Drive::Execute() {
     }
   }
 
+  // the controller values get swapped (-m_bill) to drive field relative based on alliance
+
   joystickX = pow(joystickX, 3.0);
   joystickY = pow(joystickY, 3.0);
+
+  // joystick parameters
 
   units::meters_per_second_t xSpeed, ySpeed;
 
   xSpeed = (m_xSpeedLimiter.Calculate(joystickX) * SwerveDriveConstants::kMaxSpeed);
   ySpeed = (m_ySpeedLimiter.Calculate(joystickY) * SwerveDriveConstants::kMaxSpeed);
 
+  // calculate spped based on the defined limits
+
   if (fabs(joystickX) < .05)
     xSpeed = 0_mps;
   if (fabs(joystickY) < .05)
     ySpeed = 0_mps;
+
+  //ignore joystick noise (slight rotation)
 
   frc::SmartDashboard::PutNumber("X speed", xSpeed.value());
   frc::SmartDashboard::PutNumber("Y speed", ySpeed.value());
@@ -120,6 +130,7 @@ void Drive::Execute() {
 
   // If using atan2 control, where right joystick angle == robot heading angle
   // Also, if trying to align to speaker, angle is calculated by pose estimator
+
   switch (m_driveState) {
     case(DriveState::HeadingControl) :
       rot = GetDesiredRotationalVelocity();
@@ -133,6 +144,8 @@ void Drive::Execute() {
       rot = (fabs(joystickRotX) < .05) ? 0.0_rad / 1.0_s : (m_xSpeedLimiter.Calculate(joystickRotX) * SwerveDriveConstants::kMaxAngularVelocity);
       break;
     }
+
+    // if the robot is going to align to some angle like the speaker, amp, or source load
     case(DriveState::ArbitraryAngleAlign) :
       rot = -units::angular_velocity::radians_per_second_t{
               m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), m_arbitraryAngle.value()))
@@ -142,6 +155,8 @@ void Drive::Execute() {
       rot = units::angular_velocity::radians_per_second_t{0.0};
       break;
   }
+
+  // based on drive state, set the rotation and velocity to do so
 
   m_swerveDrive->Drive(xSpeed, ySpeed, rot, true, frc::Translation2d{});
 }
@@ -166,6 +181,8 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
       tagPose = VisionConstants::kTagPoses.at(6);
     }
   }
+
+  // which speaker it should align to based on alliance found by tag
 
   auto currentPose = m_swerveDrive->GetEstimatedPose();
   
@@ -195,7 +212,7 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
   frc::SmartDashboard::PutNumber("Swerve auto align angle (teleop version)", goalAngle.value());
   return rot;
 }
-
+//for pid tunings
 void Drive::UpdatePreferences() {
   if (frc::Preferences::GetBoolean("Tuning Mode", false)) {
     m_rotationPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, SwerveDriveConstants::kPRot));

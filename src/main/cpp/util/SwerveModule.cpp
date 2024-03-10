@@ -22,6 +22,8 @@ m_CANcoderOffset(CANcoderOffset)
     m_signals.emplace_back(&m_anglePosition);
     m_signals.emplace_back(&m_driveVelocity);
     m_signals.emplace_back(&m_angleVelocity);
+
+    // adds the drive and angle positions and velocities to the m_signals vector that contains swerve signals from robot
     
     // Setup preferences class, which allows editing values while robot is enabled
     // Very useful for PID tuning
@@ -138,6 +140,8 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
     double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;
     auto targetAngle = optimizedState.angle.Degrees();
 
+    // best state based on the target
+
     std::string speedKey = std::to_string(m_moduleNumber) + " target speed";
     std::string angleKey = std::to_string(m_moduleNumber) + " target angle";
     frc::SmartDashboard::PutNumber(speedKey, targetSpeed);
@@ -145,7 +149,7 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
 
     // m_driveMotor.SetControl(m_driveSetter.WithVelocity(units::turns_per_second_t{targetSpeed}));
     // FOC Pro feature
-    m_driveMotor.SetControl(m_driveSetter.WithEnableFOC(true).WithVelocity(units::turns_per_second_t{targetSpeed * 1.75}));
+    m_driveMotor.SetControl(m_driveSetter.WithEnableFOC(true).WithVelocity(units::turns_per_second_t{targetSpeed * 1.311}));
     if (fabs(targetSpeed) < .05 && fabs(m_lastAngle - targetAngle.value()) < 5.0) {
         // Stop();
         m_driveMotor.SetControl(m_driveSetter.WithEnableFOC(true).WithVelocity(units::turns_per_second_t{0.0}));
@@ -235,7 +239,7 @@ void SwerveModule::UpdatePosition() {
     auto angleRotations = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(m_anglePosition, m_angleVelocity);
 
     // Have to convert rotations to double then to meters with our own rotation coefficient
-    double distance = driveRotations.value() / SwerveModuleConstants::kRotationsPerMeter;
+    double distance = -driveRotations.value() / SwerveModuleConstants::kRotationsPerMeter;
     m_position.distance = units::meter_t{distance};
     
     frc::Rotation2d angle{units::degree_t{angleRotations}};
@@ -255,7 +259,7 @@ frc::SwerveModuleState SwerveModule::GetState(bool refresh) {
 
     // Uses initializer list syntax and lets compiler make swerve module state since we can't construct directly
     // Note the 360 converting rotations to degrees, and the turns per second to meters per second
-    return {units::meters_per_second_t{m_driveVelocity.GetValue().value() / SwerveModuleConstants::kRotationsPerMeter}, 
+    return {units::meters_per_second_t{-m_driveVelocity.GetValue().value() / SwerveModuleConstants::kRotationsPerMeter}, 
             frc::Rotation2d(units::degree_t{360 * m_anglePosition.GetValue().value()})};
 }
 
@@ -268,7 +272,7 @@ units::degree_t SwerveModule::GetEncoderAngle() {
 }
 
 units::meters_per_second_t SwerveModule::GetDriveSpeed() {
-    return units::meters_per_second_t{m_driveMotor.GetVelocity().Refresh().GetValue().value() / SwerveModuleConstants::kRotationsPerMeter};
+    return units::meters_per_second_t{-m_driveMotor.GetVelocity().Refresh().GetValue().value() / SwerveModuleConstants::kRotationsPerMeter};
 }
 
 void SwerveModule::ResetDriveEncoder() {

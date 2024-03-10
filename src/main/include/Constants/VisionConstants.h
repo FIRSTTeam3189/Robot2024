@@ -8,8 +8,8 @@ namespace VisionConstants {
     constexpr wpi::array<double, 3> kEncoderTrustCoefficients {0.1, 0.1, 0.1};
     constexpr wpi::array<double, 3> kVisionTrustCoefficients {0.5, 0.5, 0.5};
     constexpr double kVisionStdDevPerMeter {0.1};
-    constexpr units::meter_t kCameraXOffset {0.0_m};
-    constexpr units::meter_t kCameraYOffset {0.0_m};
+    constexpr units::meter_t kCameraXOffset {0.308_m};
+    constexpr units::meter_t kCameraYOffset {0.1778_m};
     constexpr units::meter_t kCameraZOffset {0.0_m};
     constexpr units::radian_t kCameraYawOffset {0.0_rad};
     constexpr bool kShouldUseVision {true};

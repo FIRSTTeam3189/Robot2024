@@ -10,6 +10,7 @@ PoseEstimatorHelper::PoseEstimatorHelper() {
 
 void PoseEstimatorHelper::SetPoseEstimator(frc::SwerveDrivePoseEstimator<4> *poseEstimator) {
     m_poseEstimator = poseEstimator;
+    //set the member variable to the pose estimator variable
 } 
 
 void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePosition, 4U> modulePositions, frc::Rotation2d rotation) {
@@ -17,6 +18,7 @@ void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePositi
     m_estimatedPose.SetRobotPose(GetEstimatedPose());
     frc::SmartDashboard::PutData("Estimated pose", &m_estimatedPose);
     UpdateRotation(rotation);
+    //update the pose estimator with the rotation found by the encoders and the module positions
 }
 
 frc::Pose2d PoseEstimatorHelper::GetEstimatedPose() {
@@ -29,6 +31,7 @@ void PoseEstimatorHelper::UpdateRotation(frc::Rotation2d rotation) {
 
 void PoseEstimatorHelper::ResetPose(frc::Rotation2d rotation, wpi::array<frc::SwerveModulePosition, 4> modulePositions, frc::Pose2d pose) {
     m_poseEstimator->ResetPosition(rotation, modulePositions, pose);
+    //reset the positions based on newest values
 }
 
 void PoseEstimatorHelper::AddVisionMeasurement(frc::Pose2d pose, units::second_t timestamp, wpi::array<double, 3> visionMeasurementStdDevs) {

@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// Runs shooter rotation to desired value
+
 #include "commands/SetShooterRotation.h"
 
 SetShooterRotation::SetShooterRotation(Shooter *shooter, ShooterState state) : m_shooter(shooter), m_state(state){
@@ -30,3 +32,5 @@ bool SetShooterRotation::IsFinished() {
   }
   return false;
 }
+
+// based on desired and actual rotation, it returns true to end when reaches constant value

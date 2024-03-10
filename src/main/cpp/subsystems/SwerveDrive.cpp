@@ -24,6 +24,8 @@ m_moduleArray(
     &m_modules.m_frontRight,
     &m_modules.m_backLeft,
     &m_modules.m_backRight
+
+    //addresses to access of each swerve module motor
 ),
 m_pigeon(SwerveDriveConstants::kGyroID, "Swerve"),
 m_poseHelper(helper),
@@ -32,6 +34,7 @@ m_modulePositions(
     m_modules.m_frontRight.GetPosition(true),
     m_modules.m_backLeft.GetPosition(true),
     m_modules.m_backRight.GetPosition(true)
+    //initializes the gyroscope and pose helpers for pose estimator
 ),
 m_driveSysIdRoutine(
     frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
@@ -144,12 +147,15 @@ void SwerveDrive::ConfigSignals() {
         }
     }
 
+    //get signals from swerve modules
+
     // frc::SmartDashboard::PutNumber("Signal refresh rate 0", m_allSignals[0]->GetAppliedUpdateFrequency().value());
     // frc::SmartDashboard::PutNumber("Signal refresh rate 1", m_allSignals[1]->GetAppliedUpdateFrequency().value());
     // frc::SmartDashboard::PutNumber("Signal refresh rate 2", m_allSignals[2]->GetAppliedUpdateFrequency().value());
     // frc::SmartDashboard::PutNumber("Signal refresh rate 3", m_allSignals[3]->GetAppliedUpdateFrequency().value());
 
     ctre::phoenix6::BaseStatusSignal::SetUpdateFrequencyForAll(SwerveDriveConstants::kRefreshRate, m_allSignals);
+    //updates the frequency for all the signals
 }
 
 void SwerveDrive::ConfigGyro() {
@@ -236,6 +242,8 @@ frc::ChassisSpeeds SwerveDrive::GetRobotRelativeSpeeds() {
         frontLeftModuleState, frontRightModuleState, backLeftModuleState, backRightModuleState);
 }
 
+//uses odometry to get teh speeds of the chassis
+
 frc::Pose2d SwerveDrive::GetEstimatedPose() {
     UpdateEstimator();
     return m_poseHelper->GetEstimatedPose();
@@ -282,7 +290,7 @@ void SwerveDrive::SetPose(frc::Pose2d pose, bool justRotation) {
         m_poseHelper->ResetPose(GetNormalizedYaw(), m_modulePositions, pose);
         // m_poseHelper->ResetPose(pose.Rotation(), m_modulePositions, pose);
     }
-    
+    //sets pose to current pose
     frc::SmartDashboard::PutNumber("Auto starting pose x", pose.X().value());
     frc::SmartDashboard::PutNumber("Auto starting pose y", pose.Y().value());
     frc::SmartDashboard::PutNumber("Auto starting pose rot", pose.Rotation().Degrees().value());
@@ -291,6 +299,7 @@ void SwerveDrive::SetPose(frc::Pose2d pose, bool justRotation) {
 
 void SwerveDrive::ResetGyroscope() {
     m_pigeon.SetYaw(0.0_deg);
+    // to correct yaw positioning
 }
 
 void SwerveDrive::Lock() {
@@ -298,6 +307,7 @@ void SwerveDrive::Lock() {
     m_modules.m_frontRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::degree_t{-45.0}});
     m_modules.m_backLeft.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::degree_t{-45.0}});
     m_modules.m_backRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::degree_t{45.0}});
+    //holds at that position
 }
 
 void SwerveDrive::Stop() {
@@ -326,6 +336,7 @@ units::meters_per_second_t SwerveDrive::GetTotalVelocity() {
     auto x = chassisSpeeds.vx.value();
     auto y = chassisSpeeds.vy.value();
     double velocity = sqrt((x * x) + (y * y));
+    //gets velocity vector from the x and y speeds
     return units::meters_per_second_t{velocity};
 }
 
@@ -350,3 +361,5 @@ frc2::CommandPtr SwerveDrive::AngleSysIdQuasistatic(frc2::sysid::Direction direc
 frc2::CommandPtr SwerveDrive::AngleSysIdDynamic(frc2::sysid::Direction direction) {
   return m_angleSysIdRoutine.Dynamic(direction);
 }
+
+// uses either quasistatic or dynamic for PID correction
