@@ -100,7 +100,11 @@ void RobotContainer::ConfigureDriverBindings() {
   //align to the speaker when the left trigger is pressed
   frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
   alignSpeakerButton.OnTrue(frc2::InstantCommand([this]{
+    if (m_driveState == DriveState::HeadingControl) {
       m_driveState = DriveState::SpeakerAlign;
+    } else {
+      m_driveState = DriveState::HeadingControl;
+    }
       m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
     },{m_swerveDrive}).ToPtr()
   );
@@ -111,12 +115,13 @@ void RobotContainer::ConfigureDriverBindings() {
 
   // score in the amp 
   frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
-  ampScoreIntakeButton.OnTrue(frc2::SequentialCommandGroup(
+  ampScoreIntakeButton.OnTrue(frc2::ParallelCommandGroup(
     frc2::InstantCommand([this]{
       m_driveState = DriveState::ArbitraryAngleAlign;
-      //setting drive state to align to a an arbitrary angle
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState, SwerveDriveConstants::kAmpAlignTarget));
-    },{m_swerveDrive}),
+    //   //setting drive state to align to a an arbitrary angle
+    //   m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState, SwerveDriveConstants::kAmpAlignTarget));
+    },{}),
+    Drive(&m_bill, m_swerveDrive, DriveState::ArbitraryAngleAlign, SwerveDriveConstants::kAmpAlignTarget),
     SetIntakeRotation(m_intake, IntakeState::Amp)
   ).ToPtr());
   ampScoreIntakeButton.OnFalse(frc2::SequentialCommandGroup(
@@ -415,7 +420,8 @@ frc2::WaitCommand(0.5_s),
 } 
 
 void RobotContainer::CreateAutoPaths() {
-  m_chooser.SetDefaultOption("N/A", nullptr);
+  m_chooser.SetDefaultOption("N/A", nullptr);\
+  int i = 0;
   for (auto autoPath : AutoConstants::kAutonomousPaths) {
     m_chooser.AddOption(autoPath, new pathplanner::PathPlannerAuto(std::string{autoPath}));
   }

@@ -58,6 +58,9 @@ void Shooter::HoldPosition(units::degree_t target) {
     units::volt_t PIDValue = 0.0_V;
     if (fabs(m_target.value() - GetRotation().value()) > ShooterConstants::kRotationIdleTolerance.value()) {
         PIDValue = units::volt_t{(m_target - GetRotation()).value() * m_profiledPIDController.GetP()};
+    } else {
+        m_rotationMotor.StopMotor();
+        return;
     }
 
     auto ffValue = m_ff->Calculate(units::radian_t{GetRotation()}, units::radians_per_second_t{0.0});

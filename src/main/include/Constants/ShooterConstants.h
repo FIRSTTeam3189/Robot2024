@@ -20,7 +20,7 @@ namespace ShooterConstants {
     constexpr auto kARotation {0.0_V * 1.0_s * 1.0_s / 1.0_rad};
 
     constexpr double kFeedforward {1.0};
-    
+
     // In degrees
     constexpr auto kMaxRotationVelocity {180.0_deg / 1.0_s};
     constexpr auto kMaxRotationAcceleration {180.0_deg / 1.0_s / 1.0_s};

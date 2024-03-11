@@ -12,7 +12,8 @@ namespace AutoConstants {
     constexpr double kPTranslationAuto {4.5};
     constexpr double kITranslationAuto {0.0};
     constexpr double kDTranslationAuto {0.0};
-    constexpr double kPRotationAuto {4.0};
+    // 4.0
+    constexpr double kPRotationAuto {0.0};
     constexpr double kIRotationAuto {0.0};
     constexpr double kDRotationAuto {0.0};
 
@@ -48,6 +49,7 @@ namespace AutoConstants {
         "Score 3 - Bottom 5"sv,
         "Score 3 - Bottom 3-2"sv,
         "Score 4 - Mid 1-2-3"sv,
+        "Score 4 - Mid 2-1-3"sv,
         "Sweep Auto"sv,
         "Test - Line"sv,
         "Test - Line Rotate"sv,

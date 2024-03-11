@@ -13,7 +13,7 @@ namespace VisionConstants {
     constexpr units::meter_t kCameraZOffset {0.0_m};
     constexpr auto kCameraPitchOffset{35.0_deg}; //tee hee
     constexpr auto kCameraYawOffset {180.0_deg};
-    constexpr bool kShouldUseVision {true};
+    constexpr bool kShouldUseVision {false};
 
     constexpr int kBaudRate {115200};
     constexpr int kBufferSize {1024};

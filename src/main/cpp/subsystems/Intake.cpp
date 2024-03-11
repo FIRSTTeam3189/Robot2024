@@ -150,6 +150,9 @@ void Intake::HoldPosition() {
     if (fabs(m_target.value() - GetRotation().value()) > IntakeConstants::kRotationIdleTolerance.value()) {
         PIDValue = units::volt_t{(m_target - GetRotation()).value() * m_profiledPIDController.GetP()};
         //uses proportional in PID to account for changes of positioning based on desired position to hold
+    } else {
+        m_rotationMotor.StopMotor();
+        return;
     }
 
     auto ffValue = m_ff->Calculate(units::radian_t{GetRotation()}, units::radians_per_second_t{0.0});
