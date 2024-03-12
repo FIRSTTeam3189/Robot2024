@@ -78,6 +78,7 @@ class RobotContainer {
 
   SuperstructureState m_superstructureState = SuperstructureState::Default;
   DriveState m_driveState = DriveState::HeadingControl;
+  units::degree_t m_driveAligntarget;
 
   void ConfigureDriverBindings();
   void ConfigureCoDriverBindings();

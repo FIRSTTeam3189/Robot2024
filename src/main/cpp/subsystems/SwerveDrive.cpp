@@ -35,44 +35,8 @@ m_modulePositions(
     m_modules.m_backLeft.GetPosition(true),
     m_modules.m_backRight.GetPosition(true)
     //initializes the gyroscope and pose helpers for pose estimator
-),
-m_driveSysIdRoutine(
-    frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
-    frc2::sysid::Mechanism(
-        [this](units::volt_t driveVoltage) {
-          for (int i = 0; i < 4; i++)
-            m_moduleArray.at(i)->SetDriveVoltage(driveVoltage);
-        },
-        [this](frc::sysid::SysIdRoutineLog* log) {
-            for (int i = 0; i < 4; i++) {
-                auto name = "Drive " + std::to_string(i);
-                log->Motor(name)
-                    .voltage(m_moduleArray[i]->GetDriveVoltage())
-                    .position(m_moduleArray[i]->GetPosition(true).distance)
-                    .velocity(m_moduleArray[i]->GetDriveSpeed());
-            }
-        },
-        this)
-),
-m_angleSysIdRoutine(
-    // Might want to reduce voltage values later
-    frc2::sysid::Config(std::nullopt, std::nullopt, std::nullopt, std::nullopt),
-    frc2::sysid::Mechanism(
-        [this](units::volt_t angleVoltage) {
-            for (int i = 0; i < 4; i++)
-            m_moduleArray.at(i)->SetAngleVoltage(angleVoltage);
-        },
-        [this](frc::sysid::SysIdRoutineLog* log) {
-            for (int i = 0; i < 4; i++) {
-                auto name = "Angle " + std::to_string(i);
-                log->Motor(name)
-                    .voltage(m_moduleArray[i]->GetAngleVoltage())
-                    .position(units::turn_t{m_moduleArray[i]->GetPosition(true).angle.Degrees()})
-                    .velocity(units::turns_per_second_t{m_moduleArray[i]->GetSignals()[3]->GetValueAsDouble()});
-            }
-        },
-        this)
 )
+
   {   
     (void)AutoConstants::kAutonomousPaths[0];
     (void)VisionConstants::kSyncBytes[0];
@@ -191,6 +155,7 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 }
 
 void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
+
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(-speeds);
     auto [fl, fr, bl, br] = states;
     SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
@@ -353,21 +318,3 @@ void SwerveDrive::SetBrakeMode(BrakeMode mode) {
         mod->SetBrakeMode(mode);
     }
 }
-
-frc2::CommandPtr SwerveDrive::DriveSysIdQuasistatic(frc2::sysid::Direction direction) {
-  return m_driveSysIdRoutine.Quasistatic(direction);
-}
-
-frc2::CommandPtr SwerveDrive::DriveSysIdDynamic(frc2::sysid::Direction direction) {
-  return m_driveSysIdRoutine.Dynamic(direction);
-}
-
-frc2::CommandPtr SwerveDrive::AngleSysIdQuasistatic(frc2::sysid::Direction direction) {
-  return m_angleSysIdRoutine.Quasistatic(direction);
-}
-
-frc2::CommandPtr SwerveDrive::AngleSysIdDynamic(frc2::sysid::Direction direction) {
-  return m_angleSysIdRoutine.Dynamic(direction);
-}
-
-// uses either quasistatic or dynamic for PID correction

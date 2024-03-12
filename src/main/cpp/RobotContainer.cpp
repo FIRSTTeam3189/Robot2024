@@ -79,7 +79,7 @@ void RobotContainer::ConfigureDriverBindings() {
       m_shooter->SetLoaderPower(0.0);
     },{m_intake, m_shooter}),
     frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Retracted),
+      SetShooterRotation(m_shooter, ShooterState::Zero),
       SetIntakeRotation(m_intake, IntakeState::Retracted)
     )
   ).ToPtr());
@@ -111,7 +111,7 @@ void RobotContainer::ConfigureDriverBindings() {
 
   // frc2::Trigger driveUnderStageButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
   // driveUnderStageButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
-  // driveUnderStageButton.OnFalse(SetShooterRotation(m_shooter, ShooterState::Retracted).ToPtr());
+  // driveUnderStageButton.OnFalse(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
 
   // score in the amp 
   frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
@@ -125,15 +125,15 @@ void RobotContainer::ConfigureDriverBindings() {
     SetIntakeRotation(m_intake, IntakeState::Amp)
   ).ToPtr());
   ampScoreIntakeButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::InstantCommand([this]{
+      m_driveState = DriveState::HeadingControl;
+      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+    },{m_swerveDrive}),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(IntakeConstants::kAmpShootTime), 
       RunIntake(m_intake, IntakeConstants::kAmpScorePower)
     ),
-    SetIntakeRotation(m_intake, IntakeState::Retracted),
-    frc2::InstantCommand([this]{
-      m_driveState = DriveState::HeadingControl;
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
-    },{m_swerveDrive})
+    SetIntakeRotation(m_intake, IntakeState::Retracted)
   ).ToPtr());
 
   // reset the pose of the robot in the case of noise or natural dampening
@@ -171,7 +171,7 @@ void RobotContainer::ConfigureDriverBindings() {
     }),
     frc2::ParallelCommandGroup(
       SetIntakeRotation(m_intake, IntakeState::Extended),
-      SetShooterRotation(m_shooter, ShooterState::Retracted)
+      SetShooterRotation(m_shooter, ShooterState::Zero)
       // shooter and intake need to be in these positions while climb
     )
   ).ToPtr());
@@ -207,37 +207,36 @@ void RobotContainer::ConfigureCoDriverBindings() {
   directShooterLoadButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
       m_driveState = DriveState::ArbitraryAngleAlign;
-      auto target = 0.0_deg;
       if (frc::DriverStation::GetAlliance()) {
         if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
-          target = SwerveDriveConstants::kBlueSourceAlignTarget;
+          m_driveAligntarget = SwerveDriveConstants::kBlueSourceAlignTarget;
         else
-          target = SwerveDriveConstants::kRedSourceAlignTarget;
+          m_driveAligntarget = SwerveDriveConstants::kRedSourceAlignTarget;
       }
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState, target));
     },{m_swerveDrive}),
+    Drive(&m_bill, m_swerveDrive, m_driveState, m_driveAligntarget),
     SetShooterRotation(m_shooter, ShooterState::DirectLoad),
     // RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::EndOnFirstDetection),
     RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::None),
     frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Retracted),
+      SetShooterRotation(m_shooter, ShooterState::Zero),
       SetIntakeRotation(m_intake, IntakeState::Retracted)
     )
   ).ToPtr());
   directShooterLoadButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
+      m_driveState = DriveState::HeadingControl;
+      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+    },{m_swerveDrive}),
+    frc2::InstantCommand([this]{
       m_shooter->SetRollerPower(0.0);
       m_shooter->SetLoaderPower(0.0);
     },{m_shooter}),
     frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Retracted),
+      SetShooterRotation(m_shooter, ShooterState::Zero),
       SetIntakeRotation(m_intake, IntakeState::Retracted)
-    ),
+    )
     // regular drive state if we don't want to directly load
-    frc2::InstantCommand([this]{
-      m_driveState = DriveState::HeadingControl;
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
-    },{m_swerveDrive})
   ).ToPtr());
 
   frc2::Trigger unloadButton{m_ted.Button(OperatorConstants::kButtonIDRightBumper)};
@@ -375,11 +374,11 @@ void RobotContainer::RegisterAutoCommands() {
       m_shooter->SetLoaderPower(0.0);
     },{m_intake, m_shooter}),
     frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Retracted),
+      SetShooterRotation(m_shooter, ShooterState::Zero),
       SetIntakeRotation(m_intake, IntakeState::Retracted)
     ),
     frc2::ParallelDeadlineGroup(
-frc2::WaitCommand(0.5_s),
+      frc2::WaitCommand(0.5_s),
       RunLoader(m_shooter, ShooterConstants::kUnloadPower, 0.0, ShooterEndCondition::None)
     )
   ).ToPtr());
@@ -402,6 +401,7 @@ frc2::WaitCommand(0.5_s),
   ).ToPtr());
   
   pathplanner::NamedCommands::registerCommand("ScoreSpeaker", frc2::SequentialCommandGroup(
+  
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(AutoConstants::kAutoRevUpTime),
       RunShooter(m_shooter, ShooterConstants::kShootPower)
@@ -411,7 +411,7 @@ frc2::WaitCommand(0.5_s),
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
     ),
     frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Retracted),
+      SetShooterRotation(m_shooter, ShooterState::Zero),
       SetIntakeRotation(m_intake, IntakeState::Retracted)
     )
   ).ToPtr());
@@ -421,7 +421,6 @@ frc2::WaitCommand(0.5_s),
 
 void RobotContainer::CreateAutoPaths() {
   m_chooser.SetDefaultOption("N/A", nullptr);\
-  int i = 0;
   for (auto autoPath : AutoConstants::kAutonomousPaths) {
     m_chooser.AddOption(autoPath, new pathplanner::PathPlannerAuto(std::string{autoPath}));
   }

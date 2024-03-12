@@ -79,7 +79,7 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
   //     ),
   //     frc2::ParallelRaceGroup(
   //       frc2::WaitCommand(1.0_s),
-  //       SetShooterRotation(m_shooter, ShooterState::Load)
+  //       SetShooterRotation(m_shooter, ShooterState::Zero)
   //     )
   //   ),
   //   frc2::ParallelDeadlineGroup(
@@ -101,7 +101,7 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
   //     m_shooter->SetLoaderPower(0.0);
   //   },{m_intake, m_shooter}),
   //   frc2::ParallelCommandGroup(
-  //     SetShooterRotation(m_shooter, ShooterState::Retracted),
+  //     SetShooterRotation(m_shooter, ShooterState::Zero),
   //     SetIntakeRotation(m_intake, IntakeState::Retracted)
   //   ),
   //   frc2::ParallelDeadlineGroup(

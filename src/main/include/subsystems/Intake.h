@@ -15,7 +15,6 @@
 #include <frc/controller/ArmFeedforward.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
-#include <rev/SparkMaxPIDController.h>
 #include <rev/SparkAbsoluteEncoder.h> 
 #include <rev/CANSparkMax.h>
 #include "Constants/IntakeConstants.h"

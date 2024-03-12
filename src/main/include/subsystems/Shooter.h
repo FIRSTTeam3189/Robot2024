@@ -16,8 +16,8 @@
 #include <frc/Preferences.h>
 #include <frc/RobotController.h>
 #include <rev/CANSparkMax.h>
+#include <rev/CANSparkFlex.h>
 #include <rev/SparkAbsoluteEncoder.h> 
-#include <rev/SparkMaxPIDController.h>
 #include <rev/SparkRelativeEncoder.h> 
 #include "Constants/ShooterConstants.h"
 #include "Constants/GlobalConstants.h"
@@ -54,8 +54,8 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-   rev::CANSparkMax m_leaderRollerMotor;
-   rev::CANSparkMax m_followerRollerMotor;
+   rev::CANSparkFlex m_leaderRollerMotor;
+   rev::CANSparkFlex m_followerRollerMotor;
    rev::SparkRelativeEncoder m_rollerEncoder;
    rev::CANSparkMax m_loaderMotor;
    rev::CANSparkMax m_rotationMotor;

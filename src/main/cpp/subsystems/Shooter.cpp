@@ -5,8 +5,8 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() : 
-m_leaderRollerMotor(ShooterConstants::kLeaderRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_followerRollerMotor(ShooterConstants::kFollowerRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_leaderRollerMotor(ShooterConstants::kLeaderRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
+m_followerRollerMotor(ShooterConstants::kFollowerRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
 m_rollerEncoder(m_leaderRollerMotor.GetEncoder()),
 m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
@@ -268,14 +268,14 @@ bool Shooter::NoteDetected(){
 void Shooter::SetBrakeMode(BrakeMode mode) {
     switch (mode) {
         case(BrakeMode::Brake) :
-            m_leaderRollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-            m_followerRollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+            m_leaderRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kBrake);
+            m_followerRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kBrake);
             m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
             m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
             break;
         case(BrakeMode::Coast) :
-            m_leaderRollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-            m_followerRollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            m_leaderRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
+            m_followerRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
             m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
             m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
             break;
