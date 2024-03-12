@@ -421,7 +421,6 @@ frc2::WaitCommand(0.5_s),
 
 void RobotContainer::CreateAutoPaths() {
   m_chooser.SetDefaultOption("N/A", nullptr);\
-  int i = 0;
   for (auto autoPath : AutoConstants::kAutonomousPaths) {
     m_chooser.AddOption(autoPath, new pathplanner::PathPlannerAuto(std::string{autoPath}));
   }

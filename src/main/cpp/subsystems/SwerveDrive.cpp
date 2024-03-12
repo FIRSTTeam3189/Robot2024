@@ -191,7 +191,8 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 }
 
 void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
-    auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(-speeds);
+    speeds = -speeds;
+    auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(speeds);
     auto [fl, fr, bl, br] = states;
     SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
 
@@ -202,7 +203,9 @@ void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
      (double)br.angle.Degrees(), (double)br.speed};
 
     frc::SmartDashboard::PutNumberArray("Auto Desired States", AutoDesiredStates);
-    frc::SmartDashboard::PutNumber("Chassis Speeds", speeds);
+    frc::SmartDashboard::PutNumber("Robot relative desired x speed", speeds.vx.value());
+    frc::SmartDashboard::PutNumber("Robot relative desired y speed", speeds.vy.value());
+    frc::SmartDashboard::PutNumber("Robot relative desired omega speed", speeds.omega.value());
 
     SetModuleStates(states);
 }
@@ -246,8 +249,9 @@ frc::ChassisSpeeds SwerveDrive::GetRobotRelativeSpeeds() {
     auto speeds = SwerveDriveConstants::kKinematics.ToChassisSpeeds(
         frontLeftModuleState, frontRightModuleState, backLeftModuleState, backRightModuleState);
 
-    frc::SmartDashboard::PutNumber("Robot relative x vel", speeds.vx());
-    frc::SmartDashboard::PutNumber("Robot relative y vel", speeds.vy());
+    frc::SmartDashboard::PutNumber("Robot relative x speed", speeds.vx.value());
+    frc::SmartDashboard::PutNumber("Robot relative y speed", speeds.vy.value());
+    frc::SmartDashboard::PutNumber("Robot relative omega speed", speeds.omega.value());
     return speeds;
 }
 
