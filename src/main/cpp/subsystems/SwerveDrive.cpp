@@ -202,6 +202,7 @@ void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
      (double)br.angle.Degrees(), (double)br.speed};
 
     frc::SmartDashboard::PutNumberArray("Auto Desired States", AutoDesiredStates);
+    frc::SmartDashboard::PutNumber("Chassis Speeds", speeds);
 
     SetModuleStates(states);
 }

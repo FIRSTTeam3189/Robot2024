@@ -17,7 +17,7 @@ namespace AutoConstants {
     constexpr double kIRotationAuto {0.0};
     constexpr double kDRotationAuto {0.0};
 
-    constexpr auto kMaxAutoSpeed{4.0_mps};
+    constexpr auto kMaxAutoSpeed{3.0_mps};
     constexpr auto kAlignAllowableDriveSpeed {0.25_mps};
     constexpr double kAutoAlignTolerance {2.5};
     constexpr auto kAutoRevUpTime {2.0_s};
