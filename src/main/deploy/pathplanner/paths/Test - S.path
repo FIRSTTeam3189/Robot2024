@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2600000000000016,
-        "y": 5.5
+        "x": 2.188653104580622,
+        "y": 5.5018113874655645
       },
       "isLocked": false,
       "linkedName": "Mid Start Point"
@@ -20,12 +20,12 @@
         "y": 5.5
       },
       "prevControl": {
-        "x": 2.527648950784839,
-        "y": 5.498863634306841
+        "x": 2.3677650264408294,
+        "y": 5.199560019326465
       },
       "nextControl": {
-        "x": 2.491067811788493,
-        "y": 5.504298307968819
+        "x": 2.725365335142119,
+        "y": 5.905294236131167
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,12 @@
         "y": 6.5
       },
       "prevControl": {
-        "x": 2.5293046789547255,
-        "y": 6.4863197137572355
+        "x": 2.371496524812917,
+        "y": 6.151092104208816
       },
       "nextControl": {
-        "x": 2.517899192567983,
-        "y": 6.50308873064302
+        "x": 2.6497206830999303,
+        "y": 6.804777854686383
       },
       "isLocked": false,
       "linkedName": null
@@ -82,7 +82,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0

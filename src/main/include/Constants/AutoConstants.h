@@ -9,6 +9,13 @@ enum class StartingPosition { RedAmp, RedMid, RedSource, BlueAmp, BlueMid, BlueS
 
 namespace AutoConstants {
     constexpr StartingPosition kStartingPosition {StartingPosition::RedMid};
+
+    constexpr auto kAlignAllowableDriveSpeed {0.25_mps};
+    constexpr double kAutoAlignTolerance {2.5};
+    constexpr auto kAutoRevUpTime {2.0_s};
+    // Distance from robot center to furthest module
+    constexpr auto kDriveBaseRadius {0.282575_m};
+    constexpr auto kMaxAutoSpeed{3.0_mps};
     constexpr double kPTranslationAuto {4.5};
     constexpr double kITranslationAuto {0.0};
     constexpr double kDTranslationAuto {0.0};
@@ -16,13 +23,6 @@ namespace AutoConstants {
     constexpr double kPRotationAuto {0.0};
     constexpr double kIRotationAuto {0.0};
     constexpr double kDRotationAuto {0.0};
-
-    constexpr auto kMaxAutoSpeed{4.0_mps};
-    constexpr auto kAlignAllowableDriveSpeed {0.25_mps};
-    constexpr double kAutoAlignTolerance {2.5};
-    constexpr auto kAutoRevUpTime {2.0_s};
-    // Distance from robot center to furthest module
-    constexpr auto kDriveBaseRadius {0.282575_m};
     const pathplanner::HolonomicPathFollowerConfig autoConfig {
         pathplanner::PIDConstants(kPTranslationAuto, kITranslationAuto, kDTranslationAuto), // Translation PID constants
         pathplanner::PIDConstants(kPRotationAuto, kIRotationAuto, kDRotationAuto), // Rotation PID constants
