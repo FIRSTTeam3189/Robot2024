@@ -23,7 +23,8 @@ void RunLoader::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void RunLoader::Execute() {}
+void RunLoader::Execute() {
+}
 
 // Called once the command ends or is interrupted.
 void RunLoader::End(bool interrupted) {
@@ -33,6 +34,9 @@ void RunLoader::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RunLoader::IsFinished() {
-  // return m_isFinished;
-  return false;
+  if (m_shooter->NoteDetected() && m_endCondition == ShooterEndCondition::EndOnFirstDetection) {
+    return true;
+  } else {
+    return false;
+  }
 }

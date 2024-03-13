@@ -5,7 +5,7 @@
 #include "commands/AmpIntake.h"
 
 AmpIntake::AmpIntake(Intake *intake, double speed) : 
-m_intake(intake), m_speed(speed), m_shouldFinish(false) {
+m_intake(intake), m_speed(speed) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(intake);
 }
@@ -17,9 +17,7 @@ void AmpIntake::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void AmpIntake::Execute() {
-  m_shouldFinish = false;
-}
+void AmpIntake::Execute() {}
 
 // Called once the command ends or is interrupted.
 void AmpIntake::End(bool interrupted) {
@@ -30,5 +28,5 @@ void AmpIntake::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool AmpIntake::IsFinished() {
-  return m_shouldFinish;
+  return m_intake->NoteDetected();
 }

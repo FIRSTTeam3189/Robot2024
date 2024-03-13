@@ -23,7 +23,7 @@
 #include "Constants/GlobalConstants.h"
 
 enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero, AutoAlign, StartingConfig, AutoScore } ;
-enum class ShooterEndCondition { None, EndOnFirstDetection, EndOnMiddleOfNote, EndOnSecondDetection };
+enum class ShooterEndCondition { None, EndOnFirstDetection };
 
 class Shooter : public frc2::SubsystemBase {
  public:

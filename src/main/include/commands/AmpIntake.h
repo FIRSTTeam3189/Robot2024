@@ -31,5 +31,4 @@ class AmpIntake
  private:
   Intake *m_intake;
   double m_speed;
-  bool m_shouldFinish = false;
 };

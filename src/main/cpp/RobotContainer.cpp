@@ -66,9 +66,8 @@ void RobotContainer::ConfigureDriverBindings() {
         SetShooterRotation(m_shooter, ShooterState::Load)
       )
     ),
-    frc2::ParallelCommandGroup(
-      // RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
-      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::None),
+    frc2::ParallelRaceGroup(
+      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnFirstDetection),
       RunIntake(m_intake, IntakeConstants::kIntakePower)
     )
   ).ToPtr());
@@ -216,7 +215,6 @@ void RobotContainer::ConfigureCoDriverBindings() {
     },{m_swerveDrive}),
     Drive(&m_bill, m_swerveDrive, m_driveState, m_driveAligntarget),
     SetShooterRotation(m_shooter, ShooterState::DirectLoad),
-    // RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::EndOnFirstDetection),
     RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::None),
     frc2::ParallelCommandGroup(
       SetShooterRotation(m_shooter, ShooterState::Zero),
@@ -364,9 +362,8 @@ void RobotContainer::RegisterAutoCommands() {
       )
     ),
     frc2::ParallelRaceGroup(
-      frc2::WaitCommand(2.0_s),
-      // RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnSecondDetection),
-      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::None),
+      frc2::WaitCommand(3.0_s),
+      RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnFirstDetection),
       RunIntake(m_intake, IntakeConstants::kIntakePower)
     ),
     frc2::InstantCommand([this]{
