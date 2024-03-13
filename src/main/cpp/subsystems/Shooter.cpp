@@ -15,7 +15,7 @@ m_limitSwitchRight(ShooterConstants::kRightLimitSwitchPort),
 m_constraints(ShooterConstants::kMaxRotationVelocity, ShooterConstants::kMaxRotationAcceleration),
 m_profiledPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
-m_target(ShooterConstants::kRetractTarget),
+m_target(0.0_deg),
 m_isActive(false) {
     ConfigRollerMotor();
     ConfigLoaderMotor();
@@ -28,7 +28,7 @@ m_isActive(false) {
 // This method will be called once per scheduler run
 void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter PID target", m_target.value());
-    frc::SmartDashboard::PutNumber("Shooter rotation", m_rotationEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Shooter rotation", GetRotation().value());
     frc::SmartDashboard::PutNumber("Shooter power", m_leaderRollerMotor.Get());
     frc::SmartDashboard::PutNumber("Shooter RPM", m_rollerEncoder.GetVelocity());
     frc::SmartDashboard::PutNumber("Shooter load power", m_loaderMotor.Get());
@@ -123,7 +123,11 @@ void Shooter::SetLoaderPower(double power) {
 }
 
 units::degree_t Shooter::GetRotation() {
-    return units::degree_t{m_rotationEncoder.GetPosition()};
+    auto angle = units::degree_t{m_rotationEncoder.GetPosition()};
+    if(angle >= 350_deg) {
+        angle = 0.0_deg;
+    }
+    return angle;
 }
 
 void Shooter::ConfigRollerMotor() {
@@ -259,10 +263,11 @@ void Shooter::SetActive(bool active) {
 }
 
 bool Shooter::NoteDetected(){
-    if (m_limitSwitchRight.Get() || m_limitSwitchLeft.Get()){
+    if (!m_limitSwitchRight.Get() || !m_limitSwitchLeft.Get()){
         return true;
     }
     return false;
+    
 }
 
 void Shooter::SetBrakeMode(BrakeMode mode) {
@@ -280,8 +285,8 @@ void Shooter::SetBrakeMode(BrakeMode mode) {
             m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
             break;
         case(BrakeMode::Default) :
-            m_leaderRollerMotor.SetIdleMode(ShooterConstants::kIdleMode);
-            m_followerRollerMotor.SetIdleMode(ShooterConstants::kIdleMode);
+            m_leaderRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
+            m_followerRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
             m_rotationMotor.SetIdleMode(ShooterConstants::kIdleMode);
             m_loaderMotor.SetIdleMode(ShooterConstants::kIdleMode);
             break;

@@ -19,6 +19,10 @@ void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePositi
     //update the pose estimator with the rotation found by the encoders and the module positions
 }
 
+void PoseEstimatorHelper::SetActivePath(std::vector<frc::Pose2d> poses) {
+    m_estimatedPose.GetObject("path")->SetPoses(poses);
+}
+
 frc::Pose2d PoseEstimatorHelper::GetEstimatedPose() {
     frc::Pose2d pigeonTrustingPose = frc::Pose2d{
         m_poseEstimator->GetEstimatedPosition().Translation(), m_rotation};

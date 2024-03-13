@@ -247,7 +247,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   );
 
   // frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  // shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
+  // shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_helper, m_vision).ToPtr());
   // shooterAlignButton.OnFalse(frc2::InstantCommand([this]{
   //   m_shooter->SetRotationPower(0.0);
   // },{m_shooter}).ToPtr());
@@ -342,7 +342,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
 
 void RobotContainer::RegisterAutoCommands() {
   // Start of Auto Events
-  pathplanner::NamedCommands::registerCommand("AlignShooter", ShooterAutoAlign(m_shooter, m_estimator, m_vision).ToPtr());
+  pathplanner::NamedCommands::registerCommand("AlignShooter", ShooterAutoAlign(m_shooter, m_helper, m_vision).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("AlignSwerve", SwerveAutoAlign(m_swerveDrive, true).ToPtr());
 
@@ -424,6 +424,12 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Dumb Two Score Mid", new TwoNoteAuto(m_swerveDrive, m_intake, m_shooter, AutoConstants::kStartingPosition));
   m_chooser.AddOption("Mobility", new MobilityAuto(m_swerveDrive));
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
+
+  // Logging callback for the active path, this is sent as a vector of poses
+  pathplanner::PathPlannerLogging::setLogActivePathCallback([this](std::vector<frc::Pose2d> poses) {
+    // Do whatever you want with the poses here
+    m_helper->SetActivePath(poses);
+  });
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

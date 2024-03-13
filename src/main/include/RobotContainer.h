@@ -39,6 +39,7 @@
 
 #include <pathplanner/lib/auto/NamedCommands.h>
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
+#include <pathplanner/lib/util/PathPlannerLogging.h>
 
 enum class SuperstructureState { Default, Climb };
 /**
@@ -67,10 +68,10 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
   Climber *m_climber = new Climber();
-  PoseEstimatorHelper *m_estimator = new PoseEstimatorHelper();
-  Vision *m_vision = new Vision(m_estimator);
+  PoseEstimatorHelper *m_helper = new PoseEstimatorHelper();
+  Vision *m_vision = new Vision(m_helper);
   Shooter *m_shooter = new Shooter();
-  SwerveDrive *m_swerveDrive = new SwerveDrive(m_estimator);
+  SwerveDrive *m_swerveDrive = new SwerveDrive(m_helper);
   Intake *m_intake = new Intake();
   MusicSystem *m_musicSystem = new MusicSystem(m_swerveDrive->GetMotorsForMusic());
 
