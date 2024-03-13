@@ -108,7 +108,7 @@ void Intake::SetActive(bool active) {
 }
 
 bool Intake::NoteDetected(){
-    if (m_limitSwitchLeft.Get() || m_limitSwitchRight.Get()){
+    if (!m_limitSwitchLeft.Get() || !m_limitSwitchRight.Get()){
         return true;
     } 
 

@@ -8,7 +8,7 @@
 
 ShooterAutoAlign::ShooterAutoAlign(Shooter* shooter, PoseEstimatorHelper *estimator, Vision *vision) :
 m_shooter(shooter),
-m_estimator(estimator),
+m_helper(estimator),
 m_vision(vision) {
   // Use addRequirements() here to declare subsystem dependencies.
   (void)VisionConstants::kSyncBytes[0];
@@ -43,9 +43,9 @@ bool ShooterAutoAlign::IsFinished() {
 }
 
 units::degree_t ShooterAutoAlign::CalculateShooterAngle() {
-  frc::Pose2d currentPose = m_estimator->GetEstimatedPose();
+  frc::Pose2d currentPose = m_helper->GetEstimatedPose();
   frc::Pose3d tagPose = VisionConstants::kTagPoses.at(6);
-  // get the current pose based on the m_estimator variable
+  // get the current pose based on the m_helper variable
   // just set the tag pose to 6 for now just as dafault but gets changed based on detected april tag
 
   //the below code cannot run since vision is not working properly but can be used as it is working pretty well now 

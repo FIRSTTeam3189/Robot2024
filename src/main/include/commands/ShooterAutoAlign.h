@@ -34,6 +34,6 @@ class ShooterAutoAlign
 
  private:
   Shooter *m_shooter;
-  PoseEstimatorHelper *m_estimator;
+  PoseEstimatorHelper *m_helper;
   Vision *m_vision;
 };
