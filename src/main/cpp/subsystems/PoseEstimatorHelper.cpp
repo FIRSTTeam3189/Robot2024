@@ -23,6 +23,14 @@ void PoseEstimatorHelper::SetActivePath(std::vector<frc::Pose2d> poses) {
     m_estimatedPose.GetObject("path")->SetPoses(poses);
 }
 
+void PoseEstimatorHelper::SetCurrentAutoPose(frc::Pose2d pose) {
+    m_estimatedPose.SetRobotPose(pose);
+}
+
+void PoseEstimatorHelper::SetTargetAutoPose(frc::Pose2d pose) {
+    m_estimatedPose.GetObject("target pose")->SetPose(pose);
+}
+
 frc::Pose2d PoseEstimatorHelper::GetEstimatedPose() {
     frc::Pose2d pigeonTrustingPose = frc::Pose2d{
         m_poseEstimator->GetEstimatedPosition().Translation(), m_rotation};
@@ -63,4 +71,5 @@ void PoseEstimatorHelper::AddVisionMeasurement(frc::Pose2d pose, units::second_t
 void PoseEstimatorHelper::Periodic() {
     m_estimatedPose.SetRobotPose(GetEstimatedPose());
     frc::SmartDashboard::PutData("Estimated pose", &m_estimatedPose);
+    frc::SmartDashboard::PutData("Auto field", &m_autoField);
 }

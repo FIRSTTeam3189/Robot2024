@@ -52,7 +52,6 @@ m_modulePositions(
         [this](frc::Pose2d pose){ SetPose(pose, false); }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ DriveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        // [this](frc::ChassisSpeeds speeds){},
         AutoConstants::autoConfig,
         []() {
             // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -161,7 +160,7 @@ void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(speeds);
     auto [fl, fr, bl, br] = states;
-    SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
+    SwerveDriveConstants::kKinematics.DesaturateWheelSpeeds(&states, AutoConstants::kMaxAutoModuleSpeed);
 
     double AutoDesiredStates[] = 
     {(double)fl.angle.Degrees(), (double)fl.speed,
@@ -232,7 +231,7 @@ frc::Pose2d SwerveDrive::GetEstimatedPose() {
 frc::Pose2d SwerveDrive::GetEstimatedAutoPose() {
     UpdateEstimator();
     auto pose = m_poseHelper->GetEstimatedPose();
-    pose = frc::Pose2d(pose.X(), pose.Y(), -pose.Rotation());
+    // pose = frc::Pose2d(pose.X(), pose.Y(), -pose.Rotation());
     frc::SmartDashboard::PutNumber("Auto pose x", pose.X().value());
     frc::SmartDashboard::PutNumber("Auto pose y", pose.Y().value());
     frc::SmartDashboard::PutNumber("Auto pose rot", pose.Rotation().Degrees().value());
@@ -256,7 +255,6 @@ void SwerveDrive::UpdateEstimator() {
     m_modulePositions[3] = m_modules.m_backRight.GetPosition(true);
 
     LogModuleStates(m_modulePositions);
-    // m_poseHelper->UpdatePoseEstimator(m_modulePositions, frc::Rotation2d{GetNormalizedYaw()});
     m_poseHelper->UpdatePoseEstimator(m_modulePositions, frc::Rotation2d(GetNormalizedYaw()));
 }
 

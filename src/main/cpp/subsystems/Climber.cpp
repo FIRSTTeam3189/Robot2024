@@ -19,7 +19,7 @@ m_brakeModeLimitSwitch(ClimberConstants::kLimitSwitchPort)
     m_rightMotor.SetInverted(ClimberConstants::kInvertRightMotor);
     m_leftMotor.SetIdleMode(ClimberConstants::kIdleMode);
     m_rightMotor.SetIdleMode(ClimberConstants::kIdleMode);
-    m_leftMotor.Follow(m_rightMotor);
+    // m_leftMotor.Follow(m_rightMotor);
     // std::cout << "Climber constructing\n";
 }
 // This method will be called once per scheduler run
@@ -34,6 +34,7 @@ void Climber::Periodic() {
 }
 
 void Climber::SetPower(double power){
+    m_leftMotor.Set(power);
     m_rightMotor.Set(power);
 }
 

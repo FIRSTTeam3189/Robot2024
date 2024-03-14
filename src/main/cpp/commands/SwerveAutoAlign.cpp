@@ -53,7 +53,7 @@ bool SwerveAutoAlign::IsFinished() {
 units::angular_velocity::radians_per_second_t SwerveAutoAlign::GetDesiredRotationalVelocity() {
   // Return next velocity in radians per second as calculated by PIDController and limited by rotLimiter
   units::angular_velocity::radians_per_second_t rot = 
-    units::angular_velocity::radians_per_second_t{m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw(), m_goal)
+    -units::angular_velocity::radians_per_second_t{m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw(), m_goal)
     * SwerveDriveConstants::kMaxAngularVelocity};
 
   return rot;

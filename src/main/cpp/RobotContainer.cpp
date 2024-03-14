@@ -213,12 +213,16 @@ void RobotContainer::ConfigureCoDriverBindings() {
           m_driveAligntarget = SwerveDriveConstants::kRedSourceAlignTarget;
       }
     },{m_swerveDrive}),
-    Drive(&m_bill, m_swerveDrive, m_driveState, m_driveAligntarget),
-    SetShooterRotation(m_shooter, ShooterState::DirectLoad),
-    RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::None),
     frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Zero),
-      SetIntakeRotation(m_intake, IntakeState::Retracted)
+      Drive(&m_bill, m_swerveDrive, m_driveState, m_driveAligntarget),
+      frc2::SequentialCommandGroup(
+        SetShooterRotation(m_shooter, ShooterState::DirectLoad),
+        RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::None),
+        frc2::ParallelCommandGroup(
+          SetShooterRotation(m_shooter, ShooterState::Zero),
+          SetIntakeRotation(m_intake, IntakeState::Retracted)
+        )
+      )
     )
   ).ToPtr());
   directShooterLoadButton.OnFalse(frc2::SequentialCommandGroup(
@@ -247,7 +251,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   );
 
   frc2::Trigger autoShootButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  autoShootButton.OnTrue(ShooterAutoAlign(m_shooter, m_helper, m_vision).ToPtr());
+  autoShootButton.OnTrue(ShooterAutoAlign(m_shooter, m_helper, m_vision, false).ToPtr());
   autoShootButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
@@ -351,7 +355,13 @@ void RobotContainer::ConfigureCoDriverBindings() {
 
 void RobotContainer::RegisterAutoCommands() {
   // Start of Auto Events
-  pathplanner::NamedCommands::registerCommand("AlignShooter", ShooterAutoAlign(m_shooter, m_helper, m_vision).ToPtr());
+  pathplanner::NamedCommands::registerCommand("AlignShooter", frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(0.5_s),
+      RunLoader(m_shooter, ShooterConstants::kUnloadPower, 0.0, ShooterEndCondition::None)
+    ),
+    ShooterAutoAlign(m_shooter, m_helper, m_vision, true)
+  ).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("AlignSwerve", SwerveAutoAlign(m_swerveDrive, true).ToPtr());
 
@@ -382,10 +392,6 @@ void RobotContainer::RegisterAutoCommands() {
     frc2::ParallelCommandGroup(
       SetShooterRotation(m_shooter, ShooterState::Zero),
       SetIntakeRotation(m_intake, IntakeState::Retracted)
-    ),
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(0.5_s),
-      RunLoader(m_shooter, ShooterConstants::kUnloadPower, 0.0, ShooterEndCondition::None)
     )
   ).ToPtr());
 
@@ -407,11 +413,10 @@ void RobotContainer::RegisterAutoCommands() {
   ).ToPtr());
   
   pathplanner::NamedCommands::registerCommand("ScoreSpeaker", frc2::SequentialCommandGroup(
-  
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(AutoConstants::kAutoRevUpTime),
-      RunShooter(m_shooter, ShooterConstants::kShootPower)
-    ),
+    // frc2::ParallelDeadlineGroup(
+    //   frc2::WaitCommand(AutoConstants::kAutoRevUpTime),
+    //   RunShooter(m_shooter, ShooterConstants::kShootPower)
+    // ),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
@@ -434,6 +439,17 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Mobility", new MobilityAuto(m_swerveDrive));
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
 
+  // Logging callbacks for pathplanner -- current pose, target pose, and active path
+  pathplanner::PathPlannerLogging::setLogCurrentPoseCallback([this](frc::Pose2d pose) {
+    // Do whatever you want with the poses here
+    m_helper->SetCurrentAutoPose(pose);
+  });
+
+  pathplanner::PathPlannerLogging::setLogTargetPoseCallback([this](frc::Pose2d pose) {
+    // Do whatever you want with the poses here
+    m_helper->SetTargetAutoPose(pose);
+  });
+
   // Logging callback for the active path, this is sent as a vector of poses
   pathplanner::PathPlannerLogging::setLogActivePathCallback([this](std::vector<frc::Pose2d> poses) {
     // Do whatever you want with the poses here
@@ -451,6 +467,7 @@ SuperstructureState RobotContainer::GetSuperstructureState() {
 }
 
 bool RobotContainer::IsClimbState() {
+  frc::SmartDashboard::PutBoolean("Climb mode", m_superstructureState == SuperstructureState::Climb);
   return m_superstructureState == SuperstructureState::Climb;
 }
 

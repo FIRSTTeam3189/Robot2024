@@ -21,7 +21,7 @@
 class ShooterAutoAlign
     : public frc2::CommandHelper<frc2::Command, ShooterAutoAlign> {
  public:
-  ShooterAutoAlign(Shooter *shooter, PoseEstimatorHelper *estimator, Vision *vision);
+  ShooterAutoAlign(Shooter *shooter, PoseEstimatorHelper *estimator, Vision *vision, bool shouldFinish);
   units::degree_t CalculateShooterAngle();
 
   void Initialize() override;
@@ -36,4 +36,5 @@ class ShooterAutoAlign
   Shooter *m_shooter;
   PoseEstimatorHelper *m_helper;
   Vision *m_vision;
+  bool m_shouldFinish;
 };

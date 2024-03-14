@@ -6,10 +6,11 @@
 
 #include "commands/ShooterAutoAlign.h"
 
-ShooterAutoAlign::ShooterAutoAlign(Shooter* shooter, PoseEstimatorHelper *estimator, Vision *vision) :
+ShooterAutoAlign::ShooterAutoAlign(Shooter* shooter, PoseEstimatorHelper *estimator, Vision *vision, bool shouldFinish) :
 m_shooter(shooter),
 m_helper(estimator),
-m_vision(vision) {
+m_vision(vision),
+m_shouldFinish(shouldFinish) {
   // Use addRequirements() here to declare subsystem dependencies.
   (void)VisionConstants::kSyncBytes[0];
   AddRequirements(shooter);
@@ -37,9 +38,12 @@ void ShooterAutoAlign::End(bool interrupted) {}
 
 // Returns true when the command should end.
 bool ShooterAutoAlign::IsFinished() {
-  if (abs(m_shooter->GetTarget().value() - m_shooter->GetRotation().value()) < (ShooterConstants::kRotationStopDistance.value() / 2.0)) {
-    return true;
-  }
+  if (m_shouldFinish) {
+    if (abs(m_shooter->GetTarget().value() - m_shooter->GetRotation().value()) < (ShooterConstants::kRotationStopDistance.value() / 2.0)) {
+      return true;
+    }
+  } 
+
   return false;
 }
 

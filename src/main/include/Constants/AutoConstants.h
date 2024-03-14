@@ -15,7 +15,7 @@ namespace AutoConstants {
     constexpr auto kAutoRevUpTime {2.0_s};
     // Distance from robot center to furthest module
     constexpr auto kDriveBaseRadius {0.282575_m};
-    constexpr auto kMaxAutoSpeed{3.0_mps};
+    constexpr auto kMaxAutoModuleSpeed{4.0_mps};
     // constexpr double kPTranslationAuto {4.5};
     constexpr double kPTranslationAuto {1.0};
     constexpr double kITranslationAuto {0.0};
@@ -27,7 +27,7 @@ namespace AutoConstants {
     const pathplanner::HolonomicPathFollowerConfig autoConfig {
         pathplanner::PIDConstants(kPTranslationAuto, kITranslationAuto, kDTranslationAuto), // Translation PID constants
         pathplanner::PIDConstants(kPRotationAuto, kIRotationAuto, kDRotationAuto), // Rotation PID constants
-        kMaxAutoSpeed, // Max module speed, in m/s
+        kMaxAutoModuleSpeed, // Max module speed, in m/s
         kDriveBaseRadius, // Drive base radius in meters. Distance from robot center to furthest module.
         pathplanner::ReplanningConfig() // Defaults to replanning if robot is not at starting point, doesn't replan if robot strays too far
     };
