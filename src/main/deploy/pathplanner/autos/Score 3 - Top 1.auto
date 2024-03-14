@@ -24,28 +24,22 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignShooter"
+                  "name": "ShooterRotateToAutoTarget"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "ScoreSpeaker"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreSpeaker"
           }
         },
         {
@@ -55,19 +49,32 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AlignSwerve"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignSwerve"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignShooter"
+                  "name": "ScoreSpeaker"
                 }
               }
             ]
@@ -86,28 +93,35 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AlignShooter"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignSwerve"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignSwerve"
+                  "name": "ScoreSpeaker"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreSpeaker"
           }
         },
         {

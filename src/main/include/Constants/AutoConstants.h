@@ -51,6 +51,8 @@ namespace AutoConstants {
         "Score 3 - Bottom 3-2"sv,
         "Score 4 - Mid 1-2-3"sv,
         "Score 4 - Mid 2-1-3"sv,
+        "Score 5 - Mid 1"sv,
+        "Score 5 - Mid 5"sv,
         "Sweep Auto"sv,
         "Test - Line"sv,
         "Test - Line Rotate"sv,
