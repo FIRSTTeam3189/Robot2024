@@ -5,9 +5,9 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() : 
-m_leaderRollerMotor(ShooterConstants::kLeaderRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
-m_followerRollerMotor(ShooterConstants::kFollowerRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
-m_rollerEncoder(m_leaderRollerMotor.GetEncoder()),
+m_topRollerMotor(ShooterConstants::kLeaderRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
+m_bottomRollerMotor(ShooterConstants::kFollowerRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
+m_rollerEncoder(m_topRollerMotor.GetEncoder()),
 m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_limitSwitchLeft(ShooterConstants::kLeftLimitSwitchPort),
@@ -29,7 +29,7 @@ m_isActive(false) {
 void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Shooter rotation", GetRotation().value());
-    frc::SmartDashboard::PutNumber("Shooter power", m_leaderRollerMotor.Get());
+    frc::SmartDashboard::PutNumber("Shooter power", m_topRollerMotor.Get());
     frc::SmartDashboard::PutNumber("Shooter RPM", m_rollerEncoder.GetVelocity());
     frc::SmartDashboard::PutNumber("Shooter load power", m_loaderMotor.Get());
 
@@ -111,7 +111,8 @@ void Shooter::SetRotation(units::degree_t target) {
 }
 
 void Shooter::SetRollerPower(double power) {
-    m_leaderRollerMotor.Set(power);
+    m_topRollerMotor.Set(power);
+    m_bottomRollerMotor.Set(power);
 }
 
 void Shooter::SetRotationPower(double power) {
@@ -131,13 +132,12 @@ units::degree_t Shooter::GetRotation() {
 }
 
 void Shooter::ConfigRollerMotor() {
-    m_leaderRollerMotor.RestoreFactoryDefaults();
-    m_leaderRollerMotor.SetSmartCurrentLimit(ShooterConstants::kRollerCurrentLimit);
-    m_leaderRollerMotor.SetInverted(ShooterConstants::kRollerInverted);
-    m_followerRollerMotor.RestoreFactoryDefaults();
-    m_followerRollerMotor.SetSmartCurrentLimit(ShooterConstants::kRollerCurrentLimit);
-    m_followerRollerMotor.SetInverted(ShooterConstants::kRollerInverted);
-    m_followerRollerMotor.Follow(m_leaderRollerMotor);
+    m_topRollerMotor.RestoreFactoryDefaults();
+    m_topRollerMotor.SetSmartCurrentLimit(ShooterConstants::kRollerCurrentLimit);
+    m_topRollerMotor.SetInverted(ShooterConstants::kRollerInverted);
+    m_bottomRollerMotor.RestoreFactoryDefaults();
+    m_bottomRollerMotor.SetSmartCurrentLimit(ShooterConstants::kRollerCurrentLimit);
+    m_bottomRollerMotor.SetInverted(!ShooterConstants::kRollerInverted);
 }
 
 void Shooter::ConfigLoaderMotor() {
@@ -273,20 +273,20 @@ bool Shooter::NoteDetected(){
 void Shooter::SetBrakeMode(BrakeMode mode) {
     switch (mode) {
         case(BrakeMode::Brake) :
-            m_leaderRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kBrake);
-            m_followerRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kBrake);
+            m_topRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kBrake);
+            m_bottomRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kBrake);
             m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
             m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
             break;
         case(BrakeMode::Coast) :
-            m_leaderRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
-            m_followerRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
+            m_topRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
+            m_bottomRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
             m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
             m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
             break;
         case(BrakeMode::Default) :
-            m_leaderRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
-            m_followerRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
+            m_topRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
+            m_bottomRollerMotor.SetIdleMode(rev::CANSparkFlex::IdleMode::kCoast);
             m_rotationMotor.SetIdleMode(ShooterConstants::kIdleMode);
             m_loaderMotor.SetIdleMode(ShooterConstants::kIdleMode);
             break;

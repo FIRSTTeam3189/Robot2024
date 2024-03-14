@@ -261,7 +261,7 @@ frc::SwerveModuleState SwerveModule::GetState(bool refresh) {
 
     // Uses initializer list syntax and lets compiler make swerve module state since we can't construct directly
     // Note the 360 converting rotations to degrees, and the turns per second to meters per second
-    return {units::meters_per_second_t{-m_driveVelocity.GetValue().value() / SwerveModuleConstants::kRotationsPerMeter}, 
+    return {units::meters_per_second_t{m_driveVelocity.GetValue().value() / SwerveModuleConstants::kRotationsPerMeter}, 
             frc::Rotation2d(units::degree_t{360 * m_anglePosition.GetValue().value()})};
 }
 
@@ -274,7 +274,7 @@ units::degree_t SwerveModule::GetEncoderAngle() {
 }
 
 units::meters_per_second_t SwerveModule::GetDriveSpeed() {
-    return units::meters_per_second_t{-m_driveMotor.GetVelocity().Refresh().GetValue().value() / SwerveModuleConstants::kRotationsPerMeter};
+    return units::meters_per_second_t{m_driveMotor.GetVelocity().Refresh().GetValue().value() / SwerveModuleConstants::kRotationsPerMeter};
 }
 
 void SwerveModule::ResetDriveEncoder() {

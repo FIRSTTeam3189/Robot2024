@@ -22,6 +22,7 @@ m_vision(vision) {
 // Called when the command is initially scheduled.
 void ShooterAutoAlign::Initialize() {
   m_shooter->SetActive(false);
+  m_shooter->SetRollerPower(ShooterConstants::kShootPower);
 }
 
 // Called repeatedly when this Command is scheduled to run

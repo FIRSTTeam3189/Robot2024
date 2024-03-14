@@ -246,60 +246,69 @@ void RobotContainer::ConfigureCoDriverBindings() {
     },{m_shooter}).ToPtr()
   );
 
-  // frc2::Trigger shooterAlignButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  // shooterAlignButton.OnTrue(ShooterAutoAlign(m_shooter, m_helper, m_vision).ToPtr());
-  // shooterAlignButton.OnFalse(frc2::InstantCommand([this]{
-  //   m_shooter->SetRotationPower(0.0);
-  // },{m_shooter}).ToPtr());
+  frc2::Trigger autoShootButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  autoShootButton.OnTrue(ShooterAutoAlign(m_shooter, m_helper, m_vision).ToPtr());
+  autoShootButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kShootTime),
+      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+    ),
+    SetShooterRotation(m_shooter, ShooterState::Zero),
+    frc2::InstantCommand([this]{
+      m_shooter->SetRollerPower(0.0);
+      m_shooter->SetLoaderPower(0.0);
+    },{m_shooter})
+  ).ToPtr());
 
   //all the below shoot buttons set the shooter rotation to the desired target based on if shooteer far, mid, close, manually, or auto and then runs it.
   //shooter will run at max power and angle changes trajectory
 
-  frc2::Trigger shootLowButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  shootLowButton.OnTrue(frc2::SequentialCommandGroup(
-    SetShooterRotation(m_shooter, ShooterState::Far),
-    RunShooter(m_shooter, ShooterConstants::kShootPower)
-  ).ToPtr());
-  shootLowButton.OnFalse(frc2::SequentialCommandGroup(
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(ShooterConstants::kShootTime),
-      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
-    ),
-    frc2::InstantCommand([this]{
+  // frc2::Trigger shootLowButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // shootLowButton.OnTrue(frc2::SequentialCommandGroup(
+  //   SetShooterRotation(m_shooter, ShooterState::Far),
+  //   RunShooter(m_shooter, ShooterConstants::kShootPower)
+  // ).ToPtr());
+  // shootLowButton.OnFalse(frc2::SequentialCommandGroup(
+  //   frc2::ParallelDeadlineGroup(
+  //     frc2::WaitCommand(ShooterConstants::kShootTime),
+  //     RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+  //   ),
+  //   frc2::InstantCommand([this]{
 
-      m_shooter->SetRollerPower(0.0);
-      m_shooter->SetLoaderPower(0.0);
-    },{m_shooter})
-  ).ToPtr());
+  //     m_shooter->SetRollerPower(0.0);
+  //     m_shooter->SetLoaderPower(0.0);
+  //   },{m_shooter})
+  // ).ToPtr());
   
-  frc2::Trigger shootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
-  shootButton.OnTrue(frc2::SequentialCommandGroup(
+  frc2::Trigger closeShootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
+  closeShootButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::Close),
     RunShooter(m_shooter, ShooterConstants::kShootPower)
   ).ToPtr());
-  shootButton.OnFalse(frc2::SequentialCommandGroup(
+  closeShootButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
     ),
+    SetShooterRotation(m_shooter, ShooterState::Zero),
     frc2::InstantCommand([this]{
       m_shooter->SetRollerPower(0.0);
       m_shooter->SetLoaderPower(0.0);
     },{m_shooter})
   ).ToPtr());
 
-  frc2::Trigger manualShootButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
-  manualShootButton.OnTrue(RunShooter(m_shooter, ShooterConstants::kShootPower).ToPtr());
-  manualShootButton.OnFalse(frc2::SequentialCommandGroup(
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(ShooterConstants::kShootTime),
-      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
-    ),
-    frc2::InstantCommand([this]{
-      m_shooter->SetRollerPower(0.0);
-      m_shooter->SetLoaderPower(0.0);
-    },{m_shooter})
-  ).ToPtr());
+  // frc2::Trigger manualShootButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
+  // manualShootButton.OnTrue(RunShooter(m_shooter, ShooterConstants::kShootPower).ToPtr());
+  // manualShootButton.OnFalse(frc2::SequentialCommandGroup(
+  //   frc2::ParallelDeadlineGroup(
+  //     frc2::WaitCommand(ShooterConstants::kShootTime),
+  //     RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+  //   ),
+  //   frc2::InstantCommand([this]{
+  //     m_shooter->SetRollerPower(0.0);
+  //     m_shooter->SetLoaderPower(0.0);
+  //   },{m_shooter})
+  // ).ToPtr());
 
   frc2::Trigger extendClimberButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
   extendClimberButton.OnTrue(frc2::SequentialCommandGroup(

@@ -48,7 +48,7 @@ m_modulePositions(
 
     // / Setup autobuilder for pathplannerlib
     pathplanner::AutoBuilder::configureHolonomic(
-        [this](){ return GetEstimatedPose(); }, // Robot pose supplier
+        [this](){ return GetEstimatedAutoPose(); }, // Robot pose supplier
         [this](frc::Pose2d pose){ SetPose(pose, false); }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ DriveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
@@ -155,7 +155,9 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 }
 
 void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
-    speeds = -speeds;
+    // speeds = -speeds;
+    speeds.vx = -speeds.vx;
+    speeds.vy = -speeds.vy;
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(speeds);
     auto [fl, fr, bl, br] = states;
@@ -227,6 +229,16 @@ frc::Pose2d SwerveDrive::GetEstimatedPose() {
     return m_poseHelper->GetEstimatedPose();
 }
 
+frc::Pose2d SwerveDrive::GetEstimatedAutoPose() {
+    UpdateEstimator();
+    auto pose = m_poseHelper->GetEstimatedPose();
+    pose = frc::Pose2d(pose.X(), pose.Y(), -pose.Rotation());
+    frc::SmartDashboard::PutNumber("Auto pose x", pose.X().value());
+    frc::SmartDashboard::PutNumber("Auto pose y", pose.Y().value());
+    frc::SmartDashboard::PutNumber("Auto pose rot", pose.Rotation().Degrees().value());
+    return pose;
+}
+
 void SwerveDrive::LogModuleStates(wpi::array<frc::SwerveModulePosition, 4> modulePositions) {
     double AdvantageScopeMeasuredStates[] = 
     {modulePositions[0].angle.Degrees().value(), m_moduleArray[0]->GetDriveSpeed().value(),
@@ -245,7 +257,7 @@ void SwerveDrive::UpdateEstimator() {
 
     LogModuleStates(m_modulePositions);
     // m_poseHelper->UpdatePoseEstimator(m_modulePositions, frc::Rotation2d{GetNormalizedYaw()});
-    m_poseHelper->UpdatePoseEstimator(m_modulePositions, m_pigeon.GetRotation2d());
+    m_poseHelper->UpdatePoseEstimator(m_modulePositions, frc::Rotation2d(GetNormalizedYaw()));
 }
 
 void SwerveDrive::ResetDriveEncoders() {

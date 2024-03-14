@@ -39,19 +39,11 @@ namespace ShooterConstants {
     // Direct shooter load
     constexpr auto kDirectLoadTarget {50.0_deg};
     constexpr double kDirectLoadPower {-0.25};
-
-    // Trap scoring
-    constexpr double kLinearActuatorExtendPower {0.5};
-    constexpr double kLinearActuatorRetractPower {-0.5};
-    constexpr double kTrapLoadLoaderPower {0.2};
-    constexpr double kTrapLoadRollerPower {0.2};
-    constexpr double kTrapScoreLoaderPower {1.0};
-    constexpr double kTrapScoreRollerPower {1.0};
     
-    constexpr auto kStartingConfigTarget {65.0_deg};
-    constexpr auto kRetractTarget {60.0_deg};
-    constexpr auto kCloseTarget {60.0_deg};
-    constexpr auto kAutoScoreTarget {60.0_deg};
+    constexpr auto kStartingConfigTarget {40.0_deg};
+    constexpr auto kRetractTarget {40.0_deg};
+    constexpr auto kCloseTarget {59.0_deg};
+    constexpr auto kAutoScoreTarget {59.0_deg};
     constexpr auto kMidTarget {30.0_deg};
     constexpr auto kFarTarget {15.0_deg};
     constexpr double kRotationOffset {94.0};

@@ -53,6 +53,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   void DriveRobotRelative(frc::ChassisSpeeds speeds);
   void ToggleSlowMode();
   frc::Pose2d GetEstimatedPose();
+  frc::Pose2d GetEstimatedAutoPose();
   void SetPose(frc::Pose2d pose, bool justRotation);
   void ConfigGyro();
   void SetBrakeMode(BrakeMode mode);
