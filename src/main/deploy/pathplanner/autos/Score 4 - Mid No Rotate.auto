@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2932270014807754,
-      "y": 5.503960098829289
+      "x": 1.26,
+      "y": 5.5
     },
     "rotation": 0
   },
@@ -39,23 +39,36 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score 2 - Mid 1"
+            "pathName": "Score 2 - Mid"
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AlignSwerve"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignSwerve"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignShooter"
+                  "name": "ScoreSpeaker"
                 }
               }
             ]
@@ -64,29 +77,42 @@
         {
           "type": "named",
           "data": {
-            "name": "ScoreSpeaker"
+            "name": "RotateTo90"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score 3 - Top 1-2"
+            "pathName": "Score 3 - Mid No Rotate"
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AlignSwerve"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignSwerve"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignShooter"
+                  "name": "ScoreSpeaker"
                 }
               }
             ]
@@ -95,38 +121,45 @@
         {
           "type": "named",
           "data": {
-            "name": "ScoreSpeaker"
+            "name": "RotateToNegative30"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score 3 - Mid 2-3"
+            "pathName": "Score 4 - Mid No Rotate"
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AlignSwerve"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignSwerve"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AlignShooter"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignShooter"
+                  "name": "ScoreSpeaker"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreSpeaker"
           }
         }
       ]

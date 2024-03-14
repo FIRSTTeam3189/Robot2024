@@ -82,7 +82,7 @@
   {
     "name": "/Preferences/Robot Rotation P",
     "type": "double",
-    "value": 0.0025,
+    "value": 0.004,
     "properties": {
       "persistent": true
     }
@@ -98,7 +98,7 @@
   {
     "name": "/Preferences/Robot Rotation D",
     "type": "double",
-    "value": 0.0001,
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -194,7 +194,7 @@
   {
     "name": "/Preferences/Shooter Rotation Target",
     "type": "double",
-    "value": 60.0,
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -241,6 +241,22 @@
   },
   {
     "name": "/Preferences/Shooter Extension D",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Vision Enabled",
+    "type": "boolean",
+    "value": false,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/IntakeSetState Rotation D",
     "type": "double",
     "value": 0.0,
     "properties": {

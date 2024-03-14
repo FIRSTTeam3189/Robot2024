@@ -82,7 +82,7 @@
   {
     "name": "/Preferences/Robot Rotation P",
     "type": "double",
-    "value": 0.01,
+    "value": 0.0025,
     "properties": {
       "persistent": true
     }

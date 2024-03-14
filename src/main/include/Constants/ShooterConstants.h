@@ -40,7 +40,7 @@ namespace ShooterConstants {
     constexpr auto kDirectLoadTarget {50.0_deg};
     constexpr double kDirectLoadPower {-0.25};
     
-    constexpr auto kStartingConfigTarget {40.0_deg};
+    constexpr auto kStartingConfigTarget {59.0_deg};
     constexpr auto kRetractTarget {40.0_deg};
     constexpr auto kCloseTarget {59.0_deg};
     constexpr auto kAutoScoreTarget {59.0_deg};

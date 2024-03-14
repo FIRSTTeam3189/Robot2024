@@ -412,6 +412,10 @@ void RobotContainer::RegisterAutoCommands() {
     )
   ).ToPtr());
   
+  pathplanner::NamedCommands::registerCommand("RotateTo90", SwerveAutoAlign(m_swerveDrive, false, 90.0_deg).ToPtr());
+
+  pathplanner::NamedCommands::registerCommand("RotateToNegative30", SwerveAutoAlign(m_swerveDrive, false, -30.0_deg).ToPtr());
+
   pathplanner::NamedCommands::registerCommand("ScoreSpeaker", frc2::SequentialCommandGroup(
     // frc2::ParallelDeadlineGroup(
     //   frc2::WaitCommand(AutoConstants::kAutoRevUpTime),
@@ -427,7 +431,10 @@ void RobotContainer::RegisterAutoCommands() {
     )
   ).ToPtr());
 
-  pathplanner::NamedCommands::registerCommand("ShooterRotateToAutoTarget", SetShooterRotation(m_shooter, ShooterState::AutoScore).ToPtr());
+  pathplanner::NamedCommands::registerCommand("ShooterRotateToAutoTarget", frc2::SequentialCommandGroup(
+    frc2::InstantCommand([this]{ m_shooter->SetRollerPower(ShooterConstants::kShootPower); },{m_shooter}),
+    SetShooterRotation(m_shooter, ShooterState::AutoScore)
+  ).ToPtr());
 } 
 
 void RobotContainer::CreateAutoPaths() {

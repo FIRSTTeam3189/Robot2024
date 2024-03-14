@@ -4,8 +4,8 @@
 
 namespace ClimberConstants{
     //FIND IDS - krishna 
-    constexpr int kLeftServoID {0}; 
-    constexpr int kRightServoID {1}; 
+    constexpr int kLeftServoID {3}; 
+    constexpr int kRightServoID {0}; 
     constexpr int kRightMotorID {19};
     constexpr int kLefttMotorID {20};
     constexpr int kLimitSwitchPort {4};
