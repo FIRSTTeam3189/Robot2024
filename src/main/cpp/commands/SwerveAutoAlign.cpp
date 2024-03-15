@@ -18,8 +18,18 @@ m_goal(0.0_deg) {
   m_rotationPIDController.EnableContinuousInput(0_deg, 360_deg);
   if (shouldAlignSpeaker)
     m_goal = GetSpeakerGoalAngle();
-  else
+  else {
     m_goal = goal;
+    if (frc::DriverStation::GetAlliance()) {
+      if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+        if (m_goal > 0.0_deg) {
+          m_goal -= 180.0_deg;
+        } else {
+          m_goal += 180.0_deg;
+        }
+      }
+    }
+  }
 }
 
 //initialize all objects needed including the PID Controller enabling and variables to determien needed drive state of robot

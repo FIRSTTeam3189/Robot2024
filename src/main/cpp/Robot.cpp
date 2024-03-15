@@ -7,6 +7,7 @@
 #include <frc2/command/CommandScheduler.h>
 
 void Robot::RobotInit() {
+  frc::CameraServer::StartAutomaticCapture();
   (void)AutoConstants::kAutonomousPaths[0];
   (void)VisionConstants::kSyncBytes[0];
   EnableLiveWindowInTest(true);

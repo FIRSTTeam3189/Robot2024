@@ -282,7 +282,9 @@ void SwerveDrive::SetPose(frc::Pose2d pose, bool justRotation) {
     frc::SmartDashboard::PutNumber("Auto starting pose x", pose.X().value());
     frc::SmartDashboard::PutNumber("Auto starting pose y", pose.Y().value());
     frc::SmartDashboard::PutNumber("Auto starting pose rot", pose.Rotation().Degrees().value());
-    m_pigeon.SetYaw(pose.Rotation().Degrees());
+    for (int i = 0; i < 10; i++) {
+        m_pigeon.SetYaw(pose.Rotation().Degrees());
+    }
 }
 
 void SwerveDrive::ResetGyroscope() {

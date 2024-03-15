@@ -20,15 +20,15 @@ void PoseEstimatorHelper::UpdatePoseEstimator(wpi::array<frc::SwerveModulePositi
 }
 
 void PoseEstimatorHelper::SetActivePath(std::vector<frc::Pose2d> poses) {
-    m_estimatedPose.GetObject("path")->SetPoses(poses);
+    m_autoField.GetObject("path")->SetPoses(poses);
 }
 
 void PoseEstimatorHelper::SetCurrentAutoPose(frc::Pose2d pose) {
-    m_estimatedPose.SetRobotPose(pose);
+    m_autoField.SetRobotPose(pose);
 }
 
 void PoseEstimatorHelper::SetTargetAutoPose(frc::Pose2d pose) {
-    m_estimatedPose.GetObject("target pose")->SetPose(pose);
+    m_autoField.GetObject("target pose")->SetPose(pose);
 }
 
 frc::Pose2d PoseEstimatorHelper::GetEstimatedPose() {

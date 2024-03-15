@@ -16,12 +16,12 @@ namespace AutoConstants {
     // Distance from robot center to furthest module
     constexpr auto kDriveBaseRadius {0.282575_m};
     constexpr auto kMaxAutoModuleSpeed{4.0_mps};
-    // constexpr double kPTranslationAuto {4.5};
-    constexpr double kPTranslationAuto {1.0};
+    constexpr double kPTranslationAuto {4.5};
+    // constexpr double kPTranslationAuto {1.0};
     constexpr double kITranslationAuto {0.0};
     constexpr double kDTranslationAuto {0.0};
-    // constexpr double kPRotationAuto {4.0};
-    constexpr double kPRotationAuto {1.0};
+    constexpr double kPRotationAuto {4.0};
+    // constexpr double kPRotationAuto {1.0};
     constexpr double kIRotationAuto {0.0};
     constexpr double kDRotationAuto {0.0};
     const pathplanner::HolonomicPathFollowerConfig autoConfig {

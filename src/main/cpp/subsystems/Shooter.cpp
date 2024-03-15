@@ -5,8 +5,8 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() : 
-m_topRollerMotor(ShooterConstants::kLeaderRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
-m_bottomRollerMotor(ShooterConstants::kFollowerRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
+m_topRollerMotor(ShooterConstants::kTopRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
+m_bottomRollerMotor(ShooterConstants::kBottomRollerMotorID, rev::CANSparkFlex::MotorType::kBrushless),
 m_rollerEncoder(m_topRollerMotor.GetEncoder()),
 m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
@@ -106,7 +106,11 @@ void Shooter::SetRotation(units::degree_t target) {
     // else if (GetRotation() > 60.0_deg && (PIDValue + ffValue).value() >= 0.0)
     //     m_rotationMotor.SetVoltage(0.0_V);
     // else {
+    if (GetRotation() > 60.0_deg && (PIDValue + ffValue).value() >= 0.0) {
+        m_rotationMotor.SetVoltage(0.0_V);
+    } else {
         m_rotationMotor.SetVoltage(std::clamp((PIDValue + ffValue), -12.0_V, 12.0_V));
+    }
     // }
 }
 

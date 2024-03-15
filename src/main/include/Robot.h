@@ -7,6 +7,7 @@
 #include <optional>
 
 #include <frc/TimedRobot.h>
+#include <cameraserver/CameraServer.h>
 
 #include "RobotContainer.h"
 

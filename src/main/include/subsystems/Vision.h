@@ -8,6 +8,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/geometry/Transform3d.h>
 #include <frc/SerialPort.h>
+#include <frc/RobotBase.h>
 #include <frc/PowerDistribution.h>
 #include <frc/Preferences.h>
 

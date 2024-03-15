@@ -151,6 +151,22 @@ void Drive::Execute() {
               m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), m_arbitraryAngle.value()))
               * SwerveDriveConstants::kMaxAngularVelocity};
       break;
+    case(DriveState::SourceAlign) :
+      {
+        m_allianceSide = frc::DriverStation::GetAlliance();
+        auto angle = 0.0_deg;
+        if (m_allianceSide) {
+          if (m_allianceSide.value() == frc::DriverStation::Alliance::kBlue) {
+            angle = SwerveDriveConstants::kBlueSourceAlignTarget;
+          } else {
+            angle = SwerveDriveConstants::kRedSourceAlignTarget;
+          }
+        }
+        rot = -units::angular_velocity::radians_per_second_t{
+              m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), angle.value()))
+              * SwerveDriveConstants::kMaxAngularVelocity};
+        break;
+      }
     default:
       rot = units::angular_velocity::radians_per_second_t{0.0};
       break;

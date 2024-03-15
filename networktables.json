@@ -122,7 +122,7 @@
   {
     "name": "/Preferences/Shooter Rotation V",
     "type": "double",
-    "value": 2.5,
+    "value": 3.0,
     "properties": {
       "persistent": true
     }
@@ -170,7 +170,7 @@
   {
     "name": "/Preferences/Shooter Rotation P",
     "type": "double",
-    "value": 0.1,
+    "value": 0.125,
     "properties": {
       "persistent": true
     }

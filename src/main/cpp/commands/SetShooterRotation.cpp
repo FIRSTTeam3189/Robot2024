@@ -15,6 +15,9 @@ SetShooterRotation::SetShooterRotation(Shooter *shooter, ShooterState state) : m
 void SetShooterRotation::Initialize() {
   m_shooter->SetState(m_state);
   m_shooter->SetActive(true);
+  if(m_state == ShooterState::Close) {
+    m_shooter->SetRollerPower(ShooterConstants::kShootPower);
+  }
 }
 
 // Called repeatedly when this Command is scheduled to run

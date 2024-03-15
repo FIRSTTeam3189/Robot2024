@@ -10,7 +10,7 @@ namespace IntakeConstants{
     
     constexpr double kIntakePower {1.0};
     constexpr double kAmpScorePower {-1.0};
-    constexpr auto kAmpShootTime {1.5_s};
+    constexpr auto kAmpShootTime {2.0_s};
     constexpr double kLoadPower {0.5};
 
     constexpr unsigned int kRotationCurrentLimit {40};

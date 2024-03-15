@@ -4,19 +4,19 @@
 
 // Shooter Constants
 namespace ShooterConstants {
-    constexpr int kLeaderRollerMotorID {13};
-    constexpr int kFollowerRollerMotorID {14};
+    constexpr int kTopRollerMotorID {13};
+    constexpr int kBottomRollerMotorID {14};
     constexpr int kLoaderMotorID {15};
     constexpr int kRotationMotorID {16};
     constexpr int kLeftLimitSwitchPort {2};
     constexpr int kRightLimitSwitchPort {3};
 
-    constexpr double kPRotation {0.1};
+    constexpr double kPRotation {0.125};
     constexpr double kIRotation {0};
     constexpr double kDRotation {0.0};
     constexpr auto kGRotation {0.3_V};
     constexpr auto kSRotation {1.0_V};
-    constexpr auto kVRotation {2.5_V * 1.0_s / 1.0_rad};
+    constexpr auto kVRotation {3.0_V * 1.0_s / 1.0_rad};
     constexpr auto kARotation {0.0_V * 1.0_s * 1.0_s / 1.0_rad};
 
     constexpr double kFeedforward {1.0};
@@ -31,13 +31,13 @@ namespace ShooterConstants {
 
     constexpr auto kAxleToCenterDistance {0.0741_m};
     constexpr auto kAxleToGroundDistance {0.2185_m};
-    constexpr auto kSpeakerHeightTarget {2.0574_m};
+    constexpr auto kSpeakerHeightTarget {1.9074_m};
     // Intake load
     constexpr auto kLoadTarget {30.0_deg};
     constexpr double kLoadPower {0.5};
     constexpr double kUnloadPower {-0.25};
     // Direct shooter load
-    constexpr auto kDirectLoadTarget {50.0_deg};
+    constexpr auto kDirectLoadTarget {59.0_deg};
     constexpr double kDirectLoadPower {-0.25};
     
     constexpr auto kStartingConfigTarget {59.0_deg};
@@ -49,7 +49,7 @@ namespace ShooterConstants {
     constexpr double kRotationOffset {94.0};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
-    constexpr unsigned int kRotationCurrentLimit {40};
+    constexpr unsigned int kRotationCurrentLimit {30};
     constexpr unsigned int kRollerCurrentLimit {50};
     constexpr unsigned int kLoaderCurrentLimit {30};
     constexpr auto kRotationStopDistance {5.0_deg};

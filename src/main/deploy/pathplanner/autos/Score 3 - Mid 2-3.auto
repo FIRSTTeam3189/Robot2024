@@ -53,12 +53,6 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "AlignSwerve"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
                         "name": "AlignShooter"
                       }
                     }
