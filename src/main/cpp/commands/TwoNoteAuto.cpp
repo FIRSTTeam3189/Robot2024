@@ -27,7 +27,7 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
           m_swerve->SetPose(frc::Pose2d{0.65_m, 6.23_m, frc::Rotation2d{60.0_deg}}, false);
           break;
         case(StartingPosition::BlueMid) :
-          m_swerve->SetPose(frc::Pose2d{1.3_m, 5.52_m, frc::Rotation2d{0.0_deg}}, false);
+          m_swerve->SetPose(frc::Pose2d{1.26_m, 5.52_m, frc::Rotation2d{0.0_deg}}, false);
           break;
         case(StartingPosition::BlueSource) :
           m_swerve->SetPose(frc::Pose2d{0.65_m, 4.46_m, frc::Rotation2d{-60.0_deg}}, false);
@@ -45,16 +45,64 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
           break;
       }
     },{m_swerve}),
-    frc2::WaitCommand(5.0_s),
+    // frc2::WaitCommand(5.0_s),
+    frc2::InstantCommand([this]{ m_shooter->SetRollerPower(ShooterConstants::kShootPower); m_shooter->SetBrakeMode(BrakeMode::Brake); },{m_shooter}),
+    SetShooterRotation(m_shooter, ShooterState::AutoScore),
     frc2::ParallelDeadlineGroup(
-    frc2::WaitCommand(4.0_s),
-    frc2::RunCommand([this]{
-      units::angular_velocity::radians_per_second_t rot = 
-            -units::angular_velocity::radians_per_second_t{
-            m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw().value(), 180.0)
-            * SwerveDriveConstants::kMaxAngularVelocity};
-      m_swerve->Drive(1.0_mps, 0.225_mps, rot, true, frc::Translation2d{0.0_m, frc::Rotation2d{}});
-    },{m_swerve}))
+      frc2::WaitCommand(ShooterConstants::kShootTime),
+      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+    ),
+    frc2::ParallelCommandGroup(
+      SetShooterRotation(m_shooter, ShooterState::Zero),
+      SetIntakeRotation(m_intake, IntakeState::Retracted)
+    ),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(3.0_s),
+      frc2::SequentialCommandGroup(
+        frc2::ParallelCommandGroup(
+          frc2::ParallelRaceGroup(
+            frc2::WaitCommand(1.0_s),
+            SetIntakeRotation(m_intake, IntakeState::Extended)
+          ),
+          frc2::ParallelRaceGroup(
+            frc2::WaitCommand(1.0_s),
+            SetShooterRotation(m_shooter, ShooterState::Load)
+          )
+        ),
+        frc2::ParallelRaceGroup(
+          frc2::WaitCommand(3.0_s),
+          RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnFirstDetection),
+          RunIntake(m_intake, IntakeConstants::kIntakePower)
+        )
+      ),
+      frc2::RunCommand([this]{
+        units::angular_velocity::radians_per_second_t rot = 
+              -units::angular_velocity::radians_per_second_t{
+              m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw().value(), 0.0)
+              * SwerveDriveConstants::kMaxAngularVelocity};
+        m_swerve->Drive(-1.0_mps, 0.0_mps, rot, true, frc::Translation2d{0.0_m, frc::Rotation2d{}});
+      },{m_swerve})
+    ),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(3.0_s),
+      frc2::RunCommand([this]{
+          units::angular_velocity::radians_per_second_t rot = 
+                -units::angular_velocity::radians_per_second_t{
+                m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw().value(), 0.0)
+                * SwerveDriveConstants::kMaxAngularVelocity};
+          m_swerve->Drive(1.0_mps, 0.0_mps, rot, true, frc::Translation2d{0.0_m, frc::Rotation2d{}});
+        },{m_swerve})
+    ),
+    frc2::InstantCommand([this]{ m_shooter->SetRollerPower(ShooterConstants::kShootPower); m_shooter->SetBrakeMode(BrakeMode::Coast); },{m_shooter}),
+    SetShooterRotation(m_shooter, ShooterState::AutoScore),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kShootTime),
+      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+    ),
+    frc2::ParallelCommandGroup(
+      SetShooterRotation(m_shooter, ShooterState::Zero),
+      SetIntakeRotation(m_intake, IntakeState::Retracted)
+    )
 
     // calculate PID stuff and then use it to drive at the desired velocity based on target
   

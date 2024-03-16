@@ -268,10 +268,12 @@ void Shooter::SetActive(bool active) {
 
 bool Shooter::NoteDetected(){
     if (!m_limitSwitchRight.Get() || !m_limitSwitchLeft.Get()){
+        frc::SmartDashboard::PutBoolean("Shooter note detected", true);
         return true;
-    }
-    return false;
-    
+    } else {
+        frc::SmartDashboard::PutBoolean("Shooter note detected", false);
+        return false;
+    } 
 }
 
 void Shooter::SetBrakeMode(BrakeMode mode) {

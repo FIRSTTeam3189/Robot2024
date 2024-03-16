@@ -18,7 +18,7 @@
 class RunClimber
     : public frc2::CommandHelper<frc2::Command, RunClimber> {
  public:
-  RunClimber(Climber *climber, double power);
+  RunClimber(Climber *climber, double leftPower, double rightPower);
 
   void Initialize() override;
 
@@ -30,5 +30,6 @@ class RunClimber
 
  private:
   Climber *m_climber;
-  double m_power;
+  double m_leftPower;
+  double m_rightPower;
 };

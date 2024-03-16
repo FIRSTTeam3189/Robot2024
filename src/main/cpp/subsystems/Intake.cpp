@@ -108,11 +108,13 @@ void Intake::SetActive(bool active) {
 }
 
 bool Intake::NoteDetected(){
-    if (!m_limitSwitchLeft.Get() || !m_limitSwitchRight.Get()){
+    if (!m_limitSwitchRight.Get() || !m_limitSwitchLeft.Get()){
+        frc::SmartDashboard::PutBoolean("Intake note detected", true);
         return true;
+    } else {
+        frc::SmartDashboard::PutBoolean("Intake note detected", false);
+        return false;
     } 
-
-    return false;
 }
 
 // Limit switches to detect of the note is there

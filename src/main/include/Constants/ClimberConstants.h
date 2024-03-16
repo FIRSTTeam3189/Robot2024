@@ -11,9 +11,13 @@ namespace ClimberConstants{
     constexpr int kLimitSwitchPort {4};
     constexpr bool kInvertLeftMotor {false};
     constexpr bool kInvertRightMotor {false};
-    constexpr double kExtendPower {0.25};
-    constexpr double kExtendServoAngle {0.5};
-    constexpr double kRetractPower {-0.25};
-    constexpr double kRetractServoAngle {0.0};
+    constexpr double kExtendPower {0.5};
+    constexpr double kBothExtendPower {0.75};
+    constexpr double kLeftExtendServoAngle {0.75};
+    constexpr double kRightExtendServoAngle {0.0};
+    constexpr double kRetractPower {-0.5};
+    constexpr double kBothRetractPower {-1.0};
+    constexpr double kLeftRetractServoAngle {0.0};
+    constexpr double kRightRetractServoAngle {0.5};
     constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
 }

@@ -33,14 +33,14 @@ void Climber::Periodic() {
     frc::SmartDashboard::PutNumber("Right servo rotation", m_rightServo.Get());
 }
 
-void Climber::SetPower(double power){
-    m_leftMotor.Set(power);
-    m_rightMotor.Set(power);
+void Climber::SetPower(double leftPower, double rightPower){
+    m_leftMotor.Set(leftPower);
+    m_rightMotor.Set(-rightPower);
 }
 
-void Climber::SetServoRotation(double angle){
-    m_leftServo.Set(angle);
-    m_rightServo.Set(angle);
+void Climber::SetServoRotation(double leftAngle, double rightAngle){
+    m_leftServo.Set(leftAngle);
+    m_rightServo.Set(rightAngle);
 }
 
 void Climber::SetBrakeMode(BrakeMode mode) {

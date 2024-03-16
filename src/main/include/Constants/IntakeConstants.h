@@ -14,7 +14,7 @@ namespace IntakeConstants{
     constexpr double kLoadPower {0.5};
 
     constexpr unsigned int kRotationCurrentLimit {40};
-    constexpr unsigned int kRollerCurrentLimit {35};
+    constexpr unsigned int kRollerCurrentLimit {45};
 
     // constexpr double kPRotation {0.005};
     // constexpr double kIRotation {0.00000};

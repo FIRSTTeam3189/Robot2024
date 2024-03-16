@@ -6,15 +6,15 @@
 
 #include "commands/RunClimber.h"
 
-RunClimber::RunClimber(Climber *climber, double power) : m_climber(climber),
-                                                         m_power(power) {
+RunClimber::RunClimber(Climber *climber, double leftPower, double rightPower) : m_climber(climber),
+                                                         m_leftPower(leftPower), m_rightPower(rightPower) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(climber);
 }
 
 // Called when the command is initially scheduled.
 void RunClimber::Initialize() {
-  m_climber->SetPower(m_power);
+  m_climber->SetPower(m_leftPower, m_rightPower);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -22,7 +22,7 @@ void RunClimber::Execute() {}
 
 // Called once the command ends or is interrupted.
 void RunClimber::End(bool interrupted) {
-  m_climber->SetPower(0.0);
+  m_climber->SetPower(0.0, 0.0);
 }
 
 // Returns true when the command should end.

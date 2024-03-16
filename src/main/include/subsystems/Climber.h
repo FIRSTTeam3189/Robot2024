@@ -16,8 +16,8 @@
 class Climber : public frc2::SubsystemBase {
  public:
   Climber();
-  void SetPower(double power);
-  void SetServoRotation(double angle);
+  void SetPower(double leftPower, double rightPower);
+  void SetServoRotation(double leftAngle, double rightAngle);
   void SetBrakeMode(BrakeMode mode);
   void ToggleGlobalBrakeMode();
   BrakeMode GetBrakeMode();
