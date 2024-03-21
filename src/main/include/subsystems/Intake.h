@@ -19,8 +19,13 @@
 #include <rev/CANSparkMax.h>
 #include "Constants/IntakeConstants.h"
 #include "Constants/GlobalConstants.h"
+#include "Constants/OperatorConstants.h"
+#include <frc/XboxController.h>
+#include <frc2/command/button/CommandXboxController.h>
 
 enum class IntakeState { None, Extended, Amp, Retracted };
+
+enum RumbleType { kLeftRumble , kRightRumble , kBothRumble };
 
 class Intake : public frc2::SubsystemBase {
  public:
@@ -62,6 +67,7 @@ class Intake : public frc2::SubsystemBase {
   units::degrees_per_second_squared_t m_acceleration;
   units::degrees_per_second_squared_t m_targetAcceleration;
   units::second_t m_lastTime;
+  frc2::CommandXboxController m_bill;
   bool m_isActive;
   
   // String keys for PID preferences

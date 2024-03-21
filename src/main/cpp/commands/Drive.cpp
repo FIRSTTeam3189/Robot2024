@@ -4,8 +4,8 @@
 
 #include "commands/Drive.h"
 
-Drive::Drive(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle) :
-m_bill(joystick),
+Drive::Drive(frc2::CommandXboxController *controller, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle) :
+m_bill(controller),
 m_swerveDrive(swerveDrive),
 m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot, SwerveDriveConstants::kDRot),
 m_driveState(driveState),

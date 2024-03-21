@@ -7,7 +7,7 @@
 #include "subsystems/Climber.h"
 
 Climber::Climber() : 
-m_leftMotor(ClimberConstants::kLefttMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless),
+m_leftMotor(ClimberConstants::kLeftMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless),
 m_rightMotor(ClimberConstants::kRightMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
 m_leftServo(ClimberConstants::kLeftServoID),
 m_rightServo(ClimberConstants::kRightServoID),

@@ -40,7 +40,7 @@ RobotContainer::RobotContainer() {
 void RobotContainer::ConfigureDriverBindings() {
   // Bill controls
   // Setting the Drive State (Normal Field relative and Rotational Velocity Control) to the desired one based on controller right stick
-  frc2::Trigger toggleATan2RotButton{m_bill.Button(OperatorConstants::kButtonIDRightStick)};
+  frc2::Trigger toggleATan2RotButton{m_bill.RightStick()};
   toggleATan2RotButton.OnTrue(
     frc2::InstantCommand([this]{
       if (m_driveState == DriveState::HeadingControl) {
@@ -56,7 +56,7 @@ void RobotContainer::ConfigureDriverBindings() {
 
   //the left bumper will set the intake to be active by first extending it and then running it with a parrallel command group. Shooter goes to load position while this is happening
 
-  frc2::Trigger fullIntakeButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
+  frc2::Trigger fullIntakeButton{m_bill.LeftBumper() && !m_bill.RightBumper()};
   fullIntakeButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{ m_shooter->SetBrakeMode(BrakeMode::Brake); m_shooter->SetRollerPower(0.0); },{m_shooter}),
     frc2::ParallelCommandGroup(
@@ -88,7 +88,7 @@ void RobotContainer::ConfigureDriverBindings() {
   ).ToPtr());
 
   //set the intake to get the piece using logic from the AmpIntake command to score in the amp
-  frc2::Trigger ampIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
+  frc2::Trigger ampIntakeButton{m_bill.RightBumper() && !m_bill.LeftBumper()};
   ampIntakeButton.OnTrue(frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeState::Extended),
     AmpIntake(m_intake, IntakeConstants::kIntakePower)
@@ -101,7 +101,7 @@ void RobotContainer::ConfigureDriverBindings() {
   ).ToPtr());
 
   //align to the speaker when the left trigger is pressed
-  frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  frc2::Trigger alignSpeakerButton{m_bill.LeftTrigger() && !m_bill.RightTrigger()};
   alignSpeakerButton.OnTrue(frc2::InstantCommand([this]{
     if (m_driveState == DriveState::HeadingControl) {
       m_driveState = DriveState::SpeakerAlign;
@@ -116,8 +116,10 @@ void RobotContainer::ConfigureDriverBindings() {
   // driveUnderStageButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
   // driveUnderStageButton.OnFalse(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
 
-  // score in the amp 
-  frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
+  /* score in the amp, we put in the extra !m_bill.LeftTrigger() because there's another button that uses both right trigger
+  and left trigger, so if we didn't include that this function would run while the actual function we want to run runs, along
+  with the one assigned to left trigger, which is why we do the same thing in that one as well */
+  frc2::Trigger ampScoreIntakeButton{m_bill.RightTrigger() && !m_bill.LeftTrigger()};
   ampScoreIntakeButton.OnTrue(frc2::ParallelCommandGroup(
     frc2::InstantCommand([this]{
       m_driveState = DriveState::ArbitraryAngleAlign;
@@ -140,7 +142,7 @@ void RobotContainer::ConfigureDriverBindings() {
   ).ToPtr());
 
   // reset the pose of the robot in the case of noise or natural dampening
-  frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
+  frc2::Trigger resetPoseButton{m_bill.LeftBumper() && m_bill.RightBumper()};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
     if (frc::DriverStation::GetAlliance()) {
       if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
@@ -151,7 +153,7 @@ void RobotContainer::ConfigureDriverBindings() {
   },{m_swerveDrive}).ToPtr());
 
   // based on alliance, it will reset robot pose to the speaker position
-  frc2::Trigger resetSpeakerPoseButton{m_bill.Button(OperatorConstants::kButtonIDCreate)};
+  frc2::Trigger resetSpeakerPoseButton{m_bill.Back()};
   resetSpeakerPoseButton.OnTrue(frc2::InstantCommand([this]{
     if (frc::DriverStation::GetAlliance()) {
       if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
@@ -162,7 +164,7 @@ void RobotContainer::ConfigureDriverBindings() {
   },{m_swerveDrive}).ToPtr());
 
   // enables climb mode
-  frc2::Trigger toggleClimbModeButton{m_bill.Button(OperatorConstants::kButtonIDMenu)};
+  frc2::Trigger toggleClimbModeButton{m_bill.Start()};
   toggleClimbModeButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
       if (GetSuperstructureState() == SuperstructureState::Default) {
@@ -179,7 +181,7 @@ void RobotContainer::ConfigureDriverBindings() {
     )
   ).ToPtr());
 
-  frc2::Trigger climbConfigButton{m_bill.Button(OperatorConstants::kButtonIDMicrophone)};
+  frc2::Trigger climbConfigButton{m_bill.LeftTrigger() && m_bill.RightTrigger()};
   climbConfigButton.OnTrue(frc2::ParallelCommandGroup(
     frc2::InstantCommand([this]{ m_swerveDrive->ToggleSlowMode(); },{m_swerveDrive}),
     SetIntakeRotation(m_intake, IntakeState::Extended),
@@ -207,7 +209,7 @@ void RobotContainer::ConfigureDriverBindings() {
 void RobotContainer::ConfigureCoDriverBindings() {
   // Ted controls
   // human player load controls: sets target to the human player source based on alliance
-  frc2::Trigger directShooterLoadButton{m_ted.Button(OperatorConstants::kButtonIDLeftBumper)};
+  frc2::Trigger directShooterLoadButton{m_ted.LeftBumper()};
   directShooterLoadButton.OnTrue(frc2::ParallelCommandGroup(
     Drive(&m_bill, m_swerveDrive, DriveState::SourceAlign),
     // Drive(&m_bill, m_swerveDrive, DriveState::HeadingControl, m_driveAligntarget),
@@ -236,7 +238,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     // regular drive state if we don't want to directly load
   ).ToPtr());
 
-  frc2::Trigger unloadButton{m_ted.Button(OperatorConstants::kButtonIDRightBumper)};
+  frc2::Trigger unloadButton{m_ted.RightBumper()};
   unloadButton.OnTrue(RunLoader(m_shooter, ShooterConstants::kUnloadPower, ShooterConstants::kUnloadPower).ToPtr());
   unloadButton.OnFalse(
     frc2::InstantCommand([this]{
@@ -245,7 +247,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     },{m_shooter}).ToPtr()
   );
 
-  frc2::Trigger autoShootButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  frc2::Trigger autoShootButton{m_bill.LeftTrigger() && !m_bill.RightTrigger()};
   autoShootButton.OnTrue(ShooterAutoAlign(m_shooter, m_helper, m_vision, false).ToPtr());
   autoShootButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
@@ -279,7 +281,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   //   },{m_shooter})
   // ).ToPtr());
   
-  frc2::Trigger closeShootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
+  frc2::Trigger closeShootButton{m_ted.RightTrigger() && !m_ted.LeftTrigger()};
   closeShootButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::Close),
     RunShooter(m_shooter, ShooterConstants::kShootPower)
@@ -309,7 +311,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   //   },{m_shooter})
   // ).ToPtr());
 
-  frc2::Trigger extendRightClimberButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
+  frc2::Trigger extendRightClimberButton{m_ted.B()};
   extendRightClimberButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
       m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle);
@@ -329,7 +331,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
 
-  frc2::Trigger extendLeftClimberButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
+  frc2::Trigger extendLeftClimberButton{m_ted.Y()};
   extendLeftClimberButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
       m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle);
@@ -349,7 +351,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
 
-  frc2::Trigger retractRightClimberButton{m_ted.Button(OperatorConstants::kButtonIDX)};
+  frc2::Trigger retractRightClimberButton{m_ted.A()};
   retractRightClimberButton.OnTrue(RunClimber(m_climber, ClimberConstants::kRetractPower, 0.0)
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
@@ -359,7 +361,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
 
-  frc2::Trigger retractLeftClimberButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
+  frc2::Trigger retractLeftClimberButton{m_ted.X()};
   retractLeftClimberButton.OnTrue(RunClimber(m_climber, 0.0, ClimberConstants::kRetractPower)
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
@@ -369,7 +371,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
 
-  frc2::Trigger extendBothClimbersButton{m_ted.Button(OperatorConstants::kButtonIDCreate)};
+  frc2::Trigger extendBothClimbersButton{m_ted.Back()};
   extendBothClimbersButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
       m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle);
@@ -389,7 +391,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
 
-  frc2::Trigger retractBothClimbersButton{m_ted.Button(OperatorConstants::kButtonIDMenu)};
+  frc2::Trigger retractBothClimbersButton{m_ted.Start()};
   retractBothClimbersButton.OnTrue(RunClimber(m_climber, ClimberConstants::kBothRetractPower, ClimberConstants::kBothRetractPower)
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
