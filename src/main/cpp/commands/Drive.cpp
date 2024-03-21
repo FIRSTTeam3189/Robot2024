@@ -105,8 +105,11 @@ void Drive::Execute() {
 
   // the controller values get swapped (-m_bill) to drive field relative based on alliance
 
-  joystickX = pow(joystickX, 3.0);
-  joystickY = pow(joystickY, 3.0);
+  // joystickX = pow(joystickX, 3.0);
+  // joystickY = pow(joystickY, 3.0);
+
+  joystickX = (.4 * joystickX) + (.6 * pow(joystickX, 3));
+  joystickY = (.4 * joystickY) + (.6 * pow(joystickY, 3));
 
   // joystick parameters
 
