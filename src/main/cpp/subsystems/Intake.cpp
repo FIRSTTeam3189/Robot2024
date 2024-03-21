@@ -13,6 +13,7 @@ Intake::Intake() :
  m_profiledPIDController(IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation, m_constraints),
  m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
  m_target(IntakeConstants::kRetractTarget),
+ m_bill(OperatorConstants::kDriverControllerPort),
 m_isActive(false)
 {
     ConfigRotationMotor();
@@ -110,6 +111,7 @@ void Intake::SetActive(bool active) {
 bool Intake::NoteDetected(){
     if (!m_limitSwitchRight.Get() || !m_limitSwitchLeft.Get()){
         frc::SmartDashboard::PutBoolean("Intake note detected", true);
+        m_bill.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 1.0);
         return true;
     } else {
         frc::SmartDashboard::PutBoolean("Intake note detected", false);
