@@ -8,7 +8,7 @@
 enum class StartingPosition { RedAmp, RedMid, RedSource, BlueAmp, BlueMid, BlueSource };
 
 namespace AutoConstants {
-    constexpr StartingPosition kStartingPosition {StartingPosition::RedMid};
+    constexpr StartingPosition kStartingPosition {StartingPosition::BlueSource};
 
     constexpr auto kAlignAllowableDriveSpeed {0.25_mps};
     constexpr double kAutoAlignTolerance {2.5};
