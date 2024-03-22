@@ -78,6 +78,10 @@ void Intake::ConfigPID() {
 
 // This method will be called once per scheduler run
 void Intake::Periodic() {
+    if(m_lastTimeRumble >= 0.5_s) {
+        m_bill.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 0);
+    }
+
     frc::SmartDashboard::PutNumber("Intake PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Intake rotation", GetRotation().value());
     frc::SmartDashboard::PutNumber("Intake power", m_rollerMotor.Get());
@@ -112,6 +116,7 @@ bool Intake::NoteDetected(){
     if (!m_limitSwitchRight.Get() || !m_limitSwitchLeft.Get()){
         frc::SmartDashboard::PutBoolean("Intake note detected", true);
         m_bill.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 1.0);
+        m_lastTimeRumble = frc::Timer::GetFPGATimestamp();
         return true;
     } else {
         frc::SmartDashboard::PutBoolean("Intake note detected", false);
