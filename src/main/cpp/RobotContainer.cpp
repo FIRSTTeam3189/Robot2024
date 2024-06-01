@@ -141,25 +141,28 @@ void RobotContainer::ConfigureDriverBindings() {
 
   // reset the pose of the robot in the case of noise or natural dampening
   frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
-  resetPoseButton.OnTrue(frc2::InstantCommand([this]{
-    if (frc::DriverStation::GetAlliance()) {
-      if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
-        m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
-      else
-        m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{180.0_deg}}, true);
-    }
-  },{m_swerveDrive}).ToPtr());
+  // resetPoseButton.OnTrue(frc2::InstantCommand([this]{
+  //   if (frc::DriverStation::GetAlliance()) {
+  //     if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
+  //       m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
+  //     else
+  //       m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{180.0_deg}}, true);
+  //   }
+  // },{m_swerveDrive}).ToPtr());
 
   // based on alliance, it will reset robot pose to the speaker position
   frc2::Trigger resetSpeakerPoseButton{m_bill.Button(OperatorConstants::kButtonIDCreate)};
-  resetSpeakerPoseButton.OnTrue(frc2::InstantCommand([this]{
-    if (frc::DriverStation::GetAlliance()) {
-      if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
-        m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{0.0_deg}}, false);
-      else
-        m_swerveDrive->SetPose(frc::Pose2d{15.579_m, 5.50_m, frc::Rotation2d{180.0_deg}}, false);
-    }
-  },{m_swerveDrive}).ToPtr());
+  // resetSpeakerPoseButton.OnTrue(frc2::InstantCommand([this]{
+  //   if (frc::DriverStation::GetAlliance()) {
+  //     if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
+  //       m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{0.0_deg}}, false);
+  //     else
+  //       m_swerveDrive->SetPose(frc::Pose2d{15.579_m, 5.50_m, frc::Rotation2d{180.0_deg}}, false);
+  //   }
+  // },{m_swerveDrive}).ToPtr());
+
+  resetSpeakerPoseButton.OnTrue(RunIntake(m_intake, 0.5).ToPtr());
+  resetSpeakerPoseButton.OnFalse(RunIntake(m_intake, 0.0).ToPtr());
 
   // enables climb mode
   frc2::Trigger toggleClimbModeButton{m_bill.Button(OperatorConstants::kButtonIDMenu)};
