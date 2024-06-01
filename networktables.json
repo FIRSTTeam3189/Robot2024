@@ -250,7 +250,7 @@
   {
     "name": "/Preferences/Vision Enabled",
     "type": "boolean",
-    "value": false,
+    "value": true,
     "properties": {
       "persistent": true
     }

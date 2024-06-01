@@ -2,17 +2,17 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "RobotContainer.h"
+#include "RobotContainerXbox.h"
 
 #include <frc2/command/button/Trigger.h>
 
-RobotContainer::RobotContainer() {
+RobotContainerXbox::RobotContainerXbox() {
   (void)VisionConstants::kSyncBytes[0];
   RegisterAutoCommands();
   
   // Initialize all of your commands and subsystems here 
 
-  m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+  m_swerveDrive->SetDefaultCommand(DriveXbox(&m_bill, m_swerveDrive, m_driveState));
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   
   // m_intake->SetDefaultCommand(frc2::RunCommand([this] {
@@ -37,7 +37,7 @@ RobotContainer::RobotContainer() {
   
 }
 
-void RobotContainer::ConfigureDriverBindings() {
+void RobotContainerXbox::ConfigureDriverBindings() {
   // Bill controls
   // Setting the Drive State (Normal Field relative and Rotational Velocity Control) to the desired one based on controller right stick
   frc2::Trigger toggleATan2RotButton{m_bill.RightStick()};
@@ -48,7 +48,7 @@ void RobotContainer::ConfigureDriverBindings() {
       } else if (m_driveState == DriveState::RotationVelocityControl) {
         m_driveState = DriveState::HeadingControl;
       }
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+      m_swerveDrive->SetDefaultCommand(DriveXbox(&m_bill, m_swerveDrive, m_driveState));
     },{m_swerveDrive}).ToPtr()
   );
 
@@ -72,7 +72,14 @@ void RobotContainer::ConfigureDriverBindings() {
     frc2::ParallelRaceGroup(
       RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnFirstDetection),
       RunIntake(m_intake, IntakeConstants::kIntakePower)
-    )
+    ),
+    frc2::InstantCommand([this]{
+        m_bill.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 1.0);
+    },{}),
+    frc2::WaitCommand(1.0_s),
+    frc2::InstantCommand([this]{
+        m_bill.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 0.0);
+    },{})
   ).ToPtr());
   fullIntakeButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
@@ -108,7 +115,7 @@ void RobotContainer::ConfigureDriverBindings() {
     } else {
       m_driveState = DriveState::HeadingControl;
     }
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+      m_swerveDrive->SetDefaultCommand(DriveXbox(&m_bill, m_swerveDrive, m_driveState));
     },{m_swerveDrive}).ToPtr()
   );
 
@@ -124,15 +131,15 @@ void RobotContainer::ConfigureDriverBindings() {
     frc2::InstantCommand([this]{
       m_driveState = DriveState::ArbitraryAngleAlign;
     //   //setting drive state to align to a an arbitrary angle
-    //   m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState, SwerveDriveConstants::kAmpAlignTarget));
+    //   m_swerveDrive->SetDefaultCommand(DriveXbox(&m_bill, m_swerveDrive, m_driveState, SwerveDriveConstants::kAmpAlignTarget));
     },{}),
-    Drive(&m_bill, m_swerveDrive, DriveState::ArbitraryAngleAlign, SwerveDriveConstants::kAmpAlignTarget),
+    DriveXbox(&m_bill, m_swerveDrive, DriveState::ArbitraryAngleAlign, SwerveDriveConstants::kAmpAlignTarget),
     SetIntakeRotation(m_intake, IntakeState::Amp)
   ).ToPtr());
   ampScoreIntakeButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
       m_driveState = DriveState::HeadingControl;
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+      m_swerveDrive->SetDefaultCommand(DriveXbox(&m_bill, m_swerveDrive, m_driveState));
     },{m_swerveDrive}),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(IntakeConstants::kAmpShootTime), 
@@ -206,13 +213,13 @@ void RobotContainer::ConfigureDriverBindings() {
   // toggleSlowModeButton.OnTrue(frc2::InstantCommand([this]{ m_swerveDrive->ToggleSlowMode(); },{m_swerveDrive}).ToPtr());
 }
 
-void RobotContainer::ConfigureCoDriverBindings() {
+void RobotContainerXbox::ConfigureCoDriverBindings() {
   // Ted controls
   // human player load controls: sets target to the human player source based on alliance
   frc2::Trigger directShooterLoadButton{m_ted.LeftBumper()};
   directShooterLoadButton.OnTrue(frc2::ParallelCommandGroup(
-    Drive(&m_bill, m_swerveDrive, DriveState::SourceAlign),
-    // Drive(&m_bill, m_swerveDrive, DriveState::HeadingControl, m_driveAligntarget),
+    DriveXbox(&m_bill, m_swerveDrive, DriveState::SourceAlign),
+    // DriveXbox(&m_bill, m_swerveDrive, DriveState::HeadingControl, m_driveAligntarget),
     frc2::SequentialCommandGroup(
       SetShooterRotation(m_shooter, ShooterState::DirectLoad),
       RunLoader(m_shooter, ShooterConstants::kDirectLoadPower, ShooterConstants::kDirectLoadPower, ShooterEndCondition::None),
@@ -225,7 +232,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   directShooterLoadButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
       m_driveState = DriveState::HeadingControl;
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+      m_swerveDrive->SetDefaultCommand(DriveXbox(&m_bill, m_swerveDrive, m_driveState));
     },{m_swerveDrive}),
     frc2::InstantCommand([this]{
       m_shooter->SetRollerPower(0.0);
@@ -420,7 +427,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   // shooterFarRangeButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
 }
 
-void RobotContainer::RegisterAutoCommands() {
+void RobotContainerXbox::RegisterAutoCommands() {
   // Start of Auto Events
   pathplanner::NamedCommands::registerCommand("AlignShooter", frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
@@ -504,7 +511,7 @@ void RobotContainer::RegisterAutoCommands() {
   ).ToPtr());
 } 
 
-void RobotContainer::CreateAutoPaths() {
+void RobotContainerXbox::CreateAutoPaths() {
   m_chooser.SetDefaultOption("N/A", nullptr);\
   for (auto autoPath : AutoConstants::kAutonomousPaths) {
     m_chooser.AddOption(autoPath, new pathplanner::PathPlannerAuto(std::string{autoPath}));
@@ -531,21 +538,21 @@ void RobotContainer::CreateAutoPaths() {
   });
 }
 
-frc2::Command* RobotContainer::GetAutonomousCommand() {
+frc2::Command* RobotContainerXbox::GetAutonomousCommand() {
   // An example command will be run in autonomous
   return m_chooser.GetSelected();
 }
 
-SuperstructureState RobotContainer::GetSuperstructureState() {
+SuperstructureState RobotContainerXbox::GetSuperstructureState() {
   return m_superstructureState;
 }
 
-bool RobotContainer::IsClimbState() {
+bool RobotContainerXbox::IsClimbState() {
   frc::SmartDashboard::PutBoolean("Climb mode", m_superstructureState == SuperstructureState::Climb);
   return m_superstructureState == SuperstructureState::Climb;
 }
 
-void RobotContainer::SetAllCoast() {
+void RobotContainerXbox::SetAllCoast() {
   m_climber->SetBrakeMode(BrakeMode::Coast);
   m_intake->SetBrakeMode(BrakeMode::Coast);
   m_shooter->SetBrakeMode(BrakeMode::Coast);
@@ -554,7 +561,7 @@ void RobotContainer::SetAllCoast() {
 
 // motors will coast along
 
-void RobotContainer::SetAllNormalBrakeMode() {
+void RobotContainerXbox::SetAllNormalBrakeMode() {
   m_climber->SetBrakeMode(BrakeMode::Default);
   m_intake->SetBrakeMode(BrakeMode::Default);
   m_shooter->SetBrakeMode(BrakeMode::Default);
@@ -563,11 +570,11 @@ void RobotContainer::SetAllNormalBrakeMode() {
 
 // motors will stop
 
-BrakeMode RobotContainer::GetBrakeMode() {
+BrakeMode RobotContainerXbox::GetBrakeMode() {
   return m_climber->GetBrakeMode();
 }
 
-void RobotContainer::ConfigureTestBindings() {
+void RobotContainerXbox::ConfigureTestBindings() {
 
   // Tets controls to run motors individually as well as climber
   // if (m_test.GetName().compare("") != 0) {

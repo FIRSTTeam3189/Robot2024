@@ -13,8 +13,6 @@
 #include <frc2/command/button/CommandJoystick.h>
 #include "subsystems/SwerveDrive.h"
 #include "Constants/OperatorConstants.h"
-#include <frc/XboxController.h>
-#include <frc2/command/button/CommandXboxController.h>
 
 /**
  * An example command.
@@ -25,10 +23,10 @@
  */
 enum class DriveState {HeadingControl, RotationVelocityControl, SpeakerAlign, ArbitraryAngleAlign, SourceAlign } ;
 
-class Drive
-    : public frc2::CommandHelper<frc2::Command, Drive> {
+class DrivePS5
+    : public frc2::CommandHelper<frc2::Command, DrivePS5> {
  public:
-  Drive(frc2::CommandXboxController *controller, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle = 0.0_deg);
+  DrivePS5(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle = 0.0_deg);
   units::angular_velocity::radians_per_second_t GetDesiredRotationalVelocity();
   units::angular_velocity::radians_per_second_t GetRotVelSpeakerAlign();
   void UpdatePreferences();
@@ -42,7 +40,7 @@ class Drive
   bool IsFinished() override;
 
  private:
-  frc2::CommandXboxController *m_bill;
+  frc2::CommandJoystick *m_bill;
   SwerveDrive *m_swerveDrive;
   frc::PIDController m_rotationPIDController;
   DriveState m_driveState;

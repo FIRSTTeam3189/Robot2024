@@ -67,7 +67,6 @@ class Intake : public frc2::SubsystemBase {
   units::degrees_per_second_squared_t m_acceleration;
   units::degrees_per_second_squared_t m_targetAcceleration;
   units::second_t m_lastTime;
-  units::second_t m_lastTimeRumble;
   frc2::CommandXboxController m_bill;
   bool m_isActive;
   

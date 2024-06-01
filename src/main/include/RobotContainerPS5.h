@@ -9,7 +9,6 @@
 #include <frc2/command/WaitCommand.h>
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/button/CommandXboxController.h>
-#include <frc/XboxController.h>
 #include <frc2/command/button/CommandJoystick.h>
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/InstantCommand.h>
@@ -21,7 +20,7 @@
 #include <frc2/command/WaitCommand.h>
 
 #include "commands/AmpIntake.h"
-#include "commands/Drive.h"
+#include "commands/DrivePS5.h"
 #include "commands/MobilityAuto.h"
 #include "commands/RunClimber.h"
 #include "commands/RunIntake.h"
@@ -50,9 +49,9 @@ enum class SuperstructureState { Default, Climb };
  * scheduler calls).  Instead, the structure of the robot (including subsystems,
  * commands, and trigger mappings) should be declared here.
  */
-class RobotContainer {
+class RobotContainerPS5 {
  public:
-  RobotContainer();
+  RobotContainerPS5();
 
   frc2::Command* GetAutonomousCommand();
   SuperstructureState GetSuperstructureState();
@@ -63,9 +62,9 @@ class RobotContainer {
 
  private:
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  frc2::CommandXboxController m_bill{OperatorConstants::kDriverControllerPort};
-  frc2::CommandXboxController m_ted{OperatorConstants::kCoDriverControllerPort};
-  frc2::CommandXboxController m_test{OperatorConstants::kTestControllerPort};
+  frc2::CommandJoystick m_bill{OperatorConstants::kDriverControllerPort};
+  frc2::CommandJoystick m_ted{OperatorConstants::kCoDriverControllerPort};
+  frc2::CommandJoystick m_test{OperatorConstants::kTestControllerPort};
 
   // The robot's subsystems are defined here...
   Climber *m_climber = new Climber();

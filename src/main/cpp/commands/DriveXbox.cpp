@@ -2,9 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "commands/Drive.h"
+#include "commands/DriveXbox.h"
 
-Drive::Drive(frc2::CommandXboxController *controller, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle) :
+DriveXbox::DriveXbox(frc2::CommandXboxController *controller, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle) :
 m_bill(controller),
 m_swerveDrive(swerveDrive),
 m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot, SwerveDriveConstants::kDRot),
@@ -32,7 +32,7 @@ m_allianceSide(frc::DriverStation::Alliance::kBlue) {
   frc::Preferences::SetDouble(m_rotationDKey, SwerveDriveConstants::kDRot);
 }
 
-units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocity() {
+units::angular_velocity::radians_per_second_t DriveXbox::GetDesiredRotationalVelocity() {
   // Get raw (-1.0 to 1.0) joystick positions for x and y axis
   // Left, up are -1.0; right, down are 1.0
   // Inverted so forward on joystick is down the field
@@ -85,10 +85,10 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
 }
 
 // Called when the command is initially scheduled.
-void Drive::Initialize() {}
+void DriveXbox::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
-void Drive::Execute() {
+void DriveXbox::Execute() {
   UpdatePreferences();
 
   double joystickX = 0.0, joystickY = 0.0;
@@ -103,7 +103,7 @@ void Drive::Execute() {
     }
   }
 
-  // the controller values get swapped (-m_bill) to drive field relative based on alliance
+  // the controller values get swapped (-m_bill) to DriveXbox field relative based on alliance
 
   // joystickX = pow(joystickX, 3.0);
   // joystickY = pow(joystickY, 3.0);
@@ -175,22 +175,22 @@ void Drive::Execute() {
       break;
   }
 
-  // based on drive state, set the rotation and velocity to do so
+  // based on DriveXbox state, set the rotation and velocity to do so
 
   m_swerveDrive->Drive(xSpeed, ySpeed, rot, true, frc::Translation2d{});
 }
 
 // Called once the command ends or is interrupted.
-void Drive::End(bool interrupted) {
+void DriveXbox::End(bool interrupted) {
   m_swerveDrive->Stop();
 }
 
 // Returns true when the command should end.
-bool Drive::IsFinished() {
+bool DriveXbox::IsFinished() {
   return false;
 }
 
-units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
+units::angular_velocity::radians_per_second_t DriveXbox::GetRotVelSpeakerAlign() {
   m_allianceSide = frc::DriverStation::GetAlliance();
   frc::Pose3d tagPose = VisionConstants::kTagPoses.at(6);
   if (m_allianceSide) {
@@ -232,7 +232,7 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
   return rot;
 }
 //for pid tunings
-void Drive::UpdatePreferences() {
+void DriveXbox::UpdatePreferences() {
   if (frc::Preferences::GetBoolean("Tuning Mode", false)) {
     m_rotationPIDController.SetP(frc::Preferences::GetDouble(m_rotationPKey, SwerveDriveConstants::kPRot));
     m_rotationPIDController.SetI(frc::Preferences::GetDouble(m_rotationIKey, SwerveDriveConstants::kIRot));

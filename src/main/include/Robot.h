@@ -9,7 +9,16 @@
 #include <frc/TimedRobot.h>
 #include <cameraserver/CameraServer.h>
 
-#include "RobotContainer.h"
+#define isPS5Controller 1
+
+#if isPS5Controller 
+  #include "RobotContainerPS5.h"
+  #define Shyamak RobotContainerPS5
+#else 
+  #include "RobotContainerXbox.h"
+  #define Shyamak RobotContainerXbox
+#endif
+
 
 class Robot : public frc::TimedRobot {
  public:
@@ -31,6 +40,6 @@ class Robot : public frc::TimedRobot {
   // doesn't have undefined behavior and potentially crash.
   frc2::Command* m_autonomousCommand = nullptr;
 
-  RobotContainer m_container;
+  Shyamak m_container;
   BrakeMode m_lastBrakeMode = BrakeMode::Default;
 };
