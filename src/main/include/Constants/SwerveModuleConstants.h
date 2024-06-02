@@ -30,7 +30,7 @@ namespace SwerveModuleConstants {
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
     constexpr double kFrontLeftOffset {0.421143};
     constexpr double kFrontRightOffset {0.154785};
-    constexpr double kBackLeftOffset {-0.393799};
+    constexpr double kBackLeftOffset {-0.384521};
     constexpr double kBackRightOffset {-0.167969};
 
     // Motor + sensor inversions

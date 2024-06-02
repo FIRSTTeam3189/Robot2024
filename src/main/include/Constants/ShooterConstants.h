@@ -4,8 +4,8 @@
 
 // Shooter Constants
 namespace ShooterConstants {
-    constexpr int kTopRollerMotorID {13};
-    constexpr int kBottomRollerMotorID {14};
+    constexpr int kTopRollerMotorID {14};
+    constexpr int kBottomRollerMotorID {13};
     constexpr int kLoaderMotorID {15};
     constexpr int kRotationMotorID {16};
     constexpr int kLeftLimitSwitchPort {2};
