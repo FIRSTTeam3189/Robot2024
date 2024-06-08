@@ -44,5 +44,5 @@ namespace SwerveDriveConstants {
     constexpr double kIRot {0.0};
     constexpr double kDRot {0.0};
 
-    constexpr double kSlowModeDriveMultiplier {0.2};
+    constexpr double kSlowModeDriveMultiplier {0.3};
 }
