@@ -44,7 +44,7 @@ namespace ShooterConstants {
     constexpr auto kRetractTarget {40.0_deg};
     constexpr auto kCloseTarget {59.0_deg};
     constexpr auto kAutoScoreTarget {59.0_deg};
-    constexpr auto kMidTarget {30.0_deg};
+    constexpr auto kMidTarget {45.0_deg};
     constexpr auto kFarTarget {15.0_deg};
     constexpr double kRotationOffset {86.0};
     constexpr double kRotationConversion {360.0};
