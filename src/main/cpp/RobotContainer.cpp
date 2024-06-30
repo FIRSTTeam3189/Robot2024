@@ -618,6 +618,14 @@ void RobotContainer::ConfigureTestBindings() {
     )
   ).ToPtr());
 
+  frc2::Trigger reverseIntakeButton{m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  reverseIntakeButton.OnTrue(frc2::InstantCommand([this]{
+    m_intake->SetRollerPower(-1.0);
+  },{m_intake}).ToPtr());
+  reverseIntakeButton.OnFalse(frc2::InstantCommand([this]{
+    m_intake->SetRollerPower(0.0);
+  },{m_intake}).ToPtr());
+
   frc2::Trigger resetPoseButton{m_test.Button(OperatorConstants::kButtonIDTouchpad)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
     if (frc::DriverStation::GetAlliance()) {
@@ -668,13 +676,14 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
   frc2::Trigger shootLowButton{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
   shootLowButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::Mid),
-    RunShooter(m_shooter, 0.35)
+    RunShooter(m_shooter, 0.27)
   ).ToPtr());
   shootLowButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
-      RunLoader(m_shooter, 0.35, 0.35)
+      RunLoader(m_shooter, 0.27, 0.27)
     ),
+    SetShooterRotation(m_shooter, ShooterState::Zero),
     frc2::InstantCommand([this]{
       m_shooter->SetRollerPower(0.0);
       m_shooter->SetLoaderPower(0.0);
