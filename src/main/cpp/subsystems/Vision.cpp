@@ -213,3 +213,14 @@ void Vision::UpdateData()
     frc::SmartDashboard::PutNumber("Vision Rotation Y", m_data.rotationMatrix[1]);
     frc::SmartDashboard::PutNumber("Vision Rotation Z", m_data.rotationMatrix[2]);
 }
+
+void Vision::ReceiveMLData()
+{
+    auto inst = nt::NetworkTableInstance::GetDefault();
+    auto table = inst.GetTable("MLVision");
+
+    // Change the function to get the topic to one that exists
+    auto receive_vision_data = table->GetDoubleTopic("coordinates").Subscribe({});
+    frc::SmartDashboard::PutNumber("Vision Data Recieved: ", receive_vision_data.get());
+
+}
