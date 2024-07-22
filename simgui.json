@@ -15,19 +15,104 @@
         "header": {
           "open": true
         }
+      },
+      "SPARK MAX [17]": {
+        "header": {
+          "open": true
+        }
       }
     }
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/CANcoder (v6) [10]": "Gyro",
+      "/LiveWindow/Ungrouped/CANcoder (v6) [11]": "Gyro",
+      "/LiveWindow/Ungrouped/CANcoder (v6) [12]": "Gyro",
+      "/LiveWindow/Ungrouped/CANcoder (v6) [9]": "Gyro",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[1]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[2]": "Digital Input",
+      "/LiveWindow/Ungrouped/Pigeon 2 (v6) [13]": "Gyro",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [1]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [2]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [3]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [4]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [5]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [6]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [7]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [8]": "Motor Controller",
+      "/LiveWindow/Ungrouped/class frc2::SubsystemBase": "Subsystem",
+      "/SmartDashboard/Auto Routines": "String Chooser",
+      "/SmartDashboard/Auto field": "Field2d",
+      "/SmartDashboard/Estimated pose": "Field2d",
+      "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Auto Routines": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Auto field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Estimated pose": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
-    "Shuffleboard": {
+    "LiveWindow": {
+      "Ungrouped": {
+        "Talon FX (v6) [1]": {
+          "open": true
+        }
+      }
+    },
+    "Preferences": {
       "open": true
     },
     "SmartDashboard": {
+      "Auto Routines": {
+        "string[]##v_/SmartDashboard/Auto Routines/options": {
+          "open": true
+        }
+      },
+      "Estimated pose": {
+        "double[]##v_/SmartDashboard/Estimated pose/Robot": {
+          "open": true
+        },
+        "open": true
+      },
+      "Field": {
+        "double[]##v_/SmartDashboard/Field/Robot": {
+          "open": true
+        }
+      },
+      "double[]##v_/SmartDashboard/AdvantageScope Desired States": {
+        "open": true
+      },
+      "double[]##v_/SmartDashboard/AdvantageScope Measured States": {
+        "open": true
+      },
       "open": true
     },
     "combined": true,
@@ -38,6 +123,15 @@
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
     "visible": true
   }
 }

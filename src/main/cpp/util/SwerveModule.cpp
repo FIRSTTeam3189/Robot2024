@@ -12,28 +12,21 @@ m_CANcoder(CANcoderID, "Swerve"),
 m_PIDValues{SwerveModuleConstants::kPDrive, SwerveModuleConstants::kIDrive, SwerveModuleConstants::kDDrive,
             SwerveModuleConstants::kPAngle, SwerveModuleConstants::kIAngle, SwerveModuleConstants::kDAngle},
 m_moduleNumber(moduleNumber),
-m_CANcoderOffset(CANcoderOffset),
-m_signals{m_drivePosition, m_anglePosition, m_driveVelocity, m_angleVelocity}
+m_CANcoderOffset(CANcoderOffset)
  {
     ConfigDriveMotor();
     ConfigAngleMotor(CANcoderID);
     ConfigCANcoder();
+
+    m_signals.emplace_back(&m_drivePosition);
+    m_signals.emplace_back(&m_anglePosition);
+    m_signals.emplace_back(&m_driveVelocity);
+    m_signals.emplace_back(&m_angleVelocity);
+
+    // adds the drive and angle positions and velocities to the m_signals vector that contains swerve signals from robot
     
     // Setup preferences class, which allows editing values while robot is enabled
     // Very useful for PID tuning
-    m_drivePKey = "DriveP" + std::to_string(m_moduleNumber);
-    m_driveIKey = "DriveI" + std::to_string(m_moduleNumber);
-    m_driveDKey = "DriveD" + std::to_string(m_moduleNumber);
-    m_anglePKey = "AngleP" + std::to_string(m_moduleNumber);
-    m_angleIKey = "AngleI" + std::to_string(m_moduleNumber);
-    m_angleDKey = "AngleD" + std::to_string(m_moduleNumber);
-
-    frc::Preferences::InitDouble(m_drivePKey, m_driveConfigs.Slot0.kP);
-    frc::Preferences::InitDouble(m_driveIKey, m_driveConfigs.Slot0.kI);
-    frc::Preferences::InitDouble(m_driveDKey, m_driveConfigs.Slot0.kD);
-    frc::Preferences::InitDouble(m_anglePKey, m_driveConfigs.Slot0.kP);
-    frc::Preferences::InitDouble(m_angleIKey, m_driveConfigs.Slot0.kI);
-    frc::Preferences::InitDouble(m_angleDKey, m_driveConfigs.Slot0.kD);
 }
 
 void SwerveModule::ConfigDriveMotor() {
@@ -54,12 +47,26 @@ void SwerveModule::ConfigDriveMotor() {
     m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
 
     m_driveConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kDriveNeutralMode;
-    
+    m_driveConfigs.MotorOutput.DutyCycleNeutralDeadband = SwerveModuleConstants::kDriveNeutralDeadband;
+        
     m_driveConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kDriveGearRatio;
 
     m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
 
     m_driveMotor.SetPosition(0.0_rad);
+}
+
+void SwerveModule::UpdatePreferences() {
+    m_driveConfigs.Slot0.kP = frc::Preferences::GetDouble("DriveP", SwerveModuleConstants::kPDrive);
+    m_driveConfigs.Slot0.kI = frc::Preferences::GetDouble("DriveI", SwerveModuleConstants::kIDrive);
+    m_driveConfigs.Slot0.kD = frc::Preferences::GetDouble("DriveD", SwerveModuleConstants::kDDrive);
+    m_angleConfigs.Slot0.kP = frc::Preferences::GetDouble("AngleP", SwerveModuleConstants::kPAngle);
+    m_angleConfigs.Slot0.kI = frc::Preferences::GetDouble("AngleI", SwerveModuleConstants::kIAngle);
+    m_angleConfigs.Slot0.kD = frc::Preferences::GetDouble("AngleD", SwerveModuleConstants::kDAngle);
+
+    m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
+    m_angleMotor.GetConfigurator().Apply(m_angleConfigs);
+    // m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
 }
 
 void SwerveModule::ConfigAngleMotor(int CANcoderID) {
@@ -107,13 +114,34 @@ void SwerveModule::ConfigCANcoder() {
     m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
 }
 
+void SwerveModule::SetBrakeMode(BrakeMode mode) {
+    switch (mode) {
+        case(BrakeMode::Brake) :
+            m_driveConfigs.MotorOutput.NeutralMode = ctre::phoenix6::signals::NeutralModeValue::Brake;
+            m_angleConfigs.MotorOutput.NeutralMode = ctre::phoenix6::signals::NeutralModeValue::Brake;
+            break;
+        case(BrakeMode::Coast) :
+            m_driveConfigs.MotorOutput.NeutralMode = ctre::phoenix6::signals::NeutralModeValue::Coast;
+            m_angleConfigs.MotorOutput.NeutralMode = ctre::phoenix6::signals::NeutralModeValue::Coast;
+            break;
+        case(BrakeMode::Default) :
+            m_driveConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kDriveNeutralMode;
+            m_angleConfigs.MotorOutput.NeutralMode = SwerveModuleConstants::kAngleNeutralMode;
+            break;
+        default :
+            break;
+    }
+
+    m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
+    m_angleMotor.GetConfigurator().Apply(m_angleConfigs);
+}
+
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
     const auto optimizedState = frc::SwerveModuleState::Optimize(state, m_position.angle);
-    // double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;
-    // auto targetAngle = optimizedState.angle.Degrees() / 360.0;
-    // auto optimizedState = OptimizeAngle(state, m_position.angle);
     double targetSpeed = optimizedState.speed.value() * SwerveModuleConstants::kRotationsPerMeter;
     auto targetAngle = optimizedState.angle.Degrees();
+
+    // best state based on the target
 
     std::string speedKey = std::to_string(m_moduleNumber) + " target speed";
     std::string angleKey = std::to_string(m_moduleNumber) + " target angle";
@@ -122,9 +150,10 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &state) {
 
     // m_driveMotor.SetControl(m_driveSetter.WithVelocity(units::turns_per_second_t{targetSpeed}));
     // FOC Pro feature
-    m_driveMotor.SetControl(m_driveSetter.WithEnableFOC(true).WithVelocity(units::turns_per_second_t{targetSpeed}));
+    m_driveMotor.SetControl(m_driveSetter.WithEnableFOC(true).WithVelocity(units::turns_per_second_t{targetSpeed * 1.311}));
     if (fabs(targetSpeed) < .05 && fabs(m_lastAngle - targetAngle.value()) < 5.0) {
         // Stop();
+        // m_driveMotor.Set(0.0);
         m_driveMotor.SetControl(m_driveSetter.WithEnableFOC(true).WithVelocity(units::turns_per_second_t{0.0}));
         targetAngle = units::degree_t{m_lastAngle};
     } else {
@@ -193,7 +222,7 @@ double SwerveModule::NormalizeTo0To360(double currentAngle, double targetAngle) 
       return targetAngle;
 }
 
-Signals SwerveModule::GetSignals() {
+std::vector<ctre::phoenix6::BaseStatusSignal*> SwerveModule::GetSignals() {
     return m_signals;
 }
 
@@ -203,23 +232,20 @@ void SwerveModule::Stop() {
 }
 
 void SwerveModule::UpdatePosition() {
-    m_drivePosition.Refresh();
-    m_driveVelocity.Refresh();
-    m_anglePosition.Refresh();
-    m_angleVelocity.Refresh();
-
+    // m_drivePosition.Refresh();
+    // m_driveVelocity.Refresh();
+    // m_anglePosition.Refresh();
+    // m_angleVelocity.Refresh();
+    
     auto driveRotations = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(m_drivePosition, m_driveVelocity);
     auto angleRotations = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(m_anglePosition, m_angleVelocity);
 
     // Have to convert rotations to double then to meters with our own rotation coefficient
-    double distance = driveRotations.value() / SwerveModuleConstants::kRotationsPerMeter;
+    double distance = -driveRotations.value() / SwerveModuleConstants::kRotationsPerMeter;
     m_position.distance = units::meter_t{distance};
     
     frc::Rotation2d angle{units::degree_t{angleRotations}};
     m_position.angle = angle;
-
-    frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " distance", distance);
-    frc::SmartDashboard::PutNumber(std::string("" + m_moduleNumber) + " angle", angle.Degrees().value());
 }
 
 frc::SwerveModulePosition SwerveModule::GetPosition(bool refresh) {
@@ -255,19 +281,22 @@ void SwerveModule::ResetDriveEncoder() {
     m_driveMotor.SetPosition(units::turn_t{0.0});
 }
 
-void SwerveModule::UpdatePreferences() {
-    m_driveConfigs.Slot0.kP = frc::Preferences::GetDouble(m_drivePKey, SwerveModuleConstants::kPDrive);
-    m_driveConfigs.Slot0.kI = frc::Preferences::GetDouble(m_driveIKey, SwerveModuleConstants::kIDrive);
-    m_driveConfigs.Slot0.kD = frc::Preferences::GetDouble(m_driveDKey, SwerveModuleConstants::kDDrive);
-    m_angleConfigs.Slot0.kP = frc::Preferences::GetDouble(m_anglePKey, SwerveModuleConstants::kPAngle);
-    m_angleConfigs.Slot0.kI = frc::Preferences::GetDouble(m_angleIKey, SwerveModuleConstants::kIAngle);
-    m_angleConfigs.Slot0.kD = frc::Preferences::GetDouble(m_angleDKey, SwerveModuleConstants::kDAngle);
-
-    m_driveMotor.GetConfigurator().Apply(m_driveConfigs);
-    m_angleMotor.GetConfigurator().Apply(m_angleConfigs);
-    // m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
-}
-
 std::pair<ctre::phoenix6::hardware::TalonFX*, ctre::phoenix6::hardware::TalonFX*> SwerveModule::GetMotorsForMusic() {
     return std::pair{&m_driveMotor, &m_angleMotor};
+}
+
+units::volt_t SwerveModule::GetDriveVoltage() {
+    return m_driveMotor.GetMotorVoltage().GetValue();
+}
+
+units::volt_t SwerveModule::GetAngleVoltage() {
+    return m_angleMotor.GetMotorVoltage().GetValue();
+}
+
+void SwerveModule::SetAngleVoltage(units::volt_t voltage) {
+    m_angleMotor.SetVoltage(voltage);
+}
+
+void SwerveModule::SetDriveVoltage(units::volt_t voltage) {
+    m_driveMotor.SetVoltage(voltage);
 }

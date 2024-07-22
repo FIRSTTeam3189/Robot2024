@@ -8,6 +8,8 @@
 #include <ctre/phoenix6/TalonFX.hpp>
 #include <ctre/phoenix6/Orchestra.hpp>
 #include <frc/Filesystem.h>
+#include "Constants/SwerveDriveConstants.h"
+#include "Constants/SwerveModuleConstants.h"
 
 class MusicSystem : public frc2::SubsystemBase {
  public:

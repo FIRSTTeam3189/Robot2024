@@ -2,7 +2,7 @@
   {
     "name": "/Preferences/DriveP",
     "type": "double",
-    "value": 1.0,
+    "value": 3.0,
     "properties": {
       "persistent": true
     }
@@ -26,7 +26,7 @@
   {
     "name": "/Preferences/AngleP",
     "type": "double",
-    "value": 1.0,
+    "value": 10.0,
     "properties": {
       "persistent": true
     }
@@ -48,7 +48,71 @@
     }
   },
   {
-    "name": "/Preferences/riveP",
+    "name": "/Preferences/Full Diagnostics and Tuning",
+    "type": "boolean",
+    "value": false,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Rotation P",
+    "type": "double",
+    "value": 0.05,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Rotation I",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Rotation D",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Robot Rotation P",
+    "type": "double",
+    "value": 0.004,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Robot Rotation I",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Robot Rotation D",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter Rotation G",
+    "type": "double",
+    "value": 0.3,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter Rotation S",
     "type": "double",
     "value": 1.0,
     "properties": {
@@ -56,7 +120,15 @@
     }
   },
   {
-    "name": "/Preferences/riveI",
+    "name": "/Preferences/Shooter Rotation V",
+    "type": "double",
+    "value": 3.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter Rotation A",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -64,15 +136,15 @@
     }
   },
   {
-    "name": "/Preferences/riveD",
+    "name": "/Preferences/Intake Rotation G",
     "type": "double",
-    "value": 0.0,
+    "value": 0.5,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/ngleP",
+    "name": "/Preferences/Intake Rotation S",
     "type": "double",
     "value": 1.0,
     "properties": {
@@ -80,23 +152,7 @@
     }
   },
   {
-    "name": "/Preferences/ngleI",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/ngleD",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/iveP",
+    "name": "/Preferences/Intake Rotation V",
     "type": "double",
     "value": 1.0,
     "properties": {
@@ -104,7 +160,7 @@
     }
   },
   {
-    "name": "/Preferences/iveI",
+    "name": "/Preferences/Intake Rotation A",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -112,7 +168,15 @@
     }
   },
   {
-    "name": "/Preferences/iveD",
+    "name": "/Preferences/Shooter Rotation P",
+    "type": "double",
+    "value": 0.125,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter Rotation I",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -120,15 +184,7 @@
     }
   },
   {
-    "name": "/Preferences/gleP",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/gleI",
+    "name": "/Preferences/Shooter Rotation D",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -136,7 +192,7 @@
     }
   },
   {
-    "name": "/Preferences/gleD",
+    "name": "/Preferences/Shooter Rotation Target",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -144,47 +200,39 @@
     }
   },
   {
-    "name": "/Preferences/veP",
-    "type": "double",
-    "value": 1.0,
+    "name": "/Preferences/Tuning Mode",
+    "type": "boolean",
+    "value": false,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/veI",
-    "type": "double",
-    "value": 0.0,
+    "name": "/Preferences/Full Diagnostics",
+    "type": "boolean",
+    "value": true,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/veD",
+    "name": "/Preferences/Intake Rotation Target",
     "type": "double",
-    "value": 0.0,
+    "value": 80.0,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/leP",
+    "name": "/Preferences/Shooter Extension P",
     "type": "double",
-    "value": 1.0,
+    "value": 0.0001,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/leI",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/leD",
+    "name": "/Preferences/Shooter Extension I",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -192,15 +240,7 @@
     }
   },
   {
-    "name": "/Preferences/\u0000riveP0",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000riveI0",
+    "name": "/Preferences/Shooter Extension D",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -208,127 +248,15 @@
     }
   },
   {
-    "name": "/Preferences/\u0000riveD0",
-    "type": "double",
-    "value": 0.0,
+    "name": "/Preferences/Vision Enabled",
+    "type": "boolean",
+    "value": true,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/\u0000ngleP0",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000ngleI0",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000ngleD0",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000riveP1",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000riveI1",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000riveD1",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000ngleP1",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000ngleI1",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000ngleD1",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000riveP2",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000riveI2",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000riveD2",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000ngleP2",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000ngleI2",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/\u0000ngleD2",
+    "name": "/Preferences/IntakeSetState Rotation D",
     "type": "double",
     "value": 0.0,
     "properties": {

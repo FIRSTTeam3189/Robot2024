@@ -31,4 +31,5 @@ class RunShooter
  private:
   Shooter *m_shooter;
   double m_power;
+
 };

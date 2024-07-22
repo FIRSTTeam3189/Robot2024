@@ -5,16 +5,22 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <frc/DigitalInput.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/CANSparkMax.h>
 #include <rev/SparkAbsoluteEncoder.h> 
-#include "Constants.h" 
+#include "Constants/ClimberConstants.h" 
+#include "Constants/GlobalConstants.h"
 #include "frc/Servo.h" 
 
 class Climber : public frc2::SubsystemBase {
  public:
   Climber();
-  void SetPower(double power);
-  void SetServoRotation(double angle);
+  void SetPower(double leftPower, double rightPower);
+  void SetServoRotation(double leftAngle, double rightAngle);
+  void SetBrakeMode(BrakeMode mode);
+  void ToggleGlobalBrakeMode();
+  BrakeMode GetBrakeMode();
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -25,6 +31,9 @@ class Climber : public frc2::SubsystemBase {
   rev::CANSparkMax m_rightMotor;
   frc::Servo m_leftServo;
   frc::Servo m_rightServo;
+  frc::DigitalInput m_brakeModeLimitSwitch;
+  BrakeMode m_brakeMode;
+  bool m_lastLimitSwitchDetectionState;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

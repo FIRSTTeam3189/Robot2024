@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.7471044266068123,
+        "y": 5.52
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.115783734122658,
+        "y": 5.527614941708099
+      },
+      "isLocked": false,
+      "linkedName": "Score 2 Mid Ends"
+    },
+    {
+      "anchor": {
+        "x": 2.8945897891795784,
+        "y": 6.65
+      },
+      "prevControl": {
+        "x": 2.8782061894467352,
+        "y": 6.194061231614015
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Score 3 - Mid No Rotate Ends"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.2,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 90.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

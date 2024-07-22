@@ -1,0 +1,92 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.2455422353391685,
+        "y": 4.341591335562057
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.9996313431075303,
+        "y": 0.4745019743582596
+      },
+      "isLocked": false,
+      "linkedName": "Score 3 Bottom 5 Ends (REAL)"
+    },
+    {
+      "anchor": {
+        "x": 7.8443717531492645,
+        "y": 2.4378232656279475
+      },
+      "prevControl": {
+        "x": 7.466292076614614,
+        "y": 2.0092169014106784
+      },
+      "nextControl": {
+        "x": 7.954233402487403,
+        "y": 2.5623668605688845
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.0582129178620057,
+        "y": 3.8476487686421024
+      },
+      "prevControl": {
+        "x": 3.7671872892103617,
+        "y": 0.10672089684171888
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Score 4 - Bottom 5-4 Ends"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -38.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -40.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

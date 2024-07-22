@@ -2,6 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// doesn't really work since we dont have led's on the robot
+// if working, it will take input string and convert it to LED pixels
+
 #include "subsystems/LED.h"
 static std::map<std::string, std::vector<std::vector<bool>>> s_LEDDictionary = {
     {"a", {{false, true, true, true, true, false}, {true, false, false, false, false, true}, {true, false, false, false, false, true}, {true, true, true, true, true, true}, {true, false, false, false, false, true}, {true, false, false, false, false, true}, {true, false, false, false, false, true}, {true, false, false, false, false, true}}},
@@ -36,9 +39,8 @@ LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animati
     m_ledSections[LEDSection::Row13] = {424, 456};
     m_ledSections[LEDSection::Row14] = {456, 488};
     m_ledSections[LEDSection::Row15] = {488, 520};
+    // std::cout << "LED constructing\n";
 }   
-
-
 
 // This method will be called once per scheduler run
 void LED::Periodic() {
@@ -68,7 +70,6 @@ void LED::Periodic() {
                 }
             } 
         }
-
     }    
 }
 
@@ -253,6 +254,7 @@ void LED::SetMap() {
             for (size_t j = letter_it; j < m_arr[i].size(); j++) {
                 row_it = m_arr[i].begin() + j;
                 for (size_t x = 0; x < m_arr[i][j].size(); x++) {
+                    col_it = m_arr[i][j].begin() + x;
                     col_it = m_arr[i][j].begin() + x;
                     int index = (m_curStrIndex + m_arr[i][j][x] - 1);
                     if (index > 31) {

@@ -18,7 +18,7 @@
 class RunLoader
     : public frc2::CommandHelper<frc2::Command, RunLoader> {
  public:
-  RunLoader(Shooter *shooter, double power);
+  RunLoader(Shooter *shooter, double loadPower, double shootPower, ShooterEndCondition endCondition = ShooterEndCondition::None);
 
   void Initialize() override;
 
@@ -29,8 +29,9 @@ class RunLoader
   bool IsFinished() override;
 
   private:
-   Shooter *m_loader;
-   double m_loaderPower;
-
-
+   Shooter *m_shooter;
+   double m_loadPower;
+   double m_shootPower;
+   bool m_isFinished;
+   ShooterEndCondition m_endCondition;
 };

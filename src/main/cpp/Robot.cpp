@@ -6,7 +6,12 @@
 
 #include <frc2/command/CommandScheduler.h>
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
+  frc::CameraServer::StartAutomaticCapture();
+  (void)AutoConstants::kAutonomousPaths[0];
+  (void)VisionConstants::kSyncBytes[0];
+  EnableLiveWindowInTest(true);
+}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use
@@ -27,16 +32,27 @@ void Robot::RobotPeriodic() {
  */
 void Robot::DisabledInit() {}
 
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() {
+  auto brakeMode = m_container.GetBrakeMode();
+  if (brakeMode != m_lastBrakeMode) {
+    if (brakeMode == BrakeMode::Coast) {
+      m_container.SetAllCoast();
+    } else {
+      m_container.SetAllNormalBrakeMode();
+    }
+  }
+  m_lastBrakeMode = brakeMode;
+}
 
 /**
  * This autonomous runs the autonomous command selected by your {@link
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
+  m_container.SetAllNormalBrakeMode();
   m_autonomousCommand = m_container.GetAutonomousCommand();
 
-  if (m_autonomousCommand) {
+  if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Schedule();
   }
 }
@@ -44,11 +60,12 @@ void Robot::AutonomousInit() {
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
+  m_container.SetAllNormalBrakeMode();
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
   // this line or comment it out.
-  if (m_autonomousCommand) {
+  if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Cancel();
   }
 }

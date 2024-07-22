@@ -1,7 +1,7 @@
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO" version "2024.1.1"
+    id "edu.wpi.first.GradleRIO" version "2024.3.1"
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -36,13 +36,13 @@ deploy {
 def deployArtifact = deploy.targets.roborio.artifacts.frcCpp
 
 // Set this to true to enable desktop support.
-def includeDesktopSupport = true
+def includeDesktopSupport = false
 
 // Set to true to run simulation in debug mode
 wpi.cpp.debugSimulation = false
 
 // Default enable simgui
-wpi.sim.addGui().defaultEnabled = true
+wpi.sim.addGui().defaultEnabled = false
 // Enable DS but not by default
 wpi.sim.addDriverstation()
 
@@ -51,7 +51,7 @@ model {
         frcUserProgram(NativeExecutableSpec) {
             binaries.all {
                 if(!(toolChain instanceof VisualCpp))
-                    cppCompiler.args << '-Wno-deprecated-declarations' << '-flto'
+                    cppCompiler.args << '-Wno-deprecated-declarations'
             }
             targetPlatform wpi.platforms.roborio
             if (includeDesktopSupport) {

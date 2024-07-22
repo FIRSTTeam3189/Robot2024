@@ -7,6 +7,7 @@
 #include <optional>
 
 #include <frc/TimedRobot.h>
+#include <cameraserver/CameraServer.h>
 
 #include "RobotContainer.h"
 
@@ -28,7 +29,8 @@ class Robot : public frc::TimedRobot {
  
   // Have it empty by default so that if testing teleop it
   // doesn't have undefined behavior and potentially crash.
-  std::optional<frc2::CommandPtr> m_autonomousCommand;
+  frc2::Command* m_autonomousCommand = nullptr;
 
   RobotContainer m_container;
+  BrakeMode m_lastBrakeMode = BrakeMode::Default;
 };

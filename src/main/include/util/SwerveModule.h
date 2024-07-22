@@ -16,14 +16,8 @@
 #include <math.h>
 #include <iostream>
 #include <string>
-#include "Constants.h"
-
-struct Signals {
-  ctre::phoenix6::StatusSignal<units::angle::turn_t> drivePosition;
-  ctre::phoenix6::StatusSignal<units::angle::turn_t> anglePosition;
-  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> driveVelocity;
-  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> angleVelocity;
-};
+#include "Constants/SwerveModuleConstants.h"
+#include "Constants/GlobalConstants.h"
 
 struct PIDValues {
   double driveP;
@@ -41,15 +35,20 @@ class SwerveModule {
   void ConfigDriveMotor();
   void ConfigAngleMotor(int CANcoderID);
   void ConfigCANcoder();
+  void SetBrakeMode(BrakeMode mode);
   void Stop();
-  void SetDesiredState(const frc::SwerveModuleState &state);
   void UpdatePosition();
+  void SetDesiredState(const frc::SwerveModuleState &state);
   frc::SwerveModulePosition GetPosition(bool refresh);
   frc::SwerveModuleState GetState(bool refresh);
   units::degree_t GetMotorAngle();
   units::degree_t GetEncoderAngle();
   units::meters_per_second_t GetDriveSpeed();
-  Signals GetSignals();
+  units::volt_t GetDriveVoltage();
+  units::volt_t GetAngleVoltage();
+  std::vector<ctre::phoenix6::BaseStatusSignal*> GetSignals();
+  void SetDriveVoltage(units::volt_t voltage);
+  void SetAngleVoltage(units::volt_t voltage);
   void ResetDriveEncoder();
   frc::SwerveModuleState OptimizeAngle(frc::SwerveModuleState desiredState, frc::Rotation2d currentAngle);
   double NormalizeTo0To360(double currentAngle, double targetAngle);
@@ -77,16 +76,17 @@ class SwerveModule {
   ctre::phoenix6::StatusSignal<units::angle::turn_t> m_anglePosition = m_angleMotor.GetPosition();
   ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_driveVelocity = m_driveMotor.GetVelocity();
   ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_angleVelocity = m_angleMotor.GetVelocity();
-  Signals m_signals;
 
   ctre::phoenix6::controls::VelocityVoltage m_driveSetter{0.0_rad / 1.0_s};
   ctre::phoenix6::controls::PositionVoltage m_angleSetter{0.0_rad};
 
   // String keys for PID preferences
-  std::string_view m_drivePKey;
-  std::string_view m_driveIKey;
-  std::string_view m_driveDKey;
-  std::string_view m_anglePKey;
-  std::string_view m_angleIKey;
-  std::string_view m_angleDKey;
+  std::string m_drivePKey;
+  std::string m_driveIKey;
+  std::string m_driveDKey;
+  std::string m_anglePKey;
+  std::string m_angleIKey;
+  std::string m_angleDKey;
+
+  std::vector<ctre::phoenix6::BaseStatusSignal*> m_signals;
 };

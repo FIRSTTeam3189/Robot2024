@@ -18,7 +18,7 @@
 class RunIntake
     : public frc2::CommandHelper<frc2::Command, RunIntake> {
  public:
-  RunIntake(Intake *intake, double rollerPower, double rotationPower);
+  RunIntake(Intake *intake, double rollerPower);
   
   void Initialize() override;
   
@@ -31,5 +31,4 @@ class RunIntake
  private:
   Intake *m_intake;
   double m_rollerPower;
-  double m_rotationPower;
 };

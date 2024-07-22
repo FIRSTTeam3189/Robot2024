@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.515802675954073,
+        "y": 4.281620952304065
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.6910708597803608,
+        "y": 4.361647649950041
+      },
+      "isLocked": false,
+      "linkedName": "Real Score 2 - Bottom"
+    },
+    {
+      "anchor": {
+        "x": 2.515802675954073,
+        "y": 5.553741425812963
+      },
+      "prevControl": {
+        "x": 1.6472056271949027,
+        "y": 5.759340978335861
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.75,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -28.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

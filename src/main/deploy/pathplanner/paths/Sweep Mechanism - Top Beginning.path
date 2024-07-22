@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6940511627057834,
+        "y": 6.5850599536619505
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.7438388075240442,
+        "y": 6.5896632593709725
+      },
+      "isLocked": false,
+      "linkedName": "Score 1 Top Ends"
+    },
+    {
+      "anchor": {
+        "x": 7.849905468975508,
+        "y": 7.471856290649989
+      },
+      "prevControl": {
+        "x": 7.799926853630195,
+        "y": 7.470394097719734
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Mechanism Point"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "ImmediateShoot",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ImmediateShoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 59.309647346988584,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
