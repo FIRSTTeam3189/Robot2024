@@ -22,6 +22,7 @@
 
 enum class LEDAnimationType { Clear, ColorFlow, Fire, Larson, Rainbow, RGBFade, SingleFade, Strobe, Twinkle, TwinkleOff }; 
 enum class LEDSection { All, Candle, AllLEDMatrix, LEDMatrix1, LEDMatrix2, Row0, Row1, Row2, Row3, Row4, Row5, Row6, Row7, Row8, Row9, Row10, Row11, Row12, Row13, Row14, Row15};
+//static std::map<std::string, std::vector<std::vector<bool>>> s_LEDDictionary;
 class LED : public frc2::SubsystemBase {
  public:
   LED();
@@ -34,7 +35,8 @@ class LED : public frc2::SubsystemBase {
   void StartingAnimation();
   void CBAnimation();
   void ClearAll(LEDSection section);
-  void Search(std::string &str, int length);
+  void Search(std::string str, int length);
+  void SetMap();
   void DisplayString();
 
   /**
@@ -57,6 +59,9 @@ bool m_lastEnableState;
 int m_curStrIndex = 0;
 CANdleConfiguration m_candleConfig;
 frc::Timer m_Timer{};
-static std::map<std::string, std::vector<std::vector<int>>> s_LEDDictionary;
-std::vector<std::vector<std::vector<int>>> m_arr {};
+//static std::map<std::string, std::vector<std::vector<int>>> s_LEDDictionary;
+
+//std::vector<std::vector<std::vector<int>>> m_arr {};
+std::vector<std::vector<std::vector<bool>>> m_arr {};
+bool m_LEDMap[8][32];
 };
