@@ -39,10 +39,7 @@ LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animati
     m_ledSections[LEDSection::Row13] = {424, 456};
     m_ledSections[LEDSection::Row14] = {456, 488};
     m_ledSections[LEDSection::Row15] = {488, 520};
-<<<<<<< HEAD
     // std::cout << "LED constructing\n";
-=======
->>>>>>> db603a8 (Worked on LED System. It deploys now)
 }   
 
 // This method will be called once per scheduler run
@@ -258,10 +255,7 @@ void LED::SetMap() {
                 row_it = m_arr[i].begin() + j;
                 for (size_t x = 0; x < m_arr[i][j].size(); x++) {
                     col_it = m_arr[i][j].begin() + x;
-<<<<<<< HEAD
                     col_it = m_arr[i][j].begin() + x;
-=======
->>>>>>> db603a8 (Worked on LED System. It deploys now)
                     int index = (m_curStrIndex + m_arr[i][j][x] - 1);
                     if (index > 31) {
                         index = 0;
