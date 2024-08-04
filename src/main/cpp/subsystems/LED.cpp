@@ -6,6 +6,9 @@
 // if working, it will take input string and convert it to LED pixels
 
 #include "subsystems/LED.h"
+static std::map<std::string, std::vector<std::vector<bool>>> s_LEDDictionary = {
+    {"a", {{false, true, true, true, true, false}, {true, false, false, false, false, true}, {true, false, false, false, false, true}, {true, true, true, true, true, true}, {true, false, false, false, false, true}, {true, false, false, false, false, true}, {true, false, false, false, false, true}, {true, false, false, false, false, true}}},
+};
 
 LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animation(NULL), m_shouldStartup(true), m_startupRunning(false), m_runString(false), m_shouldRunString(false), m_lastEnableState(false){
     m_candleControl.ConfigAllSettings(m_candleConfig);
@@ -42,6 +45,7 @@ LED::LED(): m_candleControl(LedConstants::kCandleID), m_ledSections(), m_animati
 // This method will be called once per scheduler run
 void LED::Periodic() {
     if (m_shouldStartup) {
+        Search("aaaaa", 3);
         StartingAnimation();
     }
     else if (!frc::SmartDashboard::GetBoolean("Enabled", false)) {
@@ -185,8 +189,9 @@ if (!m_startupRunning) {
         SetAnimation(LEDAnimationType::Clear);
         m_startupRunning = true;
         m_Timer.Start();
-        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 255, 255, 0, 0.5, true);
-        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 0.5, false, 1);
+        
+        // SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 255, 255, 0, 0.5, true);
+        // SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 0.5, false, 1);
     }
     if (m_Timer.Get() > 3.0_s) {
         m_shouldStartup = false;
@@ -195,8 +200,8 @@ if (!m_startupRunning) {
     }
 }
 
-void LED::Search(std::string &str, int length){
-    std::vector<int> col = {};
+void LED::Search(std::string str, int length){
+    /* std::vector<int> col = {};
     std::vector<std::vector<int>> row = {};
     int pixel;
     for (int i = 0; i < length; i++){
@@ -215,11 +220,29 @@ void LED::Search(std::string &str, int length){
     }
     m_runString = true;
     m_shouldRunString = true;
+    m_curStrIndex = 31; */
+    std::vector<bool> col = {};
+    std::vector<std::vector<bool>> row = {};
+    for (int i = 0; i < length; i++){
+        std::string letter = str.substr(i, i+1);
+        for (size_t j = 0; j < s_LEDDictionary[letter].size(); i++) {
+            for (size_t x = 0; x < s_LEDDictionary[letter][j].size(); x++) {
+                col.push_back(s_LEDDictionary[letter][j][x]);
+            }
+            row.push_back(col);
+        }
+        m_arr.push_back(row);
+        row = {};
+        col = {};
+        //i[0] is first letter , i[1] is second letter....
+    }
+    m_runString = true;
+    m_shouldRunString = true;
     m_curStrIndex = 31;
 }
 
-void LED::DisplayString() {
-    if (m_shouldRunString) {
+void LED::SetMap() {
+    /* if (m_shouldRunString) {
         m_Timer.Start();
         m_shouldRunString = false;
     } else if (m_Timer.Get() > 0.5_s) {
@@ -228,9 +251,10 @@ void LED::DisplayString() {
         std::vector<int>::iterator col_it;
         for (size_t i = 0; i < m_arr.size(); i++) {
             letter_it = m_arr.begin() + i;
-            for (size_t j = 0; j < m_arr[i].size(); j++) {
+            for (size_t j = letter_it; j < m_arr[i].size(); j++) {
                 row_it = m_arr[i].begin() + j;
                 for (size_t x = 0; x < m_arr[i][j].size(); x++) {
+                    col_it = m_arr[i][j].begin() + x;
                     col_it = m_arr[i][j].begin() + x;
                     int index = (m_curStrIndex + m_arr[i][j][x] - 1);
                     if (index > 31) {
@@ -252,5 +276,82 @@ void LED::DisplayString() {
         }
         m_Timer.Stop();
         m_shouldRunString = true;
+    } */
+    if (m_shouldRunString) {
+        m_Timer.Start();
+        m_shouldRunString = false;
+    } else if (m_Timer.Get() > 0.5_s) {
+        for (size_t i = 0; i < m_arr.size(); i++) {
+            for (int j = 0; j < 6; j++) {
+                for (int x = 0; x < 8; i++) {
+                    m_LEDMap[j][31] = m_arr[i][x][j];
+                }
+                /* for (size_t x = 0; x < m_arr[i][j].size(); x++) {
+                    
+                    if (m_arr[i][j][x]) {
+                        int index = x + (32*j) + 8;
+                        SetRowColor(0, 0, 255, {index, index + 1});
+                    }
+                } */
+            }
+        }
+        m_Timer.Stop();
+        m_shouldRunString = true;
+        DisplayString();
     }
 }
+
+void LED::DisplayString() {
+    for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < 32; i++) {
+            if (m_LEDMap[j][i+1]) {
+                SetRowColor(0, 0, 255, {i+8, i+9});
+            }
+        }
+    }
+    for (int j = 0; j < 8; j++) {
+        for (int i = 1; i < 31; i++) {
+            m_LEDMap[j][i-1] = m_LEDMap[j][i];
+        }
+    }
+}
+
+/* std::map<std::string, std::vector<std::vector<int>>> s_LEDDictionary = {
+    {"a", {{2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 6}}},
+    {"b", {{1, 2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}}},
+    {"c", {{1, 2, 3, 4, 5, 6}, {1}, {1}, {1}, {1}, {1}, {1}, {1, 2, 3, 4, 5, 6}}},
+    {"d", {{1, 2, 3, 4}, {1, 4}, {1, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 5}, {1, 2, 3, 4}}},
+    {"e", {{1, 2, 3, 4, 5, 6}, {1}, {1}, {1}, {1, 2, 3, 4, 5}, {1}, {1}, {1, 2, 3, 4, 5, 6}}},
+    {"f", {{1, 2, 3, 4, 5, 6}, {1}, {1}, {1}, {1, 2, 3, 4, 5}, {1}, {1}, {1}}},
+    {"g", {{1, 2, 3, 4, 5, 6}, {1}, {1}, {1}, {1, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}}},
+    {"h", {{1, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 6}}},
+    {"i", {{1, 2, 3, 4, 5, 6}, {3, 4}, {3, 4}, {3, 4}, {3, 4}, {3, 4}, {3, 4}, {1, 2, 3, 4, 5, 6}}},
+    {"j", {{6}, {6}, {6}, {6}, {6}, {6}, {1, 6}, {2, 3, 4, 5}}},
+    {"k", {{1, 6}, {1, 5}, {1, 4}, {1, 2, 3}, {1, 3, 4}, {1, 5}, {1, 6}, {1, 6}}},
+    {"l", {{1}, {1}, {1}, {1}, {1}, {1}, {1}, {1, 2, 3, 4, 5, 6}}},
+    {"m", {{1, 6}, {1, 2, 5, 6}, {1, 3, 4, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 6}}},
+    {"n", {{1, 6}, {1, 6}, {1, 2, 6}, {1, 3, 6}, {1, 4, 6}, {1, 5, 6}, {1, 6}, {1, 6}}},
+    {"o", {{2, 3, 4, 5}, {1, 2, 5, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 2, 5, 6}, {2, 3, 4, 5}}},
+    {"p", {{2, 3, 4, 5}, {2, 5}, {2, 5}, {2, 3, 4, 5, 6}, {2}, {2}, {2}, {2}}},
+    {"q", {{2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 6}, {1, 4, 6}, {1, 4, 6}, {2, 3, 4, 5}, {6}}},
+    {"r", {{1, 2, 3, 4, 5}, {1, 5}, {1, 5}, {1,2,3,4,5}, {1,2,3}, {1,3,4}, {1, 4, 5}}},
+    {"s", {{1,2,3,4,5,6}, {1}, {1}, {1}, {1,2,3,4,5,6}, {6}, {6}, {1,2,3,4,5,6}}},
+    {"t", {{1,2,3,4,5,6}, {1,2,3,4,5,6}, {3,4}, {3,4}, {3,4}, {3,4}, {3,4}, {3,4}}},
+    {"u", {{1,6}, {1,6}, {1,6}, {1,6}, {1,6}, {1,6}, {1,6}, {1,2,3,4,5,6}}},
+    {"v", {{1,6}, {1,6}, {1,6}, {1,6}, {2,5}, {2,5}, {2,5}, {3,4}}},
+    {"w", {{2,4,6}, {2,4,6}, {2,4,6}, {2,4,6}, {2,4,6}, {2,4,6}, {2,4,6}, {2,3,4,5,6}}},
+    {"x", {{1, 6}, {2, 5}, {2, 5}, {3, 4}, {3, 4}, {2, 5}, {2, 5}, {1, 6}}},
+    {"y", {{1,6}, {1,6}, {1,2,5,6}, {2,3,4,5}, {3,4}, {3,4}, {3,4}, {3,4}}},
+    {"z", {{1, 2, 3, 4, 5, 6}, {6}, {5}, {4}, {3}, {2}, {1}, {1, 2, 3, 4, 5, 6}}},
+    // NUMBERS
+    {"0", {{2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 6}, {1, 6}, {2, 3, 4, 5}}},
+    {"1", {{4}, {2, 3, 4}, {2, 4}, {4}, {4}, {4}, {4}, {1, 2, 3, 4, 5}}},
+    {"2", {{1, 2, 3, 4, 5, 6}, {6}, {6}, {6}, {1, 2, 3, 4, 5, 6}, {1}, {1}, {1, 2, 3, 4, 5, 6}}},
+    {"3", {{2, 3, 4, 5}, {1, 6}, {6}, {6}, {2, 3, 4, 5}, {6}, {1, 6}, {2, 3, 4, 5}}},
+    {"4", {{1, 5}, {1, 5}, {1, 5}, {1, 2, 3, 4, 5, 6}, {5}, {5}, {5}, {5}}},
+    {"5", {{1, 2, 3, 4, 5}, {1}, {1}, {1, 2, 3, 4, 5}, {6}, {6}, {6}, {1, 2, 3, 4, 5}}},
+    {"6", {{2, 3, 4, 5}, {1, 6}, {1}, {1}, {1, 2, 3, 4, 5}, {1, 6}, {1, 6}, {2, 3, 4, 5}}},
+    {"7", {{1, 2, 3, 4, 5, 6}, {6}, {6}, {6}, {6}, {6}, {6}, {6}}},
+    {"8", {{2, 3, 4, 5}, {1, 6}, {1, 6}, {1, 6}, {2, 3, 4, 5}, {1, 6}, {1, 6}, {2, 3, 4, 5}}},
+    {"9", {{1, 2, 3, 4, 5, 6}, {1, 6}, {1, 6}, {1, 2, 3, 4, 5, 6}, {6}, {6}, {6}, {6}}},
+}; */
