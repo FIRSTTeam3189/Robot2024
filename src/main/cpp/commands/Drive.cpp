@@ -69,13 +69,13 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
 
   // Return next velocity in radians per second as calculated by PIDController and limited by rotLimiter
   units::angular_velocity::radians_per_second_t rot = 
-              -units::angular_velocity::radians_per_second_t{
+              units::angular_velocity::radians_per_second_t{
               m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), m_goalAngle))
               * SwerveDriveConstants::kMaxAngularVelocity};
 
   // converts a given or desired coordinate to a degree on the unit circle
 
-  frc::SmartDashboard::PutNumber("Rotation PID Output", rot.value());
+  frc::SmartDashboard::PutNumber("Rotation PID Output (deg per s)", rot.value() * (180.0/Pi));
     
   if (abs(m_swerveDrive->GetNormalizedYaw().value() - m_goalAngle) < 2.5) {
     rot = units::angular_velocity::radians_per_second_t{0.0};
@@ -94,7 +94,7 @@ void Drive::Execute() {
   double joystickX = 0.0, joystickY = 0.0;
   m_allianceSide = frc::DriverStation::GetAlliance();
   if (m_allianceSide) {
-    if (m_allianceSide.value() == frc::DriverStation::Alliance::kRed) {
+    if (m_allianceSide.value() == frc::DriverStation::Alliance::kBlue) {
       joystickX = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickY);
       joystickY = -m_bill->GetRawAxis(OperatorConstants::kAxisLeftStickX);
     } else {

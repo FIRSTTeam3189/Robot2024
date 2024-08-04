@@ -9,8 +9,8 @@
 Climber::Climber() : 
 m_leftMotor(ClimberConstants::kLefttMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless),
 m_rightMotor(ClimberConstants::kRightMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
-m_leftServo(ClimberConstants::kLeftServoID),
-m_rightServo(ClimberConstants::kRightServoID),
+// m_leftServo(ClimberConstants::kLeftServoID),
+// m_rightServo(ClimberConstants::kRightServoID),
 m_brakeModeLimitSwitch(ClimberConstants::kLimitSwitchPort)
 {
     m_leftMotor.RestoreFactoryDefaults();
@@ -29,8 +29,8 @@ void Climber::Periodic() {
         ToggleGlobalBrakeMode();
     }
     m_lastLimitSwitchDetectionState = limitSwitchTripped;
-    frc::SmartDashboard::PutNumber("Left servo rotation", m_leftServo.Get());
-    frc::SmartDashboard::PutNumber("Right servo rotation", m_rightServo.Get());
+    // frc::SmartDashboard::PutNumber("Left servo rotation", m_leftServo.Get());
+    // frc::SmartDashboard::PutNumber("Right servo rotation", m_rightServo.Get());
 }
 
 void Climber::SetPower(double leftPower, double rightPower){
@@ -39,8 +39,8 @@ void Climber::SetPower(double leftPower, double rightPower){
 }
 
 void Climber::SetServoRotation(double leftAngle, double rightAngle){
-    m_leftServo.Set(leftAngle);
-    m_rightServo.Set(rightAngle);
+    // m_leftServo.Set(leftAngle);
+    // m_rightServo.Set(rightAngle);
 }
 
 void Climber::SetBrakeMode(BrakeMode mode) {

@@ -15,15 +15,23 @@ namespace AutoConstants {
     constexpr auto kAutoRevUpTime {2.0_s};
     // Distance from robot center to furthest module
     constexpr auto kDriveBaseRadius {0.282575_m};
-    constexpr auto kMaxAutoModuleSpeed{4.0_mps};
-    constexpr double kPTranslationAuto {4.5};
+    constexpr auto kMaxAutoModuleSpeed{2.0_mps};
+
+    // Translation PID
+    constexpr double kPTranslationAuto {1.5};
+    // constexpr double kPTranslationAuto {4.5};
     // constexpr double kPTranslationAuto {1.0};
     constexpr double kITranslationAuto {0.0};
     constexpr double kDTranslationAuto {0.0};
-    constexpr double kPRotationAuto {4.0};
+
+    // Rotation PID
+    constexpr double kPRotationAuto {1.5};
+    // constexpr double kPRotationAuto {4.0};
     // constexpr double kPRotationAuto {1.0};
     constexpr double kIRotationAuto {0.0};
     constexpr double kDRotationAuto {0.0};
+
+    // Auto config
     const pathplanner::HolonomicPathFollowerConfig autoConfig {
         pathplanner::PIDConstants(kPTranslationAuto, kITranslationAuto, kDTranslationAuto), // Translation PID constants
         pathplanner::PIDConstants(kPRotationAuto, kIRotationAuto, kDRotationAuto), // Rotation PID constants

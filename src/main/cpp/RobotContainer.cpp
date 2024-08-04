@@ -689,4 +689,27 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
       m_shooter->SetLoaderPower(0.0);
     },{m_shooter})
   ).ToPtr());
+
+//   frc2::Trigger driveRelativePosX{m_test.Button(OperatorConstants::kButtonIDSquare)};
+//   driveRelativePosX.OnTrue(frc2::RunCommand([this]{
+//     frc::ChassisSpeeds relativeSpeeds = frc::ChassisSpeeds::FromRobotRelativeSpeeds(1.0_mps, 0.0_mps, 0.0_rad / 1.0_s, frc::Rotation2d{0.0_deg});
+//     m_swerveDrive->DriveRobotRelative(relativeSpeeds);
+//   },{m_swerveDrive}).ToPtr());
+//   driveRelativePosX.OnFalse(frc2::InstantCommand([this]{
+//     frc::ChassisSpeeds relativeSpeeds = frc::ChassisSpeeds::FromRobotRelativeSpeeds(0.0_mps, 0.0_mps, 0.0_rad / 1.0_s, frc::Rotation2d{0.0_deg});
+//     m_swerveDrive->DriveRobotRelative(relativeSpeeds);
+//   },{m_swerveDrive}).ToPtr());
+
+//   frc2::Trigger driveRelativePosY{m_test.Button(OperatorConstants::kButtonIDCircle)};
+//   driveRelativePosY.OnTrue(frc2::RunCommand([this]{
+//     frc::ChassisSpeeds relativeSpeeds = frc::ChassisSpeeds::FromRobotRelativeSpeeds(0.0_mps, 1.0_mps, 0.0_rad / 1.0_s, frc::Rotation2d{0.0_deg});
+//     m_swerveDrive->DriveRobotRelative(relativeSpeeds);
+//   },{m_swerveDrive}).ToPtr());
+//   driveRelativePosY.OnFalse(frc2::InstantCommand([this]{
+//     frc::ChassisSpeeds relativeSpeeds = frc::ChassisSpeeds::FromRobotRelativeSpeeds(0.0_mps, 0.0_mps, 0.0_rad / 1.0_s, frc::Rotation2d{0.0_deg});
+//     m_swerveDrive->DriveRobotRelative(relativeSpeeds);
+//   },{m_swerveDrive}).ToPtr());
 }
+
+
+// no matter how nice ethan might seem when you least expect it he will slap you with a piece of chicken and eat you in a bucket

@@ -158,9 +158,8 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 }
 
 void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
-    // speeds = -speeds;
-    speeds.vx = -speeds.vx;
-    speeds.vy = -speeds.vy;
+    // speeds.vx = -speeds.vx;
+    // speeds.vy = -speeds.vy;
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(speeds);
     auto [fl, fr, bl, br] = states;

@@ -241,7 +241,7 @@ void SwerveModule::UpdatePosition() {
     auto angleRotations = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(m_anglePosition, m_angleVelocity);
 
     // Have to convert rotations to double then to meters with our own rotation coefficient
-    double distance = -driveRotations.value() / SwerveModuleConstants::kRotationsPerMeter;
+    double distance = driveRotations.value() / SwerveModuleConstants::kRotationsPerMeter;
     m_position.distance = units::meter_t{distance};
     
     frc::Rotation2d angle{units::degree_t{angleRotations}};
