@@ -29,7 +29,7 @@
 #include "commands/SetIntakeRotation.h"
 #include "commands/SetShooterRotation.h"
 #include "commands/ShooterAutoAlign.h"
-#include "commands/SwerveAutoAlign.h"
+#include "commands/TurnInPlace.h"
 #include "commands/TwoNoteAuto.h"
 #include "subsystems/LED.h"
 #include "subsystems/MusicSystem.h"

@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 2.55,
-        "y": 4.09
+        "y": 4.12
       },
       "prevControl": {
         "x": 1.9260400521101655,
-        "y": 3.6735928642242737
+        "y": 3.703592864224274
       },
       "nextControl": {
         "x": 2.5579619390008026,
-        "y": 4.095313495242375
+        "y": 4.125313495242375
       },
       "isLocked": false,
       "linkedName": null
@@ -46,7 +46,42 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.15,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "PrepareShooterSubwoofer",
+      "waypointRelativePos": 1.45,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PrepareShooterSubwoofer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

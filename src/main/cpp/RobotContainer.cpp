@@ -139,28 +139,28 @@ void RobotContainer::ConfigureDriverBindings() {
 
   // reset the pose of the robot in the case of noise or natural dampening
   frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
-  // resetPoseButton.OnTrue(frc2::InstantCommand([this]{
-  //   if (frc::DriverStation::GetAlliance()) {
-  //     if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
-  //       m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
-  //     else
-  //       m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{180.0_deg}}, true);
-  //   }
-  // },{m_swerveDrive}).ToPtr());
+  resetPoseButton.OnTrue(frc2::InstantCommand([this]{
+    if (frc::DriverStation::GetAlliance()) {
+      if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
+        m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
+      else
+        m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{180.0_deg}}, true);
+    }
+  },{m_swerveDrive}).ToPtr());
 
   // based on alliance, it will reset robot pose to the speaker position
   frc2::Trigger resetSpeakerPoseButton{m_bill.Button(OperatorConstants::kButtonIDCreate)};
-  // resetSpeakerPoseButton.OnTrue(frc2::InstantCommand([this]{
-  //   if (frc::DriverStation::GetAlliance()) {
-  //     if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
-  //       m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{0.0_deg}}, false);
-  //     else
-  //       m_swerveDrive->SetPose(frc::Pose2d{15.579_m, 5.50_m, frc::Rotation2d{180.0_deg}}, false);
-  //   }
-  // },{m_swerveDrive}).ToPtr());
+  resetSpeakerPoseButton.OnTrue(frc2::InstantCommand([this]{
+    if (frc::DriverStation::GetAlliance()) {
+      if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
+        m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{0.0_deg}}, false);
+      else
+        m_swerveDrive->SetPose(frc::Pose2d{15.579_m, 5.50_m, frc::Rotation2d{180.0_deg}}, false);
+    }
+  },{m_swerveDrive}).ToPtr());
 
-  resetSpeakerPoseButton.OnTrue(RunIntake(m_intake, 0.5).ToPtr());
-  resetSpeakerPoseButton.OnFalse(RunIntake(m_intake, 0.0).ToPtr());
+  // resetSpeakerPoseButton.OnTrue(RunIntake(m_intake, 0.5).ToPtr());
+  // resetSpeakerPoseButton.OnFalse(RunIntake(m_intake, 0.0).ToPtr());
 
   // enables climb mode
   frc2::Trigger toggleClimbModeButton{m_bill.Button(OperatorConstants::kButtonIDMenu)};
@@ -440,13 +440,13 @@ void RobotContainer::RegisterAutoCommands() {
   // Start of Auto Events
   pathplanner::NamedCommands::registerCommand("AlignShooter", frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(0.5_s),
-      RunLoader(m_shooter, ShooterConstants::kUnloadPower, 0.0, ShooterEndCondition::None)
+      frc2::WaitCommand(AutoConstants::kAutoUnloadTime),
+      RunLoader(m_shooter, AutoConstants::kAutoUnloadPower, 0.0, ShooterEndCondition::None)
     ),
     ShooterAutoAlign(m_shooter, m_helper, m_vision, true)
   ).ToPtr());
 
-  pathplanner::NamedCommands::registerCommand("AlignSwerve", SwerveAutoAlign(m_swerveDrive, true).ToPtr());
+  pathplanner::NamedCommands::registerCommand("AlignSwerve", TurnInPlace(m_swerveDrive, DriveState::SpeakerAlign).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("PrintAutoMessage", frc2::InstantCommand([this]{
     for (int i = 0; i < 10; i++) {
@@ -494,10 +494,22 @@ void RobotContainer::RegisterAutoCommands() {
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
     )
   ).ToPtr());
-  
-  pathplanner::NamedCommands::registerCommand("RotateTo90", SwerveAutoAlign(m_swerveDrive, false, 90.0_deg).ToPtr());
 
-  pathplanner::NamedCommands::registerCommand("RotateToNegative30", SwerveAutoAlign(m_swerveDrive, false, -30.0_deg).ToPtr());
+  // First, unload the note briefly so that it isn't stuck in the shooter's wheels
+  // Raises the shooter to the correct angle to fire from the front of the subwoofer
+  // Also ramps up the shooter's flywheel velocity at the same time to prepare a shot
+  pathplanner::NamedCommands::registerCommand("PrepareShooterSubwoofer", frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(AutoConstants::kAutoUnloadTime),
+      RunLoader(m_shooter, AutoConstants::kAutoUnloadPower, 0.0, ShooterEndCondition::None)
+    ),
+    // Also ramps up the speed while lifting the shooter
+    SetShooterRotation(m_shooter, ShooterState::Close)
+  ).ToPtr());
+
+  pathplanner::NamedCommands::registerCommand("RotateTo90", TurnInPlace(m_swerveDrive, DriveState::ArbitraryAngleAlign, 90.0_deg).ToPtr());
+
+  pathplanner::NamedCommands::registerCommand("RotateToNegative30", TurnInPlace(m_swerveDrive, DriveState::ArbitraryAngleAlign, -30.0_deg).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("ScoreSpeaker", frc2::SequentialCommandGroup(
     // frc2::ParallelDeadlineGroup(
@@ -618,13 +630,13 @@ void RobotContainer::ConfigureTestBindings() {
     )
   ).ToPtr());
 
-  frc2::Trigger reverseIntakeButton{m_test.Button(OperatorConstants::kButtonIDTriangle)};
-  reverseIntakeButton.OnTrue(frc2::InstantCommand([this]{
-    m_intake->SetRollerPower(-1.0);
-  },{m_intake}).ToPtr());
-  reverseIntakeButton.OnFalse(frc2::InstantCommand([this]{
-    m_intake->SetRollerPower(0.0);
-  },{m_intake}).ToPtr());
+  // frc2::Trigger reverseIntakeButton{m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  // reverseIntakeButton.OnTrue(frc2::InstantCommand([this]{
+  //   m_intake->SetRollerPower(-1.0);
+  // },{m_intake}).ToPtr());
+  // reverseIntakeButton.OnFalse(frc2::InstantCommand([this]{
+  //   m_intake->SetRollerPower(0.0);
+  // },{m_intake}).ToPtr());
 
   frc2::Trigger resetPoseButton{m_test.Button(OperatorConstants::kButtonIDTouchpad)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
@@ -664,7 +676,7 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
     // regular drive state if we don't want to directly load
   ).ToPtr());
 
- frc2::Trigger unloadButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
+ frc2::Trigger unloadButton{m_test.Button(OperatorConstants::kButtonIDCreate)};
   unloadButton.OnTrue(RunLoader(m_shooter, ShooterConstants::kUnloadPower, ShooterConstants::kUnloadPower).ToPtr());
   unloadButton.OnFalse(
     frc2::InstantCommand([this]{
@@ -673,7 +685,13 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
     },{m_shooter}).ToPtr()
   );
 
-  frc2::Trigger shootLowButton{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
+  frc2::Trigger swerveAlignButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  swerveAlignButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, DriveState::SpeakerAlign).ToPtr());
+
+  frc2::Trigger swerveAlignButtonTranslation{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
+  swerveAlignButtonTranslation.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, DriveState::SpeakerAlignTranslationAlgorithm).ToPtr());
+
+  frc2::Trigger shootLowButton{m_test.Button(OperatorConstants::kButtonIDMenu)};
   shootLowButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::Mid),
     RunShooter(m_shooter, 0.27)
@@ -689,6 +707,36 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
       m_shooter->SetLoaderPower(0.0);
     },{m_shooter})
   ).ToPtr());
+
+  frc2::Trigger extendBothClimbersButton{m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  extendBothClimbersButton.OnTrue(frc2::SequentialCommandGroup(
+    frc2::InstantCommand([this]{
+      m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle);
+    },{m_climber}),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(0.6_s),
+      RunClimber(m_climber, ClimberConstants::kRetractPower / 2.0, ClimberConstants::kRetractPower / 2.0)
+    ),
+    RunClimber(m_climber, ClimberConstants::kBothExtendPower, ClimberConstants::kBothExtendPower)
+  )
+    // .OnlyIf([this](){ return IsClimbState(); }));
+    .ToPtr());
+  extendBothClimbersButton.OnFalse(frc2::InstantCommand([this]{
+      m_climber->SetServoRotation(ClimberConstants::kLeftRetractServoAngle, ClimberConstants::kRightRetractServoAngle);
+      m_climber->SetPower(0.0, 0.0);
+  },{m_climber})
+    // .OnlyIf([this](){ return IsClimbState(); }));
+    .ToPtr());
+
+  frc2::Trigger retractBothClimbersButton{m_test.Button(OperatorConstants::kButtonIDX)};
+  retractBothClimbersButton.OnTrue(RunClimber(m_climber, ClimberConstants::kBothRetractPower, ClimberConstants::kBothRetractPower)
+    // .OnlyIf([this](){ return IsClimbState(); }));
+    .ToPtr());
+  retractBothClimbersButton.OnFalse(frc2::InstantCommand([this]{
+      m_climber->SetPower(0.0, 0.0);
+  },{m_climber})
+    // .OnlyIf([this](){ return IsClimbState(); }));
+    .ToPtr());
 
 //   frc2::Trigger driveRelativePosX{m_test.Button(OperatorConstants::kButtonIDSquare)};
 //   driveRelativePosX.OnTrue(frc2::RunCommand([this]{

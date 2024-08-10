@@ -13,6 +13,8 @@ namespace AutoConstants {
     constexpr auto kAlignAllowableDriveSpeed {0.25_mps};
     constexpr double kAutoAlignTolerance {2.5};
     constexpr auto kAutoRevUpTime {2.0_s};
+    constexpr auto kAutoUnloadTime {0.25_s};
+    constexpr auto kAutoUnloadPower {-0.35};
     // Distance from robot center to furthest module
     constexpr auto kDriveBaseRadius {0.282575_m};
     constexpr auto kMaxAutoModuleSpeed{2.0_mps};

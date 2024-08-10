@@ -13,6 +13,7 @@
 #include <frc2/command/button/CommandJoystick.h>
 #include "subsystems/SwerveDrive.h"
 #include "Constants/OperatorConstants.h"
+#include "util/SwerveAlignUtil.h"
 
 /**
  * An example command.
@@ -21,7 +22,6 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-enum class DriveState {HeadingControl, RotationVelocityControl, SpeakerAlign, ArbitraryAngleAlign, SourceAlign } ;
 
 class Drive
     : public frc2::CommandHelper<frc2::Command, Drive> {
@@ -29,6 +29,7 @@ class Drive
   Drive(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle = 0.0_deg);
   units::angular_velocity::radians_per_second_t GetDesiredRotationalVelocity();
   units::angular_velocity::radians_per_second_t GetRotVelSpeakerAlign();
+  units::angular_velocity::radians_per_second_t GetRotVelSpeakerAlignTranslation();
   void UpdatePreferences();
 
   void Initialize() override;
@@ -42,6 +43,7 @@ class Drive
  private:
   frc2::CommandJoystick *m_bill;
   SwerveDrive *m_swerveDrive;
+  SwerveAlignUtil m_swerveAlignUtil;
   frc::PIDController m_rotationPIDController;
   DriveState m_driveState;
   units::degree_t m_arbitraryAngle;

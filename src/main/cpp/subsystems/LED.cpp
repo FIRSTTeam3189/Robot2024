@@ -301,16 +301,17 @@ void LED::SetMap() {
     }
 }
 
+// Fix this to display LEDs column major instead of row major
 void LED::DisplayString() {
     for (int j = 0; j < 8; j++) {
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < 31; i++) {
             if (m_LEDMap[j][i+1]) {
                 SetRowColor(0, 0, 255, {i+8, i+9});
             }
         }
     }
     for (int j = 0; j < 8; j++) {
-        for (int i = 1; i < 31; i++) {
+        for (int i = 1; i < 32; i++) {
             m_LEDMap[j][i-1] = m_LEDMap[j][i];
         }
     }

@@ -77,7 +77,7 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
       ),
       frc2::RunCommand([this]{
         units::angular_velocity::radians_per_second_t rot = 
-              -units::angular_velocity::radians_per_second_t{
+              units::angular_velocity::radians_per_second_t{
               m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw().value(), 0.0)
               * SwerveDriveConstants::kMaxAngularVelocity};
         m_swerve->Drive(0.0_mps, 1.0_mps, rot, true, frc::Translation2d{0.0_m, frc::Rotation2d{}});
@@ -87,7 +87,7 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
       frc2::WaitCommand(3.0_s),
       frc2::RunCommand([this]{
           units::angular_velocity::radians_per_second_t rot = 
-                -units::angular_velocity::radians_per_second_t{
+                units::angular_velocity::radians_per_second_t{
                 m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw().value(), 0.0)
                 * SwerveDriveConstants::kMaxAngularVelocity};
           m_swerve->Drive(-1.0_mps, 0.0_mps, rot, true, frc::Translation2d{0.0_m, frc::Rotation2d{}});
@@ -134,7 +134,7 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
   //     frc2::WaitCommand(1.5_s),
   //     frc2::RunCommand([this]{
   //       units::angular_velocity::radians_per_second_t rot = 
-  //             -units::angular_velocity::radians_per_second_t{
+  //             units::angular_velocity::radians_per_second_t{
   //             m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw().value(), 0.0)
   //             * SwerveDriveConstants::kMaxAngularVelocity};
 
@@ -156,7 +156,7 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
   //     frc2::WaitCommand(1.5_s),
   //     frc2::RunCommand([this]{
   //       units::angular_velocity::radians_per_second_t rot = 
-  //             -units::angular_velocity::radians_per_second_t{
+  //             units::angular_velocity::radians_per_second_t{
   //             m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw().value(), 0.0)
   //             * SwerveDriveConstants::kMaxAngularVelocity};
 

@@ -20,6 +20,8 @@
 #include "Constants/VisionConstants.h"
 #include "Constants/AutoConstants.h"
 
+enum class DriveState {HeadingControl, RotationVelocityControl, SpeakerAlign, SpeakerAlignTranslationAlgorithm, ArbitraryAngleAlign, SourceAlign } ;
+
 struct SwerveModules {
   frc::Translation2d m_frontLeftLocation;
   frc::Translation2d m_frontRightLocation;

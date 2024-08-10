@@ -63,6 +63,23 @@
           ]
         }
       }
+    },
+    {
+      "name": "PrepareShooterSubwoofer",
+      "waypointRelativePos": 1.45,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PrepareShooterSubwoofer"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
