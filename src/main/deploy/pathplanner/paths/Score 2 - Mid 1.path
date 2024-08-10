@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2932270014807754,
-        "y": 5.52
+        "x": 1.26,
+        "y": 5.53
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9211950888149403,
-        "y": 6.161975590608688
+        "x": 1.8879680873341649,
+        "y": 6.171975590608689
       },
       "isLocked": false,
       "linkedName": "Score 1 Mid Ends"

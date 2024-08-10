@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 1.26,
-        "y": 5.5
+        "y": 5.53
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.267318291378096,
-        "y": 5.488721722382874
+        "y": 5.518721722382875
       },
       "isLocked": false,
       "linkedName": "Mid Start Point"
     },
     {
       "anchor": {
-        "x": 1.2932270014807754,
-        "y": 5.52
+        "x": 1.26,
+        "y": 5.53
       },
       "prevControl": {
-        "x": 1.2930934952732986,
-        "y": 5.520365537191296
+        "x": 1.2598664937925232,
+        "y": 5.5303655371912965
       },
       "nextControl": null,
       "isLocked": false,

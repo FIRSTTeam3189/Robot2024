@@ -4,24 +4,40 @@
     {
       "anchor": {
         "x": 1.26,
-        "y": 5.54
+        "y": 5.53
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2552803405848,
-        "y": 5.538504204916005
+        "x": 1.254860202028098,
+        "y": 5.535354916863679
       },
       "isLocked": false,
       "linkedName": "Mid Start Point"
     },
     {
       "anchor": {
-        "x": 1.26,
-        "y": 5.54
+        "x": 2.55,
+        "y": 4.09
       },
       "prevControl": {
-        "x": 1.2571821734471575,
-        "y": 5.536928001755359
+        "x": 1.9260400521101655,
+        "y": 3.6735928642242737
+      },
+      "nextControl": {
+        "x": 2.5579619390008026,
+        "y": 4.095313495242375
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.26,
+        "y": 5.53
+      },
+      "prevControl": {
+        "x": 1.2647271448389068,
+        "y": 5.525487974052871
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,13 +55,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true
