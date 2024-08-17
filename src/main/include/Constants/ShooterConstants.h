@@ -60,10 +60,18 @@ namespace ShooterConstants {
 //m
     constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
 
-    const std::map<units::meter_t, units::degree_t> kShooterKnownAngles {
-        {2.0_m, 59.0_deg},
-        {3.0_m, 50.0_deg},
-        {4.0_m, 45.0_deg},
-        {5.0_m, 37.0_deg}
+    const std::vector<units::meter_t> kShooterKnownDistances {
+        2.0_m, 
+        3.0_m, 
+        4.0_m, 
+        5.0_m
     };
+
+    const std::vector<units::degree_t> kShooterKnownAngles {
+        59.0_deg, 
+        50.0_deg, 
+        45_deg, 
+        37_deg
+    };
+
 }

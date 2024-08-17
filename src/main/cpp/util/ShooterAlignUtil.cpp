@@ -42,6 +42,33 @@ units::degree_t ShooterAlignUtil::GetShooterGoalInterpolating(units::meter_t dis
     //     units::meter_t knownDistance = ShooterConstants::kShooterKnownAngles;
     // }
 
+    for (size_t i = 1; i < ShooterConstants::kShooterKnownDistances.size(); i++) {
+      if (ShooterConstants::kShooterKnownDistances.at(i) > distance){
+        units::degree_t upperAngle = ShooterConstants::kShooterKnownAngles.at(i);
+        units::degree_t lowerAngle = ShooterConstants::kShooterKnownAngles.at(i - 1);
+
+        units::meter_t upperDistance = ShooterConstants::kShooterKnownDistances.at(i);
+        units::meter_t lowerDistance = ShooterConstants::kShooterKnownDistances.at(i-1);
+
+        units::meter_t difference = distance - lowerDistance;
+        double slope = (upperAngle.value() - lowerAngle.value()) / (upperDistance.value() - lowerDistance.value());
+        
+        // Lower angle is the base, we interpolate along the line using the given slope
+        // So that the difference between the lower distance and the input distance
+        // is multiplied by the slope of the line
+        units::degree_t goalAngle = lowerAngle + units::degree_t{slope * difference.value()};
+        frc::SmartDashboard::PutNumber("Shooter interpolated goal angle", goalAngle.value());
+        frc::SmartDashboard::PutNumber("Lower angle", lowerAngle.value());
+        frc::SmartDashboard::PutNumber("Upper angle", upperAngle.value());
+        frc::SmartDashboard::PutNumber("Lower distance", lowerDistance.value());
+        frc::SmartDashboard::PutNumber("Upper distance", upperDistance.value());
+        frc::SmartDashboard::PutNumber("Slope", slope);
+        frc::SmartDashboard::PutNumber("Difference", difference.value());
+
+        return lowerAngle + units::degree_t{slope * difference.value()};
+      }
+    }
+
     return 0.0_deg;
 }
 
