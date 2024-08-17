@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <map>
 
 // Shooter Constants
 namespace ShooterConstants {
@@ -56,6 +57,13 @@ namespace ShooterConstants {
     constexpr auto kRotationIdleTolerance {1.5_deg};
 
     constexpr bool kRollerInverted {true};
-
+//m
     constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
+
+    const std::map<units::meter_t, units::degree_t> kShooterKnownAngles {
+        {2.0_m, 59.0_deg},
+        {3.0_m, 50.0_deg},
+        {4.0_m, 45.0_deg},
+        {5.0_m, 37.0_deg}
+    };
 }

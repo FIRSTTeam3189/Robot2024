@@ -29,7 +29,7 @@ namespace SwerveModuleConstants {
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
     constexpr double kFrontLeftOffset {0.921143}; // 0.421143
-    constexpr double kFrontRightOffset {0.654785}; // 0.154785
+    constexpr double kFrontRightOffset {-0.351562}; // 0.154785
     constexpr double kBackLeftOffset {0.115479}; // -0.384521
     constexpr double kBackRightOffset {0.332031}; // {-0.167969
 

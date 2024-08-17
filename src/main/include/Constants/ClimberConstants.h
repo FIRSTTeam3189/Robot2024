@@ -9,7 +9,7 @@ namespace ClimberConstants{
     constexpr int kRightMotorID {19};
     constexpr int kLefttMotorID {20};
     constexpr int kLimitSwitchPort {4};
-    constexpr bool kInvertLeftMotor {false};
+    constexpr bool kInvertLeftMotor {true};
     constexpr bool kInvertRightMotor {false};
     constexpr double kExtendPower {0.5};
     constexpr double kBothExtendPower {0.75};

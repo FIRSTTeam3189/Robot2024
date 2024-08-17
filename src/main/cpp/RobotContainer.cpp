@@ -710,19 +710,19 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
 
   frc2::Trigger extendBothClimbersButton{m_test.Button(OperatorConstants::kButtonIDTriangle)};
   extendBothClimbersButton.OnTrue(frc2::SequentialCommandGroup(
-    frc2::InstantCommand([this]{
-      m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle);
-    },{m_climber}),
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(0.6_s),
-      RunClimber(m_climber, ClimberConstants::kRetractPower / 2.0, ClimberConstants::kRetractPower / 2.0)
-    ),
+    // frc2::InstantCommand([this]{
+    //   m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle);
+    // },{m_climber}),
+    // frc2::ParallelDeadlineGroup(
+    //   frc2::WaitCommand(0.6_s),
+    //   RunClimber(m_climber, ClimberConstants::kRetractPower / 2.0, ClimberConstants::kRetractPower / 2.0)
+    // ),
     RunClimber(m_climber, ClimberConstants::kBothExtendPower, ClimberConstants::kBothExtendPower)
   )
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
   extendBothClimbersButton.OnFalse(frc2::InstantCommand([this]{
-      m_climber->SetServoRotation(ClimberConstants::kLeftRetractServoAngle, ClimberConstants::kRightRetractServoAngle);
+      // m_climber->SetServoRotation(ClimberConstants::kLeftRetractServoAngle, ClimberConstants::kRightRetractServoAngle);
       m_climber->SetPower(0.0, 0.0);
   },{m_climber})
     // .OnlyIf([this](){ return IsClimbState(); }));
