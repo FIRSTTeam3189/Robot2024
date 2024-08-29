@@ -21,7 +21,7 @@ m_allianceSide(frc::DriverStation::Alliance::kBlue) {
     m_allianceSide = frc::DriverStation::GetAlliance();
 
   // 1 degree position tolerance
-  m_rotationPIDController.SetTolerance(1.0);
+  m_rotationPIDController.SetTolerance(SwerveDriveConstants::kSwerveRotationTolerance);
   m_rotationPIDController.EnableContinuousInput(-180, 180);
 
   m_rotationPKey = "Robot Rotation P";
@@ -78,7 +78,17 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
 
   frc::SmartDashboard::PutNumber("Rotation PID Output (deg per s)", rot.value() * (180.0/Pi));
     
-  if (abs(m_swerveDrive->GetNormalizedYaw().value() - m_goalAngle) < 2.5) {
+  frc::SmartDashboard::PutBoolean("Integral gain reset", false);
+  // Analyze integral gain to develop a range to limit the gain to that. This will prevent heavy accumulation in long, fast rotational movements
+  // Should be radians per second, but just see output.
+
+  // m_rotationPIDController.SetIntegratorRange()
+  // frc::SmartDashboard::PutNumber("Integral gain", m_rotationPIDController.g)
+
+  if (abs(m_swerveDrive->GetNormalizedYaw().value() - m_goalAngle) < SwerveDriveConstants::kSwerveRotationTolerance) {
+    // Clear integral sum
+    frc::SmartDashboard::PutBoolean("Integral gain reset", true);
+    m_rotationPIDController.Reset();
     rot = units::angular_velocity::radians_per_second_t{0.0};
   }
 
@@ -151,7 +161,6 @@ void Drive::Execute() {
       rot = (fabs(joystickRotX) < .05) ? 0.0_rad / 1.0_s : (m_xSpeedLimiter.Calculate(joystickRotX) * SwerveDriveConstants::kMaxAngularVelocity);
       break;
     }
-
     // if the robot is going to align to some angle like the speaker, amp, or source load
     case(DriveState::ArbitraryAngleAlign) :
       rot = units::angular_velocity::radians_per_second_t{
@@ -180,6 +189,7 @@ void Drive::Execute() {
   }
 
   // based on drive state, set the rotation and velocity to do so
+  // Print out rotation and drive state
 
   m_swerveDrive->Drive(xSpeed, ySpeed, rot, true, frc::Translation2d{});
 }
@@ -202,16 +212,32 @@ units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlign() {
               m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), goalAngle.value()))
               * SwerveDriveConstants::kMaxAngularVelocity};
 
+  if (abs(m_swerveDrive->GetNormalizedYaw().value() - goalAngle.value()) < SwerveDriveConstants::kSwerveRotationTolerance) {
+    // Clear integral sum
+    m_rotationPIDController.Reset();
+    rot = units::angular_velocity::radians_per_second_t{0.0};
+  }
+
   return rot;
 }
 
 units::angular_velocity::radians_per_second_t Drive::GetRotVelSpeakerAlignTranslation() {
   units::degree_t goalAngle = m_swerveAlignUtil.GetSpeakerGoalAngleTranslation();
   // Return next velocity in radians per second as calculated by PIDController and limited by rotLimiter
+
+  frc::SmartDashboard::PutNumber("Speaker align new goal angle", goalAngle.value());
+  frc::SmartDashboard::PutNumber("Speaker align current angle", m_swerveDrive->GetNormalizedYaw().value());
+
   units::angular_velocity::radians_per_second_t rot = 
               units::angular_velocity::radians_per_second_t{
               m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerveDrive->GetNormalizedYaw().value(), goalAngle.value()))
               * SwerveDriveConstants::kMaxAngularVelocity};
+
+  if (abs(m_swerveDrive->GetNormalizedYaw().value() - goalAngle.value()) < SwerveDriveConstants::kSwerveRotationTolerance) {
+    // Clear integral sum
+    m_rotationPIDController.Reset();
+    rot = units::angular_velocity::radians_per_second_t{0.0};
+  }
 
   return rot;
 }

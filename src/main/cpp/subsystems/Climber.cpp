@@ -35,7 +35,10 @@ void Climber::Periodic() {
 
 void Climber::SetPower(double leftPower, double rightPower){
     m_leftMotor.Set(leftPower);
-    m_rightMotor.Set(-rightPower);
+    m_rightMotor.Set(rightPower);
+
+    frc::SmartDashboard::PutNumber("Climber left output", leftPower);
+    frc::SmartDashboard::PutNumber("Climber right output", rightPower);
 }
 
 void Climber::SetServoRotation(double leftAngle, double rightAngle){

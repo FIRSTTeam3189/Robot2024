@@ -66,14 +66,15 @@ units::degree_t SwerveAlignUtil::GetSpeakerGoalAngleTranslation() {
 
   units::degree_t goalAngle = robotToTarget.Angle().Degrees();
   // Might need to flip angle based on alliance side, but maybe not (see atan vs translation2d direction)
-  // if (allianceSide) {
-  //   if (allianceSide.value() == frc::DriverStation::Alliance::kRed) {
-  //       goalAngle += 180.0_deg;
-  //       if (goalAngle > 180.0_deg)
-  //         goalAngle -= 360.0_deg;
+  // if (frc::DriverStation::GetAlliance()) {
+  //   if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kRed) {
+        goalAngle += 180.0_deg;
+        if (goalAngle > 180.0_deg)
+          goalAngle -= 360.0_deg;
   //   }
   // }
 
-  frc::SmartDashboard::PutNumber("Swerve auto align angle translation", goalAngle.value());
+  // frc::SmartDashboard::PutNumber("Swerve auto align angle translation", goalAngle.value());
+
   return goalAngle;
 }

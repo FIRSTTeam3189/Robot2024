@@ -29,6 +29,7 @@ class Climber : public frc2::SubsystemBase {
  private:
   rev::CANSparkMax m_leftMotor;
   rev::CANSparkMax m_rightMotor;
+
   // frc::Servo m_leftServo;
   // frc::Servo m_rightServo;
   frc::DigitalInput m_brakeModeLimitSwitch;

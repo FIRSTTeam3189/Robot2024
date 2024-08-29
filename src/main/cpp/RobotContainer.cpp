@@ -597,7 +597,7 @@ BrakeMode RobotContainer::GetBrakeMode() {
 
 void RobotContainer::ConfigureTestBindings() {
 
-  m_swerveDrive->ToggleSlowMode();
+  // m_swerveDrive->ToggleSlowMode();
 
   frc2::Trigger fullIntakeButton{m_test.Button(OperatorConstants::kButtonIDLeftBumper)};
   fullIntakeButton.OnTrue(frc2::SequentialCommandGroup(
@@ -640,11 +640,18 @@ void RobotContainer::ConfigureTestBindings() {
 
   frc2::Trigger resetPoseButton{m_test.Button(OperatorConstants::kButtonIDTouchpad)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
+    // if (frc::DriverStation::GetAlliance()) {
+    //   if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
+    //     m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
+    //   else
+    //     m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{180.0_deg}}, true);
+    // }
+
     if (frc::DriverStation::GetAlliance()) {
       if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
-        m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
+        m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{0.0_deg}}, false);
       else
-        m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{180.0_deg}}, true);
+        m_swerveDrive->SetPose(frc::Pose2d{15.579_m, 5.50_m, frc::Rotation2d{180.0_deg}}, false);
     }
   },{m_swerveDrive}).ToPtr());
 
@@ -686,10 +693,32 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
   );
 
   frc2::Trigger swerveAlignButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  swerveAlignButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, DriveState::SpeakerAlign).ToPtr());
-
+  // swerveAlignButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, DriveState::SpeakerAlign).ToPtr());
+  swerveAlignButton.OnTrue(frc2::InstantCommand([this]{
+    if (m_driveState == DriveState::HeadingControl) {
+      m_driveState = DriveState::SpeakerAlign;
+      // frc::SmartDashboard::PutString("Drive state", "Speaker align");
+    } else {
+      m_driveState = DriveState::HeadingControl;
+      // frc::SmartDashboard::PutString("Drive state", "Heading control");
+    }
+      m_swerveDrive->SetDefaultCommand(Drive(&m_test, m_swerveDrive, m_driveState));
+    },{m_swerveDrive}).ToPtr()
+  );
+  
   frc2::Trigger swerveAlignButtonTranslation{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
-  swerveAlignButtonTranslation.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, DriveState::SpeakerAlignTranslationAlgorithm).ToPtr());
+  // swerveAlignButtonTranslation.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, DriveState::SpeakerAlignTranslationAlgorithm).ToPtr());
+  swerveAlignButtonTranslation.OnTrue(frc2::InstantCommand([this]{
+    if (m_driveState == DriveState::HeadingControl) {
+      m_driveState = DriveState::SpeakerAlignTranslationAlgorithm;
+      // frc::SmartDashboard::PutString("Drive state", "Speaker align new algorithm");
+    } else {
+      m_driveState = DriveState::HeadingControl;
+      // frc::SmartDashboard::PutString("Drive state", "Heading control");
+    }
+      m_swerveDrive->SetDefaultCommand(Drive(&m_test, m_swerveDrive, m_driveState));
+    },{m_swerveDrive}).ToPtr()
+  );
 
   frc2::Trigger shootLowButton{m_test.Button(OperatorConstants::kButtonIDMenu)};
   shootLowButton.OnTrue(frc2::SequentialCommandGroup(

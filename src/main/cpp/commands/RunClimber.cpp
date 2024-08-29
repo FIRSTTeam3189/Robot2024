@@ -18,7 +18,8 @@ void RunClimber::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void RunClimber::Execute() {}
+void RunClimber::Execute() {
+}
 
 // Called once the command ends or is interrupted.
 void RunClimber::End(bool interrupted) {
