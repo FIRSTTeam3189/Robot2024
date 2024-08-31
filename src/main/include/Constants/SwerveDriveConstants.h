@@ -35,13 +35,13 @@ namespace SwerveDriveConstants {
     constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {2.0 * Pi};
 
     // SysID robot characterization values -- **varies by robot**
-    constexpr auto ks {0.408_V};
-    constexpr auto kv {3.206 * 1_V * 1_s / 1_m};
-    constexpr auto ka {3.409 * 1_V * 1_s * 1_s / 1_m};
+    constexpr double kSRot {0.0}; // 0.408_V
+    // constexpr auto kv {3.206 * 1_V * 1_s / 1_m};
+    // constexpr auto ka {3.409 * 1_V * 1_s * 1_s / 1_m};
 
     // These are for robot rotation, not wheel rotation
     constexpr double kPRot {0.004};
-    constexpr double kIRot {0.00025};
+    constexpr double kIRot {0.0}; // constexpr double kIRot {0.00025};
     constexpr double kDRot {0.0};
 
     constexpr double kSlowModeDriveMultiplier {0.5};

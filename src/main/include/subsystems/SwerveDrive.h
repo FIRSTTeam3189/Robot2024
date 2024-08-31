@@ -92,6 +92,9 @@ class SwerveDrive : public frc2::SubsystemBase {
   std::string m_anglePKey;
   std::string m_angleIKey;
   std::string m_angleDKey;
+  std::string m_rotationSKey;
+
+  double m_rotationS = SwerveDriveConstants::kSRot;
 
   std::vector<ctre::phoenix6::BaseStatusSignal*> m_allSignals;
 };

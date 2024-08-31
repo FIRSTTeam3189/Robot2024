@@ -76,6 +76,7 @@ m_modulePositions(
     m_anglePKey = "AngleP";
     m_angleIKey = "AngleI";
     m_angleDKey = "AngleD";
+    m_rotationSKey = "RotS";
 
     frc::Preferences::SetDouble(m_drivePKey, SwerveModuleConstants::kPDrive);
     frc::Preferences::SetDouble(m_driveIKey, SwerveModuleConstants::kIDrive);
@@ -83,6 +84,7 @@ m_modulePositions(
     frc::Preferences::SetDouble(m_anglePKey, SwerveModuleConstants::kPAngle);
     frc::Preferences::SetDouble(m_angleIKey, SwerveModuleConstants::kIAngle);
     frc::Preferences::SetDouble(m_angleDKey, SwerveModuleConstants::kDAngle);
+    frc::Preferences::SetDouble(m_rotationSKey, SwerveDriveConstants::kSRot);
 }
 
 // This method will be called once per scheduler run
@@ -92,6 +94,9 @@ void SwerveDrive::Periodic() {
         m_modules.m_frontRight.UpdatePreferences();
         m_modules.m_backLeft.UpdatePreferences();
         m_modules.m_backRight.UpdatePreferences();
+
+        // Update rotation S value
+        m_rotationS = frc::Preferences::GetDouble(m_rotationSKey, SwerveDriveConstants::kSRot);
     }
     UpdateEstimator();
     RefreshAllSignals();
@@ -132,9 +137,17 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
                         bool fieldRelative,
                         frc::Translation2d centerOfRotation) {
 
+    // Add static ff value depending on direction of travel (rot)
+    if (rot > units::radians_per_second_t(0.0)){
+        rot += units::radians_per_second_t(m_rotationS);
+    } else {
+        rot -= units::radians_per_second_t(m_rotationS);
+    }
+
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                                    xSpeed, ySpeed, rot, m_pigeon.GetRotation2d())
+                         speeds.omega += m_rotationS;
+               xSpeed, ySpeed, rot, m_pigeon.GetRotation2d())
                                     : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
                   centerOfRotation);
 
@@ -160,6 +173,13 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
     // speeds.vx = -speeds.vx;
     // speeds.vy = -speeds.vy;
+
+    // Add static ff value depending on direction of travel speeds omega
+    if (speeds.omega > units::radians_per_second_t(0.0)){
+        speeds.omega += units::radians_per_second_t(m_rotationS);
+    } else {
+        speeds.omega -= units::radians_per_second_t(m_rotationS);
+    }
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(speeds);
     auto [fl, fr, bl, br] = states;
