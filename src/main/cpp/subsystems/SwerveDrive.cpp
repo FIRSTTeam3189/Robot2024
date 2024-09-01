@@ -140,16 +140,15 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
     // Add static ff value depending on direction of travel (rot)
     if (rot > units::radians_per_second_t(0.0)){
         rot += units::radians_per_second_t(m_rotationS);
-    } else {
+    } else if (rot < units::radians_per_second_t(0.0)) {
         rot -= units::radians_per_second_t(m_rotationS);
     }
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                         speeds.omega += m_rotationS;
-               xSpeed, ySpeed, rot, m_pigeon.GetRotation2d())
-                                    : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
-                  centerOfRotation);
+                        xSpeed, ySpeed, rot, m_pigeon.GetRotation2d())
+                            : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
+                            centerOfRotation);
 
     auto [fl, fr, bl, br] = states;
 
@@ -177,7 +176,7 @@ void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {
     // Add static ff value depending on direction of travel speeds omega
     if (speeds.omega > units::radians_per_second_t(0.0)){
         speeds.omega += units::radians_per_second_t(m_rotationS);
-    } else {
+    } else if (speeds.omega < units::radians_per_second_t(0.0)) {
         speeds.omega -= units::radians_per_second_t(m_rotationS);
     }
 

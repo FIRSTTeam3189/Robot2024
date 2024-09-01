@@ -190,6 +190,7 @@ void Drive::Execute() {
 
   // based on drive state, set the rotation and velocity to do so
   // Print out rotation and drive state
+  frc::SmartDashboard::PutNumber("Robot desired rotation (rad per s)", rot.value());
 
   m_swerveDrive->Drive(xSpeed, ySpeed, rot, true, frc::Translation2d{});
 }
