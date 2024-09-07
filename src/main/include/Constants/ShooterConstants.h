@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <map>
+#include <rev/CANSparkMax.h>
 
 // Shooter Constants
 namespace ShooterConstants {
@@ -39,16 +40,16 @@ namespace ShooterConstants {
     constexpr double kUnloadPower {-0.25};
     // Direct shooter load
     // constexpr auto kDirectLoadTarget {59.0_deg};
-    constexpr auto kDirectLoadTarget {55.0_deg};
+    constexpr auto kDirectLoadTarget {57.0_deg};
     constexpr double kDirectLoadPower {-0.25};
     
     // constexpr auto kStartingConfigTarget {59.0_deg};
-    constexpr auto kStartingConfigTarget {55.0_deg};
+    constexpr auto kStartingConfigTarget {57.0_deg};
     constexpr auto kRetractTarget {40.0_deg};
     // constexpr auto kCloseTarget {59.0_deg};
     // constexpr auto kAutoScoreTarget {59.0_deg};
-    constexpr auto kCloseTarget {55.0_deg};
-    constexpr auto kAutoScoreTarget {55.0_deg};
+    constexpr auto kCloseTarget {57.0_deg};
+    constexpr auto kAutoScoreTarget {57.0_deg};
     constexpr auto kMidTarget {45.0_deg};
     constexpr auto kFarTarget {15.0_deg};
     constexpr double kRotationOffset {86.0};
@@ -61,7 +62,7 @@ namespace ShooterConstants {
     constexpr auto kRotationIdleTolerance {1.5_deg};
 
     constexpr bool kRollerInverted {true};
-//m
+
     constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
 
     const std::vector<units::meter_t> kShooterKnownDistances {

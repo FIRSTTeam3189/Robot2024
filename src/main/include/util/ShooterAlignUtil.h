@@ -7,17 +7,19 @@
 #include <frc/DriverStation.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/geometry/Translation2d.h>
-#include "subsystems/Shooter.h"
-#include "subsystems/SwerveDrive.h"
+#include <frc/geometry/Pose3d.h>
+#include "subsystems/PoseEstimatorHelper.h"
+#include "Constants/VisionConstants.h"
+#include "Constants/ShooterConstants.h"
 
 class ShooterAlignUtil {
  public:
-  ShooterAlignUtil(SwerveDrive *swerve, Shooter *shooter);
+  ShooterAlignUtil(PoseEstimatorHelper *estimator);
   units::meter_t GetDistanceToSpeaker();
   units::degree_t GetShooterGoalInterpolating(units::meter_t distance);
   frc::Pose3d GetSpeakerPoseAllianceCompensated();
 
  private:
-  SwerveDrive *m_swerve;
-  Shooter *m_shooter;
+  // Shooter only uses the pose from the Swerve so we can just simply give it the PoseEstimatorHelper
+  PoseEstimatorHelper *m_estimator;
 };

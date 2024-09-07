@@ -4,7 +4,7 @@
 
 #include "subsystems/Shooter.h"
 
-Shooter::Shooter() : 
+Shooter::Shooter(PoseEstimatorHelper *estimator) : 
 m_topRollerMotor(ShooterConstants::kTopRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_bottomRollerMotor(ShooterConstants::kBottomRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rollerEncoder(m_topRollerMotor.GetEncoder()),
@@ -12,6 +12,7 @@ m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBr
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_limitSwitchLeft(ShooterConstants::kLeftLimitSwitchPort),
 m_limitSwitchRight(ShooterConstants::kRightLimitSwitchPort),
+m_alignUtil(estimator),
 m_constraints(ShooterConstants::kMaxRotationVelocity, ShooterConstants::kMaxRotationAcceleration),
 m_profiledPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
@@ -244,6 +245,14 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
             break;
         case(ShooterState::AutoScore):
             target = ShooterConstants::kAutoScoreTarget;
+            break;
+        case(ShooterState::ArbitraryAngle):
+            // Will set target to the arbitrary angle based on UpdatePreferences()
+            target = units::degree_t{frc::Preferences::GetDouble(m_rotationTargetKey, m_target.value())};
+            break;
+        case(ShooterState::InterpolateAngle):
+            // This will set to the angle calculated by the interpolation algorithm
+            target = m_alignUtil.GetShooterGoalInterpolating(m_alignUtil.GetDistanceToSpeaker());
             break;
         default: 
             break;

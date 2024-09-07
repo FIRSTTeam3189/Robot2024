@@ -21,14 +21,16 @@
 #include <rev/SparkRelativeEncoder.h> 
 #include "Constants/ShooterConstants.h"
 #include "Constants/GlobalConstants.h"
+#include "util/ShooterAlignUtil.h"
+#include "subsystems/PoseEstimatorHelper.h"
 
-enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero, AutoAlign, StartingConfig, AutoScore } ;
+enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero, AutoAlign, StartingConfig, AutoScore, ArbitraryAngle, InterpolateAngle } ;
 enum class ShooterEndCondition { None, EndOnFirstDetection };
 
 class Shooter : public frc2::SubsystemBase {
  public:
  
-  Shooter();
+  Shooter(PoseEstimatorHelper *estimator);
   void SetRollerPower(double power);
   void SetRotationPower(double power);
   void SetLoaderPower(double power);
@@ -61,12 +63,16 @@ class Shooter : public frc2::SubsystemBase {
    rev::SparkRelativeEncoder m_rollerEncoder;
    rev::CANSparkMax m_loaderMotor;
    rev::CANSparkMax m_rotationMotor;
+
    frc::DigitalInput m_limitSwitchLeft;
    frc::DigitalInput m_limitSwitchRight;
+   
+   ShooterAlignUtil m_alignUtil;
    frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
    frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
    frc::ArmFeedforward *m_ff;
    rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
+
    units::degree_t m_target;
    units::degrees_per_second_t m_lastSpeed;
    units::degrees_per_second_t m_lastTargetSpeed;
@@ -74,6 +80,7 @@ class Shooter : public frc2::SubsystemBase {
    units::degrees_per_second_squared_t m_targetAcceleration;
    units::second_t m_lastTime;
    bool m_isActive;
+
    // String keys for PID preferences
    std::string m_rotationPKey;
    std::string m_rotationIKey;

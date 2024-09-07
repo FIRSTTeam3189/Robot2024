@@ -691,22 +691,23 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
       m_shooter->SetLoaderPower(0.0);
     },{m_shooter}).ToPtr()
   );
-
-  frc2::Trigger swerveAlignButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // Old swerve align method
+  // frc2::Trigger swerveAlignButton{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
   // swerveAlignButton.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, DriveState::SpeakerAlign).ToPtr());
-  swerveAlignButton.OnTrue(frc2::InstantCommand([this]{
-    if (m_driveState == DriveState::HeadingControl) {
-      m_driveState = DriveState::SpeakerAlign;
-      // frc::SmartDashboard::PutString("Drive state", "Speaker align");
-    } else {
-      m_driveState = DriveState::HeadingControl;
-      // frc::SmartDashboard::PutString("Drive state", "Heading control");
-    }
-      m_swerveDrive->SetDefaultCommand(Drive(&m_test, m_swerveDrive, m_driveState));
-    },{m_swerveDrive}).ToPtr()
-  );
+  // swerveAlignButton.OnTrue(frc2::InstantCommand([this]{
+  //   if (m_driveState == DriveState::HeadingControl) {
+  //     m_driveState = DriveState::SpeakerAlign;
+  //     // frc::SmartDashboard::PutString("Drive state", "Speaker align");
+  //   } else {
+  //     m_driveState = DriveState::HeadingControl;
+  //     // frc::SmartDashboard::PutString("Drive state", "Heading control");
+  //   }
+  //     m_swerveDrive->SetDefaultCommand(Drive(&m_test, m_swerveDrive, m_driveState));
+  //   },{m_swerveDrive}).ToPtr()
+  // );
   
-  frc2::Trigger swerveAlignButtonTranslation{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
+  // New swerve align method
+  frc2::Trigger swerveAlignButtonTranslation{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
   // swerveAlignButtonTranslation.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, DriveState::SpeakerAlignTranslationAlgorithm).ToPtr());
   swerveAlignButtonTranslation.OnTrue(frc2::InstantCommand([this]{
     if (m_driveState == DriveState::HeadingControl) {
@@ -737,6 +738,40 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
     },{m_shooter})
   ).ToPtr());
 
+  frc2::Trigger arbitraryShootButton{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
+  arbitraryShootButton.OnTrue(frc2::SequentialCommandGroup(
+    SetShooterRotation(m_shooter, ShooterState::ArbitraryAngle),
+    RunShooter(m_shooter, ShooterConstants::kShootPower)
+  ).ToPtr());
+  arbitraryShootButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kShootTime),
+      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+    ),
+    SetShooterRotation(m_shooter, ShooterState::Zero),
+    frc2::InstantCommand([this]{
+      m_shooter->SetRollerPower(0.0);
+      m_shooter->SetLoaderPower(0.0);
+    },{m_shooter})
+  ).ToPtr());
+
+  frc2::Trigger interpolateShootButton{m_test.Button(OperatorConstants::kButtonIDCircle)};
+  interpolateShootButton.OnTrue(frc2::SequentialCommandGroup(
+    SetShooterRotation(m_shooter, ShooterState::InterpolateAngle),
+    RunShooter(m_shooter, ShooterConstants::kShootPower)
+  ).ToPtr());
+  interpolateShootButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kShootTime),
+      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+    ),
+    SetShooterRotation(m_shooter, ShooterState::Zero),
+    frc2::InstantCommand([this]{
+      m_shooter->SetRollerPower(0.0);
+      m_shooter->SetLoaderPower(0.0);
+    },{m_shooter})
+  ).ToPtr());
+  
   frc2::Trigger extendBothClimbersButton{m_test.Button(OperatorConstants::kButtonIDTriangle)};
   extendBothClimbersButton.OnTrue(frc2::SequentialCommandGroup(
     // frc2::InstantCommand([this]{

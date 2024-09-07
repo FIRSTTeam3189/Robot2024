@@ -43,6 +43,7 @@ class Drive
  private:
   frc2::CommandJoystick *m_bill;
   SwerveDrive *m_swerveDrive;
+  // Needs to be here rather than the subsystem because the PID controller is utilized in the Drive command
   SwerveAlignUtil m_swerveAlignUtil;
   frc::PIDController m_rotationPIDController;
   DriveState m_driveState;

@@ -70,7 +70,7 @@ class RobotContainer {
   Climber *m_climber = new Climber();
   PoseEstimatorHelper *m_helper = new PoseEstimatorHelper();
   Vision *m_vision = new Vision(m_helper);
-  Shooter *m_shooter = new Shooter();
+  Shooter *m_shooter = new Shooter(m_helper);
   SwerveDrive *m_swerveDrive = new SwerveDrive(m_helper);
   Intake *m_intake = new Intake();
   MusicSystem *m_musicSystem = new MusicSystem(m_swerveDrive->GetMotorsForMusic());

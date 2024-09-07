@@ -4,18 +4,15 @@
 
 #include "util/ShooterAlignUtil.h"
 
-ShooterAlignUtil::ShooterAlignUtil(SwerveDrive *swerve, Shooter *shooter) :
-m_swerve(swerve),
-m_shooter(shooter) {
-  // Suppress unused warnings
-  (void)AutoConstants::kAutonomousPaths[0];
-  (void)VisionConstants::kSyncBytes[0];
+ShooterAlignUtil::ShooterAlignUtil(PoseEstimatorHelper *estimator) :
+m_estimator(estimator)
+{
 }
 
 units::meter_t ShooterAlignUtil::GetDistanceToSpeaker() {
     frc::Pose3d speakerPose = GetSpeakerPoseAllianceCompensated();
 
-    auto currentPose = m_swerve->GetEstimatedPose();
+    auto currentPose = m_estimator->GetEstimatedPose();
 
     auto speakerTranslation = speakerPose.Translation().ToTranslation2d();
     auto robotTranslation = currentPose.Translation();
