@@ -6,6 +6,7 @@
 
 #include <map>
 #include <vector>
+#include <frc/AddressableLED.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <ctre/Phoenix.h>
@@ -26,18 +27,7 @@ enum class LEDSection { All, Candle, AllLEDMatrix, LEDMatrix1, LEDMatrix2, Row0,
 class LED : public frc2::SubsystemBase {
  public:
   LED();
-    
-  void SetSectionColor(int r, int g, int b, LEDSection section = LEDSection::All);
-  void SetRowColor(int r, int g, int b, std::pair<uint8_t, uint8_t> section = {0, 520});
-  void SetColumnColor(int r, int g, int b, int col, int start, int end);
-  void ClearColor(LEDSection section = LEDSection::All);
-  void SetAnimation(LEDAnimationType animation, LEDSection section = LEDSection::All, int r = 0, int g = 0, int b = 0, double speed = 0.7, bool reverse = false, int animSlot = 0);
-  void StartingAnimation();
-  void CBAnimation();
-  void ClearAll(LEDSection section);
-  void Search(std::string str, int length);
-  void SetMap();
-  void DisplayString();
+  
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -45,23 +35,15 @@ class LED : public frc2::SubsystemBase {
   void Periodic() override;
 
  private:
+
+ static constexpr int kLength = 200;
  
+ frc::AddressableLED m_led{9};
+ std::array<frc::AddressableLED::LEDData, kLength>
+      m_ledBuffer;  // Reuse the buffer
+  // Store what the last hue of the first pixel is
+  int firstPixelHue = 0;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-ctre::phoenix::led::CANdle m_candleControl;
-std::map<LEDSection, std::pair<uint8_t, uint8_t>> m_ledSections;
-ctre::phoenix::led::Animation *m_animation;
-bool m_shouldStartup;
-bool m_startupRunning;
-bool m_runString;
-bool m_shouldRunString;
-bool m_lastEnableState;
-int m_curStrIndex = 0;
-CANdleConfiguration m_candleConfig;
-frc::Timer m_Timer{};
-//static std::map<std::string, std::vector<std::vector<int>>> s_LEDDictionary;
 
-//std::vector<std::vector<std::vector<int>>> m_arr {};
-std::vector<std::vector<std::vector<bool>>> m_arr {};
-bool m_LEDMap[8][32];
 };
