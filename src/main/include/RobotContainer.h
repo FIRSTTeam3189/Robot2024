@@ -68,10 +68,10 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
   Climber *m_climber = new Climber();
-  PoseEstimatorHelper *m_helper = new PoseEstimatorHelper();
-  Vision *m_vision = new Vision(m_helper);
-  Shooter *m_shooter = new Shooter(m_helper);
-  SwerveDrive *m_swerveDrive = new SwerveDrive(m_helper);
+  PoseEstimatorHelper *m_poseEstimator = new PoseEstimatorHelper();
+  Vision *m_vision = new Vision(m_poseEstimator);
+  Shooter *m_shooter = new Shooter(m_poseEstimator);
+  SwerveDrive *m_swerveDrive = new SwerveDrive(m_poseEstimator);
   Intake *m_intake = new Intake();
   MusicSystem *m_musicSystem = new MusicSystem(m_swerveDrive->GetMotorsForMusic());
 

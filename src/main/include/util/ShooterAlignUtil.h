@@ -21,5 +21,5 @@ class ShooterAlignUtil {
 
  private:
   // Shooter only uses the pose from the Swerve so we can just simply give it the PoseEstimatorHelper
-  PoseEstimatorHelper *m_estimator;
+  PoseEstimatorHelper *m_poseEstimator;
 };

@@ -5,30 +5,32 @@
 #include "util/ShooterAlignUtil.h"
 
 ShooterAlignUtil::ShooterAlignUtil(PoseEstimatorHelper *estimator) :
-m_estimator(estimator)
+m_poseEstimator(estimator)
 {
 }
 
 units::meter_t ShooterAlignUtil::GetDistanceToSpeaker() {
     frc::Pose3d speakerPose = GetSpeakerPoseAllianceCompensated();
 
-    auto currentPose = m_estimator->GetEstimatedPose();
+    auto currentPose = m_poseEstimator->GetEstimatedPose();
 
     auto speakerTranslation = speakerPose.Translation().ToTranslation2d();
     auto robotTranslation = currentPose.Translation();
 
     units::meter_t distance = speakerTranslation.Distance(robotTranslation);
 
-    frc::SmartDashboard::PutNumber("Shooter align current pose X: ", currentPose.X().value());
-    frc::SmartDashboard::PutNumber("Shooter align current pose Y: ", currentPose.Y().value());
+    for (int i = 0; i < 20; i++) 
+    {
+      std::cout << "Shooter side pose estimator pointer" << m_poseEstimator << "\n";
+    }
 
-    frc::SmartDashboard::PutNumber("Speaker translation X: ", speakerTranslation.X().value());
-    frc::SmartDashboard::PutNumber("Speaker translation Y: ", speakerTranslation.Y().value());
+    frc::SmartDashboard::PutNumber("Speaker translation X", speakerTranslation.X().value());
+    frc::SmartDashboard::PutNumber("Speaker translation Y", speakerTranslation.Y().value());
 
-    frc::SmartDashboard::PutNumber("Robot translation X ", robotTranslation.X().value());
-    frc::SmartDashboard::PutNumber("Robot translation Y ", robotTranslation.Y().value());
+    frc::SmartDashboard::PutNumber("Robot translation X", robotTranslation.X().value());
+    frc::SmartDashboard::PutNumber("Robot translation Y", robotTranslation.Y().value());
 
-    frc::SmartDashboard::PutNumber("Robot Distance to Target: ", distance.value());
+    frc::SmartDashboard::PutNumber("Robot Distance to Target", distance.value());
 
     return distance;
 }

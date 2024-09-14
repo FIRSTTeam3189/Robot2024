@@ -4,7 +4,7 @@
 
 #include "subsystems/Vision.h"
 
-Vision::Vision(PoseEstimatorHelper *helper) : m_helper(helper),
+Vision::Vision(PoseEstimatorHelper *helper) : m_poseEstimator(helper),
                                               m_data(),
                                               m_cameraToRobotTransform(VisionConstants::kCameraXOffset, VisionConstants::kCameraYOffset, 0.0_m,
                                                                        frc::Rotation3d{0.0_deg, VisionConstants::kCameraPitchOffset, VisionConstants::kCameraYawOffset}),
@@ -104,7 +104,7 @@ void Vision::UpdatePosition()
             baseVisionStdDevs[2] + stdDevDistanceCompensation};
 
         auto timestamp = units::second_t{m_data.lastTimestamp};
-        m_helper->AddVisionMeasurement(robotPose.ToPose2d(), timestamp, distanceCompensatedStdDevs);
+        m_poseEstimator->AddVisionMeasurement(robotPose.ToPose2d(), timestamp, distanceCompensatedStdDevs);
     }
 }
 

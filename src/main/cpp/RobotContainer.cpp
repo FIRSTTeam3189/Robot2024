@@ -247,7 +247,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   );
 
   frc2::Trigger autoShootButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  autoShootButton.OnTrue(ShooterAutoAlign(m_shooter, m_helper, m_vision, false).ToPtr());
+  autoShootButton.OnTrue(ShooterAutoAlign(m_shooter, m_poseEstimator, m_vision, false).ToPtr());
   autoShootButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
@@ -369,7 +369,7 @@ void RobotContainer::RegisterAutoCommands() {
       frc2::WaitCommand(AutoConstants::kAutoUnloadTime),
       RunLoader(m_shooter, AutoConstants::kAutoUnloadPower, 0.0, ShooterEndCondition::None)
     ),
-    ShooterAutoAlign(m_shooter, m_helper, m_vision, true)
+    ShooterAutoAlign(m_shooter, m_poseEstimator, m_vision, true)
   ).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("AlignSwerve", TurnInPlace(m_swerveDrive, DriveState::SpeakerAlignTranslationAlgorithm).ToPtr());
@@ -470,18 +470,18 @@ void RobotContainer::CreateAutoPaths() {
   // Logging callbacks for pathplanner -- current pose, target pose, and active path
   pathplanner::PathPlannerLogging::setLogCurrentPoseCallback([this](frc::Pose2d pose) {
     // Do whatever you want with the poses here
-    m_helper->SetCurrentAutoPose(pose);
+    m_poseEstimator->SetCurrentAutoPose(pose);
   });
 
   pathplanner::PathPlannerLogging::setLogTargetPoseCallback([this](frc::Pose2d pose) {
     // Do whatever you want with the poses here
-    m_helper->SetTargetAutoPose(pose);
+    m_poseEstimator->SetTargetAutoPose(pose);
   });
 
   // Logging callback for the active path, this is sent as a vector of poses
   pathplanner::PathPlannerLogging::setLogActivePathCallback([this](std::vector<frc::Pose2d> poses) {
     // Do whatever you want with the poses here
-    m_helper->SetActivePath(poses);
+    m_poseEstimator->SetActivePath(poses);
   });
 }
 

@@ -278,6 +278,8 @@ void SwerveDrive::UpdateEstimator() {
 
     LogModuleStates(m_modulePositions);
     m_poseHelper->UpdatePoseEstimator(m_modulePositions, frc::Rotation2d(GetNormalizedYaw()));
+    
+    std::cout << "Swerve side pose estimator pointer" << m_poseHelper << "\n";
 }
 
 void SwerveDrive::ResetDriveEncoders() {

@@ -47,7 +47,7 @@ class Vision : public frc2::SubsystemBase {
   void Periodic() override;
   
  private:
-  PoseEstimatorHelper *m_helper;
+  PoseEstimatorHelper *m_poseEstimator;
   VisionData m_data;
   frc::Transform3d m_cameraToRobotTransform;
   frc::SerialPort m_serialCam;
