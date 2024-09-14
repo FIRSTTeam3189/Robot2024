@@ -2,15 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-//it sets the motors to climb as well as servos to latch onto it. It also uses limit switch data to climb oir not
-
 #include "subsystems/Climber.h"
 
 Climber::Climber() : 
-m_leftMotor(ClimberConstants::kLefttMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless),
+m_leftMotor(ClimberConstants::kLeftMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless),
 m_rightMotor(ClimberConstants::kRightMotorID,rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
-// m_leftServo(ClimberConstants::kLeftServoID),
-// m_rightServo(ClimberConstants::kRightServoID),
 m_brakeModeLimitSwitch(ClimberConstants::kLimitSwitchPort)
 {
     m_leftMotor.RestoreFactoryDefaults();
@@ -19,8 +15,9 @@ m_brakeModeLimitSwitch(ClimberConstants::kLimitSwitchPort)
     m_rightMotor.SetInverted(ClimberConstants::kInvertRightMotor);
     m_leftMotor.SetIdleMode(ClimberConstants::kIdleMode);
     m_rightMotor.SetIdleMode(ClimberConstants::kIdleMode);
-    // m_leftMotor.Follow(m_rightMotor);
-    // std::cout << "Climber constructing\n";
+    m_leftMotor.SetSmartCurrentLimit(ClimberConstants::kCurrentLimit);
+    m_rightMotor.SetSmartCurrentLimit(ClimberConstants::kCurrentLimit);
+
 }
 // This method will be called once per scheduler run
 void Climber::Periodic() {
@@ -29,8 +26,6 @@ void Climber::Periodic() {
         ToggleGlobalBrakeMode();
     }
     m_lastLimitSwitchDetectionState = limitSwitchTripped;
-    // frc::SmartDashboard::PutNumber("Left servo rotation", m_leftServo.Get());
-    // frc::SmartDashboard::PutNumber("Right servo rotation", m_rightServo.Get());
 }
 
 void Climber::SetPower(double leftPower, double rightPower){
@@ -39,11 +34,9 @@ void Climber::SetPower(double leftPower, double rightPower){
 
     frc::SmartDashboard::PutNumber("Climber left output", leftPower);
     frc::SmartDashboard::PutNumber("Climber right output", rightPower);
-}
 
-void Climber::SetServoRotation(double leftAngle, double rightAngle){
-    // m_leftServo.Set(leftAngle);
-    // m_rightServo.Set(rightAngle);
+    frc::SmartDashboard::PutNumber("Right Motor Current (amps)", m_rightMotor.GetOutputCurrent());
+    frc::SmartDashboard::PutNumber("Left Motor Current (amps)", m_leftMotor.GetOutputCurrent());
 }
 
 void Climber::SetBrakeMode(BrakeMode mode) {

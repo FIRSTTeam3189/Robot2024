@@ -252,7 +252,8 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
             break;
         case(ShooterState::InterpolateAngle):
             // This will set to the angle calculated by the interpolation algorithm
-            target = m_alignUtil.GetShooterGoalInterpolating(m_alignUtil.GetDistanceToSpeaker());
+            // target = m_alignUtil.GetShooterGoalInterpolating(m_alignUtil.GetDistanceToSpeaker());
+            m_alignUtil.GetShooterGoalInterpolating(m_alignUtil.GetDistanceToSpeaker());
             break;
         default: 
             break;

@@ -11,13 +11,11 @@
 #include <rev/SparkAbsoluteEncoder.h> 
 #include "Constants/ClimberConstants.h" 
 #include "Constants/GlobalConstants.h"
-#include "frc/Servo.h" 
 
 class Climber : public frc2::SubsystemBase {
  public:
   Climber();
   void SetPower(double leftPower, double rightPower);
-  void SetServoRotation(double leftAngle, double rightAngle);
   void SetBrakeMode(BrakeMode mode);
   void ToggleGlobalBrakeMode();
   BrakeMode GetBrakeMode();
@@ -30,8 +28,6 @@ class Climber : public frc2::SubsystemBase {
   rev::CANSparkMax m_leftMotor;
   rev::CANSparkMax m_rightMotor;
 
-  // frc::Servo m_leftServo;
-  // frc::Servo m_rightServo;
   frc::DigitalInput m_brakeModeLimitSwitch;
   BrakeMode m_brakeMode;
   bool m_lastLimitSwitchDetectionState;

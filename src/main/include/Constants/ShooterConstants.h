@@ -69,14 +69,16 @@ namespace ShooterConstants {
         2.0_m, 
         3.0_m, 
         4.0_m, 
-        5.0_m
+        5.0_m,
+        6.0_m
     };
 
     const std::vector<units::degree_t> kShooterKnownAngles {
-        59.0_deg, 
+        57.0_deg, 
         50.0_deg, 
-        45_deg, 
-        37_deg
+        45.0_deg, 
+        37.0_deg,
+        32.0_deg
     };
 
 }

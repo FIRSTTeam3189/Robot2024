@@ -71,7 +71,7 @@ namespace SwerveModuleConstants {
     // Current limits -- allows continuous operation at certain amps, or a peak of greater amps for <threshold time
     constexpr int kAngleContinuousCurrentLimit = 25;
     constexpr int kAnglePeakCurrentLimit = 40;
-    constexpr double kAnglePeakCurrentDuration = 0.1;
+    constexpr double kAnglePeakCurrentDuration = 0.1; // seconds
     constexpr bool kAngleEnableCurrentLimit = true;
     
     constexpr int kDriveContinuousCurrentLimit = 35;

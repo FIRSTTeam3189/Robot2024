@@ -102,7 +102,7 @@ void RobotContainer::ConfigureDriverBindings() {
   frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
   alignSpeakerButton.OnTrue(frc2::InstantCommand([this]{
     if (m_driveState == DriveState::HeadingControl) {
-      m_driveState = DriveState::SpeakerAlign;
+      m_driveState = DriveState::SpeakerAlignTranslationAlgorithm;
     } else {
       m_driveState = DriveState::HeadingControl;
     }
@@ -326,88 +326,20 @@ void RobotContainer::ConfigureCoDriverBindings() {
   //     m_shooter->SetLoaderPower(0.0);
   //   },{m_shooter})
   // ).ToPtr());
-
-  frc2::Trigger extendRightClimberButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
-  extendRightClimberButton.OnTrue(frc2::SequentialCommandGroup(
-    frc2::InstantCommand([this]{
-      m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle);
-    },{m_climber}),
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(0.6_s),
-      RunClimber(m_climber, ClimberConstants::kRetractPower / 2.0, 0.0)
-    ),
-    RunClimber(m_climber, ClimberConstants::kExtendPower, 0.0)
-  )
-    // .OnlyIf([this](){ return IsClimbState(); }));
-    .ToPtr());
-  extendRightClimberButton.OnFalse(frc2::InstantCommand([this]{
-      m_climber->SetServoRotation(ClimberConstants::kLeftRetractServoAngle, ClimberConstants::kRightRetractServoAngle);
-      m_climber->SetPower(0.0, 0.0);
-  },{m_climber})
-    // .OnlyIf([this](){ return IsClimbState(); }));
-    .ToPtr());
-
-  // frc2::Trigger extendLeftClimberButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
-  // extendLeftClimberButton.OnTrue(frc2::SequentialCommandGroup(
-  //   frc2::InstantCommand([this]{
-  //     m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle);
-  //   },{m_climber}),
-  //   frc2::ParallelDeadlineGroup(
-  //     frc2::WaitCommand(0.6_s),
-  //     RunClimber(m_climber, 0.0, ClimberConstants::kRetractPower / 2.0)
-  //   ),
-  //   RunClimber(m_climber, 0.0, ClimberConstants::kExtendPower)
-  // )
-  //   // .OnlyIf([this](){ return IsClimbState(); }));
-  //   .ToPtr());
-  // extendLeftClimberButton.OnFalse(frc2::InstantCommand([this]{
-  //     m_climber->SetServoRotation(ClimberConstants::kLeftRetractServoAngle, ClimberConstants::kRightRetractServoAngle);
-  //     m_climber->SetPower(0.0, 0.0);
-  // },{m_climber})
-  //   // .OnlyIf([this](){ return IsClimbState(); }));
-  //   .ToPtr());
-
-  frc2::Trigger retractRightClimberButton{m_ted.Button(OperatorConstants::kButtonIDX)};
-  retractRightClimberButton.OnTrue(RunClimber(m_climber, ClimberConstants::kRetractPower, 0.0)
-    // .OnlyIf([this](){ return IsClimbState(); }));
-    .ToPtr());
-  retractRightClimberButton.OnFalse(frc2::InstantCommand([this]{
-      m_climber->SetPower(0.0, 0.0);
-  },{m_climber})
-    // .OnlyIf([this](){ return IsClimbState(); }));
-    .ToPtr());
-
-  frc2::Trigger retractLeftClimberButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
-  retractLeftClimberButton.OnTrue(RunClimber(m_climber, 0.0, ClimberConstants::kRetractPower)
-    // .OnlyIf([this](){ return IsClimbState(); }));
-    .ToPtr());
-  retractLeftClimberButton.OnFalse(frc2::InstantCommand([this]{
-      m_climber->SetPower(0.0, 0.0);
-  },{m_climber})
-    // .OnlyIf([this](){ return IsClimbState(); }));
-    .ToPtr());
-
-  frc2::Trigger extendBothClimbersButton{m_ted.Button(OperatorConstants::kButtonIDCreate)};
+  
+  frc2::Trigger extendBothClimbersButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
   extendBothClimbersButton.OnTrue(frc2::SequentialCommandGroup(
-    frc2::InstantCommand([this]{
-      m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle);
-    },{m_climber}),
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(0.6_s),
-      RunClimber(m_climber, ClimberConstants::kRetractPower / 2.0, ClimberConstants::kRetractPower / 2.0)
-    ),
     RunClimber(m_climber, ClimberConstants::kBothExtendPower, ClimberConstants::kBothExtendPower)
   )
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
   extendBothClimbersButton.OnFalse(frc2::InstantCommand([this]{
-      m_climber->SetServoRotation(ClimberConstants::kLeftRetractServoAngle, ClimberConstants::kRightRetractServoAngle);
       m_climber->SetPower(0.0, 0.0);
   },{m_climber})
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
 
-  frc2::Trigger retractBothClimbersButton{m_ted.Button(OperatorConstants::kButtonIDMenu)};
+  frc2::Trigger retractBothClimbersButton{m_ted.Button(OperatorConstants::kButtonIDX)};
   retractBothClimbersButton.OnTrue(RunClimber(m_climber, ClimberConstants::kBothRetractPower, ClimberConstants::kBothRetractPower)
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
@@ -416,13 +348,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   },{m_climber})
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
-
-  // frc2::Trigger extendServosButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
-  // extendServosButton.OnTrue(frc2::InstantCommand([this]{ m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle); },{m_climber}).ToPtr());
-
-  // frc2::Trigger retractServosButton{m_ted.Button(OperatorConstants::kButtonIDSquare)};
-  // retractServosButton.OnTrue(frc2::InstantCommand([this]{ m_climber->SetServoRotation(ClimberConstants::kLeftRetractServoAngle, ClimberConstants::kRightRetractServoAngle); },{m_climber}).ToPtr());
-
+    
   // frc2::Trigger shooterZeroButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
   // shooterZeroButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
 
@@ -446,7 +372,7 @@ void RobotContainer::RegisterAutoCommands() {
     ShooterAutoAlign(m_shooter, m_helper, m_vision, true)
   ).ToPtr());
 
-  pathplanner::NamedCommands::registerCommand("AlignSwerve", TurnInPlace(m_swerveDrive, DriveState::SpeakerAlign).ToPtr());
+  pathplanner::NamedCommands::registerCommand("AlignSwerve", TurnInPlace(m_swerveDrive, DriveState::SpeakerAlignTranslationAlgorithm).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("PrintAutoMessage", frc2::InstantCommand([this]{
     for (int i = 0; i < 10; i++) {
@@ -708,14 +634,11 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
   
   // New swerve align method
   frc2::Trigger swerveAlignButtonTranslation{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  // swerveAlignButtonTranslation.ToggleOnTrue(Drive(&m_bill, m_swerveDrive, DriveState::SpeakerAlignTranslationAlgorithm).ToPtr());
   swerveAlignButtonTranslation.OnTrue(frc2::InstantCommand([this]{
     if (m_driveState == DriveState::HeadingControl) {
       m_driveState = DriveState::SpeakerAlignTranslationAlgorithm;
-      // frc::SmartDashboard::PutString("Drive state", "Speaker align new algorithm");
     } else {
       m_driveState = DriveState::HeadingControl;
-      // frc::SmartDashboard::PutString("Drive state", "Heading control");
     }
       m_swerveDrive->SetDefaultCommand(Drive(&m_test, m_swerveDrive, m_driveState));
     },{m_swerveDrive}).ToPtr()
@@ -774,19 +697,11 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
   
   frc2::Trigger extendBothClimbersButton{m_test.Button(OperatorConstants::kButtonIDTriangle)};
   extendBothClimbersButton.OnTrue(frc2::SequentialCommandGroup(
-    // frc2::InstantCommand([this]{
-    //   m_climber->SetServoRotation(ClimberConstants::kLeftExtendServoAngle, ClimberConstants::kRightExtendServoAngle);
-    // },{m_climber}),
-    // frc2::ParallelDeadlineGroup(
-    //   frc2::WaitCommand(0.6_s),
-    //   RunClimber(m_climber, ClimberConstants::kRetractPower / 2.0, ClimberConstants::kRetractPower / 2.0)
-    // ),
     RunClimber(m_climber, ClimberConstants::kBothExtendPower, ClimberConstants::kBothExtendPower)
   )
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
   extendBothClimbersButton.OnFalse(frc2::InstantCommand([this]{
-      // m_climber->SetServoRotation(ClimberConstants::kLeftRetractServoAngle, ClimberConstants::kRightRetractServoAngle);
       m_climber->SetPower(0.0, 0.0);
   },{m_climber})
     // .OnlyIf([this](){ return IsClimbState(); }));

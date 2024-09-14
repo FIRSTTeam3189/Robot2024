@@ -20,7 +20,7 @@ namespace VisionConstants {
     
     // Tag poses in order from 1 to 16
     const std::vector<frc::Pose3d> kTagPoses {
-        frc::Pose3d{15.079_m, 0.246_m                                                        , 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120.0_deg}},
+        frc::Pose3d{15.079_m, 0.246_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120.0_deg}},
         frc::Pose3d{16.185_m, 0.884_m, 1.356_m, frc::Rotation3d{0.0_deg, 0.0_deg, 120.0_deg}},
         frc::Pose3d{16.579_m, 4.983_m, 1.451_m, frc::Rotation3d{0.0_deg, 0.0_deg, 180.0_deg}},
         frc::Pose3d{16.579_m, 5.548_m, 1.451_m, frc::Rotation3d{0.0_deg, 0.0_deg, 180.0_deg}},

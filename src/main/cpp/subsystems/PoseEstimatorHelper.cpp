@@ -32,6 +32,7 @@ void PoseEstimatorHelper::SetTargetAutoPose(frc::Pose2d pose) {
 }
 
 frc::Pose2d PoseEstimatorHelper::GetEstimatedPose() {
+    // Ignores rotation component on vision and uses gyroscope instead
     frc::Pose2d pigeonTrustingPose = frc::Pose2d{
         m_poseEstimator->GetEstimatedPosition().Translation(), m_rotation};
     return pigeonTrustingPose;

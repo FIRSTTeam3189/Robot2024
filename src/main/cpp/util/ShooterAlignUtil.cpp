@@ -19,6 +19,9 @@ units::meter_t ShooterAlignUtil::GetDistanceToSpeaker() {
 
     units::meter_t distance = speakerTranslation.Distance(robotTranslation);
 
+    frc::SmartDashboard::PutNumber("Shooter align current pose X: ", currentPose.X().value());
+    frc::SmartDashboard::PutNumber("Shooter align current pose Y: ", currentPose.Y().value());
+
     frc::SmartDashboard::PutNumber("Speaker translation X: ", speakerTranslation.X().value());
     frc::SmartDashboard::PutNumber("Speaker translation Y: ", speakerTranslation.Y().value());
 
@@ -40,6 +43,7 @@ units::degree_t ShooterAlignUtil::GetShooterGoalInterpolating(units::meter_t dis
     // }
 
     for (size_t i = 1; i < ShooterConstants::kShooterKnownDistances.size(); i++) {
+      // Only run algorithm if real distance is in the range of the distances in the dataset`
       if (ShooterConstants::kShooterKnownDistances.at(i) > distance){
         units::degree_t upperAngle = ShooterConstants::kShooterKnownAngles.at(i);
         units::degree_t lowerAngle = ShooterConstants::kShooterKnownAngles.at(i - 1);
