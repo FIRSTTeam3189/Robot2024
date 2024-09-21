@@ -82,7 +82,6 @@ void SwerveModule::ConfigAngleMotor(int CANcoderID) {
     m_angleConfigs.ClosedLoopGeneral.ContinuousWrap = true;
 
     // m_angleConfigs.Feedback.SensorToMechanismRatio = SwerveModuleConstants::kAngleGearRatio;
-    // TODO: Not sure if this number is correct/if it actually works this way on our modules
     m_angleConfigs.Feedback.RotorToSensorRatio = SwerveModuleConstants::kAngleGearRatio;
     m_angleConfigs.Feedback.FeedbackRemoteSensorID = CANcoderID;
     m_angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;

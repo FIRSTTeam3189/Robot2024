@@ -19,11 +19,6 @@ units::meter_t ShooterAlignUtil::GetDistanceToSpeaker() {
 
     units::meter_t distance = speakerTranslation.Distance(robotTranslation);
 
-    for (int i = 0; i < 20; i++) 
-    {
-      std::cout << "Shooter side pose estimator pointer" << m_poseEstimator << "\n";
-    }
-
     frc::SmartDashboard::PutNumber("Speaker translation X", speakerTranslation.X().value());
     frc::SmartDashboard::PutNumber("Speaker translation Y", speakerTranslation.Y().value());
 

@@ -51,6 +51,9 @@ void Shooter::Periodic() {
         HoldPosition(m_target);
     }
 
+    // TODO: remove after testing
+    m_alignUtil.GetShooterGoalInterpolating(m_alignUtil.GetDistanceToSpeaker());
+
     //constructed all instances of variables needed as well as keys for PID and diagnostic values
     // by default holds position but if it is active then it goes to target
 }
@@ -251,6 +254,7 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
             target = units::degree_t{frc::Preferences::GetDouble(m_rotationTargetKey, m_target.value())};
             break;
         case(ShooterState::InterpolateAngle):
+            // TODO: make it actually shoot
             // This will set to the angle calculated by the interpolation algorithm
             // target = m_alignUtil.GetShooterGoalInterpolating(m_alignUtil.GetDistanceToSpeaker());
             m_alignUtil.GetShooterGoalInterpolating(m_alignUtil.GetDistanceToSpeaker());
