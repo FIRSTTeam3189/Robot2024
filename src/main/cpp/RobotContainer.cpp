@@ -54,8 +54,8 @@ void RobotContainer::ConfigureDriverBindings() {
 
   //the left bumper will set the intake to be active by first extending it and then running it with a parrallel command group. Shooter goes to load position while this is happening
 
-  frc2::Trigger fullIntakeButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
-  fullIntakeButton.OnTrue(frc2::SequentialCommandGroup(
+  frc2::Trigger fullIntakeUnloadButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
+  fullIntakeUnloadButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{ m_shooter->SetBrakeMode(BrakeMode::Brake); m_shooter->SetRollerPower(0.0); },{m_shooter}),
     frc2::ParallelCommandGroup(
       frc2::ParallelRaceGroup(
@@ -72,7 +72,11 @@ void RobotContainer::ConfigureDriverBindings() {
       RunIntake(m_intake, IntakeConstants::kIntakePower)
     )
   ).ToPtr());
-  fullIntakeButton.OnFalse(frc2::SequentialCommandGroup(
+  fullIntakeUnloadButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kUnloadTime),
+      RunLoader(m_shooter, ShooterConstants::kUnloadPower, ShooterConstants::kUnloadPower)
+    ),
     frc2::InstantCommand([this]{
       m_shooter->SetBrakeMode(BrakeMode::Coast);
       m_intake->SetRollerPower(0.0);
@@ -525,8 +529,8 @@ void RobotContainer::ConfigureTestBindings() {
 
   // m_swerveDrive->ToggleSlowMode();
 
-  frc2::Trigger fullIntakeButton{m_test.Button(OperatorConstants::kButtonIDLeftBumper)};
-  fullIntakeButton.OnTrue(frc2::SequentialCommandGroup(
+  frc2::Trigger fullIntakeUnloadButton{m_test.Button(OperatorConstants::kButtonIDLeftBumper)};
+  fullIntakeUnloadButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{ m_shooter->SetBrakeMode(BrakeMode::Brake); m_shooter->SetRollerPower(0.0); },{m_shooter}),
     frc2::ParallelCommandGroup(
       frc2::ParallelRaceGroup(
@@ -543,7 +547,11 @@ void RobotContainer::ConfigureTestBindings() {
       RunIntake(m_intake, IntakeConstants::kIntakePower)
     )
   ).ToPtr());
-  fullIntakeButton.OnFalse(frc2::SequentialCommandGroup(
+  fullIntakeUnloadButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kUnloadTime),
+      RunLoader(m_shooter, ShooterConstants::kUnloadPower, ShooterConstants::kUnloadPower)
+    ),
     frc2::InstantCommand([this]{
       m_shooter->SetBrakeMode(BrakeMode::Coast);
       m_intake->SetRollerPower(0.0);

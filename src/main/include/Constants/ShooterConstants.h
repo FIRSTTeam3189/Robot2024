@@ -27,7 +27,8 @@ namespace ShooterConstants {
     constexpr auto kMaxRotationVelocity {180.0_deg / 1.0_s};
     constexpr auto kMaxRotationAcceleration {180.0_deg / 1.0_s / 1.0_s};
 
-    constexpr double kShootPower {1.0};
+    // constexpr double kShootPower {1.0};
+    constexpr double kShootPower {0.30};
     constexpr auto kRevUpTime {1.5_s};
     constexpr auto kShootTime {1.25_s};
 
@@ -38,6 +39,7 @@ namespace ShooterConstants {
     constexpr auto kLoadTarget {30.0_deg};
     constexpr double kLoadPower {0.5};
     constexpr double kUnloadPower {-0.25};
+    constexpr auto kUnloadTime {0.15_s};
     // Direct shooter load
     // constexpr auto kDirectLoadTarget {59.0_deg};
     constexpr auto kDirectLoadTarget {57.0_deg};
