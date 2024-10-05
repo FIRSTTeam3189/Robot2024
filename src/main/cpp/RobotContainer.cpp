@@ -12,7 +12,19 @@ RobotContainer::RobotContainer() {
   
   // Initialize all of your commands and subsystems here 
 
-  m_swerveDrive->SetDefaultCommand(Drive(&m_test, m_swerveDrive, m_driveState));
+  // Grant default control of swerve drive to either bill (controller 0),
+  // or test (controller 2), based on a constant
+  switch (SwerveDriveConstants::kActiveController) {
+    case(ActiveDriveController::OfficialDriver) :
+      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+      break;
+    case(ActiveDriveController::TestControls) :
+      m_swerveDrive->SetDefaultCommand(Drive(&m_test, m_swerveDrive, m_driveState));
+      break;
+    default :
+      break;
+  }
+
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   
   // m_intake->SetDefaultCommand(frc2::RunCommand([this] {
@@ -105,11 +117,16 @@ void RobotContainer::ConfigureDriverBindings() {
   //align to the speaker when the left trigger is pressed
   frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
   alignSpeakerButton.OnTrue(frc2::InstantCommand([this]{
-    if (m_driveState == DriveState::HeadingControl) {
+    // if (m_driveState == DriveState::HeadingControl) {
       m_driveState = DriveState::SpeakerAlignTranslationAlgorithm;
-    } else {
+    // } else {
+    //   m_driveState = DriveState::HeadingControl;
+    // }
+      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+    },{m_swerveDrive}).ToPtr()
+  );
+  alignSpeakerButton.OnFalse(frc2::InstantCommand([this]{
       m_driveState = DriveState::HeadingControl;
-    }
       m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
     },{m_swerveDrive}).ToPtr()
   );
@@ -643,11 +660,16 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
   // New swerve align method
   frc2::Trigger swerveAlignButtonTranslation{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
   swerveAlignButtonTranslation.OnTrue(frc2::InstantCommand([this]{
-    if (m_driveState == DriveState::HeadingControl) {
+    // if (m_driveState == DriveState::HeadingControl) {
       m_driveState = DriveState::SpeakerAlignTranslationAlgorithm;
-    } else {
+    // } else {
+    //   m_driveState = DriveState::HeadingControl;
+    // }
+      m_swerveDrive->SetDefaultCommand(Drive(&m_test, m_swerveDrive, m_driveState));
+    },{m_swerveDrive}).ToPtr()
+  );
+  swerveAlignButtonTranslation.OnFalse(frc2::InstantCommand([this]{
       m_driveState = DriveState::HeadingControl;
-    }
       m_swerveDrive->SetDefaultCommand(Drive(&m_test, m_swerveDrive, m_driveState));
     },{m_swerveDrive}).ToPtr()
   );

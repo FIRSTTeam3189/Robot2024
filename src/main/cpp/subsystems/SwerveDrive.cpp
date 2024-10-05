@@ -144,10 +144,12 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
         rot -= units::radians_per_second_t(m_rotationS);
     }
 
+    auto [xSpeedLimited, ySpeedLimited] = LimitDeceleration(xSpeed, ySpeed);
+
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                        xSpeed, ySpeed, rot, m_pigeon.GetRotation2d())
-                            : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
+                        xSpeedLimited, ySpeedLimited, rot, m_pigeon.GetRotation2d())
+                            : frc::ChassisSpeeds{xSpeedLimited, ySpeedLimited, rot}),
                             centerOfRotation);
 
     auto [fl, fr, bl, br] = states;
@@ -167,6 +169,29 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
     frc::SmartDashboard::PutNumberArray("AdvantageScope Desired States", AdvantageScopeDesiredStates);
 
     SetModuleStates(states);
+}
+
+// Takes in the old speeds and applies the slew rate limiter, returning the new limited x and y speeds
+// Uses kinematics to take limited magnitude and reconstruct them into x and y speeds.
+wpi::array<units::meters_per_second_t, 2> SwerveDrive::LimitDeceleration(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed){
+    // Get theta
+    units::radian_t theta = units::radian_t{atan2(ySpeed.value(), xSpeed.value())};
+
+    // Get the magnitude of speeds using pythagorean theorem
+    units::meters_per_second_t velMagnitude = units::meters_per_second_t{
+                                                sqrt(pow(xSpeed.value(), 2) + pow(ySpeed.value(), 2))};
+
+    // Pass magnitude into limiter, returning a limited magnitude value
+    units::meters_per_second_t velMagnitudeLimited = units::meters_per_second_t{
+                                                        m_decelerationLimiter.Calculate(velMagnitude.value()).value()};
+
+    // Reconstruct x and y speeds from limited magnitude
+    units::meters_per_second_t xSpeedLimited = units::meters_per_second_t{
+                                                    velMagnitudeLimited.value() * sin(theta.value())};
+    units::meters_per_second_t ySpeedLimited = units::meters_per_second_t{
+                                                    velMagnitudeLimited.value() * cos(theta.value())};
+
+    return wpi::array<units::meters_per_second_t, 2> {xSpeedLimited, ySpeedLimited};
 }
 
 void SwerveDrive::DriveRobotRelative(frc::ChassisSpeeds speeds) {

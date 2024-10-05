@@ -11,6 +11,7 @@
 #include <frc/RobotController.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/DriverStation.h>
+#include <frc/filter/SlewRateLimiter.h>
 #include <ctre/phoenix6/Pigeon2.hpp>
 #include <ctre/phoenix6/StatusSignal.hpp>
 #include <pathplanner/lib/auto/AutoBuilder.h>
@@ -52,6 +53,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   void SetRobotYaw(double yaw);
   units::meters_per_second_t GetTotalVelocity();
   frc::ChassisSpeeds GetRobotRelativeSpeeds();
+  wpi::array<units::meters_per_second_t, 2> LimitDeceleration(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed);
   void DriveRobotRelative(frc::ChassisSpeeds speeds);
   void ToggleSlowMode();
   frc::Pose2d GetEstimatedPose();
@@ -97,4 +99,8 @@ class SwerveDrive : public frc2::SubsystemBase {
   double m_rotationS = SwerveDriveConstants::kSRot;
 
   std::vector<ctre::phoenix6::BaseStatusSignal*> m_allSignals;
+
+  // Limits the magnitude of the negative acceleration in the direction of the robot's travel
+  // Adding large positive number to not limit the positive ROC, but adding actual negative to limit negative ROC
+  frc::SlewRateLimiter<units::scalar> m_decelerationLimiter{100000 / 1_s, -2 / 1_s};
 };
