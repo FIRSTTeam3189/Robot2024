@@ -144,12 +144,18 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
         rot -= units::radians_per_second_t(m_rotationS);
     }
 
-    auto [xSpeedLimited, ySpeedLimited] = LimitDeceleration(xSpeed, ySpeed);
+    // auto [ySpeedLimited, xSpeedLimited] = LimitDeceleration(xSpeed, ySpeed);
+
+    // auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
+    //               (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
+    //                     xSpeedLimited, ySpeedLimited, rot, m_pigeon.GetRotation2d())
+    //                         : frc::ChassisSpeeds{xSpeedLimited, ySpeedLimited, rot}),
+    //                         centerOfRotation);
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                        xSpeedLimited, ySpeedLimited, rot, m_pigeon.GetRotation2d())
-                            : frc::ChassisSpeeds{xSpeedLimited, ySpeedLimited, rot}),
+                        xSpeed, ySpeed, rot, m_pigeon.GetRotation2d())
+                            : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
                             centerOfRotation);
 
     auto [fl, fr, bl, br] = states;

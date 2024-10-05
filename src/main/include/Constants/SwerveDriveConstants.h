@@ -9,7 +9,7 @@
 enum class ActiveDriveController { OfficialDriver, TestControls };
 
 namespace SwerveDriveConstants {
-    constexpr ActiveDriveController kActiveController { ActiveDriveController::TestControls };
+    constexpr ActiveDriveController kActiveController { ActiveDriveController::OfficialDriver };
 
     constexpr int kGyroID {13};
     constexpr double kRadiansToDegreesMultiplier {180.0 / Pi};

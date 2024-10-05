@@ -138,19 +138,19 @@ void RobotContainer::ConfigureDriverBindings() {
   // score in the amp 
   frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
   ampScoreIntakeButton.OnTrue(frc2::ParallelCommandGroup(
-    frc2::InstantCommand([this]{
-      m_driveState = DriveState::ArbitraryAngleAlign;
-    //   //setting drive state to align to a an arbitrary angle
-    //   m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState, SwerveDriveConstants::kAmpAlignTarget));
-    },{}),
-    Drive(&m_bill, m_swerveDrive, DriveState::ArbitraryAngleAlign, SwerveDriveConstants::kAmpAlignTarget),
+    // frc2::InstantCommand([this]{
+    //   m_driveState = DriveState::ArbitraryAngleAlign;
+    // //   //setting drive state to align to a an arbitrary angle
+    // //   m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState, SwerveDriveConstants::kAmpAlignTarget));
+    // },{}),
+    // Drive(&m_bill, m_swerveDrive, DriveState::ArbitraryAngleAlign, SwerveDriveConstants::kAmpAlignTarget),
     SetIntakeRotation(m_intake, IntakeState::Amp)
   ).ToPtr());
   ampScoreIntakeButton.OnFalse(frc2::SequentialCommandGroup(
-    frc2::InstantCommand([this]{
-      m_driveState = DriveState::HeadingControl;
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
-    },{m_swerveDrive}),
+    // frc2::InstantCommand([this]{
+    //   m_driveState = DriveState::HeadingControl;
+    //   m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+    // },{m_swerveDrive}),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(IntakeConstants::kAmpShootTime), 
       RunIntake(m_intake, IntakeConstants::kAmpScorePower)
@@ -162,10 +162,14 @@ void RobotContainer::ConfigureDriverBindings() {
   frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
     if (frc::DriverStation::GetAlliance()) {
+      // if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
+      //   m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
+      // else
+      //   m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{180.0_deg}}, true);
       if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
-        m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}, true);
+        m_swerveDrive->SetPose(frc::Pose2d{0.92_m, 5.50_m, frc::Rotation2d{0.0_deg}}, false);
       else
-        m_swerveDrive->SetPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{180.0_deg}}, true);
+        m_swerveDrive->SetPose(frc::Pose2d{15.579_m, 5.50_m, frc::Rotation2d{180.0_deg}}, false);
     }
   },{m_swerveDrive}).ToPtr());
 
