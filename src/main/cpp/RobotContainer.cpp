@@ -322,22 +322,22 @@ void RobotContainer::ConfigureCoDriverBindings() {
     },{m_shooter})
   ).ToPtr());
 
-  frc2::Trigger midShootButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
-  midShootButton.OnTrue(frc2::SequentialCommandGroup(
-    SetShooterRotation(m_shooter, ShooterState::Mid),
-    RunShooter(m_shooter, ShooterConstants::kShootPower)
-  ).ToPtr());
-  midShootButton.OnFalse(frc2::SequentialCommandGroup(
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(ShooterConstants::kShootTime),
-      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
-    ),
-    SetShooterRotation(m_shooter, ShooterState::Zero),
-    frc2::InstantCommand([this]{
-      m_shooter->SetRollerPower(0.0);
-      m_shooter->SetLoaderPower(0.0);
-    },{m_shooter})
-  ).ToPtr());
+  // frc2::Trigger midShootButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
+  // midShootButton.OnTrue(frc2::SequentialCommandGroup(
+  //   SetShooterRotation(m_shooter, ShooterState::Mid),
+  //   RunShooter(m_shooter, ShooterConstants::kShootPower)
+  // ).ToPtr());
+  // midShootButton.OnFalse(frc2::SequentialCommandGroup(
+  //   frc2::ParallelDeadlineGroup(
+  //     frc2::WaitCommand(ShooterConstants::kShootTime),
+  //     RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+  //   ),
+  //   SetShooterRotation(m_shooter, ShooterState::Zero),
+  //   frc2::InstantCommand([this]{
+  //     m_shooter->SetRollerPower(0.0);
+  //     m_shooter->SetLoaderPower(0.0);
+  //   },{m_shooter})
+  // ).ToPtr());
 
   // frc2::Trigger manualShootButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
   // manualShootButton.OnTrue(RunShooter(m_shooter, ShooterConstants::kShootPower).ToPtr());

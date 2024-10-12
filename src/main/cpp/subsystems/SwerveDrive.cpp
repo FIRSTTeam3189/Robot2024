@@ -192,10 +192,14 @@ wpi::array<units::meters_per_second_t, 2> SwerveDrive::LimitDeceleration(units::
                                                         m_decelerationLimiter.Calculate(velMagnitude.value()).value()};
 
     // Reconstruct x and y speeds from limited magnitude
+    // units::meters_per_second_t xSpeedLimited = units::meters_per_second_t{
+    //                                                 velMagnitudeLimited.value() * sin(theta.value())};
+    // units::meters_per_second_t ySpeedLimited = units::meters_per_second_t{
+    //                                                 velMagnitudeLimited.value() * cos(theta.value())};
     units::meters_per_second_t xSpeedLimited = units::meters_per_second_t{
-                                                    velMagnitudeLimited.value() * sin(theta.value())};
-    units::meters_per_second_t ySpeedLimited = units::meters_per_second_t{
                                                     velMagnitudeLimited.value() * cos(theta.value())};
+    units::meters_per_second_t ySpeedLimited = units::meters_per_second_t{
+                                                    velMagnitudeLimited.value() * sin(theta.value())};
 
     frc::SmartDashboard::PutNumber("Deceleration/theta", theta.value());
     frc::SmartDashboard::PutNumber("Deceleration/velocity magnitude", velMagnitude.value());

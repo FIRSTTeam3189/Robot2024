@@ -8,6 +8,7 @@
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/CANSparkMax.h>
+#include <rev/SparkRelativeEncoder.h>
 #include <rev/SparkAbsoluteEncoder.h> 
 #include "Constants/ClimberConstants.h" 
 #include "Constants/GlobalConstants.h"
@@ -27,6 +28,8 @@ class Climber : public frc2::SubsystemBase {
  private:
   rev::CANSparkMax m_leftMotor;
   rev::CANSparkMax m_rightMotor;
+  rev::SparkRelativeEncoder m_leftEncoder;
+  rev::SparkRelativeEncoder m_rightEncoder;
 
   frc::DigitalInput m_brakeModeLimitSwitch;
   BrakeMode m_brakeMode;
