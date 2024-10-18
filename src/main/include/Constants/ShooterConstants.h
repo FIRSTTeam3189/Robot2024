@@ -36,7 +36,8 @@ namespace ShooterConstants {
     constexpr auto kAxleToGroundDistance {0.2185_m};
     constexpr auto kSpeakerHeightTarget {1.9074_m};
     // Intake load
-    constexpr auto kLoadTarget {35.0_deg};
+    constexpr auto kLoadTarget {25.0_deg};
+    // constexpr auto kLoadTarget {40.0_deg};
     constexpr double kLoadPower {0.5};
     constexpr double kUnloadPower {-0.25};
     constexpr auto kUnloadTime {0.15_s};
