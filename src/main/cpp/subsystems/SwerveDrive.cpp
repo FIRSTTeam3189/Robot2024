@@ -35,7 +35,10 @@ m_modulePositions(
     m_modules.m_backLeft.GetPosition(true),
     m_modules.m_backRight.GetPosition(true)
     //initializes the gyroscope and pose helpers for pose estimator
-)
+),
+
+m_lastXSpeed(0.0_mps),
+m_lastYSpeed(0.0_mps)
 
   {   
     (void)AutoConstants::kAutonomousPaths[0];
@@ -180,22 +183,30 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
 // Takes in the old speeds and applies the slew rate limiter, returning the new limited x and y speeds
 // Uses kinematics to take limited magnitude and reconstruct them into x and y speeds.
 wpi::array<units::meters_per_second_t, 2> SwerveDrive::LimitDeceleration(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed){
-    // Get theta
+    
     units::radian_t theta = units::radian_t{atan2(ySpeed.value(), xSpeed.value())};
+    // If xSpeed and ySpeed (both) are 0, retrieve the last speeds and setting theta to it.
+    // If xSpeed or ySpeed is greater than 0, update the last speeds to use in case input goes to 0 on the next cycle
+    if (abs(xSpeed.value()) < SwerveDriveConstants::kDecelerationDeadband && abs(ySpeed.value()) < SwerveDriveConstants::kDecelerationDeadband){
+        theta = units::radian_t{atan2(m_lastYSpeed.value(), m_lastXSpeed.value())};
+        frc::SmartDashboard::PutNumber("Deceleration/IsUsingLastSpeed", true);
+    } 
+    else {
+        frc::SmartDashboard::PutNumber("Deceleration/IsUsingLastSpeed", false);
+        m_lastXSpeed = xSpeed;
+        m_lastYSpeed = ySpeed;
+    }
+    
 
     // Get the magnitude of speeds using pythagorean theorem
     units::meters_per_second_t velMagnitude = units::meters_per_second_t{
-                                                sqrt(pow(xSpeed.value(), 2) + pow(ySpeed.value(), 2))};
+                                                sqrt(pow(xSpeed.value(), 2) + pow(ySpeed.value(), 2))};\
 
     // Pass magnitude into limiter, returning a limited magnitude value
     units::meters_per_second_t velMagnitudeLimited = units::meters_per_second_t{
                                                         m_decelerationLimiter.Calculate(velMagnitude.value()).value()};
 
     // Reconstruct x and y speeds from limited magnitude
-    // units::meters_per_second_t xSpeedLimited = units::meters_per_second_t{
-    //                                                 velMagnitudeLimited.value() * sin(theta.value())};
-    // units::meters_per_second_t ySpeedLimited = units::meters_per_second_t{
-    //                                                 velMagnitudeLimited.value() * cos(theta.value())};
     units::meters_per_second_t xSpeedLimited = units::meters_per_second_t{
                                                     velMagnitudeLimited.value() * cos(theta.value())};
     units::meters_per_second_t ySpeedLimited = units::meters_per_second_t{
@@ -318,8 +329,6 @@ void SwerveDrive::UpdateEstimator() {
     m_modulePositions[1] = m_modules.m_frontRight.GetPosition(true);
     m_modulePositions[2] = m_modules.m_backLeft.GetPosition(true);
     m_modulePositions[3] = m_modules.m_backRight.GetPosition(true);
-
-    LogModuleStates(m_modulePositions);
     m_poseHelper->UpdatePoseEstimator(m_modulePositions, frc::Rotation2d(GetNormalizedYaw()));
 }
 

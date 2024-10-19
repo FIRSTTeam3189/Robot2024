@@ -103,4 +103,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   // Limits the magnitude of the negative acceleration in the direction of the robot's travel
   // Adding large positive number to not limit the positive ROC, but adding actual negative to limit negative ROC
   frc::SlewRateLimiter<units::scalar> m_decelerationLimiter{100000 / 1_s, SwerveDriveConstants::kDecelerationLimit / 1_s};
+
+  units::meters_per_second_t m_lastXSpeed;
+  units::meters_per_second_t m_lastYSpeed;
 };

@@ -37,7 +37,7 @@ namespace SwerveDriveConstants {
     constexpr auto kMaxAcceleration {5.0_mps_sq};
     constexpr units::radians_per_second_t kMaxAngularVelocity {4.0 * Pi};
     constexpr units::radians_per_second_squared_t kMaxAngularAcceleration {2.0 * Pi};
-    constexpr double kDecelerationLimit {-2.0}; // meters per second
+    constexpr double kDecelerationLimit {-3.0}; // meters per second
 
     // SysID robot characterization values -- **varies by robot**
     constexpr double kSRot {0.125}; // 0.408_V
@@ -51,4 +51,6 @@ namespace SwerveDriveConstants {
 
     constexpr double kSlowModeDriveMultiplier {0.35}; // 0.5
     constexpr double kSwerveRotationTolerance {0.5};
+
+    constexpr double kDecelerationDeadband {0.05};
 }
