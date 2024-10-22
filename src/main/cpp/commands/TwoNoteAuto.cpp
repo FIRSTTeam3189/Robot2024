@@ -80,7 +80,7 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
               units::angular_velocity::radians_per_second_t{
               m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw().value(), 0.0)
               * SwerveDriveConstants::kMaxAngularVelocity};
-        m_swerve->Drive(0.0_mps, 1.0_mps, rot, true, frc::Translation2d{0.0_m, frc::Rotation2d{}});
+        m_swerve->Drive(0.0_mps, 1.0_mps, rot, true, frc::Translation2d{0.0_m, frc::Rotation2d{}}, SwerveDriveConstants::kShouldDecelerate);
       },{m_swerve})
     ),
     frc2::ParallelDeadlineGroup(
@@ -90,7 +90,7 @@ m_rotationPIDController(SwerveDriveConstants::kPRot, SwerveDriveConstants::kIRot
                 units::angular_velocity::radians_per_second_t{
                 m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw().value(), 0.0)
                 * SwerveDriveConstants::kMaxAngularVelocity};
-          m_swerve->Drive(-1.0_mps, 0.0_mps, rot, true, frc::Translation2d{0.0_m, frc::Rotation2d{}});
+          m_swerve->Drive(-1.0_mps, 0.0_mps, rot, true, frc::Translation2d{0.0_m, frc::Rotation2d{}}, SwerveDriveConstants::kShouldDecelerate);
         },{m_swerve})
     ),
     frc2::InstantCommand([this]{ m_shooter->SetRollerPower(ShooterConstants::kShootPower); m_shooter->SetBrakeMode(BrakeMode::Coast); },{m_shooter}),

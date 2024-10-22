@@ -13,23 +13,23 @@ namespace AutoConstants {
     constexpr auto kAlignAllowableDriveSpeed {0.25_mps};
     constexpr double kAutoAlignTolerance {2.5};
     constexpr auto kAutoRevUpTime {2.0_s};
-    constexpr auto kAutoUnloadTime {0.25_s};
-    constexpr auto kAutoUnloadPower {-0.35};
+    constexpr auto kAutoUnloadTime {0.15_s};
+    constexpr auto kAutoUnloadPower {-0.25};
+    constexpr auto kIntakeDuration {3.0_s};
     // Distance from robot center to furthest module
     constexpr auto kDriveBaseRadius {0.282575_m};
-    constexpr auto kMaxAutoModuleSpeed{2.0_mps};
+    // constexpr auto kMaxAutoModuleSpeed{2.0_mps};
+    constexpr auto kMaxAutoModuleSpeed{4.0_mps};
 
     // Translation PID
-    constexpr double kPTranslationAuto {1.5};
-    // constexpr double kPTranslationAuto {4.5};
-    // constexpr double kPTranslationAuto {1.0};
+    // constexpr double kPTranslationAuto {1.5};
+    constexpr double kPTranslationAuto {4.5};
     constexpr double kITranslationAuto {0.0};
     constexpr double kDTranslationAuto {0.0};
 
     // Rotation PID
-    constexpr double kPRotationAuto {1.5};
-    // constexpr double kPRotationAuto {4.0};
-    // constexpr double kPRotationAuto {1.0};
+    // constexpr double kPRotationAuto {1.5};
+    constexpr double kPRotationAuto {4.0};
     constexpr double kIRotationAuto {0.0};
     constexpr double kDRotationAuto {0.0};
 

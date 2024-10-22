@@ -192,9 +192,9 @@ void Drive::Execute() {
   // Print out rotation and drive state
   frc::SmartDashboard::PutNumber("Robot desired rotation (rad per s)", rot.value());
 
-  m_swerveDrive->Drive(xSpeed, ySpeed, rot, true, frc::Translation2d{});
+  m_swerveDrive->Drive(xSpeed, ySpeed, rot, true, frc::Translation2d{}, SwerveDriveConstants::kShouldDecelerate);
 
-  // TODO: remove this once align testing is done
+  // TODO: remove this once align testing is doneP
   m_swerveAlignUtil.GetSpeakerGoalAngleTranslation();
 }
 

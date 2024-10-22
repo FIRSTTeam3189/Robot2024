@@ -73,7 +73,7 @@ void TurnInPlace::Execute() {
     m_withinThresholdLoops = 0;
 
   auto rot = GetDesiredRotationalVelocity();
-  m_swerve->Drive(0.0_mps, 0.0_mps, rot, true, frc::Translation2d{});
+  m_swerve->Drive(0.0_mps, 0.0_mps, rot, true, frc::Translation2d{}, SwerveDriveConstants::kShouldDecelerate);
 }
 
 //If the yaw (angle) of swerve compared to the desired target is less than the tolerance, than the threshold will increase

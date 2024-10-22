@@ -21,7 +21,7 @@ MobilityAuto::MobilityAuto(SwerveDrive *swerve)
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(3.0_s),
       frc2::RunCommand([this]{
-        m_swerve->Drive(1.0_mps, 0.2_mps, units::radians_per_second_t{0.0}, false, frc::Translation2d{0.0_m, frc::Rotation2d{}});
+        m_swerve->Drive(1.0_mps, 0.2_mps, units::radians_per_second_t{0.0}, false, frc::Translation2d{0.0_m, frc::Rotation2d{}}, SwerveDriveConstants::kShouldDecelerate);
       },{m_swerve})
     )
   );

@@ -115,21 +115,21 @@ void RobotContainer::ConfigureDriverBindings() {
   ).ToPtr());
 
   //align to the speaker when the left trigger is pressed
-  frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  alignSpeakerButton.OnTrue(frc2::InstantCommand([this]{
-    // if (m_driveState == DriveState::HeadingControl) {
-      m_driveState = DriveState::SpeakerAlignTranslationAlgorithm;
-    // } else {
-    //   m_driveState = DriveState::HeadingControl;
-    // }
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
-    },{m_swerveDrive}).ToPtr()
-  );
-  alignSpeakerButton.OnFalse(frc2::InstantCommand([this]{
-      m_driveState = DriveState::HeadingControl;
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
-    },{m_swerveDrive}).ToPtr()
-  );
+  // frc2::Trigger alignSpeakerButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // alignSpeakerButton.OnTrue(frc2::InstantCommand([this]{
+  //   // if (m_driveState == DriveState::HeadingControl) {
+  //     m_driveState = DriveState::SpeakerAlignTranslationAlgorithm;
+  //   // } else {
+  //   //   m_driveState = DriveState::HeadingControl;
+  //   // }
+  //     m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+  //   },{m_swerveDrive}).ToPtr()
+  // );
+  // alignSpeakerButton.OnFalse(frc2::InstantCommand([this]{
+  //     m_driveState = DriveState::HeadingControl;
+  //     m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+  //   },{m_swerveDrive}).ToPtr()
+  // );
 
   // frc2::Trigger driveUnderStageButton{m_bill.Button(OperatorConstants::kButtonIDLeftTrigger)};
   // driveUnderStageButton.OnTrue(SetShooterRotation(m_shooter, ShooterState::Far).ToPtr());
@@ -404,6 +404,7 @@ void RobotContainer::RegisterAutoCommands() {
       std::cout << "Auto started/ended\n"; }},{}).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("Intake", frc2::SequentialCommandGroup(
+    frc2::InstantCommand([this]{ m_shooter->SetBrakeMode(BrakeMode::Brake); m_shooter->SetRollerPower(0.0); },{m_shooter}),
     frc2::ParallelCommandGroup(
       frc2::ParallelRaceGroup(
         frc2::WaitCommand(1.0_s),
@@ -415,9 +416,13 @@ void RobotContainer::RegisterAutoCommands() {
       )
     ),
     frc2::ParallelRaceGroup(
-      frc2::WaitCommand(3.0_s),
+      frc2::WaitCommand(AutoConstants::kIntakeDuration),
       RunLoader(m_shooter, ShooterConstants::kLoadPower, 0.0, ShooterEndCondition::EndOnFirstDetection),
       RunIntake(m_intake, IntakeConstants::kIntakePower)
+    ),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kUnloadTime),
+      RunLoader(m_shooter, ShooterConstants::kUnloadPower, ShooterConstants::kUnloadPower)
     ),
     frc2::InstantCommand([this]{
       m_intake->SetRollerPower(0.0);
@@ -448,12 +453,13 @@ void RobotContainer::RegisterAutoCommands() {
 
   // First, unload the note briefly so that it isn't stuck in the shooter's wheels
   // Raises the shooter to the correct angle to fire from the front of the subwoofer
-  // Also ramps up the shooter's flywheel velocity at the same time to prepare a shot
+  // Also ramps up the shooter's velocity at the same time to prepare a shot
   pathplanner::NamedCommands::registerCommand("PrepareShooterSubwoofer", frc2::SequentialCommandGroup(
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(AutoConstants::kAutoUnloadTime),
       RunLoader(m_shooter, AutoConstants::kAutoUnloadPower, 0.0, ShooterEndCondition::None)
     ),
+    frc2::InstantCommand([this]{ m_shooter->SetRollerPower(ShooterConstants::kShootPower); },{m_shooter}),
     // Also ramps up the speed while lifting the shooter
     SetShooterRotation(m_shooter, ShooterState::Close)
   ).ToPtr());

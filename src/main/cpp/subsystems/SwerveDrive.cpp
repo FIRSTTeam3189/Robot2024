@@ -138,7 +138,8 @@ void SwerveDrive::ConfigGyro() {
 void SwerveDrive::Drive(units::meters_per_second_t xSpeed, 
                         units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
                         bool fieldRelative,
-                        frc::Translation2d centerOfRotation) {
+                        frc::Translation2d centerOfRotation,
+                        bool shouldDecelerate) {
 
     // Add static ff value depending on direction of travel (rot)
     if (rot > units::radians_per_second_t(0.0)){
@@ -147,13 +148,12 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
         rot -= units::radians_per_second_t(m_rotationS);
     }
 
-    // auto [xSpeedLimited, ySpeedLimited] = LimitDeceleration(xSpeed, ySpeed);
+    auto [xSpeedLimited, ySpeedLimited] = LimitDeceleration(xSpeed, ySpeed);
 
-    // auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
-    //               (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-    //                     xSpeedLimited, ySpeedLimited, rot, m_pigeon.GetRotation2d())
-    //                         : frc::ChassisSpeeds{xSpeedLimited, ySpeedLimited, rot}),
-    //                         centerOfRotation);
+    if (shouldDecelerate){
+        xSpeed = xSpeedLimited;
+        ySpeed = ySpeedLimited;
+    } 
 
     auto states = SwerveDriveConstants::kKinematics.ToSwerveModuleStates(
                   (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
@@ -161,6 +161,7 @@ void SwerveDrive::Drive(units::meters_per_second_t xSpeed,
                             : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
                             centerOfRotation);
 
+    
     auto [fl, fr, bl, br] = states;
 
     if (m_slowMode) {

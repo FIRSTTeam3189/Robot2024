@@ -28,8 +28,8 @@ namespace IntakeConstants{
     constexpr double kDRotation {0.0};
     constexpr auto kSRotation {1.0_V};
     constexpr auto kGRotation {0.5_V};
-    // constexpr auto kVRotation {1.0_V * 1.0_s / 1.0_rad};
-    constexpr auto kVRotation {0.65_V * 1.0_s / 1.0_rad};
+    constexpr auto kVRotation {1.0_V * 1.0_s / 1.0_rad};
+    // constexpr auto kVRotation {0.65_V * 1.0_s / 1.0_rad};
     constexpr auto kARotation {0.0_V * 1.0_s * 1.0_s / 1.0_rad};
 
     constexpr double kFeedforward {1.0};

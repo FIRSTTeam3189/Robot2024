@@ -10,8 +10,8 @@ namespace ClimberConstants{
     constexpr bool kInvertRightMotor {false};
     constexpr double kExtendPower {0.5};
     constexpr double kBothExtendPower {0.4};
-    constexpr double kRetractPower {-0.5};
-    constexpr double kBothRetractPower {-0.5};
+    constexpr double kRetractPower {-0.95};
+    constexpr double kBothRetractPower {-0.95};
     constexpr double kCurrentLimit {100.0}; // Amps
     constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
     constexpr auto kLeftMotorSoftLimitDirection {rev::CANSparkBase::SoftLimitDirection::kReverse};

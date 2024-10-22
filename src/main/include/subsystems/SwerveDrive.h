@@ -46,7 +46,8 @@ class SwerveDrive : public frc2::SubsystemBase {
              units::meters_per_second_t ySpeed,
              units::radians_per_second_t rot,
              bool fieldRelative,
-             frc::Translation2d centerOfRotation);
+             frc::Translation2d centerOfRotation,
+             bool shouldDecelerate);
   void Lock();
   void Stop();
   units::degree_t GetNormalizedYaw();
