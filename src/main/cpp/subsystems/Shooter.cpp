@@ -248,6 +248,7 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
             break;
         case(ShooterState::AutoScore):
             target = ShooterConstants::kAutoScoreTarget;
+            SetRollerPower(ShooterConstants::kShootPower);
             break;
         case(ShooterState::ArbitraryAngle):
             // Will set target to the arbitrary angle based on UpdatePreferences()

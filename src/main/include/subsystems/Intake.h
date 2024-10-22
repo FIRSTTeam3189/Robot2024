@@ -20,7 +20,7 @@
 #include "Constants/IntakeConstants.h"
 #include "Constants/GlobalConstants.h"
 
-enum class IntakeState { None, Extended, Amp, Retracted };
+enum class IntakeState { None, AutoExtended, Extended, Amp, Retracted };
 
 class Intake : public frc2::SubsystemBase {
  public:

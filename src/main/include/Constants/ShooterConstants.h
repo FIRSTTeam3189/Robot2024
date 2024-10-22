@@ -40,7 +40,7 @@ namespace ShooterConstants {
     // constexpr auto kLoadTarget {40.0_deg};
     constexpr double kLoadPower {0.5};
     constexpr double kUnloadPower {-0.25};
-    constexpr auto kUnloadTime {0.15_s};
+    constexpr auto kUnloadTime {0.2_s};
     // Direct shooter load
     // constexpr auto kDirectLoadTarget {59.0_deg};
     constexpr auto kDirectLoadTarget {57.0_deg};

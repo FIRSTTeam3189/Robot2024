@@ -133,6 +133,10 @@ void Intake::SetState(IntakeState state) {
         case (IntakeState::Extended) :
             target = IntakeConstants::kExtendTarget;
             break;
+        case (IntakeState::AutoExtended) :
+            target = IntakeConstants::kExtendTarget;
+            SetRollerPower(IntakeConstants::kIntakePower);
+            break;
         case (IntakeState::Amp) :
             target = IntakeConstants::kAmpTarget;
             break;

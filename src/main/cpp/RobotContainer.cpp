@@ -462,7 +462,7 @@ void RobotContainer::RegisterAutoCommands() {
     ),
     frc2::InstantCommand([this]{ m_shooter->SetRollerPower(ShooterConstants::kShootPower); },{m_shooter}),
     // Also ramps up the speed while lifting the shooter
-    SetShooterRotation(m_shooter, ShooterState::Close)
+    SetShooterRotation(m_shooter, ShooterState::AutoScore)
   ).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("RotateTo90", TurnInPlace(m_swerveDrive, DriveState::ArbitraryAngleAlign, 90.0_deg).ToPtr());
@@ -470,10 +470,10 @@ void RobotContainer::RegisterAutoCommands() {
   pathplanner::NamedCommands::registerCommand("RotateToNegative30", TurnInPlace(m_swerveDrive, DriveState::ArbitraryAngleAlign, -30.0_deg).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("ScoreSpeaker", frc2::SequentialCommandGroup(
-    // frc2::ParallelDeadlineGroup(
-    //   frc2::WaitCommand(AutoConstants::kAutoRevUpTime),
-    //   RunShooter(m_shooter, ShooterConstants::kShootPower)
-    // ),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(AutoConstants::kAutoRevUpTime),
+      RunShooter(m_shooter, ShooterConstants::kShootPower)
+    ),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
