@@ -29,7 +29,7 @@ namespace ShooterConstants {
 
     // constexpr double kShootPower {1.0};
     constexpr double kShootPower {0.30};
-    constexpr auto kRevUpTime {1.5_s};
+    constexpr auto kRevUpTime {2.5_s};
     constexpr auto kShootTime {1.25_s};
 
     constexpr auto kAxleToCenterDistance {0.0741_m};

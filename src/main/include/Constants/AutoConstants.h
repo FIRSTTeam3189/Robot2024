@@ -18,8 +18,8 @@ namespace AutoConstants {
     constexpr auto kIntakeDuration {3.0_s};
     // Distance from robot center to furthest module
     constexpr auto kDriveBaseRadius {0.282575_m};
+    constexpr auto kMaxAutoModuleSpeed{3.0_mps};
     // constexpr auto kMaxAutoModuleSpeed{2.0_mps};
-    constexpr auto kMaxAutoModuleSpeed{4.0_mps};
 
     // Translation PID
     // constexpr double kPTranslationAuto {1.5};
@@ -29,7 +29,7 @@ namespace AutoConstants {
 
     // Rotation PID
     // constexpr double kPRotationAuto {1.5};
-    constexpr double kPRotationAuto {4.0};
+    constexpr double kPRotationAuto {5.0};
     constexpr double kIRotationAuto {0.0};
     constexpr double kDRotationAuto {0.0};
 

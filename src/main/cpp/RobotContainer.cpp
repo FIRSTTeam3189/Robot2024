@@ -405,6 +405,7 @@ void RobotContainer::RegisterAutoCommands() {
 
   pathplanner::NamedCommands::registerCommand("Intake", frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{ m_shooter->SetBrakeMode(BrakeMode::Brake); m_shooter->SetRollerPower(0.0); },{m_shooter}),
+    frc2::InstantCommand([this]{ m_intake->SetRollerPower(IntakeConstants::kIntakePower); },{m_intake}),
     frc2::ParallelCommandGroup(
       frc2::ParallelRaceGroup(
         frc2::WaitCommand(1.0_s),
