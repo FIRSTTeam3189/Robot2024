@@ -428,11 +428,11 @@ void RobotContainer::RegisterAutoCommands() {
     frc2::InstantCommand([this]{
       m_intake->SetRollerPower(0.0);
       m_shooter->SetLoaderPower(0.0);
-    },{m_intake, m_shooter}),
-    frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Zero),
-      SetIntakeRotation(m_intake, IntakeState::Retracted)
-    )
+    },{m_intake, m_shooter})
+    // frc2::ParallelCommandGroup(
+    //   SetShooterRotation(m_shooter, ShooterState::Zero),
+    //   SetIntakeRotation(m_intake, IntakeState::Retracted)
+    // )
   ).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("ImmediateShoot", frc2::SequentialCommandGroup(
@@ -477,11 +477,11 @@ void RobotContainer::RegisterAutoCommands() {
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(ShooterConstants::kShootTime),
       RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
-    ),
-    frc2::ParallelCommandGroup(
-      SetShooterRotation(m_shooter, ShooterState::Zero),
-      SetIntakeRotation(m_intake, IntakeState::Retracted)
     )
+    // frc2::ParallelCommandGroup(
+    //   SetShooterRotation(m_shooter, ShooterState::Zero),
+    //   SetIntakeRotation(m_intake, IntakeState::Retracted)
+    // )
   ).ToPtr());
 
   pathplanner::NamedCommands::registerCommand("ShooterRotateToAutoTarget", frc2::SequentialCommandGroup(
