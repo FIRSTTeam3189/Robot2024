@@ -27,9 +27,9 @@ namespace ShooterConstants {
     constexpr auto kMaxRotationVelocity {180.0_deg / 1.0_s};
     constexpr auto kMaxRotationAcceleration {180.0_deg / 1.0_s / 1.0_s};
 
-    // constexpr double kShootPower {1.0};
-    constexpr double kShootPower {0.30};
-    constexpr auto kRevUpTime {2.5_s};
+    constexpr double kShootPower {1.0};
+    // constexpr double kShootPower {0.30};
+    constexpr auto kRevUpTime {2.5_s};  // Max is 6400 RPM
     constexpr auto kShootTime {1.25_s};
 
     constexpr auto kAxleToCenterDistance {0.0741_m};

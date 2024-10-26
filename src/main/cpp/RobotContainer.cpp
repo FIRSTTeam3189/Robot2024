@@ -553,6 +553,10 @@ BrakeMode RobotContainer::GetBrakeMode() {
   return m_climber->GetBrakeMode();
 }
 
+void RobotContainer::SetShooterState(ShooterState state) {
+  m_shooter->SetState(state);
+}
+
 void RobotContainer::ConfigureTestBindings() {
 
   // m_swerveDrive->ToggleSlowMode();

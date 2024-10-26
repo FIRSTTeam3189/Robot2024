@@ -16,8 +16,8 @@ m_alignUtil(estimator),
 m_constraints(ShooterConstants::kMaxRotationVelocity, ShooterConstants::kMaxRotationAcceleration),
 m_profiledPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
 m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
-// m_target(0.0_deg),
-m_target(ShooterConstants::kAutoScoreTarget),
+m_target(0.0_deg),
+// m_target(ShooterConstants::kAutoScoreTarget),
 m_isActive(false) {
     ConfigRollerMotor();
     ConfigLoaderMotor();
@@ -250,6 +250,9 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
         case(ShooterState::AutoScore):
             target = ShooterConstants::kAutoScoreTarget;
             SetRollerPower(ShooterConstants::kShootPower);
+            break;
+        case(ShooterState::StartingAuto):
+            target = ShooterConstants::kAutoScoreTarget;
             break;
         case(ShooterState::ArbitraryAngle):
             // Will set target to the arbitrary angle based on UpdatePreferences()

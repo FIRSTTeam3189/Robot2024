@@ -24,7 +24,7 @@
 #include "util/ShooterAlignUtil.h"
 #include "subsystems/PoseEstimatorHelper.h"
 
-enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero, AutoAlign, StartingConfig, AutoScore, ArbitraryAngle, InterpolateAngle } ;
+enum class ShooterState { None, Retracted, Load, DirectLoad, Close, Mid, Far, Zero, AutoAlign, StartingConfig, AutoScore, StartingAuto, ArbitraryAngle, InterpolateAngle } ;
 enum class ShooterEndCondition { None, EndOnFirstDetection };
 
 class Shooter : public frc2::SubsystemBase {

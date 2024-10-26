@@ -60,6 +60,7 @@ class RobotContainer {
   BrakeMode GetBrakeMode();
   void SetAllCoast();
   void SetAllNormalBrakeMode();
+  void SetShooterState(ShooterState state);
 
  private:
   // Replace with CommandPS4Controller or CommandJoystick if needed

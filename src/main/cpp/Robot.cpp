@@ -50,6 +50,7 @@ void Robot::DisabledPeriodic() {
  */
 void Robot::AutonomousInit() {
   m_container.SetAllNormalBrakeMode();
+  m_container.SetShooterState(ShooterState::StartingAuto);
   m_autonomousCommand = m_container.GetAutonomousCommand();
 
   if (m_autonomousCommand != nullptr) {
