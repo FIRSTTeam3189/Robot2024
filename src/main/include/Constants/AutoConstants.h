@@ -12,7 +12,7 @@ namespace AutoConstants {
 
     constexpr auto kAlignAllowableDriveSpeed {0.25_mps};
     constexpr double kAutoAlignTolerance {2.5};
-    constexpr auto kAutoRevUpTime {0.75_s};
+    constexpr auto kAutoRevUpTime {0.75_s}; // Max is 6400 RPM
     constexpr auto kAutoUnloadTime {0.25_s};
     constexpr auto kAutoUnloadPower {-0.25};
     constexpr auto kIntakeDuration {3.0_s};

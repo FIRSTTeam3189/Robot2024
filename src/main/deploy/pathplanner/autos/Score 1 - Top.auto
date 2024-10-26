@@ -12,9 +12,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "PrintAutoMessage"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PrepareShooterSubwoofer"
+                }
+              }
+            ]
           }
         },
         {
@@ -24,28 +37,9 @@
           }
         },
         {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterRotateToAutoTarget"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ScoreSpeaker"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "PrintAutoMessage"
+            "name": "ScoreSpeaker"
           }
         }
       ]
