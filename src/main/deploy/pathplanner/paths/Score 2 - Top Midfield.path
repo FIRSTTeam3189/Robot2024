@@ -1,0 +1,119 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6940511627057834,
+        "y": 6.5850599536619505
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.6940511627057828,
+        "y": 6.5850599536619505
+      },
+      "isLocked": false,
+      "linkedName": "Score 1 Top Ends"
+    },
+    {
+      "anchor": {
+        "x": 8.26733436288058,
+        "y": 7.440885807301208
+      },
+      "prevControl": {
+        "x": 7.267334362880581,
+        "y": 7.440885807301208
+      },
+      "nextControl": {
+        "x": 9.26733436288058,
+        "y": 7.440885807301208
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.6940511627057834,
+        "y": 6.5850599536619505
+      },
+      "prevControl": {
+        "x": 2.971365126515625,
+        "y": 7.655823799399773
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Score 1 Top Ends"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.5,
+      "rotationDegrees": 60.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "PrepareShooterSubwoofer",
+      "waypointRelativePos": 1.6,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PrepareShooterSubwoofer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 60.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 60.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,135 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6662017687691143,
+        "y": 4.451677557900571
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4430872350734154,
+        "y": 3.976460328807025
+      },
+      "isLocked": false,
+      "linkedName": "Score 1 Bottom Ends"
+    },
+    {
+      "anchor": {
+        "x": 3.5997550529099245,
+        "y": 1.8848660742860257
+      },
+      "prevControl": {
+        "x": 2.333383278824817,
+        "y": 2.443942887402481
+      },
+      "nextControl": {
+        "x": 4.402731708816022,
+        "y": 1.5303685728589926
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.283445190950566,
+        "y": 0.7145238599645537
+      },
+      "prevControl": {
+        "x": 8.948013332614382,
+        "y": 0.5540808416620948
+      },
+      "nextControl": {
+        "x": 7.693343736419336,
+        "y": 0.8569887970176996
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.6662017687691143,
+        "y": 4.451677557900571
+      },
+      "prevControl": {
+        "x": 1.7151058843122176,
+        "y": 3.636430398183719
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Score 1 Bottom Ends"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.2000000000000002,
+      "rotationDegrees": -30.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.6,
+      "rotationDegrees": -60.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 1.2000000000000002,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "PrepareShooterSubwoofer",
+      "waypointRelativePos": 2.45,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PrepareShooterSubwoofer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -60.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -60.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

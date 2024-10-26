@@ -32,7 +32,7 @@ namespace ShooterConstants {
     constexpr auto kRevUpTime {2.5_s};  // Max is 6400 RPM
     constexpr auto kShootTime {1.25_s};
 
-    constexpr auto kAxleToCenterDistance {0.0741_m};
+    constexpr auto kAxleToCenterDistance {0.0741_m}; //meow - trillian
     constexpr auto kAxleToGroundDistance {0.2185_m};
     constexpr auto kSpeakerHeightTarget {1.9074_m};
     // Intake load
