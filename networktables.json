@@ -26,7 +26,7 @@
   {
     "name": "/Preferences/AngleP",
     "type": "double",
-    "value": 10.0,
+    "value": 40.0,
     "properties": {
       "persistent": true
     }
@@ -82,7 +82,7 @@
   {
     "name": "/Preferences/Robot Rotation P",
     "type": "double",
-    "value": 0.004,
+    "value": 0.005,
     "properties": {
       "persistent": true
     }
@@ -250,7 +250,7 @@
   {
     "name": "/Preferences/Vision Enabled",
     "type": "boolean",
-    "value": false,
+    "value": true,
     "properties": {
       "persistent": true
     }
@@ -259,6 +259,14 @@
     "name": "/Preferences/IntakeSetState Rotation D",
     "type": "double",
     "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/RotS",
+    "type": "double",
+    "value": 0.125,
     "properties": {
       "persistent": true
     }

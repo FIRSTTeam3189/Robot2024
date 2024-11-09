@@ -1,5 +1,5 @@
 {
-  "version": 1.0,
+  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2548602020269033,
-        "y": 5.5254879740486835
+        "x": 1.0721224125162854,
+        "y": 5.3650696749493925
       },
       "isLocked": false,
       "linkedName": "Score 1 Mid Ends"
@@ -20,12 +20,12 @@
         "y": 7.043033652561279
       },
       "prevControl": {
-        "x": 2.7191460913776972,
-        "y": 7.014360535343113
+        "x": 2.5552997072738886,
+        "y": 6.899668066470447
       },
       "nextControl": {
-        "x": 2.801069283429601,
-        "y": 7.071706769779445
+        "x": 2.9649156675334094,
+        "y": 7.186399238652111
       },
       "isLocked": false,
       "linkedName": "Score 2 Top Ends"
@@ -36,8 +36,8 @@
         "y": 5.53
       },
       "prevControl": {
-        "x": 1.264727144837712,
-        "y": 5.535354916859492
+        "x": 1.425449056392603,
+        "y": 5.717420942636616
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,15 +47,16 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.6,
-      "rotationDegrees": 40.0,
-      "rotateFast": true
+      "rotationDegrees": 40.0
     }
   ],
   "constraintZones": [],
+  "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "Intake",
       "waypointRelativePos": 0.05,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "sequential",
         "data": {
@@ -73,6 +74,7 @@
     {
       "name": "PrepareShooterSubwoofer",
       "waypointRelativePos": 1.5,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "sequential",
         "data": {
@@ -89,21 +91,22 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
-    "maxAngularVelocity": 180.0,
-    "maxAngularAcceleration": 360.0
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 0.0,
-    "rotateFast": false
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

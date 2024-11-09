@@ -1,5 +1,5 @@
 {
-  "version": 1.0,
+  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
@@ -20,12 +20,12 @@
         "y": 5.53
       },
       "prevControl": {
-        "x": 2.9297957987493546,
-        "y": 5.518985738257702
+        "x": 3.1705577642013356,
+        "y": 5.5245467431921185
       },
       "nextControl": {
-        "x": 2.8981955109175206,
-        "y": 5.5569060836559
+        "x": 2.647037106952197,
+        "y": 5.5359690312772
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 5.53
       },
       "prevControl": {
-        "x": 1.254860202028098,
-        "y": 5.515621031242063
+        "x": 1.5091474816365764,
+        "y": 5.509371563458377
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,10 +46,12 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
+  "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "Intake",
       "waypointRelativePos": 0.05,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "sequential",
         "data": {
@@ -67,6 +69,7 @@
     {
       "name": "PrepareShooterSubwoofer",
       "waypointRelativePos": 1.45,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "sequential",
         "data": {
@@ -83,21 +86,22 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
-    "maxAngularVelocity": 180.0,
-    "maxAngularAcceleration": 360.0
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
-    "rotateFast": false
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

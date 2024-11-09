@@ -1,0 +1,21 @@
+{
+  "robotWidth": 0.711,
+  "robotLength": 0.711,
+  "holonomicMode": true,
+  "pathFolders": [],
+  "autoFolders": [],
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 3.0,
+  "defaultMaxAngVel": 540.0,
+  "defaultMaxAngAccel": 720.0,
+  "robotMass": 53.524,
+  "robotMOI": 5.5,
+  "robotWheelbase": 0.565,
+  "robotTrackwidth": 0.565,
+  "driveWheelRadius": 0.0508,
+  "driveGearing": 8.1,
+  "maxDriveSpeed": 5.45,
+  "driveMotorType": "falcon500FOC",
+  "driveCurrentLimit": 60.0,
+  "wheelCOF": 1.2
+}
