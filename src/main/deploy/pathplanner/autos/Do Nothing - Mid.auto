@@ -5,28 +5,16 @@
       "x": 1.26,
       "y": 5.53
     },
-    "rotation": 180.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "PrintAutoMessage"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Do Nothing - Mid"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PrintAutoMessage"
           }
         }
       ]

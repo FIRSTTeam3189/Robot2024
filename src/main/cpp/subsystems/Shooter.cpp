@@ -7,7 +7,8 @@
 Shooter::Shooter(PoseEstimatorHelper *estimator) : 
 m_topRollerMotor(ShooterConstants::kTopRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_bottomRollerMotor(ShooterConstants::kBottomRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_rollerEncoder(m_topRollerMotor.GetEncoder()),
+m_topRollerEncoder(m_topRollerMotor.GetEncoder()),
+m_bottomRollerEncoder(m_bottomRollerMotor.GetEncoder()),
 m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
 m_limitSwitchLeft(ShooterConstants::kLeftLimitSwitchPort),
@@ -32,7 +33,8 @@ void Shooter::Periodic() {
     frc::SmartDashboard::PutNumber("Shooter PID target", m_target.value());
     frc::SmartDashboard::PutNumber("Shooter rotation", GetRotation().value());
     frc::SmartDashboard::PutNumber("Shooter power", m_topRollerMotor.Get());
-    frc::SmartDashboard::PutNumber("Shooter RPM", m_rollerEncoder.GetVelocity());
+    frc::SmartDashboard::PutNumber("Shooter top RPM", m_topRollerEncoder.GetVelocity());
+    frc::SmartDashboard::PutNumber("Shooter bottom RPM", m_bottomRollerEncoder.GetVelocity());
     frc::SmartDashboard::PutNumber("Shooter load power", m_loaderMotor.Get());
 
     if (frc::Preferences::GetBoolean("Full Diagnostics", false)) {

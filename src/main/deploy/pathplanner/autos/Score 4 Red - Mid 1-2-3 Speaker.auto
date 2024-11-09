@@ -1,0 +1,56 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 15.268059838651391,
+      "y": 5.516781197161668
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PrepareShooterSubwoofer"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 1 Red - Mid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 2 Red - Mid 1 speaker"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

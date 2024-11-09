@@ -50,17 +50,17 @@ RobotContainer::RobotContainer() {
 void RobotContainer::ConfigureDriverBindings() {
   // Bill controls
   // Setting the Drive State (Normal Field relative and Rotational Velocity Control) to the desired one based on controller right stick
-  frc2::Trigger toggleATan2RotButton{m_bill.Button(OperatorConstants::kButtonIDRightStick)};
-  toggleATan2RotButton.OnTrue(
-    frc2::InstantCommand([this]{
-      if (m_driveState == DriveState::HeadingControl) {
-        m_driveState = DriveState::RotationVelocityControl;
-      } else if (m_driveState == DriveState::RotationVelocityControl) {
-        m_driveState = DriveState::HeadingControl;
-      }
-      m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
-    },{m_swerveDrive}).ToPtr()
-  );
+  // frc2::Trigger toggleATan2RotButton{m_bill.Button(OperatorConstants::kButtonIDRightStick)};
+  // toggleATan2RotButton.OnTrue(
+  //   frc2::InstantCommand([this]{
+  //     if (m_driveState == DriveState::HeadingControl) {
+  //       m_driveState = DriveState::RotationVelocityControl;
+  //     } else if (m_driveState == DriveState::RotationVelocityControl) {
+  //       m_driveState = DriveState::HeadingControl;
+  //     }
+  //     m_swerveDrive->SetDefaultCommand(Drive(&m_bill, m_swerveDrive, m_driveState));
+  //   },{m_swerveDrive}).ToPtr()
+  // );
 
   // creating swerve drive instance using the Drive command on the bill controller (main driving)
 
@@ -271,19 +271,19 @@ void RobotContainer::ConfigureCoDriverBindings() {
     },{m_shooter}).ToPtr()
   );
 
-  frc2::Trigger autoShootButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
-  autoShootButton.OnTrue(ShooterAutoAlign(m_shooter, m_poseEstimator, m_vision, false).ToPtr());
-  autoShootButton.OnFalse(frc2::SequentialCommandGroup(
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(ShooterConstants::kShootTime),
-      RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
-    ),
-    SetShooterRotation(m_shooter, ShooterState::Zero),
-    frc2::InstantCommand([this]{
-      m_shooter->SetRollerPower(0.0);
-      m_shooter->SetLoaderPower(0.0);
-    },{m_shooter})
-  ).ToPtr());
+  // frc2::Trigger autoShootButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  // autoShootButton.OnTrue(ShooterAutoAlign(m_shooter, m_poseEstimator, m_vision, false).ToPtr());
+  // autoShootButton.OnFalse(frc2::SequentialCommandGroup(
+  //   frc2::ParallelDeadlineGroup(
+  //     frc2::WaitCommand(ShooterConstants::kShootTime),
+  //     RunLoader(m_shooter, ShooterConstants::kShootPower, ShooterConstants::kShootPower)
+  //   ),
+  //   SetShooterRotation(m_shooter, ShooterState::Zero),
+  //   frc2::InstantCommand([this]{
+  //     m_shooter->SetRollerPower(0.0);
+  //     m_shooter->SetLoaderPower(0.0);
+  //   },{m_shooter})
+  // ).ToPtr());
 
   //all the below shoot buttons set the shooter rotation to the desired target based on if shooteer far, mid, close, manually, or auto and then runs it.
   //shooter will run at max power and angle changes trajectory
@@ -322,6 +322,30 @@ void RobotContainer::ConfigureCoDriverBindings() {
     },{m_shooter})
   ).ToPtr());
 
+  frc2::Trigger closeFastShootButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
+  closeFastShootButton.OnTrue(frc2::SequentialCommandGroup(
+    SetShooterRotation(m_shooter, ShooterState::Close),
+    RunShooter(m_shooter, 1.0)
+  ).ToPtr());
+  closeFastShootButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(ShooterConstants::kShootTime),
+      RunLoader(m_shooter, 1.0, 1.0)
+    ),
+    SetShooterRotation(m_shooter, ShooterState::Zero),
+    frc2::InstantCommand([this]{
+      m_shooter->SetRollerPower(0.0);
+      m_shooter->SetLoaderPower(0.0);
+    },{m_shooter})
+  ).ToPtr());
+
+  frc2::Trigger articulateShooterButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  articulateShooterButton.OnTrue(
+    SetShooterRotation(m_shooter, ShooterState::StartingAuto)
+  .ToPtr());
+  articulateShooterButton.OnFalse(
+    SetShooterRotation(m_shooter, ShooterState::Zero)
+  .ToPtr());
   // frc2::Trigger midShootButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
   // midShootButton.OnTrue(frc2::SequentialCommandGroup(
   //   SetShooterRotation(m_shooter, ShooterState::Mid),

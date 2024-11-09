@@ -1,0 +1,50 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 15.90488850786307,
+      "y": 4.447120866311969
+    },
+    "rotation": -120.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PrepareShooterSubwoofer"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score 1 Red - Bottom"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSpeaker"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

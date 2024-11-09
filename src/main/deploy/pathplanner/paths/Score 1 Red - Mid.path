@@ -3,34 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.548832630784662,
-        "y": 4.317590602980848
+        "x": 15.268059838651391,
+        "y": 5.516781197161668
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.9421010613040912,
-        "y": 4.934389260549541
+        "x": 15.27824174025726,
+        "y": 5.516781197161668
       },
       "isLocked": false,
-      "linkedName": "Score 4 - Mid 1-3 Ends"
+      "linkedName": "Score 1 Mid Red"
     },
     {
       "anchor": {
-        "x": 2.548832630784662,
-        "y": 6.829189955390914
+        "x": 15.268059838651391,
+        "y": 5.516781197161668
       },
       "prevControl": {
-        "x": 1.5488326307846618,
-        "y": 6.829189955390914
+        "x": 15.26600308545022,
+        "y": 5.516781197161668
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score 3 Mid 2-1"
+      "linkedName": "Score 1 Mid Red"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "ScoreSpeaker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 1.5,
     "maxAcceleration": 1.5,
@@ -39,13 +50,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 24.410689775412397,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -38.00745295939497,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

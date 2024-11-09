@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 0.6662017687691143,
-        "y": 4.451677557900571
+        "x": 0.65,
+        "y": 4.45
       },
       "prevControl": {
-        "x": 0.6708026779203812,
-        "y": 4.451677557900571
+        "x": 0.6546009091512666,
+        "y": 4.45
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score 1 Bottom Ends"
+      "linkedName": "Bottom Start Point"
     }
   ],
   "rotationTargets": [],

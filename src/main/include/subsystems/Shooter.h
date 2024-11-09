@@ -60,7 +60,8 @@ class Shooter : public frc2::SubsystemBase {
    // rev::CANSparkFlex m_bottomRollerMotor;
    rev::CANSparkMax m_topRollerMotor;
    rev::CANSparkMax m_bottomRollerMotor;
-   rev::SparkRelativeEncoder m_rollerEncoder;
+   rev::SparkRelativeEncoder m_topRollerEncoder;
+   rev::SparkRelativeEncoder m_bottomRollerEncoder;
    rev::CANSparkMax m_loaderMotor;
    rev::CANSparkMax m_rotationMotor;
 
