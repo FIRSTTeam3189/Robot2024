@@ -4,7 +4,7 @@ pluginManagement {
     repositories {
         mavenLocal()
         gradlePluginPortal()
-        String frcYear = '2024'
+        String frcYear = '2025'
         File frcHome
         if (OperatingSystem.current().isWindows()) {
             String publicFolder = System.getenv('PUBLIC')
@@ -28,8 +28,3 @@ pluginManagement {
 
 Properties props = System.getProperties();
 props.setProperty("org.gradle.internal.native.headers.unresolved.dependencies.ignore", "true");
-props.setProperty("org.gradle.caching", "true");
-props.setProperty("org.gradle.daemon", "true");
-props.setProperty("org.gradle.parallel", "true");
-props.setProperty("org.gradle.configuration-cache", "true");
-props.setProperty("org.gradle.jvmargs", "-Xmx2048M");
