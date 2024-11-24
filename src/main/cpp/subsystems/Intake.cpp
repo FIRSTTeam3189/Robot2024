@@ -5,15 +5,17 @@
 #include "subsystems/Intake.h"
 
 Intake::Intake() : 
- m_rotationMotor(IntakeConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
- m_rollerMotor(IntakeConstants::kRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
+ m_rotationMotor(IntakeConstants::kRotationMotorID, rev::spark::SparkMax::MotorType::kBrushless),
+ m_rollerMotor(IntakeConstants::kRollerMotorID, rev::spark::SparkMax::MotorType::kBrushless),
+ m_rotationConfig(),
+ m_rollerConfig(),
  m_limitSwitchLeft(IntakeConstants::kLeftLimitSwitchPort),
  m_limitSwitchRight(IntakeConstants::kRightLimitSwitchPort),
  m_constraints(IntakeConstants::kMaxRotationVelocity, IntakeConstants::kMaxRotationAcceleration),
  m_profiledPIDController(IntakeConstants::kPRotation, IntakeConstants::kIRotation, IntakeConstants::kDRotation, m_constraints),
- m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
+ m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder()),
  m_target(IntakeConstants::kRetractTarget),
-m_isActive(false)
+ m_isActive(false)
 {
     ConfigRotationMotor();
     ConfigRollerMotor();
@@ -25,22 +27,37 @@ m_isActive(false)
 }
 
 void Intake::ConfigRotationMotor() {
-    m_rotationMotor.RestoreFactoryDefaults();
-    m_rotationMotor.SetIdleMode(IntakeConstants::kIdleMode);
-    m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
-    m_rotationMotor.SetInverted(IntakeConstants::kRotationMotorInverted);
-    m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus5, 20);
-    m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus6, 20);
-    m_rotationEncoder.SetInverted(IntakeConstants::kRotationInverted);
-    m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
-    m_rotationEncoder.SetVelocityConversionFactor(IntakeConstants::kRotationConversion);
-    m_rotationEncoder.SetZeroOffset(IntakeConstants::kRotationOffset);
+    m_rotationConfig
+        .Inverted(IntakeConstants::kRotationInverted)
+        .SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kBrake)
+        .SmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
+    m_rotationConfig.absoluteEncoder
+        .PositionConversionFactor(IntakeConstants::kRotationConversion)
+        .VelocityConversionFactor(IntakeConstants::kRotationConversion)
+        .ZeroOffset(IntakeConstants::kRotationOffset);
+    m_rotationConfig.signals
+        .AbsoluteEncoderPositionPeriodMs(20)
+        .AbsoluteEncoderVelocityPeriodMs(20);
+    m_rotationMotor.Configure(m_rotationConfig, rev::spark::SparkBase::ResetMode::kResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
+
+    // RevLib 2024 old code
+    // m_rotationMotor.RestoreFactoryDefaults();
+    // m_rotationMotor.SetIdleMode(IntakeConstants::kIdleMode);
+    // m_rotationMotor.SetSmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
+    // m_rotationMotor.SetInverted(IntakeConstants::kRotationMotorInverted);
+    // m_rotationMotor.SetPeriodicFramePeriod(rev::spark::SparkMax::PeriodicFrame::kStatus5, 20);
+    // m_rotationMotor.SetPeriodicFramePeriod(rev::spark::SparkMax::PeriodicFrame::kStatus6, 20);
+    // m_rotationEncoder.SetInverted(IntakeConstants::kRotationInverted);
+    // m_rotationEncoder.SetPositionConversionFactor(IntakeConstants::kRotationConversion);
+    // m_rotationEncoder.SetVelocityConversionFactor(IntakeConstants::kRotationConversion);
+    // m_rotationEncoder.SetZeroOffset(IntakeConstants::kRotationOffset);
 }
 
 void Intake::ConfigRollerMotor() {
-    m_rollerMotor.RestoreFactoryDefaults();
-    m_rollerMotor.SetSmartCurrentLimit(IntakeConstants::kRollerCurrentLimit);
-    m_rollerMotor.SetInverted(IntakeConstants::kRollerInverted);
+    m_rollerConfig
+        .Inverted(IntakeConstants::kRollerInverted)
+        .SmartCurrentLimit(IntakeConstants::kRollerCurrentLimit);
+    m_rollerMotor.Configure(m_rollerConfig, rev::spark::SparkBase::ResetMode::kResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
 }
 
 void Intake::ConfigPID() {
@@ -100,7 +117,7 @@ void Intake::Periodic() {
 }
 
 void Intake::SetActive(bool active) {
-    if (active) {
+    if (active) {rev::spark::SparkMaxConfig{};
         m_lastTime = frc::Timer::GetFPGATimestamp();
     }
 
@@ -255,18 +272,22 @@ void Intake::UpdatePreferences() {
 void Intake::SetBrakeMode(BrakeMode mode) {
     switch (mode) {
         case(BrakeMode::Brake) :
-            m_rollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-            m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+            m_rollerConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
+            m_rotationConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
             break;
         case(BrakeMode::Coast) :
-            m_rollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-            m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            m_rollerConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kCoast);
+            m_rotationConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kCoast);
             break;
         case(BrakeMode::Default) :
-            m_rollerMotor.SetIdleMode(IntakeConstants::kIdleMode);
-            m_rotationMotor.SetIdleMode(IntakeConstants::kIdleMode);
+            m_rollerConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
+            m_rotationConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
             break;
         default :
             break;
     }
+
+    m_rotationMotor.Configure(m_rotationConfig, rev::spark::SparkBase::ResetMode::kResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
+    m_rollerMotor.Configure(m_rollerConfig, rev::spark::SparkBase::ResetMode::kResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
+
 }

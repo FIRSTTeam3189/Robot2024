@@ -4,7 +4,7 @@
 
 #include "commands/Drive.h"
 
-Drive::Drive(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle) :
+Drive::Drive(frc::PS5Controller *joystick, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle) :
 m_bill(joystick),
 m_swerveDrive(swerveDrive),
 m_swerveAlignUtil(swerveDrive),
@@ -40,15 +40,16 @@ units::angular_velocity::radians_per_second_t Drive::GetDesiredRotationalVelocit
   // If red alliance, flip 180
   m_allianceSide = frc::DriverStation::GetAlliance();
   double joystickX = 0.0, joystickY = 0.0;
+  
   if (m_allianceSide) {
     if (m_allianceSide.value() == frc::DriverStation::Alliance::kRed) {
       frc::SmartDashboard::PutString("Alliance", "red");
-      joystickX = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY);
-      joystickY = m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX);
+      joystickX = m_bill->GetRightY();
+      joystickY = m_bill->GetRightX();
     } else {
       frc::SmartDashboard::PutString("Alliance", "blue");
-      joystickX = -(m_bill->GetRawAxis(OperatorConstants::kAxisRightStickY));
-      joystickY = -(m_bill->GetRawAxis(OperatorConstants::kAxisRightStickX));
+      joystickX = -(m_bill->GetRightY());
+      joystickY = -(m_bill->GetRightX());
     }
   }
 

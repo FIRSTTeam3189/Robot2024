@@ -1,7 +1,10 @@
 #pragma once
 
-#include <pathplanner/lib/util/PIDConstants.h>
-#include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
+#include <pathplanner/lib/config/PIDConstants.h>
+#include <pathplanner/lib/config/ModuleConfig.h>
+#include <pathplanner/lib/config/RobotConfig.h>
+#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
+#include <frc/system/plant/DCMotor.h>
 
 #define Pi 3.14159265358979323846
 
@@ -33,14 +36,38 @@ namespace AutoConstants {
     constexpr double kIRotationAuto {0.0};
     constexpr double kDRotationAuto {0.0};
 
-    // Auto config
-    const pathplanner::HolonomicPathFollowerConfig autoConfig {
-        pathplanner::PIDConstants(kPTranslationAuto, kITranslationAuto, kDTranslationAuto), // Translation PID constants
-        pathplanner::PIDConstants(kPRotationAuto, kIRotationAuto, kDRotationAuto), // Rotation PID constants
-        kMaxAutoModuleSpeed, // Max module speed, in m/s
-        kDriveBaseRadius, // Drive base radius in meters. Distance from robot center to furthest module.
-        pathplanner::ReplanningConfig() // Defaults to replanning if robot is not at starting point, doesn't replan if robot strays too far
+    // nominalVoltage, stallTorque, stallCurrent, freeCurrent, freeSpeed, numMotors
+    constexpr frc::DCMotor kDriveMotorConfig {
+        12.0_V, units::newton_meter_t{5.84}, units::ampere_t{304.0}, units::ampere_t{1.5}, units::radians_per_second_t{636.6961104}
     };
+
+    // Wheel radius, maxDriveVelocityMPS, wheelCOF, driveMotor, driveCurrentLimit, numMotors
+    static pathplanner::ModuleConfig kAutoModuleConfig {
+        units::meter_t{SwerveModuleConstants::kWheelRadiusMeters},
+        SwerveModuleConstants::kMaxSpeed, 
+        SwerveModuleConstants::kWheelCOF,
+        kDriveMotorConfig,
+        SwerveModuleConstants::kDrivePeakCurrentLimit,
+        1
+    };
+
+    // units::kilogram_t mass, units::kilogram_square_meter_t MOI, ModuleConfig moduleConfig, units::meter_t trackwidth, units::meter_t wheelbase
+    static pathplanner::RobotConfig kAutoRobotConfig {
+        53.524_kg,
+        units::kilogram_square_meter_t{5.500},
+        kAutoModuleConfig,
+        SwerveDriveConstants::kTrackwidth,
+        SwerveDriveConstants::kWheelbase,
+    };
+
+    // // Auto config
+    // const pathplanner::HolonomicPathFollowerConfig autoConfig {
+    //     pathplanner::PIDConstants(kPTranslationAuto, kITranslationAuto, kDTranslationAuto), // Translation PID constants
+    //     pathplanner::PIDConstants(kPRotationAuto, kIRotationAuto, kDRotationAuto), // Rotation PID constants
+    //     kMaxAutoModuleSpeed, // Max module speed, in m/s
+    //     kDriveBaseRadius, // Drive base radius in meters. Distance from robot center to furthest module.
+    //     pathplanner::ReplanningConfig() // Defaults to replanning if robot is not at starting point, doesn't replan if robot strays too far
+    // };
 
     using namespace std::literals;
     constexpr std::array kAutonomousPaths {

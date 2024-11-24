@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 1.6636311053845354,
-        "y": 1.5100070433691237
+        "y": 1.5100070433691233
       },
       "isLocked": false,
       "linkedName": "Score 4 - Mid 1-3 Ends"
@@ -24,8 +24,8 @@
         "y": 0.7331016552289297
       },
       "nextControl": {
-        "x": 3.2755076986472167,
-        "y": 1.5038548426314802
+        "x": 3.2755076986472176,
+        "y": 1.50385484263148
       },
       "isLocked": false,
       "linkedName": null

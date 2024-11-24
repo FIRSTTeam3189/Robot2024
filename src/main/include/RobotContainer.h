@@ -8,9 +8,8 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/WaitCommand.h>
 #include <frc2/command/RunCommand.h>
-#include <frc2/command/button/CommandXboxController.h>
-#include <frc2/command/button/CommandJoystick.h>
 #include <frc2/command/button/Trigger.h>
+#include <frc/PS5Controller.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/SequentialCommandGroup.h>
@@ -64,9 +63,9 @@ class RobotContainer {
 
  private:
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  frc2::CommandJoystick m_bill{OperatorConstants::kDriverControllerPort};
-  frc2::CommandJoystick m_ted{OperatorConstants::kCoDriverControllerPort};
-  frc2::CommandJoystick m_test{OperatorConstants::kTestControllerPort};
+  frc::PS5Controller m_bill{OperatorConstants::kDriverControllerPort};
+  frc::PS5Controller m_ted{OperatorConstants::kCoDriverControllerPort};
+  frc::PS5Controller m_test{OperatorConstants::kTestControllerPort};
 
   // The robot's subsystems are defined here...
   Climber *m_climber = new Climber();

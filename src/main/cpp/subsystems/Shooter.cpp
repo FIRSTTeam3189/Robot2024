@@ -5,18 +5,21 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter(PoseEstimatorHelper *estimator) : 
-m_topRollerMotor(ShooterConstants::kTopRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_bottomRollerMotor(ShooterConstants::kBottomRollerMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_topRollerMotor(ShooterConstants::kTopRollerMotorID, rev::spark::SparkMax::MotorType::kBrushless),
+m_bottomRollerMotor(ShooterConstants::kBottomRollerMotorID, rev::spark::SparkMax::MotorType::kBrushless),
 m_topRollerEncoder(m_topRollerMotor.GetEncoder()),
 m_bottomRollerEncoder(m_bottomRollerMotor.GetEncoder()),
-m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::CANSparkMax::MotorType::kBrushless),
-m_rotationMotor(ShooterConstants::kRotationMotorID, rev::CANSparkMax::MotorType::kBrushless),
+m_loaderMotor(ShooterConstants::kLoaderMotorID, rev::spark::SparkMax::MotorType::kBrushless),
+m_rotationMotor(ShooterConstants::kRotationMotorID, rev::spark::SparkMax::MotorType::kBrushless),
+m_loaderConfig(),
+m_rotationConfig(),
+m_rollerConfig(),
 m_limitSwitchLeft(ShooterConstants::kLeftLimitSwitchPort),
 m_limitSwitchRight(ShooterConstants::kRightLimitSwitchPort),
 m_alignUtil(estimator),
 m_constraints(ShooterConstants::kMaxRotationVelocity, ShooterConstants::kMaxRotationAcceleration),
 m_profiledPIDController(ShooterConstants::kPRotation, ShooterConstants::kIRotation, ShooterConstants::kDRotation, m_constraints),
-m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
+m_rotationEncoder(m_rotationMotor.GetAbsoluteEncoder()), 
 m_target(0.0_deg),
 // m_target(ShooterConstants::kAutoScoreTarget),
 m_isActive(false) {
@@ -56,7 +59,6 @@ void Shooter::Periodic() {
 
     // TODO: remove after testing
     m_alignUtil.GetShooterGoalInterpolating(m_alignUtil.GetDistanceToSpeaker());
-
     //constructed all instances of variables needed as well as keys for PID and diagnostic values
     // by default holds position but if it is active then it goes to target
 }
@@ -143,29 +145,40 @@ units::degree_t Shooter::GetRotation() {
 }
 
 void Shooter::ConfigRollerMotor() {
-    m_topRollerMotor.RestoreFactoryDefaults();
-    m_topRollerMotor.SetSmartCurrentLimit(ShooterConstants::kRollerCurrentLimit);
-    m_topRollerMotor.SetInverted(ShooterConstants::kRollerInverted);
-    m_bottomRollerMotor.RestoreFactoryDefaults();
-    m_bottomRollerMotor.SetSmartCurrentLimit(ShooterConstants::kRollerCurrentLimit);
-    m_bottomRollerMotor.SetInverted(!ShooterConstants::kRollerInverted);
+    m_rollerConfig
+        .Inverted(ShooterConstants::kRollerInverted)
+        .SmartCurrentLimit(ShooterConstants::kRollerCurrentLimit);
+    
+    m_topRollerMotor.Configure(m_rollerConfig, rev::spark::SparkBase::ResetMode::kResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
+    m_bottomRollerMotor.Configure(m_rollerConfig, rev::spark::SparkBase::ResetMode::kResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
+
 }
 
 void Shooter::ConfigLoaderMotor() {
-    m_loaderMotor.RestoreFactoryDefaults();
-    m_loaderMotor.SetSmartCurrentLimit(ShooterConstants::kLoaderCurrentLimit);
+    m_loaderConfig
+        .Inverted(false)
+        .SmartCurrentLimit(ShooterConstants::kRollerCurrentLimit);
+    
+    m_loaderMotor.Configure(m_loaderConfig, rev::spark::SparkBase::ResetMode::kResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
+
 }
 
 void Shooter::ConfigRotationMotor() {
-    m_rotationMotor.RestoreFactoryDefaults();
-    m_rotationMotor.SetIdleMode(ShooterConstants::kIdleMode);
-    m_rotationMotor.SetSmartCurrentLimit(ShooterConstants::kRotationCurrentLimit);
-    m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus5, 20);
-    m_rotationMotor.SetPeriodicFramePeriod(rev::CANSparkMax::PeriodicFrame::kStatus6, 20);
-    m_rotationEncoder.SetInverted(ShooterConstants::kRotationInverted);
-    m_rotationEncoder.SetPositionConversionFactor(ShooterConstants::kRotationConversion);
-    m_rotationEncoder.SetVelocityConversionFactor(ShooterConstants::kRotationConversion);
-    m_rotationEncoder.SetZeroOffset(ShooterConstants::kRotationOffset);
+    m_rotationConfig
+        .Inverted(false)
+        .SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kBrake)
+        .SmartCurrentLimit(ShooterConstants::kRotationCurrentLimit);
+    m_rotationConfig.absoluteEncoder
+        .Inverted(ShooterConstants::kRotationInverted)
+        .PositionConversionFactor(ShooterConstants::kRotationConversion)
+        .VelocityConversionFactor(ShooterConstants::kRotationConversion)
+        .ZeroOffset(ShooterConstants::kRotationOffset);
+    m_rotationConfig.signals
+        .AbsoluteEncoderPositionPeriodMs(20)
+        .AbsoluteEncoderVelocityPeriodMs(20);
+    
+    m_rotationMotor.Configure(m_rotationConfig, rev::spark::SparkBase::ResetMode::kResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
+    
 }
 
 void Shooter::ConfigPID() {
@@ -300,22 +313,19 @@ bool Shooter::NoteDetected(){
 void Shooter::SetBrakeMode(BrakeMode mode) {
     switch (mode) {
         case(BrakeMode::Brake) :
-            m_topRollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-            m_bottomRollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-            m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-            m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+            m_rollerConfig.SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kBrake);
+            m_rotationConfig.SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kBrake);
+            m_loaderConfig.SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kBrake);
             break;
         case(BrakeMode::Coast) :
-            m_topRollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-            m_bottomRollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-            m_rotationMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-            m_loaderMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            m_rollerConfig.SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kCoast);
+            m_rotationConfig.SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kCoast);
+            m_loaderConfig.SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kCoast);
             break;
         case(BrakeMode::Default) :
-            m_topRollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-            m_bottomRollerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-            m_rotationMotor.SetIdleMode(ShooterConstants::kIdleMode);
-            m_loaderMotor.SetIdleMode(ShooterConstants::kIdleMode);
+            m_rollerConfig.SetIdleMode(ShooterConstants::kIdleMode);
+            m_rotationConfig.SetIdleMode(ShooterConstants::kIdleMode);
+            m_loaderConfig.SetIdleMode(ShooterConstants::kIdleMode);
             break;
         default :
             break;

@@ -31,7 +31,7 @@ struct PIDValues {
 class SwerveModule {
  public:
   SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
-               int CANcoderID, double CANcoderOffset);
+               int CANcoderID, units::turn_t CANcoderOffset);
   void ConfigDriveMotor();
   void ConfigAngleMotor(int CANcoderID);
   void ConfigCANcoder();
@@ -63,7 +63,7 @@ class SwerveModule {
   PIDValues m_PIDValues;
 
   int m_moduleNumber;
-  double m_CANcoderOffset;
+  units::turn_t m_CANcoderOffset;
   double m_lastAngle;
   frc::SwerveModulePosition m_position{0_m, frc::Rotation2d{}};
 

@@ -7,7 +7,8 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
-#include <rev/CANSparkMax.h>
+#include <rev/SparkMax.h>
+#include <rev/config/SparkMaxConfig.h>
 #include <rev/SparkRelativeEncoder.h>
 #include <rev/SparkAbsoluteEncoder.h> 
 #include "Constants/ClimberConstants.h" 
@@ -16,6 +17,7 @@
 class Climber : public frc2::SubsystemBase {
  public:
   Climber();
+  void ConfigMotors();
   void SetPower(double leftPower, double rightPower);
   void SetBrakeMode(BrakeMode mode);
   void ToggleGlobalBrakeMode();
@@ -26,10 +28,12 @@ class Climber : public frc2::SubsystemBase {
   void Periodic() override;
 
  private:
-  rev::CANSparkMax m_leftMotor;
-  rev::CANSparkMax m_rightMotor;
-  rev::SparkRelativeEncoder m_leftEncoder;
-  rev::SparkRelativeEncoder m_rightEncoder;
+  rev::spark::SparkMax m_leftMotor;
+  rev::spark::SparkMax m_rightMotor;
+  rev::spark::SparkRelativeEncoder m_leftEncoder;
+  rev::spark::SparkRelativeEncoder m_rightEncoder;
+
+  rev::spark::SparkMaxConfig m_climberConfig;
 
   frc::DigitalInput m_brakeModeLimitSwitch;
   BrakeMode m_brakeMode;

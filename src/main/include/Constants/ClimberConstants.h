@@ -1,6 +1,7 @@
 #pragma once
 
-#include<iostream>
+#include <iostream>
+#include <units/current.h>
 
 namespace ClimberConstants{
     constexpr int kRightMotorID {19};
@@ -12,12 +13,12 @@ namespace ClimberConstants{
     constexpr double kBothExtendPower {0.4};
     constexpr double kRetractPower {-0.95};
     constexpr double kBothRetractPower {-0.95};
-    constexpr double kCurrentLimit {100.0}; // Amps
-    constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
-    constexpr auto kLeftMotorSoftLimitDirection {rev::CANSparkBase::SoftLimitDirection::kReverse};
-    constexpr auto kRightMotorSoftLimitDirection {rev::CANSparkBase::SoftLimitDirection::kReverse};
+    constexpr int kCurrentLimit {100}; // Amps
+    constexpr auto kIdleMode {rev::spark::SparkMaxConfig::IdleMode::kBrake};
+    constexpr auto kSoftLimitForwardEnabled {false};
+    constexpr auto kSoftLimitReverseEnabled {true};
     const bool kLeftMotorSoftLimitEnabled = true;
     const bool kRightMotorSoftLimitEnabled = true;
-    constexpr double kLeftMotorSoftLimitValue {2.0};
-    constexpr double kRightMotorSoftLimitValue {2.0};
+    constexpr double kLeftMotorSoftLimitReverseValue {2.0};
+    constexpr double kRightMotorSoftLimitReverseValue {2.0};
 }

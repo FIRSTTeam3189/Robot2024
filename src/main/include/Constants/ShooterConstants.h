@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <map>
-#include <rev/CANSparkMax.h>
+#include <rev/SparkMax.h>
 
 // Shooter Constants
 namespace ShooterConstants {
@@ -56,7 +56,7 @@ namespace ShooterConstants {
     constexpr auto kAutoScoreTarget {57.0_deg};
     constexpr auto kMidTarget {45.0_deg};
     constexpr auto kFarTarget {15.0_deg};
-    constexpr double kRotationOffset {86.0};
+    constexpr double kRotationOffset {86.0 / 360.0};
     constexpr double kRotationConversion {360.0};
     constexpr bool kRotationInverted {false};
     constexpr unsigned int kRotationCurrentLimit {30};
@@ -67,7 +67,7 @@ namespace ShooterConstants {
 
     constexpr bool kRollerInverted {true};
 
-    constexpr auto kIdleMode {rev::CANSparkMax::IdleMode::kBrake};
+    constexpr auto kIdleMode {rev::spark::SparkBaseConfig::IdleMode::kBrake};
 
     const std::vector<units::meter_t> kShooterKnownDistances {
         2.0_m, 

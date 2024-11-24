@@ -18,8 +18,10 @@ namespace SwerveDriveConstants {
     // This has x-positive as forward, y-positive as left
     constexpr auto kXDistanceFromCenter {0.282575_m};
     constexpr auto kYDistanceFromCenter {0.282575_m};
+    constexpr auto kWheelbase {0.282575_m * 2.0};
+    constexpr auto kTrackwidth {0.282575_m * 2.0};
 
-    constexpr double kGyroMountPoseYaw {0.0};
+    constexpr units::degree_t kGyroMountPoseYaw {0.0_deg};
 
     constexpr auto kAmpAlignTarget = 90.0_deg;
     constexpr auto kBlueSourceAlignTarget = 120.0_deg;

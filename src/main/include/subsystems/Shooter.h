@@ -15,8 +15,9 @@
 #include <frc/DigitalInput.h>
 #include <frc/Preferences.h>
 #include <frc/RobotController.h>
-#include <rev/CANSparkMax.h>
-#include <rev/CANSparkFlex.h>
+#include <rev/SparkMax.h>
+#include <rev/config/SparkMaxConfig.h>
+#include <rev/SparkFlex.h>
 #include <rev/SparkAbsoluteEncoder.h> 
 #include <rev/SparkRelativeEncoder.h> 
 #include "Constants/ShooterConstants.h"
@@ -58,12 +59,16 @@ class Shooter : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
    // rev::CANSparkFlex m_topRollerMotor;
    // rev::CANSparkFlex m_bottomRollerMotor;
-   rev::CANSparkMax m_topRollerMotor;
-   rev::CANSparkMax m_bottomRollerMotor;
-   rev::SparkRelativeEncoder m_topRollerEncoder;
-   rev::SparkRelativeEncoder m_bottomRollerEncoder;
-   rev::CANSparkMax m_loaderMotor;
-   rev::CANSparkMax m_rotationMotor;
+   rev::spark::SparkMax m_topRollerMotor;
+   rev::spark::SparkMax m_bottomRollerMotor;
+   rev::spark::SparkRelativeEncoder m_topRollerEncoder;
+   rev::spark::SparkRelativeEncoder m_bottomRollerEncoder;
+   rev::spark::SparkMax m_loaderMotor;
+   rev::spark::SparkMax m_rotationMotor;
+
+   rev::spark::SparkMaxConfig m_rollerConfig;
+   rev::spark::SparkMaxConfig m_loaderConfig;
+   rev::spark::SparkMaxConfig m_rotationConfig;
 
    frc::DigitalInput m_limitSwitchLeft;
    frc::DigitalInput m_limitSwitchRight;
@@ -72,7 +77,7 @@ class Shooter : public frc2::SubsystemBase {
    frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
    frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
    frc::ArmFeedforward *m_ff;
-   rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
+   rev::spark::SparkAbsoluteEncoder m_rotationEncoder;
 
    units::degree_t m_target;
    units::degrees_per_second_t m_lastSpeed;

@@ -5,7 +5,7 @@
 #include "util/SwerveModule.h"
 
 SwerveModule::SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID,
-                           int CANcoderID, double CANcoderOffset):
+                           int CANcoderID, units::turn_t CANcoderOffset):
 m_driveMotor(driveMotorID, "Swerve"),
 m_angleMotor(angleMotorID, "Swerve"),
 m_CANcoder(CANcoderID, "Swerve"),
@@ -39,9 +39,9 @@ void SwerveModule::ConfigDriveMotor() {
     m_driveConfigs.Slot0.kV = SwerveModuleConstants::kVDrive;
     m_driveConfigs.Slot0.kS = SwerveModuleConstants::kSDrive;
 
-    m_driveConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kDriveContinuousCurrentLimit;
-    m_driveConfigs.CurrentLimits.SupplyCurrentThreshold = SwerveModuleConstants::kDrivePeakCurrentLimit;
-    m_driveConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kDrivePeakCurrentDuration;
+    m_driveConfigs.CurrentLimits.SupplyCurrentLowerLimit = SwerveModuleConstants::kDriveContinuousCurrentLimit;
+    m_driveConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kDrivePeakCurrentLimit;
+    m_driveConfigs.CurrentLimits.SupplyCurrentLowerTime = SwerveModuleConstants::kDrivePeakCurrentDuration;
     m_driveConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kDriveEnableCurrentLimit;
 
     m_driveConfigs.MotorOutput.Inverted = SwerveModuleConstants::kDriveMotorInverted;
@@ -87,9 +87,9 @@ void SwerveModule::ConfigAngleMotor(int CANcoderID) {
     m_angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
     // m_angleConfigs.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::RemoteCANcoder;
 
-    m_angleConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kAngleContinuousCurrentLimit;
-    m_angleConfigs.CurrentLimits.SupplyCurrentThreshold = SwerveModuleConstants::kAnglePeakCurrentLimit;
-    m_angleConfigs.CurrentLimits.SupplyTimeThreshold = SwerveModuleConstants::kAnglePeakCurrentDuration;
+    m_angleConfigs.CurrentLimits.SupplyCurrentLowerLimit = SwerveModuleConstants::kAngleContinuousCurrentLimit;
+    m_angleConfigs.CurrentLimits.SupplyCurrentLimit = SwerveModuleConstants::kAnglePeakCurrentLimit;
+    m_angleConfigs.CurrentLimits.SupplyCurrentLowerTime = SwerveModuleConstants::kAnglePeakCurrentDuration;
     m_angleConfigs.CurrentLimits.SupplyCurrentLimitEnable = SwerveModuleConstants::kAngleEnableCurrentLimit;
 
     m_angleConfigs.Voltage.PeakForwardVoltage = SwerveModuleConstants::kMaxVoltage;

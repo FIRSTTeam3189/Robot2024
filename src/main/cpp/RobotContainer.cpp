@@ -44,7 +44,7 @@ RobotContainer::RobotContainer() {
   ConfigureDriverBindings();
   ConfigureCoDriverBindings();
   ConfigureTestBindings();
-  CreateAutoPaths();
+  // CreateAutoPaths();
 }
 
 void RobotContainer::ConfigureDriverBindings() {
@@ -66,7 +66,8 @@ void RobotContainer::ConfigureDriverBindings() {
 
   //the left bumper will set the intake to be active by first extending it and then running it with a parrallel command group. Shooter goes to load position while this is happening
 
-  frc2::Trigger fullIntakeUnloadButton{m_bill.Button(OperatorConstants::kButtonIDLeftBumper)};
+  // frc2::Trigger fullIntakeUnloadButton{m_bill.GetL1Button()};
+  frc2::Trigger fullIntakeUnloadButton([this](){ return m_bill.GetL1Button(); });
   fullIntakeUnloadButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{ m_shooter->SetBrakeMode(BrakeMode::Brake); m_shooter->SetRollerPower(0.0); },{m_shooter}),
     frc2::ParallelCommandGroup(
@@ -102,7 +103,8 @@ void RobotContainer::ConfigureDriverBindings() {
   ).ToPtr());
 
   //set the intake to get the piece using logic from the AmpIntake command to score in the amp
-  frc2::Trigger ampIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
+  // frc2::Trigger ampIntakeButton{m_bill.GetR1Button()};
+  frc2::Trigger ampIntakeButton([this](){ return m_bill.GetR1Button(); });
   ampIntakeButton.OnTrue(frc2::SequentialCommandGroup(
     SetIntakeRotation(m_intake, IntakeState::Extended),
     AmpIntake(m_intake, IntakeConstants::kIntakePower)
@@ -136,7 +138,7 @@ void RobotContainer::ConfigureDriverBindings() {
   // driveUnderStageButton.OnFalse(SetShooterRotation(m_shooter, ShooterState::Zero).ToPtr());
 
   // score in the amp 
-  frc2::Trigger ampScoreIntakeButton{m_bill.Button(OperatorConstants::kButtonIDRightTrigger)};
+  frc2::Trigger ampScoreIntakeButton([this](){ return m_bill.GetR2Button(); });
   ampScoreIntakeButton.OnTrue(frc2::ParallelCommandGroup(
     // frc2::InstantCommand([this]{
     //   m_driveState = DriveState::ArbitraryAngleAlign;
@@ -159,7 +161,7 @@ void RobotContainer::ConfigureDriverBindings() {
   ).ToPtr());
 
   // reset the pose of the robot in the case of noise or natural dampening
-  frc2::Trigger resetPoseButton{m_bill.Button(OperatorConstants::kButtonIDTouchpad)};
+  frc2::Trigger resetPoseButton([this](){ return m_bill.GetTouchpadButton(); });
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
     if (frc::DriverStation::GetAlliance()) {
       // if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
@@ -174,7 +176,7 @@ void RobotContainer::ConfigureDriverBindings() {
   },{m_swerveDrive}).ToPtr());
 
   // based on alliance, it will reset robot pose to the speaker position
-  frc2::Trigger resetSpeakerPoseButton{m_bill.Button(OperatorConstants::kButtonIDCreate)};
+  frc2::Trigger resetSpeakerPoseButton([this](){ return m_bill.GetCreateButton(); });
   resetSpeakerPoseButton.OnTrue(frc2::InstantCommand([this]{
     if (frc::DriverStation::GetAlliance()) {
       if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
@@ -188,7 +190,7 @@ void RobotContainer::ConfigureDriverBindings() {
   // resetSpeakerPoseButton.OnFalse(RunIntake(m_intake, 0.0).ToPtr());
 
   // enables climb mode
-  frc2::Trigger toggleClimbModeButton{m_bill.Button(OperatorConstants::kButtonIDMenu)};
+  frc2::Trigger toggleClimbModeButton([this](){ return m_bill.GetOptionsButton(); });
   toggleClimbModeButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
       if (GetSuperstructureState() == SuperstructureState::Default) {
@@ -205,12 +207,12 @@ void RobotContainer::ConfigureDriverBindings() {
     )
   ).ToPtr());
 
-  frc2::Trigger climbConfigButton{m_bill.Button(OperatorConstants::kButtonIDMicrophone)};
-  climbConfigButton.OnTrue(frc2::ParallelCommandGroup(
-    frc2::InstantCommand([this]{ m_swerveDrive->ToggleSlowMode(); },{m_swerveDrive}),
-    SetIntakeRotation(m_intake, IntakeState::Extended),
-    SetShooterRotation(m_shooter, ShooterState::Zero)
-  ).ToPtr());
+  // frc2::Trigger climbConfigButton{m_bill.Get)};
+  // climbConfigButton.OnTrue(frc2::ParallelCommandGroup(
+  //   frc2::InstantCommand([this]{ m_swerveDrive->ToggleSlowMode(); },{m_swerveDrive}),
+  //   SetIntakeRotation(m_intake, IntakeState::Extended),
+  //   SetShooterRotation(m_shooter, ShooterState::Zero)
+  // ).ToPtr());
   
   // frc2::Trigger extendIntakeButton{m_bill.Button(OperatorConstants::kButtonIDTriangle)};
   // extendIntakeButton.OnTrue(SetIntakeRotation(m_intake, IntakeState::Extended).ToPtr());
@@ -226,14 +228,14 @@ void RobotContainer::ConfigureDriverBindings() {
   //     m_intake->SetRollerPower(0.0);
   // },{m_intake}).ToPtr());
 
-  // frc2::Trigger toggleSlowModeButton{m_bill.Button(OperatorConstants::kButtonIDRightBumper)};
+  // frc2::Trigger toggleSlowModeButton{m_bill.GetR1Button()};
   // toggleSlowModeButton.OnTrue(frc2::InstantCommand([this]{ m_swerveDrive->ToggleSlowMode(); },{m_swerveDrive}).ToPtr());
 }
 
 void RobotContainer::ConfigureCoDriverBindings() {
   // Ted controls
   // human player load controls: sets target to the human player source based on alliance
-  frc2::Trigger directShooterLoadButton{m_ted.Button(OperatorConstants::kButtonIDLeftBumper)};
+  frc2::Trigger directShooterLoadButton([this](){ return m_ted.GetL1Button(); });
   directShooterLoadButton.OnTrue(frc2::ParallelCommandGroup(
     Drive(&m_bill, m_swerveDrive, DriveState::SourceAlign),
     // Drive(&m_bill, m_swerveDrive, DriveState::HeadingControl, m_driveAligntarget),
@@ -262,7 +264,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     // regular drive state if we don't want to directly load
   ).ToPtr());
 
-  frc2::Trigger unloadButton{m_ted.Button(OperatorConstants::kButtonIDRightBumper)};
+  frc2::Trigger unloadButton([this](){ return m_ted.GetR1Button(); });
   unloadButton.OnTrue(RunLoader(m_shooter, ShooterConstants::kUnloadPower, ShooterConstants::kUnloadPower).ToPtr());
   unloadButton.OnFalse(
     frc2::InstantCommand([this]{
@@ -305,7 +307,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   //   },{m_shooter})
   // ).ToPtr());
   
-  frc2::Trigger closeShootButton{m_ted.Button(OperatorConstants::kButtonIDRightTrigger)};
+  frc2::Trigger closeShootButton([this](){ return m_ted.GetR2Button(); });
   closeShootButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::Close),
     RunShooter(m_shooter, ShooterConstants::kShootPower)
@@ -322,7 +324,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     },{m_shooter})
   ).ToPtr());
 
-  frc2::Trigger closeFastShootButton{m_ted.Button(OperatorConstants::kButtonIDCircle)};
+  frc2::Trigger closeFastShootButton([this](){ return m_ted.GetCircleButton(); });
   closeFastShootButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::Close),
     RunShooter(m_shooter, 1.0)
@@ -339,7 +341,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     },{m_shooter})
   ).ToPtr());
 
-  frc2::Trigger articulateShooterButton{m_ted.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  frc2::Trigger articulateShooterButton([this](){ return m_ted.GetL2Button(); });
   articulateShooterButton.OnTrue(
     SetShooterRotation(m_shooter, ShooterState::StartingAuto)
   .ToPtr());
@@ -376,7 +378,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
   //   },{m_shooter})
   // ).ToPtr());
   
-  frc2::Trigger extendBothClimbersButton{m_ted.Button(OperatorConstants::kButtonIDTriangle)};
+  frc2::Trigger extendBothClimbersButton([this](){ return m_ted.GetTriangleButton(); });
   extendBothClimbersButton.OnTrue(frc2::SequentialCommandGroup(
     RunClimber(m_climber, ClimberConstants::kBothExtendPower, ClimberConstants::kBothExtendPower)
   )
@@ -388,7 +390,7 @@ void RobotContainer::ConfigureCoDriverBindings() {
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
 
-  frc2::Trigger retractBothClimbersButton{m_ted.Button(OperatorConstants::kButtonIDX)};
+  frc2::Trigger retractBothClimbersButton([this](){ return m_ted.GetCrossButton(); });
   retractBothClimbersButton.OnTrue(RunClimber(m_climber, ClimberConstants::kBothRetractPower, ClimberConstants::kBothRetractPower)
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
@@ -518,6 +520,10 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.SetDefaultOption("N/A", nullptr);\
   for (auto autoPath : AutoConstants::kAutonomousPaths) {
     m_chooser.AddOption(autoPath, new pathplanner::PathPlannerAuto(std::string{autoPath}));
+    for (int i = 0; i < 10; i++) {
+      std::cout << "Constructing path:" << std::string{autoPath} << std::endl;
+    }
+    std::cout << "\n";
   }
   m_chooser.AddOption("Dumb Two Score Mid", new TwoNoteAuto(m_swerveDrive, m_intake, m_shooter, AutoConstants::kStartingPosition));
   m_chooser.AddOption("Mobility", new MobilityAuto(m_swerveDrive));
@@ -585,7 +591,7 @@ void RobotContainer::ConfigureTestBindings() {
 
   // m_swerveDrive->ToggleSlowMode();
 
-  frc2::Trigger fullIntakeUnloadButton{m_test.Button(OperatorConstants::kButtonIDLeftBumper)};
+  frc2::Trigger fullIntakeUnloadButton([this](){ return m_test.GetL1Button(); });
   fullIntakeUnloadButton.OnTrue(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{ m_shooter->SetBrakeMode(BrakeMode::Brake); m_shooter->SetRollerPower(0.0); },{m_shooter}),
     frc2::ParallelCommandGroup(
@@ -628,7 +634,7 @@ void RobotContainer::ConfigureTestBindings() {
   //   m_intake->SetRollerPower(0.0);
   // },{m_intake}).ToPtr());
 
-  frc2::Trigger resetPoseButton{m_test.Button(OperatorConstants::kButtonIDTouchpad)};
+  frc2::Trigger resetPoseButton([this](){ return m_test.GetTouchpadButton(); });
   resetPoseButton.OnTrue(frc2::InstantCommand([this]{
     // if (frc::DriverStation::GetAlliance()) {
     //   if (frc::DriverStation::GetAlliance().value() == frc::DriverStation::Alliance::kBlue)
@@ -645,7 +651,7 @@ void RobotContainer::ConfigureTestBindings() {
     }
   },{m_swerveDrive}).ToPtr());
 
-frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonIDRightBumper)};
+frc2::Trigger directShooterLoadButton([this](){ return m_test.GetR1Button(); });
   directShooterLoadButton.OnTrue(frc2::ParallelCommandGroup(
     Drive(&m_test, m_swerveDrive, DriveState::HeadingControl),
     frc2::SequentialCommandGroup(
@@ -673,7 +679,7 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
     // regular drive state if we don't want to directly load
   ).ToPtr());
 
- frc2::Trigger unloadButton{m_test.Button(OperatorConstants::kButtonIDCreate)};
+ frc2::Trigger unloadButton([this](){ return m_test.GetCreateButton(); });
   unloadButton.OnTrue(RunLoader(m_shooter, ShooterConstants::kUnloadPower, ShooterConstants::kUnloadPower).ToPtr());
   unloadButton.OnFalse(
     frc2::InstantCommand([this]{
@@ -697,7 +703,7 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
   // );
   
   // New swerve align method
-  frc2::Trigger swerveAlignButtonTranslation{m_test.Button(OperatorConstants::kButtonIDLeftTrigger)};
+  frc2::Trigger swerveAlignButtonTranslation([this](){ return m_test.GetL2Button(); });
   swerveAlignButtonTranslation.OnTrue(frc2::InstantCommand([this]{
     // if (m_driveState == DriveState::HeadingControl) {
       m_driveState = DriveState::SpeakerAlignTranslationAlgorithm;
@@ -713,7 +719,7 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
     },{m_swerveDrive}).ToPtr()
   );
 
-  frc2::Trigger shootLowButton{m_test.Button(OperatorConstants::kButtonIDMenu)};
+  frc2::Trigger shootLowButton([this](){ return m_test.GetOptionsButton(); });
   shootLowButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::Mid),
     RunShooter(m_shooter, 0.27)
@@ -730,7 +736,7 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
     },{m_shooter})
   ).ToPtr());
 
-  frc2::Trigger arbitraryShootButton{m_test.Button(OperatorConstants::kButtonIDRightTrigger)};
+  frc2::Trigger arbitraryShootButton([this](){ return m_test.GetR2Button(); });
   arbitraryShootButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::ArbitraryAngle),
     RunShooter(m_shooter, ShooterConstants::kShootPower)
@@ -747,7 +753,7 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
     },{m_shooter})
   ).ToPtr());
 
-  frc2::Trigger interpolateShootButton{m_test.Button(OperatorConstants::kButtonIDCircle)};
+  frc2::Trigger interpolateShootButton([this](){ return m_test.GetCircleButton(); });
   interpolateShootButton.OnTrue(frc2::SequentialCommandGroup(
     SetShooterRotation(m_shooter, ShooterState::InterpolateAngle),
     RunShooter(m_shooter, ShooterConstants::kShootPower)
@@ -764,7 +770,7 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
     },{m_shooter})
   ).ToPtr());
   
-  frc2::Trigger extendBothClimbersButton{m_test.Button(OperatorConstants::kButtonIDTriangle)};
+  frc2::Trigger extendBothClimbersButton([this](){ return m_test.GetTriangleButton(); });
   extendBothClimbersButton.OnTrue(frc2::SequentialCommandGroup(
     RunClimber(m_climber, ClimberConstants::kBothExtendPower, ClimberConstants::kBothExtendPower)
   )
@@ -776,7 +782,7 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
 
-  frc2::Trigger retractBothClimbersButton{m_test.Button(OperatorConstants::kButtonIDX)};
+  frc2::Trigger retractBothClimbersButton([this](){ return m_test.GetCrossButton(); });
   retractBothClimbersButton.OnTrue(RunClimber(m_climber, ClimberConstants::kBothRetractPower, ClimberConstants::kBothRetractPower)
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
@@ -785,7 +791,6 @@ frc2::Trigger directShooterLoadButton{m_test.Button(OperatorConstants::kButtonID
   },{m_climber})
     // .OnlyIf([this](){ return IsClimbState(); }));
     .ToPtr());
-
 //   frc2::Trigger driveRelativePosX{m_test.Button(OperatorConstants::kButtonIDSquare)};
 //   driveRelativePosX.OnTrue(frc2::RunCommand([this]{
 //     frc::ChassisSpeeds relativeSpeeds = frc::ChassisSpeeds::FromRobotRelativeSpeeds(1.0_mps, 0.0_mps, 0.0_rad / 1.0_s, frc::Rotation2d{0.0_deg});

@@ -9,7 +9,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc/controller/PIDController.h>
-#include <frc/Joystick.h>
+#include <frc/PS5Controller.h>
 #include <frc2/command/button/CommandJoystick.h>
 #include "subsystems/SwerveDrive.h"
 #include "Constants/OperatorConstants.h"
@@ -26,7 +26,7 @@
 class Drive
     : public frc2::CommandHelper<frc2::Command, Drive> {
  public:
-  Drive(frc2::CommandJoystick *joystick, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle = 0.0_deg);
+  Drive(frc::PS5Controller *joystick, SwerveDrive *swerveDrive, DriveState driveState, units::degree_t arbitraryAngle = 0.0_deg);
   units::angular_velocity::radians_per_second_t GetDesiredRotationalVelocity();
   units::angular_velocity::radians_per_second_t GetRotVelSpeakerAlign();
   units::angular_velocity::radians_per_second_t GetRotVelSpeakerAlignTranslation();
@@ -41,7 +41,7 @@ class Drive
   bool IsFinished() override;
 
  private:
-  frc2::CommandJoystick *m_bill;
+  frc::PS5Controller *m_bill;
   SwerveDrive *m_swerveDrive;
   // Needs to be here rather than the subsystem because the PID controller is utilized in the Drive command
   SwerveAlignUtil m_swerveAlignUtil;

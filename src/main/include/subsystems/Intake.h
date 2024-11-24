@@ -16,7 +16,8 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <rev/SparkAbsoluteEncoder.h> 
-#include <rev/CANSparkMax.h>
+#include <rev/SparkMax.h>
+#include <rev/config/SparkMaxConfig.h>
 #include "Constants/IntakeConstants.h"
 #include "Constants/GlobalConstants.h"
 
@@ -48,14 +49,16 @@ class Intake : public frc2::SubsystemBase {
   void ConfigPID();
 
  private:
-  rev::CANSparkMax m_rotationMotor;
-  rev::CANSparkMax m_rollerMotor;
+  rev::spark::SparkMax m_rotationMotor;
+  rev::spark::SparkMax m_rollerMotor;
+  rev::spark::SparkMaxConfig m_rotationConfig;
+  rev::spark::SparkMaxConfig m_rollerConfig;
   frc::DigitalInput m_limitSwitchLeft;
   frc::DigitalInput m_limitSwitchRight;
   frc::TrapezoidProfile<units::degrees>::Constraints m_constraints;
   frc::ProfiledPIDController<units::degrees> m_profiledPIDController;
   frc::ArmFeedforward *m_ff;
-  rev::SparkMaxAbsoluteEncoder m_rotationEncoder;
+  rev::spark::SparkAbsoluteEncoder m_rotationEncoder;
   units::degree_t m_target;
   units::degrees_per_second_t m_lastSpeed;
   units::degrees_per_second_t m_lastTargetSpeed;

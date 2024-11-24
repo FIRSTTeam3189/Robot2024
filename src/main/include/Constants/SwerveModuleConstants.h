@@ -6,6 +6,7 @@
 #include <units/frequency.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
+#include <units/current.h>
 #include <units/acceleration.h>
 #include <units/angular_acceleration.h>
 #include <iostream>
@@ -28,10 +29,10 @@ namespace SwerveModuleConstants {
     constexpr int kBackRightCANcoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
-    constexpr double kFrontLeftOffset {0.921143}; // 0.421143
-    constexpr double kFrontRightOffset {-0.351562}; // 0.154785
-    constexpr double kBackLeftOffset {0.115479}; // -0.384521
-    constexpr double kBackRightOffset {0.332031}; // {-0.167969
+    constexpr units::turn_t kFrontLeftOffset = units::turn_t{0.921143}; // 0.421143
+    constexpr units::turn_t kFrontRightOffset = units::turn_t{-0.351562}; // 0.154785
+    constexpr units::turn_t kBackLeftOffset = units::turn_t{0.115479}; // -0.384521
+    constexpr units::turn_t kBackRightOffset = units::turn_t{0.332031}; // {-0.167969
 
     // Motor + sensor inversions
     constexpr bool kDriveMotorInverted = true;
@@ -67,16 +68,16 @@ namespace SwerveModuleConstants {
     constexpr double kVAngle {0.0};
     constexpr double kSAngle {0.0};
 
-    constexpr double kMaxVoltage {10.0};
+    constexpr auto kMaxVoltage {10.0_V}; // volts
     // Current limits -- allows continuous operation at certain amps, or a peak of greater amps for <threshold time
-    constexpr int kAngleContinuousCurrentLimit = 25;
-    constexpr int kAnglePeakCurrentLimit = 40;
-    constexpr double kAnglePeakCurrentDuration = 0.1; // seconds
+    constexpr auto kAngleContinuousCurrentLimit = units::ampere_t{25.0};
+    constexpr auto kAnglePeakCurrentLimit = units::ampere_t{40.0};
+    constexpr auto kAnglePeakCurrentDuration = 0.1_s; // seconds
     constexpr bool kAngleEnableCurrentLimit = true;
     
-    constexpr int kDriveContinuousCurrentLimit = 35;
-    constexpr int kDrivePeakCurrentLimit = 60;
-    constexpr double kDrivePeakCurrentDuration = 0.1;
+    constexpr auto kDriveContinuousCurrentLimit = units::ampere_t{35.0};
+    constexpr auto kDrivePeakCurrentLimit = units::ampere_t{60.0};
+    constexpr auto kDrivePeakCurrentDuration = 0.1_s;
     constexpr bool kDriveEnableCurrentLimit = true;
 
     // PID, sensor IDs passed in via structs in namespace
@@ -91,4 +92,5 @@ namespace SwerveModuleConstants {
     constexpr double kRotationsPerMeter {1.0 / kWheelCircumferenceMeters};
     constexpr int kFalconEncoderTicksPerRevolution {2048};
     constexpr int kCANcoderTicksPerRevolution {4096};
+    constexpr double kWheelCOF {1.200}; // estimated
 }
