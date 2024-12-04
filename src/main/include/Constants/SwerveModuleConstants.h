@@ -40,7 +40,7 @@ namespace SwerveModuleConstants {
     constexpr bool kCANcoderInverted = false;
 
     // Encoder sensor range
-    constexpr auto kCANcoderSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf;
+    // constexpr auto kCANcoderSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf;
 
     // Motor neutral modes -- what they do when no power is applied
     constexpr auto kDriveNeutralMode = ctre::phoenix6::signals::NeutralModeValue::Coast;

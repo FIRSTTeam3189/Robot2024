@@ -1,0 +1,62 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      " Talon FX (v6)[1]": {
+        "header": {
+          "open": true
+        }
+      },
+      " Talon FX (v6)[5]": {
+        "header": {
+          "open": true
+        }
+      },
+      " Talon FX (v6)[6]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [17] ANALOG SENSOR": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [17] RELATIVE ENCODER": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[3]/Rev Limit": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[6]/Rev Limit": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto Routines": "String Chooser",
+      "/SmartDashboard/Auto field": "Field2d",
+      "/SmartDashboard/Estimated pose": "Field2d"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "Server": {
+      "open": true
+    },
+    "visible": true
+  }
+}

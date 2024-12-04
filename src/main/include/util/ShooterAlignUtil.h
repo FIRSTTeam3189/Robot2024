@@ -11,6 +11,7 @@
 #include "subsystems/PoseEstimatorHelper.h"
 #include "Constants/VisionConstants.h"
 #include "Constants/ShooterConstants.h"
+#include "Constants/AutoConstants.h"
 
 class ShooterAlignUtil {
  public:

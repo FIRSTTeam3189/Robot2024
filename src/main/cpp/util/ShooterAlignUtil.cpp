@@ -7,6 +7,8 @@
 ShooterAlignUtil::ShooterAlignUtil(PoseEstimatorHelper *estimator) :
 m_poseEstimator(estimator)
 {
+  (void)AutoConstants::kAutonomousPaths[0];
+  (void)VisionConstants::kSyncBytes[0];
 }
 
 units::meter_t ShooterAlignUtil::GetDistanceToSpeaker() {

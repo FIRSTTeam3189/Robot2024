@@ -108,7 +108,8 @@ void SwerveModule::ConfigCANcoder() {
     // Set the magnet offset in configs
     m_encoderConfigs.MagnetSensor.MagnetOffset = m_CANcoderOffset;
     m_encoderConfigs.MagnetSensor.SensorDirection = SwerveModuleConstants::kCANcoderInverted;
-    m_encoderConfigs.MagnetSensor.AbsoluteSensorRange = SwerveModuleConstants::kCANcoderSensorRange;
+    // m_encoderConfigs.MagnetSensor.AbsoluteSensorRange = SwerveModuleConstants::kCANcoderSensorRange;
+    m_encoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = units::turn_t{0.5}; // +- half
 
     m_CANcoder.GetConfigurator().Apply(m_encoderConfigs);
 }

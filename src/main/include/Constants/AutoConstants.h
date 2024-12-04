@@ -56,8 +56,8 @@ namespace AutoConstants {
         53.524_kg,
         units::kilogram_square_meter_t{5.500},
         kAutoModuleConfig,
-        SwerveDriveConstants::kTrackwidth,
-        SwerveDriveConstants::kWheelbase,
+        SwerveDriveConstants::kTrackwidth
+        // SwerveDriveConstants::kWheelbase,
     };
 
     // // Auto config
