@@ -35,6 +35,7 @@ void Climber::ConfigMotors() {
     m_climberConfig.softLimit
         .ForwardSoftLimitEnabled(ClimberConstants::kSoftLimitForwardEnabled)
         .ReverseSoftLimitEnabled(ClimberConstants::kSoftLimitReverseEnabled)
+        .ForwardSoftLimit(ClimberConstants::kSoftLimitForwardValue)
         .ReverseSoftLimit(ClimberConstants::kRightMotorSoftLimitReverseValue);
 
     m_leftMotor.Configure(m_climberConfig, rev::spark::SparkBase::ResetMode::kResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);

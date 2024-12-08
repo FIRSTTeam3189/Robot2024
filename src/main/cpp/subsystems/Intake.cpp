@@ -28,7 +28,7 @@ Intake::Intake() :
 
 void Intake::ConfigRotationMotor() {
     m_rotationConfig
-        .Inverted(IntakeConstants::kRotationInverted)
+        .Inverted(IntakeConstants::kRotationMotorInverted)
         .SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kBrake)
         .SmartCurrentLimit(IntakeConstants::kRotationCurrentLimit);
     m_rotationConfig.absoluteEncoder

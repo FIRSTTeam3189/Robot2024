@@ -41,25 +41,6 @@ namespace AutoConstants {
         12.0_V, units::newton_meter_t{5.84}, units::ampere_t{304.0}, units::ampere_t{1.5}, units::radians_per_second_t{636.6961104}
     };
 
-    // Wheel radius, maxDriveVelocityMPS, wheelCOF, driveMotor, driveCurrentLimit, numMotors
-    static pathplanner::ModuleConfig kAutoModuleConfig {
-        units::meter_t{SwerveModuleConstants::kWheelRadiusMeters},
-        SwerveModuleConstants::kMaxSpeed, 
-        SwerveModuleConstants::kWheelCOF,
-        kDriveMotorConfig,
-        SwerveModuleConstants::kDrivePeakCurrentLimit,
-        1
-    };
-
-    // units::kilogram_t mass, units::kilogram_square_meter_t MOI, ModuleConfig moduleConfig, units::meter_t trackwidth, units::meter_t wheelbase
-    static pathplanner::RobotConfig kAutoRobotConfig {
-        53.524_kg,
-        units::kilogram_square_meter_t{5.500},
-        kAutoModuleConfig,
-        SwerveDriveConstants::kTrackwidth
-        // SwerveDriveConstants::kWheelbase,
-    };
-
     // // Auto config
     // const pathplanner::HolonomicPathFollowerConfig autoConfig {
     //     pathplanner::PIDConstants(kPTranslationAuto, kITranslationAuto, kDTranslationAuto), // Translation PID constants

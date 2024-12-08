@@ -59,7 +59,7 @@ m_lastYSpeed(0.0_mps)
             pathplanner::PIDConstants(AutoConstants::kPTranslationAuto, AutoConstants::kITranslationAuto, AutoConstants::kDTranslationAuto), // Translation PID constants
             pathplanner::PIDConstants(AutoConstants::kPRotationAuto, AutoConstants::kIRotationAuto, AutoConstants::kDRotationAuto) // Rotation PID constants
         ),
-        AutoConstants::kAutoRobotConfig,
+        m_autoRobotConfig,
         []() {
             // Boolean supplier that controls when the path will be mirrored for the red alliance
             // This will flip the path being followed to the red side of the field.

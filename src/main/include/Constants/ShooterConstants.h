@@ -27,7 +27,7 @@ namespace ShooterConstants {
     constexpr auto kMaxRotationVelocity {180.0_deg / 1.0_s};
     constexpr auto kMaxRotationAcceleration {180.0_deg / 1.0_s / 1.0_s};
 
-    constexpr double kShootPower {0.8};
+    constexpr double kShootPower {1.0};  // 0.8
     // constexpr double kShootPowerSlow {0.8};
     // constexpr double kShootPower {0.30};
     constexpr auto kRevUpTime {2.5_s};  // Max is 6400 RPM
@@ -37,7 +37,8 @@ namespace ShooterConstants {
     constexpr auto kAxleToGroundDistance {0.2185_m};
     constexpr auto kSpeakerHeightTarget {1.9074_m};
     // Intake load
-    constexpr auto kLoadTarget {25.0_deg};
+    constexpr auto kLoadTarget {0.0_deg};
+    // constexpr auto kLoadTarget {25.0_deg};
     // constexpr auto kLoadTarget {40.0_deg};
     constexpr double kLoadPower {0.5};
     constexpr double kUnloadPower {-0.25};

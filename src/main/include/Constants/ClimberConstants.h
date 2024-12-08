@@ -15,10 +15,11 @@ namespace ClimberConstants{
     constexpr double kBothRetractPower {-0.95};
     constexpr int kCurrentLimit {100}; // Amps
     constexpr auto kIdleMode {rev::spark::SparkMaxConfig::IdleMode::kBrake};
-    constexpr auto kSoftLimitForwardEnabled {false};
+    constexpr auto kSoftLimitForwardEnabled {true};
     constexpr auto kSoftLimitReverseEnabled {true};
     const bool kLeftMotorSoftLimitEnabled = true;
     const bool kRightMotorSoftLimitEnabled = true;
+    constexpr double kSoftLimitForwardValue {50.0};
     constexpr double kLeftMotorSoftLimitReverseValue {2.0};
     constexpr double kRightMotorSoftLimitReverseValue {2.0};
 }
