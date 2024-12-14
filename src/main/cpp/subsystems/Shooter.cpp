@@ -75,8 +75,8 @@ void Shooter::HoldPosition(units::degree_t target) {
     auto ffValue = m_ff->Calculate(units::radian_t{GetRotation()}, units::radians_per_second_t{0.0});
     frc::SmartDashboard::PutNumber("Shooter rotation FF", ffValue.value());
     frc::SmartDashboard::PutNumber("Shooter rotation PID", PIDValue.value());
-    // m_rotationMotor.SetVoltage(std::clamp((ffValue + PIDValue), -12.0_V, 12.0_V));
-    m_rotationMotor.SetVoltage(0.0_V);
+    m_rotationMotor.SetVoltage(std::clamp((ffValue + PIDValue), -12.0_V, 12.0_V));
+    // m_rotationMotor.SetVoltage(0.0_V);
     // Just to advance the profile timestep
     m_profiledPIDController.Calculate(GetRotation(), m_target);
 
@@ -102,8 +102,8 @@ void Shooter::SetRotation(units::degree_t target) {
                                            units::radians_per_second_squared_t{m_targetAcceleration});
 
     // Set motor to combined voltage
-    // m_rotationMotor.SetVoltage(PIDValue + ffValue);
-    m_rotationMotor.SetVoltage(0.0_V);
+    m_rotationMotor.SetVoltage(PIDValue + ffValue);
+    // m_rotationMotor.SetVoltage(0.0_V);
     frc::SmartDashboard::PutNumber("Shooter rotation volts", PIDValue.value() + ffValue.value());
     frc::SmartDashboard::PutNumber("Shooter rotation PID", PIDValue.value());
     frc::SmartDashboard::PutNumber("Shooter rotation FF", ffValue.value());
@@ -287,8 +287,8 @@ void Shooter::SetState(ShooterState state, units::degree_t autoAlignAngle){
 
     //states for different scenarios on the shooter and sets target to the needed one for the possibilities
 
-    // m_target = target;
-    m_target = 0.0_deg;
+    m_target = target;
+    // m_target = 0.0_deg;
 }
 
 units::degree_t Shooter::GetTarget() {
